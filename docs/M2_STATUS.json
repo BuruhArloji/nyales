@@ -1,0 +1,195 @@
+{
+  "date": "2026-10-18",
+  "milestone": "M2",
+  "local_implementation": "implemented_pilot",
+  "production_acceptance": "pending",
+  "deployed": false,
+  "item_count": 23,
+  "items": [
+    {
+      "id": "WEB-017",
+      "title": "Status aktif rolling 90 hari",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Rolling 90 hari tanggal invoice, revisi/retur current, status Unknown bila sumber belum lengkap; New memerlukan bukti histori lengkap."
+    },
+    {
+      "id": "WEB-018",
+      "title": "Konfigurasi Low/Mid/High dan versi rule",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Nominal/percentile/custom rentang angka; rule versi approved, scope area override dan snapshot immutable. Custom bukan kode bebas."
+    },
+    {
+      "id": "WEB-025",
+      "title": "Plan target periode/basis/kanal",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Periode, kanal dan versi plan; basis leaf customer/rep dengan revenue/produk/group. Satu approved plan per kanal pada periode beririsan adalah batas pilot."
+    },
+    {
+      "id": "WEB-026",
+      "title": "Bottom-up customer dan Sales Rep",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Bottom-up customer atau rep, mencegah leaf/basis beririsan; snapshot area/rep/hirarki dan reserve terpisah."
+    },
+    {
+      "id": "WEB-027",
+      "title": "Top-down historis tiga bulan dan onboarding",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Tiga bulan kalender selesai, normalisasi bulan 1/2/3, onboarding tetap, largest remainder. Zero history/unknown age membutuhkan input/review."
+    },
+    {
+      "id": "WEB-028",
+      "title": "Submit, approve dan lock target",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Submit/approve independen, ETag, approved lock dan revisi berhistori; UAT dua akun Firebase nyata masih pending."
+    },
+    {
+      "id": "WEB-029",
+      "title": "Achievement dan gap yang bisa ditelusuri",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Actual invoice current dan retur sesuai basis; ambigu produk/merge ditahan review. Reserve tidak mengarang actual atau achievement."
+    },
+    {
+      "id": "WEB-030",
+      "title": "Agenda lapangan dan snapshot rencana",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Agenda, usulan/approval, recurrence 1-12 minggu, snapshot jadwal asli dan reschedule reason; slot collision tetap 30 menit pada pilot."
+    },
+    {
+      "id": "WEB-031",
+      "title": "Sesi kerja dan pengecualian kehadiran",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Sesi work/leave/training, waktu server dan larangan end saat visit aktif. Bukan payroll atau pembuktian kehadiran otomatis."
+    },
+    {
+      "id": "WEB-032",
+      "title": "Check-in/out dan kualitas lokasi",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Check-in/out berpasangan, GPS browser + accuracy/client/server time; denied/out-of-order review, last position monotonic. Bukan GPS background."
+    },
+    {
+      "id": "WEB-033",
+      "title": "Outcome visit dan next action",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Outcome, catatan dan next action; visit productive bukan order atau actual invoice."
+    },
+    {
+      "id": "WEB-034",
+      "title": "R2 upload/download evidence privat",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Intent/upload/finalize/private download R2, checksum/magic/size/scope. Implementasi memakai authenticated proxy, belum signed URL desain produk."
+    },
+    {
+      "id": "WEB-035",
+      "title": "Draft web offline dan retry persisten",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Draft IndexedDB dan outbox per owner, stable client event, satu event/request, retry/review. Satu sampel ack bukan bukti P95/mobile SLA."
+    },
+    {
+      "id": "WEB-036",
+      "title": "Campaign, script dan queue telesales",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Campaign/script create/edit/archive, qualification dan script snapshot saat claim, workbench berprioritas. Ranking masih formula pilot tetap."
+    },
+    {
+      "id": "WEB-037",
+      "title": "Lease queue dan proteksi kontak/DNC",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Lease unik per customer, renew/expiry, DNC/permission/attempt/callback/active visit holds. Multi-tab race diuji di route fixture, UAT device nyata pending."
+    },
+    {
+      "id": "WEB-038",
+      "title": "Click-to-call, disposition dan callback",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Tel link hanya sesudah renew; disposition manual_unverified, qualification dan callback kalender. Tidak ada CTI/provider call verification."
+    },
+    {
+      "id": "WEB-039",
+      "title": "Task, handoff dan kalender lintas kanal",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Task start/complete/cancel/reschedule dan handoff accept/decline/complete/cancel; jadwal asli dipertahankan. Reassign task antar PIC belum tersedia; gunakan cancel + create/handoff."
+    },
+    {
+      "id": "WEB-040",
+      "title": "Customer 360, timeline dan catatan terbatas",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Customer 360 menambah timeline aktivitas/task/handoff/order/forecast menurut scope. Data sumber tetap invoice; order diberi label bukan actual."
+    },
+    {
+      "id": "WEB-041",
+      "title": "Lead dan opportunity stage gates",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Lead/opportunity tujuh stage, proposal/qualified/won/lost gates dan reopen. SLA berdasarkan kalender dan aktivitas bermakna."
+    },
+    {
+      "id": "WEB-042",
+      "title": "Draft order web dan snapshot komersial",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Order draft snapshot SKU/unit/harga/diskon/pajak, integer rupiah, 50 lines dan client order id; tidak otomatis dikirim ERP."
+    },
+    {
+      "id": "WEB-043",
+      "title": "Approval order dan konfirmasi backoffice",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Policy diskon/harga, review stok/kredit manual independen, approval/reject/revisi/konfirmasi backoffice. Data stok/kredit provider belum tersambung."
+    },
+    {
+      "id": "WEB-044",
+      "title": "Forecast invoice residual dan repeat estimate",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Forecast sales dan alternatif manager terpisah, actual + residual, canonical basket dan revisi/merge review; committed wajib evidence."
+    },
+    {
+      "id": "WEB-045",
+      "title": "Review forecast menjadi tindakan",
+      "status": "Implemented local pilot; production acceptance pending",
+      "note": "Review kategori/gap/next action membuat task, tidak menambah forecast otomatis. Gap hanya target approved dengan basis sebanding."
+    }
+  ],
+  "checks": {
+    "automated_tests": {
+      "passed": 72,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "build": "passed_with_existing_bundle_warning",
+    "browser_forms": "passed",
+    "browser_navigation": {
+      "status": "passed",
+      "pages": 5,
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "page_errors": 0
+    },
+    "database_reconciliation": {
+      "status": "passed",
+      "exact_tables": 30,
+      "append_only_tables": 7,
+      "foreign_key_violations": 0,
+      "integrity_check": "ok"
+    },
+    "scheduled": {
+      "manual_local_trigger": "HTTP 200",
+      "unit_maintenance": "passed: orphan cleanup, ready/source retention, lease expiry, overdue deduplication, snapshot reuse",
+      "automatic_cloud_cron": "not deployed"
+    },
+    "query_budget": {
+      "target_customer_leaves": 200,
+      "order_lines": 50,
+      "bounded_statements_test": "passed",
+      "production_load": "pending"
+    }
+  },
+  "gates": [
+    "Firebase/MFA and independent actual users",
+    "real ERP transaction integration and manual source coverage declaration",
+    "field/telesales user UAT and mobile/device offline P95",
+    "source capacity/load, retention and recovery drill",
+    "cloud R2/D1/cron provisioning and deployment",
+    "task reassignment action and signed-URL upload remain product follow-up"
+  ],
+  "actual_api_operations": 91
+}

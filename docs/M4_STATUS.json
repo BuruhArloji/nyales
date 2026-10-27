@@ -1,0 +1,619 @@
+{
+  "date": "2026-10-25",
+  "milestone": "M4",
+  "items": {
+    "WEB-056": {
+      "status": "Implemented local pilot; production capacity gates pending",
+      "tests": 99,
+      "browser": "passed",
+      "migration": "0033_observability.sql",
+      "api_operations": 4,
+      "profile": {
+        "sales_reps": 25,
+        "customers": 1000,
+        "invoices_month": 10000,
+        "concurrent_requests": 5
+      },
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "gates": [
+        "Workers 10ms CPU and production concurrency unverified",
+        "Cloudflare shared-account quota/API ingestion not connected; manual snapshots only",
+        "Organization-owned provider accounts and operator organization designation pending"
+      ]
+    },
+    "WEB-057": {
+      "status": "Implemented local recovery slice; production restore/retention gates pending",
+      "tests": 4,
+      "migration": "0034_recovery_retention.sql",
+      "api_operations": 10,
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "gates": [
+        "RPO15m/RTO4h and restore durability not measured on provider",
+        "legal retention/privacy erasure policy needs organization approval",
+        "cross-region attachment restore and backup lifecycle not deployed",
+        "WEB-058 local regression complete; deployed security review and WEB-059 UAT pending"
+      ]
+    },
+    "WEB-058": {
+      "status": "Local security review and regression complete; production verification pending",
+      "tests_added": 16,
+      "full_suite_tests": 119,
+      "runtime_operations": 232,
+      "unauthenticated_operations_checked": 230,
+      "dependency_audit_vulnerabilities": 0,
+      "review": "docs/WEB058_SECURITY_REVIEW.md",
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "gates": [
+        "Real Firebase MFA enrollment/challenge/recovery and deployed origin/session review",
+        "WEB-059 browser/device/accessibility/offline UAT",
+        "WEB-056 provider capacity and WEB-057 full recovery/retention acceptance",
+        "Independent deployment security review before go-live"
+      ]
+    },
+    "WEB-059": {
+      "status": "Local automated UAT evidence complete; named role/device acceptance pending",
+      "full_suite_tests": 121,
+      "browser_checks": 11,
+      "browser_passed": 11,
+      "browser_channels": [
+        "Chrome",
+        "Edge"
+      ],
+      "viewports_px": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "prd_scenarios": 82,
+      "web_release_scenarios": 53,
+      "deferred_integration_p1": 8,
+      "deferred_android": 21,
+      "named_business_signoffs": 0,
+      "dependency_audit_vulnerabilities": 0,
+      "report": "docs/WEB059_UAT.md",
+      "register": "docs/WEB059_UAT_REGISTER.json",
+      "browser_evidence": "docs/WEB059_BROWSER_EVIDENCE.json",
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "gates": [
+        "Named reviewers and real Management/NSM, Area Manager, Supervisor, Sales Rep and Telesales UAT",
+        "Physical mobile GPS/upload/offline/shared-device and manual screen-reader checks",
+        "Real Firebase MFA/session and provider basemap/3D/panorama verification",
+        "WEB-057 actual restore/attachment recovery and WEB-056 provider capacity",
+        "WEB-060 real pilot data reconciliation and WEB-061/062 training/go-live approval"
+      ]
+    },
+    "WEB-060": {
+      "status": "Completed user-requested synthetic rehearsal; real-data migration deferred",
+      "date": "2026-10-21",
+      "data_classification": "synthetic",
+      "user_scope": "Dummy data in separate files, per direct user instruction",
+      "full_suite_tests": 133,
+      "production_build": "passed",
+      "max_sales": 10,
+      "pic": "Rizky Aditya",
+      "named_participants": [
+        "Novely",
+        "Didik",
+        "Mursal"
+      ],
+      "dummy_participants": 7,
+      "source": "pilot/demo-10-sales/source-data.json",
+      "package": "pilot/demo-10-sales/README.md",
+      "evidence": "pilot/demo-10-sales/rehearsal-20261021/SUMMARY.json",
+      "reconciliation": "pilot/demo-10-sales/rehearsal-20261021/reconciliation/reconciliation.json",
+      "counts": {
+        "sales": 10,
+        "customers": 20,
+        "invoices": 80,
+        "credits": 4,
+        "approved_target_plans": 2,
+        "api_steps": 11
+      },
+      "invoice_retry_same_job": true,
+      "record_discrepancies": 0,
+      "real_data_migrated": false,
+      "business_signoff": false,
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "gates": [
+        "Real source adapter/independent company data exports, approved role/area/identity mapping and source net definitions remain deferred",
+        "Firebase login, physical devices, provider capacity and actual restore acceptance remain open",
+        "Dummy API identity is injected; master/hierarchy fixture setup is not production account provisioning or UI master-import UAT"
+      ]
+    },
+    "WEB-061": {
+      "status": "Training materials, SOP and handover package complete; human execution/acceptance pending",
+      "date": "2026-10-21",
+      "full_suite_tests": 133,
+      "production_build": "passed",
+      "materials": [
+        "docs/WEB061_TRAINING.md",
+        "docs/WEB061_SOP.md",
+        "docs/WEB061_SUPPORT.md",
+        "docs/WEB060_PILOT.md",
+        "docs/WEB061_HANDOVER.md"
+      ],
+      "register": "docs/WEB061_REGISTER.json",
+      "training_cases": 15,
+      "training_cases_human_passed": 0,
+      "handover_items": 7,
+      "handover_items_accepted": 0,
+      "human_training_completed": false,
+      "operational_handover_accepted": false,
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "gates": [
+        "Named L1/L2/backup/Finance owners, support channel, service hours and response policy need organization assignment",
+        "Named participants/evaluators must execute role/device training cases with evidence",
+        "Source/provider ownership, real secret-recovery route, actual full restore and named operational handover must be accepted",
+        "WEB-062 go-live decision remains separate"
+      ]
+    },
+    "WEB-062": {
+      "status": "Local synthetic operational pilot and full D1/R2 restore verified; real pilot/go-live pending",
+      "date": "2026-10-22",
+      "evidence": "docs/WEB062_PILOT_EVIDENCE.json",
+      "runbook": "docs/WEB062_LOCAL_PILOT.md",
+      "url": "http://127.0.0.1:5183",
+      "data_classification": "synthetic",
+      "counts": {
+        "sales": 10,
+        "customers": 20,
+        "invoices": 80,
+        "credits": 4
+      },
+      "full_suite_tests": 135,
+      "browser_scenarios_passed": 1,
+      "human_training_completed": false,
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "stabilization_evidence": "docs/WEB062_STABILIZATION.json",
+      "local_full_restore_tables": 86,
+      "local_restored_attachments": 1,
+      "operational_browser_scenarios_passed": 1,
+      "operational_counts": {
+        "activities": 12,
+        "meaningful": 8,
+        "coverage_percent": 40,
+        "sales_positions": 8
+      },
+      "cloud_restore_verified": false
+    },
+    "WEB-063": {
+      "status": "Implemented local; real-source activation/usage-rights review pending",
+      "date": "2026-10-23",
+      "specification": "docs/specifications/GIS_Admin_Kelurahan_v1.md",
+      "implemented": true,
+      "production_accepted": false,
+      "selected_source": {
+        "name": "Batas wilayah administrasi desa/kelurahan Indonesia",
+        "layer": "ADMINISTRASI_DESAKELURAHAN_AR",
+        "publisher": "Geoportal Kementerian Pertanian",
+        "data_origin": "BIG menurut metadata layer",
+        "reference_release": "Semester 1 Tahun 2025, sesuai metadata yang diperiksa 22 Oktober 2026",
+        "url": "https://geoportal.pertanian.go.id/arcgis/rest/services/Hosted/Batas_Administrasi_Desa/FeatureServer/0",
+        "planned_format": "GeoJSON Polygon/MultiPolygon WGS84",
+        "planned_filename": "batas-desa-kelurahan-indonesia-big-2025-s1.geojson",
+        "selection_status": "National source selected; bounded six-village technical extract acquired and imported as local draft; national file not downloaded",
+        "license_status": "Verify usage terms and attribution before activation",
+        "acquired_at": null,
+        "sha256": null,
+        "national_downloaded": false
+      },
+      "runbook": "docs/WEB063_ADMIN_BOUNDARIES.md",
+      "evidence": "docs/WEB063_EVIDENCE.json",
+      "contract": "docs/specifications/admin-boundaries-api.m4.openapi.json",
+      "source_status": "draft",
+      "source_features": 6,
+      "source_usage_rights_reviewed": false
+    },
+    "WEB-064": {
+      "status": "Implemented local; real-source activation and production acceptance pending",
+      "date": "2026-10-24",
+      "specification": "docs/specifications/GIS_Admin_Kelurahan_v1.md",
+      "implemented": true,
+      "production_accepted": false,
+      "ux_specification": "docs/specifications/GIS_UX_dan_Analitik_v1.md",
+      "runbook": "docs/WEB064_GEOGRAPHY.md",
+      "evidence": "docs/WEB064_EVIDENCE.json",
+      "contract": "docs/specifications/geography-api.m4.openapi.json",
+      "migration": "0036_customer_geography_review.sql",
+      "unit_integration_tests": 149,
+      "browser_tests": 2,
+      "runtime_operations": 245,
+      "cloud_deployed": false,
+      "tests_added": 6,
+      "source_status": "draft",
+      "geography_period_basis": "current effective mapping; period navigation only",
+      "regional_analytics_implemented": false
+    },
+    "WEB-065": {
+      "status": "Implemented local; real-source/provider/business acceptance pending",
+      "date": "2026-10-24",
+      "implemented": true,
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "runbook": "docs/WEB065_DISTRIBUTION.md",
+      "evidence": "docs/WEB065_EVIDENCE.json",
+      "contract": "docs/specifications/distribution-api.m4.openapi.json",
+      "migrations": [
+        "0037_geography_distribution.sql",
+        "0038_distribution_org_clock.sql"
+      ],
+      "full_suite_tests": 156,
+      "browser_tests": 2,
+      "runtime_operations": 249,
+      "real_source_status": "draft",
+      "max_customers_per_commit": 25,
+      "next": "WEB-066"
+    },
+    "WEB-066": {
+      "status": "Implemented local; real-source/provider/business acceptance pending",
+      "date": "2026-10-24",
+      "title": "Analisis kinerja dan coverage per kelurahan",
+      "specification": "docs/specifications/GIS_UX_dan_Analitik_v1.md",
+      "dependencies": [
+        "WEB-064",
+        "WEB-051",
+        "WEB-052"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "implemented": true,
+      "production_accepted": false,
+      "cloud_deployed": false,
+      "runbook": "docs/WEB066_REGIONAL_ANALYTICS.md",
+      "evidence": "docs/WEB066_EVIDENCE.json",
+      "contract": "docs/specifications/regional-analytics-api.m4.openapi.json",
+      "migration": "0039_geography_analytics_revision.sql",
+      "full_suite_tests": 164,
+      "browser_tests": 2,
+      "regression_browser_tests": 4,
+      "runtime_operations": 252,
+      "source_status": "draft",
+      "geography_basis": "current_confirmed_mapping_at_read_cutoff",
+      "definition_version": "nyales-geo-kpi-1"
+    },
+    "WEB-067": {
+      "status": "Implemented and verified local; real-source/provider/human acceptance pending",
+      "date": "2026-10-24",
+      "title": "Peta risiko pelanggan dan keterlambatan repeat order",
+      "specification": "docs/specifications/GIS_UX_dan_Analitik_v1.md",
+      "dependencies": [
+        "WEB-066"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "implemented": true,
+      "production_accepted": false,
+      "specification_status": "nyales-risk-1, explicit versioned policies and immutable scoped snapshots implemented locally",
+      "design": "docs/WEB067_RISK_DESIGN.md",
+      "engine_tests": 9,
+      "evidence": "docs/WEB067_EVIDENCE.json",
+      "migration": "0040_customer_risk_policy_runs.sql",
+      "unit_integration_tests": 183,
+      "browser_scenarios": 3,
+      "api_operations": 10,
+      "definition_version": "nyales-risk-1",
+      "recovery": "96 tables main + 2 nonempty QA private risk snapshots; local only"
+    },
+    "WEB-068": {
+      "status": "In progress - pure comparison engine and scenario/persistence design; runtime API/UI pending",
+      "date": "2026-10-22",
+      "title": "Pemerataan beban sales dan simulasi perubahan territory",
+      "specification": "docs/specifications/GIS_UX_dan_Analitik_v1.md",
+      "dependencies": [
+        "WEB-065",
+        "WEB-066"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "implemented": false,
+      "production_accepted": false,
+      "evidence": "test-results/web068-engine-tests.log",
+      "specification_status": "Explicit service units/capacity/weights, unknown/source semantics and immutable scenario/application design; not GIS-A05 end-to-end",
+      "design": "docs/WEB068_WORKLOAD_DESIGN.md",
+      "engine_tests": 12,
+      "engine_definition": "nyales-workload-1",
+      "progress": "docs/WEB068_PROGRESS.json"
+    },
+    "WEB-069": {
+      "status": "Planned - M4 extension P1",
+      "date": "2026-10-23",
+      "title": "Kontrak, kebijakan dan model data Plan Visit Generator",
+      "specification": "docs/specifications/Plan_Visit_Generator_v1.md",
+      "dependencies": [
+        "WEB-063",
+        "WEB-064",
+        "WEB-065",
+        "WEB-030",
+        "WEB-031",
+        "WEB-039",
+        "WEB-008",
+        "WEB-058"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "android_gate_required": false,
+      "implemented": false,
+      "production_accepted": false
+    },
+    "WEB-070": {
+      "date": "2026-10-25",
+      "status": "In progress - identity, diagnostic delivery queue and planning settings/readiness locally implemented; solver snapshot and OSRM runtime pending",
+      "migrations": [
+        "0042_visit_agent_identity.sql",
+        "0043_visit_agent_queue.sql",
+        "0044_visit_planning_readiness.sql"
+      ],
+      "runbook": "docs/WEB070_PLANNING_READINESS.md",
+      "evidence": "docs/WEB070_PROGRESS.json",
+      "contract": "docs/specifications/visit-planning-readiness.m4.openapi.json",
+      "physical_model": "docs/specifications/ERD_WEB070_Readiness_Implementation.json",
+      "runtime_operations": 310,
+      "new_readiness_operations": 14,
+      "application_tables": 112,
+      "tables_including_d1_metadata": 114,
+      "can_generate": false,
+      "publishable": false,
+      "production_accepted": false,
+      "cloud_deployed": false
+    },
+    "WEB-071": {
+      "status": "Planned - M4 extension P1",
+      "date": "2026-10-23",
+      "title": "Optimasi kunjungan satu sales satu hari dengan OR-Tools",
+      "specification": "docs/specifications/Plan_Visit_Generator_v1.md",
+      "dependencies": [
+        "WEB-070"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "android_gate_required": false,
+      "implemented": false,
+      "production_accepted": false
+    },
+    "WEB-072": {
+      "status": "Planned - M4 extension P1",
+      "date": "2026-10-23",
+      "title": "Optimasi jadwal bulanan dan beberapa sales",
+      "specification": "docs/specifications/Plan_Visit_Generator_v1.md",
+      "dependencies": [
+        "WEB-071"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "android_gate_required": false,
+      "implemented": false,
+      "production_accepted": false
+    },
+    "WEB-073": {
+      "status": "Planned - M4 extension P1",
+      "date": "2026-10-23",
+      "title": "UI generate, review dan publish agenda kunjungan",
+      "specification": "docs/specifications/Plan_Visit_Generator_v1.md",
+      "dependencies": [
+        "WEB-072",
+        "WEB-030",
+        "WEB-064"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "android_gate_required": false,
+      "implemented": false,
+      "production_accepted": false
+    },
+    "WEB-074": {
+      "status": "Planned - M4 extension P1",
+      "date": "2026-10-23",
+      "title": "Uji end-to-end dan operasi generator di komputer pribadi",
+      "specification": "docs/specifications/Plan_Visit_Generator_v1.md",
+      "dependencies": [
+        "WEB-073",
+        "WEB-056",
+        "WEB-057",
+        "WEB-058"
+      ],
+      "pilot_team_gate_required": false,
+      "cloud_staging_dependency": false,
+      "android_gate_required": false,
+      "implemented": false,
+      "production_accepted": false
+    }
+  },
+  "remaining": [
+    "WEB-059",
+    "WEB-060",
+    "WEB-061",
+    "WEB-062",
+    "WEB-063",
+    "WEB-064",
+    "WEB-065",
+    "WEB-066",
+    "WEB-067",
+    "WEB-068",
+    "WEB-069",
+    "WEB-070",
+    "WEB-071",
+    "WEB-072",
+    "WEB-073",
+    "WEB-074"
+  ],
+  "remaining_note": "WEB-063–067 engineering is implemented and verified locally; entries in remaining track real-source/provider/human acceptance. WEB-068 engine/design is in progress, API/UI/persistence still pending. Real role/device UAT, migration/training/handover and cloud go-live remain unaccepted.",
+  "next_preparation": "Named role/device evaluation and support/handover acceptance; Firebase/provider/cloud go-live gates remain open",
+  "current_scope_completed": [
+    "WEB-060 synthetic rehearsal",
+    "WEB-061 materials/SOP/training and handover package",
+    "WEB-062 local synthetic pilot launch and browser verification",
+    "WEB-062 synthetic operational workflows, scoped-role rehearsal and full local D1/R2 restore",
+    "WEB-063 local dataset administration, bounded real-source draft, browser flow and D1/R2 restore",
+    "WEB-064 current geography overlay, full-geometry matching, audited mapping revisions and scoped customer drilldown verified locally",
+    "WEB-065 dated distribution and guarded preview/commit verified locally",
+    "WEB-066 regional performance/coverage, sources and snapshot export verified locally",
+    "WEB-067 explicit versioned risk policies, scoped immutable evidence, UI and restore verified locally"
+  ],
+  "administrative_boundary_decision": {
+    "date": "2026-10-22",
+    "basis": "kelurahan/desa",
+    "specification": "docs/specifications/GIS_Admin_Kelurahan_v1.md",
+    "backlog": [
+      "WEB-063",
+      "WEB-064",
+      "WEB-065"
+    ],
+    "status": "WEB-063/064/065 implemented local; real-source activation pending",
+    "selected_source": {
+      "name": "Batas wilayah administrasi desa/kelurahan Indonesia",
+      "layer": "ADMINISTRASI_DESAKELURAHAN_AR",
+      "publisher": "Geoportal Kementerian Pertanian",
+      "data_origin": "BIG menurut metadata layer",
+      "reference_release": "Semester 1 Tahun 2025, sesuai metadata yang diperiksa 22 Oktober 2026",
+      "url": "https://geoportal.pertanian.go.id/arcgis/rest/services/Hosted/Batas_Administrasi_Desa/FeatureServer/0",
+      "planned_format": "GeoJSON Polygon/MultiPolygon WGS84",
+      "planned_filename": "batas-desa-kelurahan-indonesia-big-2025-s1.geojson",
+      "selection_status": "National source selected; bounded six-village technical extract acquired and imported as local draft; national file not downloaded",
+      "license_status": "Verify usage terms and attribution before activation",
+      "acquired_at": null,
+      "sha256": null,
+      "national_downloaded": false
+    },
+    "technical_extract": {
+      "coverage": {
+        "label": "Technical district extract 31.71.01; not the selected business pilot area",
+        "source_filter": "kdcpum='31.71.01'",
+        "national_complete": false
+      },
+      "source_features": 6,
+      "acquired_at": "2026-10-23T11:58:52Z",
+      "source_sha256": "a66cd1617c32b7baa650128a100cd28207f78ee226f3741bdc781eab64c3a3fa",
+      "manifest_sha256": "d28feedb65f39b3f95f5b1463943ce4ef10c43288d9dd72e3cce62e266a1c096",
+      "source_bytes": 46139,
+      "canonical_chunk_bytes": 46343,
+      "status": "draft",
+      "usage_terms_status": "unverified",
+      "namespace_review_pending": true,
+      "national_complete": false,
+      "portal_item_reference": "https://geoportal.pertanian.go.id/portal/sharing/rest/content/items/c4c0adda710c4193a9940440a517f57d?f=json",
+      "portal_licenseInfo": "",
+      "portal_accessInformation": ""
+    }
+  },
+  "gis_ux_analytics_plan": {
+    "date": "2026-10-22",
+    "specification": "docs/specifications/GIS_UX_dan_Analitik_v1.md",
+    "ui_refinements": [
+      "WEB-064",
+      "WEB-065"
+    ],
+    "new_items": [
+      "WEB-066",
+      "WEB-067",
+      "WEB-068"
+    ],
+    "execution_order": [
+      [
+        "WEB-063"
+      ],
+      [
+        "WEB-064"
+      ],
+      [
+        "WEB-065",
+        "WEB-066"
+      ],
+      [
+        "WEB-067",
+        "WEB-068"
+      ]
+    ],
+    "ordering_note": "WEB-066 dapat dimulai setelah WEB-064/051/052 tanpa menunggu WEB-065; WEB-068 menunggu WEB-065 dan WEB-066; WEB-067/068 dapat paralel jika dependensi terpenuhi.",
+    "staging_and_role_login": "Parallel track; GIS analytics do not add dependencies to WEB-062 or current team pilot",
+    "scope_deferred": [
+      "Penetrasi produk/SKU per wilayah",
+      "Akuisisi/total pasar eksternal"
+    ],
+    "implementation_status": "WEB-064/065/066/067 implemented local; WEB-068 pure comparison engine/design in progress"
+  },
+  "visit_generator_plan": {
+    "date": "2026-10-23",
+    "decision": "OSRM dan Python OR-Tools pada komputer pribadi dahulu; agent mengambil job outbound melalui API NYALES",
+    "specification": "docs/specifications/Plan_Visit_Generator_v1.md",
+    "items": [
+      "WEB-069",
+      "WEB-070",
+      "WEB-071",
+      "WEB-072",
+      "WEB-073",
+      "WEB-074"
+    ],
+    "implementation_status": "Planned",
+    "hosting": "personal_computer",
+    "postgis_required": false,
+    "cloudflare_containers_required": false,
+    "execution_order": [
+      [
+        "WEB-069"
+      ],
+      [
+        "WEB-070"
+      ],
+      [
+        "WEB-071"
+      ],
+      [
+        "WEB-072"
+      ],
+      [
+        "WEB-073"
+      ],
+      [
+        "WEB-074"
+      ]
+    ],
+    "pilot_team_gate_required": false,
+    "android_gate_required": false,
+    "hardware_capacity_verified": false,
+    "cloud_provisioned": false,
+    "uat_supplement": [
+      "PVG-A01",
+      "PVG-A02",
+      "PVG-A03",
+      "PVG-A04",
+      "PVG-A05",
+      "PVG-A06",
+      "PVG-A07",
+      "PVG-A08",
+      "PVG-A09",
+      "PVG-A10"
+    ]
+  },
+  "engineering_next": "Complete missing planning sources (rep start/end, breaks/absence, reception/service history, protected agenda intervals), then authoritative VisitSnapshot builder, OSRM runtime/graph verification and delivery integration",
+  "latest_local_validation": {
+    "date": "2026-10-25",
+    "unit_integration_tests": 293,
+    "planning_tests": 11,
+    "runtime_operations": 310,
+    "linked_operations": 310,
+    "nonpublic_unauthenticated_checks": 308,
+    "main_schema": "0044",
+    "application_tables": 112,
+    "physical_tables_including_d1_metadata": 114,
+    "browser": "2 readiness scenarios passed, exit0",
+    "production_accepted": false,
+    "cloud_deployed": false,
+    "readiness_browser_scenarios": 2,
+    "axe_violations": 0,
+    "viewports": [
+      390,
+      768,
+      1440
+    ],
+    "unchanged_business_tables_per_database": 18,
+    "main_planning_rows": 0
+  }
+}

@@ -1,0 +1,2411 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-070 implemented visit-agent identity API",
+    "version": "0.1.0",
+    "description": "Identity slice only: registration, one-use pairing, signed nonce/heartbeat/status and revoke. Planning job/OSRM/solver/publish unregistered; separate connection-probe queue contract now implements transport diagnostics. 64 KiB machine request cap. Pairing 15 minutes; credential 30 days; actual environment fixed server-side."
+  },
+  "paths": {
+    "/api/visit-generator/agents": {
+      "get": {
+        "operationId": "visit_identity_get__api_visit_generator_agents",
+        "summary": "GET /api/visit-generator/agents",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/registry"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization Management/NSM; issue/edit/revoke require recent login outside local demo."
+      },
+      "post": {
+        "operationId": "visit_identity_post__api_visit_generator_agents",
+        "summary": "POST /api/visit-generator/agents",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/registration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/agent"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/agent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization Management/NSM; issue/edit/revoke require recent login outside local demo."
+      }
+    },
+    "/api/visit-generator/agents/{id}": {
+      "put": {
+        "operationId": "visit_identity_put__api_visit_generator_agents__id_",
+        "summary": "PUT /api/visit-generator/agents/{id}",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted current agent version; heartbeat does not change config version."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/registration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/agent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization Management/NSM; issue/edit/revoke require recent login outside local demo."
+      }
+    },
+    "/api/visit-generator/agents/{id}/pairings": {
+      "post": {
+        "operationId": "visit_identity_post__api_visit_generator_agents__id__pairings",
+        "summary": "POST /api/visit-generator/agents/{id}/pairings",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted current agent version; heartbeat does not change config version."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/decision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/issued"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/issued"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization Management/NSM; issue/edit/revoke require recent login outside local demo."
+      }
+    },
+    "/api/visit-generator/agents/{id}/revoke": {
+      "post": {
+        "operationId": "visit_identity_post__api_visit_generator_agents__id__revoke",
+        "summary": "POST /api/visit-generator/agents/{id}/revoke",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted current agent version; heartbeat does not change config version."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/decision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/agent"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/agent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization Management/NSM; issue/edit/revoke require recent login outside local demo."
+      }
+    },
+    "/api/visit-agent/pair": {
+      "post": {
+        "operationId": "visit_identity_post__api_visit_agent_pair",
+        "summary": "POST /api/visit-agent/pair",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "PairProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Agent-Proof",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "description": "nyales-agent-pair-v1 ES256 signed code hash + exact body/origin/path/time."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/pair"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/paired"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/paired"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Machine-only credential/PoP gate before user session gate. No user/settings/customer/finance grant."
+      }
+    },
+    "/api/visit-agent/nonces": {
+      "post": {
+        "operationId": "visit_identity_post__api_visit_agent_nonces",
+        "summary": "POST /api/visit-agent/nonces",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Agent-Proof",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "description": "nyales-agent-proof-v1 ES256, exact body/origin/path/query/idempotency, credential hash/generation/environment, jti and nonce. /nonces uses purpose nonce_request and nonce=null."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/nonce_request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/nonce"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/nonce"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Machine-only credential/PoP gate before user session gate. No user/settings/customer/finance grant."
+      }
+    },
+    "/api/visit-agent/heartbeat": {
+      "post": {
+        "operationId": "visit_identity_post__api_visit_agent_heartbeat",
+        "summary": "POST /api/visit-agent/heartbeat",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-Agent-Proof",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "description": "nyales-agent-proof-v1 ES256, exact body/origin/path/query/idempotency, credential hash/generation/environment, jti and nonce. /nonces uses purpose nonce_request and nonce=null."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/heartbeat"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/heartbeat_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/heartbeat_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Machine-only credential/PoP gate before user session gate. No user/settings/customer/finance grant."
+      }
+    },
+    "/api/visit-agent/status": {
+      "get": {
+        "operationId": "visit_identity_get__api_visit_agent_status",
+        "summary": "GET /api/visit-agent/status",
+        "x-implementation-state": "implemented-local-identity-slice",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Agent-Proof",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 8192
+            },
+            "description": "nyales-agent-proof-v1 ES256, exact body/origin/path/query/idempotency, credential hash/generation/environment, jti and nonce. /nonces uses purpose nonce_request and nonce=null."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current environment/tenant only. Secret returned once on issue/pair; never in audit/replay/admin list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/status"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; no partial identity mutation. Pairing issuance replay returns 409 without retrieving code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Machine-only credential/PoP gate before user session gate. No user/settings/customer/finance grant."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "registration": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "environment": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "rep_ids": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "environment",
+          "rep_ids",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "decision": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "pair": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "nyales-visit-generator-1"
+          },
+          "pairing_code": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "machine_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "public_key_jwk": {
+            "type": "object",
+            "properties": {
+              "kty": {
+                "type": "string",
+                "const": "EC"
+              },
+              "crv": {
+                "type": "string",
+                "const": "P-256"
+              },
+              "x": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{43}$"
+              },
+              "y": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{43}$"
+              }
+            },
+            "required": [
+              "kty",
+              "crv",
+              "x",
+              "y"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "contract_version",
+          "pairing_code",
+          "machine_name",
+          "public_key_jwk"
+        ],
+        "additionalProperties": false
+      },
+      "nonce": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "nonce": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "server_time": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "nonce",
+              "expires_at",
+              "server_time"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "heartbeat": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "nyales-visit-generator-1"
+          },
+          "agent_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "capabilities": {
+            "type": "object",
+            "properties": {
+              "daily": {
+                "type": "boolean"
+              },
+              "monthly": {
+                "type": "boolean"
+              },
+              "max_reps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "graphs": {
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "graph_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "graph_sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "profile_version": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    }
+                  },
+                  "required": [
+                    "graph_id",
+                    "graph_sha256",
+                    "profile_version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "solver_version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "daily",
+              "monthly",
+              "max_reps",
+              "graphs",
+              "solver_version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "contract_version",
+          "agent_version",
+          "capabilities"
+        ],
+        "additionalProperties": false
+      },
+      "pair_proof": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "v": {
+            "type": "number",
+            "const": 1
+          },
+          "purpose": {
+            "type": "string",
+            "const": "pair"
+          },
+          "method": {
+            "type": "string",
+            "const": "POST"
+          },
+          "origin": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "target": {
+            "type": "string",
+            "const": "/api/visit-agent/pair"
+          },
+          "code_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "body_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "jti": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "iat": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "exp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "v",
+          "purpose",
+          "method",
+          "origin",
+          "target",
+          "code_sha256",
+          "body_sha256",
+          "jti",
+          "iat",
+          "exp"
+        ],
+        "additionalProperties": false
+      },
+      "request_proof": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "v": {
+            "type": "number",
+            "const": 1
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "nonce_request",
+              "request"
+            ]
+          },
+          "organization_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "environment": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "agent_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "credential_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "body_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "idempotency_key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "credential_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "nonce": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{32,128}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "jti": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "iat": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "exp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "v",
+          "purpose",
+          "organization_id",
+          "environment",
+          "agent_id",
+          "credential_id",
+          "generation",
+          "method",
+          "origin",
+          "target",
+          "body_sha256",
+          "idempotency_key",
+          "credential_sha256",
+          "nonce",
+          "jti",
+          "iat",
+          "exp"
+        ],
+        "additionalProperties": false
+      },
+      "registry": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "environment": {
+                "type": "string"
+              },
+              "agents": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "environment": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "pairing",
+                        "active",
+                        "revoked"
+                      ]
+                    },
+                    "rep_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "credential_generation": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "last_seen_at": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "capabilities": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/heartbeat"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "revoked_at": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "environment",
+                    "status",
+                    "rep_ids",
+                    "credential_generation",
+                    "version",
+                    "last_seen_at",
+                    "capabilities",
+                    "created_at",
+                    "revoked_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "phase": {
+                "const": "identity_ready_queue_and_routing_pending"
+              },
+              "pairing_ttl_seconds": {
+                "const": 900
+              },
+              "credential_ttl_days": {
+                "const": 30
+              }
+            },
+            "required": [
+              "environment",
+              "agents",
+              "has_more",
+              "phase",
+              "pairing_ttl_seconds",
+              "credential_ttl_days"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "agent": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "environment": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "pairing",
+                  "active",
+                  "revoked"
+                ]
+              },
+              "rep_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "credential_generation": {
+                "type": "integer"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "last_seen_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "capabilities": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/heartbeat"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "revoked_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "environment",
+              "status",
+              "rep_ids",
+              "credential_generation",
+              "version",
+              "last_seen_at",
+              "capabilities",
+              "created_at",
+              "revoked_at"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "issued": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "status": {
+                "const": "pairing"
+              },
+              "generation": {
+                "type": "integer"
+              },
+              "pairing_id": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "pairing_code": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "status",
+              "generation",
+              "pairing_id",
+              "expires_at",
+              "pairing_code"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "paired": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "contract_version": {
+                "const": "nyales-visit-generator-1"
+              },
+              "organization_id": {
+                "type": "string"
+              },
+              "environment": {
+                "type": "string"
+              },
+              "agent_id": {
+                "type": "string"
+              },
+              "credential_id": {
+                "type": "string"
+              },
+              "generation": {
+                "type": "integer"
+              },
+              "credential_secret": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "server_time": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "contract_version",
+              "organization_id",
+              "environment",
+              "agent_id",
+              "credential_id",
+              "generation",
+              "credential_secret",
+              "expires_at",
+              "server_time"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "status": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "agent_id": {
+                "type": "string"
+              },
+              "environment": {
+                "type": "string"
+              },
+              "generation": {
+                "type": "integer"
+              },
+              "rep_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "phase": {
+                "const": "identity_ready_queue_and_routing_pending"
+              },
+              "server_time": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "agent_id",
+              "environment",
+              "generation",
+              "rep_ids",
+              "phase",
+              "server_time"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "heartbeat_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "agent_id": {
+                "type": "string"
+              },
+              "generation": {
+                "type": "integer"
+              },
+              "last_seen_at": {
+                "type": "string"
+              },
+              "phase": {
+                "const": "identity_ready_queue_and_routing_pending"
+              },
+              "next_heartbeat_seconds": {
+                "const": 60
+              }
+            },
+            "required": [
+              "agent_id",
+              "generation",
+              "last_seen_at",
+              "phase",
+              "next_heartbeat_seconds"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": true
+      },
+      "nonce_request": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "body_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "idempotency_key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "method",
+          "target",
+          "body_sha256",
+          "idempotency_key"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      },
+      "AgentCredential": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Agent <credential-id>.<secret>; never accepted as a user bearer."
+      },
+      "AgentProof": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Agent-Proof"
+      },
+      "PairProof": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Agent-Proof"
+      }
+    }
+  },
+  "x-rules": [
+    "Registry grants require 1–10 active field reps in the same organization. Editing grants requires pairing again and revokes old credentials/codes.",
+    "Code/credential plaintext returned only once. Issuance idempotency retains safe metadata; lost code requires explicit reissue. Pair replay never reissues credential.",
+    "PoP verification precedes nonce/jti atomic consumption and DB generation/revocation recheck. Idempotent heartbeat retry needs a fresh proof.",
+    "Agent status/heartbeat do not prove OSRM/solver installation and cannot generate or publish schedules.",
+    "HTTP loopback allowed only under strict existing local demo guard; deployment requires HTTPS.",
+    "Pair rate 20/minute by trusted proxy client IP digest (local fallback bucket); authenticated machine proof rate 120/minute. Failed stores do not bypass limits."
+  ]
+}

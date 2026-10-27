@@ -1,0 +1,76 @@
+{
+  "classification": "synthetic",
+  "url": "http://127.0.0.1:5183",
+  "verified_at": "2026-10-21T15:07:32.537Z",
+  "health": "local",
+  "login": "local demo device session",
+  "unauthenticated_status": 401,
+  "customers": 20,
+  "sales": 10,
+  "field_sales": 8,
+  "telesales": 2,
+  "invoices": 80,
+  "target_leaf_idr": 80000000,
+  "actual_idr": 36520000,
+  "field_actual_idr": 30840000,
+  "telesales_actual_idr": 5680000,
+  "ui_source_coverage_saved": true,
+  "order_saved_reloaded_cancelled": true,
+  "invoice_values_unchanged": true,
+  "visited_pages": [
+    "overview",
+    "monitoring",
+    "customers",
+    "assignments",
+    "map",
+    "targets",
+    "invoices",
+    "segmentation",
+    "commercial",
+    "work",
+    "telesales",
+    "people"
+  ],
+  "viewport_widths": [
+    390,
+    768,
+    1440
+  ],
+  "browser_errors": [],
+  "human_training_completed": false,
+  "production_accepted": false,
+  "status": "local_synthetic_pilot_running",
+  "pic": "Rizky Aditya",
+  "named_participants": [
+    "Novely",
+    "Didik",
+    "Mursal"
+  ],
+  "additional_synthetic_sales": 7,
+  "source": "pilot/local-20261021-v3/source-data.json",
+  "original_source": "pilot/demo-10-sales/source-data.json",
+  "runbook": "docs/WEB062_LOCAL_PILOT.md",
+  "unit_integration_tests": {
+    "passed": 134,
+    "failed": 0
+  },
+  "typescript": "passed",
+  "browser_scenarios": {
+    "passed": 1,
+    "failed": 0
+  },
+  "target_organization_idr": 80200000,
+  "target_reserve_idr": 200000,
+  "source_coverage_through": "2026-10-21",
+  "cloud_deployed": false,
+  "real_accounts_provisioned": false,
+  "real_data_migrated": false,
+  "go_live_accepted": false,
+  "limitations": [
+    "Single local demo Management login; sales identities and all role/channel/area assignments are synthetic",
+    "Operational synthetic fixture now verified (12 activities, 8 positions); real GPS, telephony and human training unverified",
+    "Overview target needs review because reserve remains unallocated",
+    "Full D1/R2 restore now verified locally; physical devices, Firebase/MFA, Street View, cloud restore, provider capacity and operational acceptance pending"
+  ],
+  "latest_update": "docs/WEB062_STABILIZATION.json"
+}

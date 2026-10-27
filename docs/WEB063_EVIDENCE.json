@@ -1,0 +1,105 @@
+{
+  "format": "nyales-web063-evidence-1",
+  "date": "2026-10-23",
+  "status": "implemented_local_source_review_pending",
+  "runbook": "docs/WEB063_ADMIN_BOUNDARIES.md",
+  "preview_url": "http://127.0.0.1:5183",
+  "ui_path": "Kelola > Pengaturan > Batas wilayah",
+  "migration": "0035_administrative_boundaries.sql",
+  "migration_applied_to": "isolated local synthetic pilot only",
+  "tables_added": 6,
+  "physical_schema": "docs/specifications/ERD_WEB063_Implementation.json",
+  "contract": "docs/specifications/admin-boundaries-api.m4.openapi.json",
+  "runtime_operations": 240,
+  "new_operations": 8,
+  "all_runtime_operations_linked": true,
+  "unit_integration": {
+    "passed": 143,
+    "failed": 0,
+    "log": "test-results/web063-unit.log"
+  },
+  "build": {
+    "passed": true,
+    "log": "test-results/web063-build.log",
+    "known_warning": "Existing large client bundle warning remains"
+  },
+  "browser": {
+    "scenarios": 2,
+    "passed": 2,
+    "synthetic_activation_url": "http://127.0.0.1:5193",
+    "real_source_draft_url": "http://127.0.0.1:5183",
+    "viewport_widths": [
+      390,
+      768,
+      1440
+    ],
+    "axe_violations": 0,
+    "keyboard_escape_focus": true,
+    "results": "test-results/web063-browser/results.json",
+    "synthetic_evidence": "test-results/web063-browser/synthetic-verified.json",
+    "source_evidence": "test-results/web063-browser/source-draft-verified.json"
+  },
+  "source": {
+    "coverage": {
+      "label": "Technical district extract 31.71.01; not the selected business pilot area",
+      "source_filter": "kdcpum='31.71.01'",
+      "national_complete": false
+    },
+    "source_features": 6,
+    "acquired_at": "2026-10-23T11:58:52Z",
+    "source_sha256": "a66cd1617c32b7baa650128a100cd28207f78ee226f3741bdc781eab64c3a3fa",
+    "manifest_sha256": "d28feedb65f39b3f95f5b1463943ce4ef10c43288d9dd72e3cce62e266a1c096",
+    "source_bytes": 46139,
+    "canonical_chunk_bytes": 46343,
+    "status": "draft",
+    "usage_terms_status": "unverified",
+    "namespace_review_pending": true,
+    "national_complete": false,
+    "portal_item_reference": "https://geoportal.pertanian.go.id/portal/sharing/rest/content/items/c4c0adda710c4193a9940440a517f57d?f=json",
+    "portal_licenseInfo": "",
+    "portal_accessInformation": ""
+  },
+  "acquisition": {
+    "source_reference": "https://geoportal.pertanian.go.id/arcgis/rest/services/Hosted/Batas_Administrasi_Desa/FeatureServer/0",
+    "count_before": 6,
+    "received_count": 6,
+    "normalized_count": 6,
+    "unresolved": [],
+    "page_count": 3,
+    "ids_after_match": true,
+    "path": "test-results\\boundaries-20261023-gambir-v2"
+  },
+  "pre_migration_backup": {
+    "path": "test-results/web063-before.sqlite",
+    "sha256": "d90432a09ff93c3589904f8a3625d4dcff2cc7bdace35ecf8e1b1e141014eaea"
+  },
+  "commercial_reconciliation": {
+    "tables": 23,
+    "all_rows_unchanged": true,
+    "evidence": "test-results/web063-commercial-reconciliation.json"
+  },
+  "restore": {
+    "table_count": 92,
+    "attachments": 1,
+    "boundary_chunks": 1,
+    "all_bytes_matched": true,
+    "restored_d1": {
+      "invoice_count": 80,
+      "activity_count": 12,
+      "ready_attachments": 1,
+      "october_net": 36520000
+    },
+    "duration_ms": 21142,
+    "evidence": "test-results/web063-full-restore/SUMMARY.json"
+  },
+  "pending": [
+    "Real-source namespace/type mapping, release metadata and usage-rights review before activation",
+    "Operational overlay and point-in-polygon matching WEB-064",
+    "Area and sales assignment WEB-065",
+    "Maximum-size Worker Free/CPU/provider capacity validation",
+    "Firebase real-role/device UAT, cloud deployment/restore and named business acceptance"
+  ],
+  "cloud_deployed": false,
+  "source_activated": false,
+  "production_accepted": false
+}

@@ -1,0 +1,787 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES implemented import and duplicate review API",
+    "version": "0.14.0",
+    "description": "Management/NSM only. CSV UTF-8, comma/semicolon/tab, maximum 512 KiB and 200 records. Sources kept under retention hold pending organization policy; no automatic deletion. Commit requires If-Match for validation batch. Merge requires source If-Match plus reviewed surviving_version and explicit same-location confirmation. Stale snapshots roll back the complete valid-row transaction. Merge never rewrites invoice/assignment facts or combines contact consent. Reads through old IDs resolve to the permitted canonical outlet."
+  },
+  "security": [
+    {
+      "FirebaseBearer": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/import-files": {
+      "post": {
+        "summary": "Retain original CSV bytes in R2, checksum-deduplicated within organization",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/import-files/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ],
+      "get": {
+        "summary": "Download original bytes; SHA-256 verified before response",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/master-imports": {
+      "get": {
+        "summary": "Latest 100 batches, including explicit validated/committed/partial states",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      },
+      "post": {
+        "summary": "Dry-run or atomic commit of all valid staged rows",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required when mode=commit; use the current validation batch version quoted as an ETag."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "customer",
+                      "product"
+                    ]
+                  },
+                  "attachment_id": {
+                    "type": "string",
+                    "maxLength": 128
+                  },
+                  "mapping": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "mode": {
+                    "enum": [
+                      "dry_run",
+                      "commit"
+                    ]
+                  },
+                  "validation_batch_id": {
+                    "type": "string"
+                  },
+                  "allow_partial": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "kind",
+                  "attachment_id",
+                  "mapping",
+                  "mode"
+                ],
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "mode": {
+                          "const": "commit"
+                        }
+                      },
+                      "required": [
+                        "mode"
+                      ]
+                    },
+                    "then": {
+                      "required": [
+                        "validation_batch_id"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/master-imports/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ],
+      "get": {
+        "summary": "Batch and up to 200 row results; response includes version",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/master-imports/{id}/errors": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ],
+      "get": {
+        "summary": "Download formula-neutralized CSV row errors",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/master-imports/template/{kind}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "kind",
+          "required": true,
+          "schema": {
+            "enum": [
+              "customer",
+              "product"
+            ]
+          }
+        }
+      ],
+      "get": {
+        "summary": "Download UTF-8 CSV header template",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "summary": "Read organization product catalog (no quantity/price conversion)",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/customer-duplicates": {
+      "get": {
+        "summary": "Up to 200 candidate pairs and has_more; shared phone alone never merges records",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/customer-aliases": {
+      "get": {
+        "summary": "Latest 200 source ID aliases pointing to canonical outlets",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        }
+      }
+    },
+    "/api/customers/{id}/merge-preview": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ],
+      "get": {
+        "summary": "Current source/target versions, reference counts, addresses and eligibility blocks",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "surviving_customer_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/customers/{id}/merge": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ],
+      "post": {
+        "summary": "Confirmed merge; same area, no conflicting current/future owners, both versions checked",
+        "responses": {
+          "200": {
+            "description": "Success / idempotent replay"
+          },
+          "201": {
+            "description": "Source or validation created"
+          },
+          "400": {
+            "description": "Idempotency header required"
+          },
+          "401": {
+            "description": "Identity or device session invalid"
+          },
+          "403": {
+            "description": "Management/NSM only"
+          },
+          "404": {
+            "description": "Resource absent or outside organization"
+          },
+          "409": {
+            "description": "Snapshot, source checksum, identity or business conflict; no partial transaction applied"
+          },
+          "412": {
+            "description": "Version stale"
+          },
+          "413": {
+            "description": "Request over upload bound"
+          },
+          "422": {
+            "description": "CSV, mapping or review invalid"
+          },
+          "428": {
+            "description": "If-Match required for commit/merge"
+          },
+          "503": {
+            "description": "D1 or R2 unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"1\""
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "surviving_customer_id": {
+                    "type": "string",
+                    "maxLength": 128
+                  },
+                  "surviving_version": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  },
+                  "confirm_same_location": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "surviving_customer_id",
+                  "surviving_version",
+                  "reason",
+                  "confirm_same_location"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "FirebaseBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  }
+}

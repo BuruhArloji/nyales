@@ -1,0 +1,196 @@
+{
+  "format": "nyales-pilot-reconciliation-1",
+  "pilot_id": "nyales-pilot-01",
+  "data_classification": "real_pilot",
+  "status": "blocked",
+  "production_accepted": false,
+  "live_mutations": false,
+  "pic": {
+    "name": "Rizky Aditya",
+    "user_id": null
+  },
+  "capacity": {
+    "max_sales": 10,
+    "named_sales": 3,
+    "open_slots": 7
+  },
+  "scope": {
+    "organization_id": null,
+    "area_ids": [],
+    "period_start": null,
+    "period_end": null,
+    "history_start": null,
+    "cutoff": null
+  },
+  "comparisons": [],
+  "totals": {
+    "source": null,
+    "nyales": null
+  },
+  "issues": [
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "pic.user_id",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.0.user_id",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.0.role",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.0.area_ids",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.1.user_id",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.1.role",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.1.area_ids",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.2.user_id",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.2.role",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "participants.2.area_ids",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "scope.organization_id",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "scope.area_ids",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "scope.period_start",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "scope.period_end",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "scope.history_start",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "scope.cutoff",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "source_review.source_system",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "source_review.reviewer",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "source_review.reviewed_at",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "source_review.net_definition",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "source_review.id_mapping_reference",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "inputs.source_snapshot",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "inputs.nyales_snapshot",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SETUP_REQUIRED",
+      "dataset": "manifest",
+      "key": "inputs.source_files",
+      "detail": "Lengkapi dan tinjau sebelum pilot data nyata."
+    },
+    {
+      "code": "SNAPSHOT_REQUIRED",
+      "dataset": "source",
+      "key": "file",
+      "detail": "Snapshot lengkap belum tersedia."
+    },
+    {
+      "code": "SNAPSHOT_REQUIRED",
+      "dataset": "nyales",
+      "key": "file",
+      "detail": "Snapshot lengkap belum tersedia."
+    },
+    {
+      "code": "ID_MAPPING_REQUIRED",
+      "dataset": "mapping",
+      "key": "file",
+      "detail": "Lengkapi ledger ID canonical, alias eksplisit dan alasan."
+    }
+  ],
+  "acceptance_note": "Perbandingan snapshot terpetakan; bukan pengganti dry-run API, actual restore, UAT role/perangkat atau sign-off Finance/PIC.",
+  "generated_at": "2026-10-20T16:00:59.368Z"
+}

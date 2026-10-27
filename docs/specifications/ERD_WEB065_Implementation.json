@@ -1,0 +1,429 @@
+{
+  "date": "2026-10-24",
+  "migrations": [
+    "0037_geography_distribution.sql",
+    "0038_distribution_org_clock.sql"
+  ],
+  "tables": {
+    "geo_distribution_epoch": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "epoch",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_geo_distribution_epoch_1",
+          "sql": null
+        }
+      ],
+      "triggers": []
+    },
+    "geo_distribution_run": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "dataset_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "area_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "effective_from_date",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "preview_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "basis_epoch",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "input_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "result_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "created_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "area",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "area",
+          "from": "area_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "admin_boundary_dataset",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "admin_boundary_dataset",
+          "from": "dataset_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_geo_distribution_run_1",
+          "sql": null
+        },
+        {
+          "name": "sqlite_autoindex_geo_distribution_run_2",
+          "sql": null
+        },
+        {
+          "name": "geo_distribution_history",
+          "sql": "CREATE INDEX geo_distribution_history ON geo_distribution_run(organization_id,created_at,id)"
+        }
+      ],
+      "triggers": [
+        {
+          "name": "geo_distribution_run_immutable",
+          "sql": "CREATE TRIGGER geo_distribution_run_immutable BEFORE UPDATE ON geo_distribution_run BEGIN SELECT RAISE(ABORT,'DISTRIBUTION_HISTORY_IMMUTABLE'); END"
+        },
+        {
+          "name": "geo_distribution_run_no_delete",
+          "sql": "CREATE TRIGGER geo_distribution_run_no_delete BEFORE DELETE ON geo_distribution_run BEGIN SELECT RAISE(ABORT,'DISTRIBUTION_HISTORY_IMMUTABLE'); END"
+        }
+      ]
+    },
+    "area_admin_membership": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "area_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "admin_unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "boundary_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "effective_from_date",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "effective_to_date",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "admin_boundary",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "admin_boundary",
+          "from": "boundary_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "admin_unit",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "admin_unit",
+          "from": "admin_unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "area",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "area",
+          "from": "area_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_area_admin_membership_1",
+          "sql": null
+        },
+        {
+          "name": "sqlite_autoindex_area_admin_membership_2",
+          "sql": null
+        },
+        {
+          "name": "area_admin_period",
+          "sql": "CREATE INDEX area_admin_period ON area_admin_membership(organization_id,admin_unit_id,effective_from_date,effective_to_date)"
+        }
+      ],
+      "triggers": [
+        {
+          "name": "area_admin_insert_guard",
+          "sql": "CREATE TRIGGER area_admin_insert_guard BEFORE INSERT ON area_admin_membership BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM admin_boundary b WHERE b.organization_id=NEW.organization_id AND b.id=NEW.boundary_id AND b.admin_unit_id=NEW.admin_unit_id) OR EXISTS(SELECT 1 FROM area_admin_membership a WHERE a.organization_id=NEW.organization_id AND a.admin_unit_id=NEW.admin_unit_id AND a.effective_from_date<COALESCE(NEW.effective_to_date,'9999-12-31') AND NEW.effective_from_date<COALESCE(a.effective_to_date,'9999-12-31')) THEN RAISE(ABORT,'ADMIN_AREA_OVERLAP_OR_BOUNDARY') END;\nEND"
+        },
+        {
+          "name": "area_admin_update_guard",
+          "sql": "CREATE TRIGGER area_admin_update_guard BEFORE UPDATE ON area_admin_membership BEGIN\n SELECT CASE WHEN NEW.organization_id IS NOT OLD.organization_id OR NEW.admin_unit_id IS NOT OLD.admin_unit_id OR NEW.area_id IS NOT OLD.area_id OR NEW.boundary_id IS NOT OLD.boundary_id OR NEW.effective_from_date IS NOT OLD.effective_from_date OR (OLD.effective_to_date IS NOT NULL AND (NEW.effective_to_date IS NULL OR NEW.effective_to_date>OLD.effective_to_date)) OR EXISTS(SELECT 1 FROM area_admin_membership a WHERE a.id<>OLD.id AND a.organization_id=NEW.organization_id AND a.admin_unit_id=NEW.admin_unit_id AND a.effective_from_date<COALESCE(NEW.effective_to_date,'9999-12-31') AND NEW.effective_from_date<COALESCE(a.effective_to_date,'9999-12-31')) THEN RAISE(ABORT,'ADMIN_AREA_HISTORY') END;\nEND"
+        },
+        {
+          "name": "area_admin_no_delete",
+          "sql": "CREATE TRIGGER area_admin_no_delete BEFORE DELETE ON area_admin_membership BEGIN SELECT RAISE(ABORT,'ADMIN_AREA_HISTORY_IMMUTABLE'); END"
+        },
+        {
+          "name": "area_admin_reason_immutable",
+          "sql": "CREATE TRIGGER area_admin_reason_immutable BEFORE UPDATE ON area_admin_membership WHEN NEW.id IS NOT OLD.id OR NEW.reason IS NOT OLD.reason BEGIN SELECT RAISE(ABORT,'ADMIN_AREA_HISTORY_IMMUTABLE'); END"
+        },
+        {
+          "name": "area_admin_area_active",
+          "sql": "CREATE TRIGGER area_admin_area_active BEFORE INSERT ON area_admin_membership WHEN NOT EXISTS(SELECT 1 FROM area WHERE organization_id=NEW.organization_id AND id=NEW.area_id AND status='active') BEGIN SELECT RAISE(ABORT,'ADMIN_AREA_INACTIVE'); END"
+        },
+        {
+          "name": "geo_epoch_area_admin_membership_insert",
+          "sql": "CREATE TRIGGER geo_epoch_area_admin_membership_insert AFTER INSERT ON area_admin_membership BEGIN INSERT INTO geo_distribution_epoch(organization_id,epoch) VALUES(NEW.organization_id,1) ON CONFLICT(organization_id) DO UPDATE SET epoch=epoch+1; END"
+        },
+        {
+          "name": "geo_epoch_area_admin_membership_update",
+          "sql": "CREATE TRIGGER geo_epoch_area_admin_membership_update AFTER UPDATE ON area_admin_membership BEGIN INSERT INTO geo_distribution_epoch(organization_id,epoch) VALUES(NEW.organization_id,1) ON CONFLICT(organization_id) DO UPDATE SET epoch=epoch+1; END"
+        },
+        {
+          "name": "geo_epoch_area_admin_membership_delete",
+          "sql": "CREATE TRIGGER geo_epoch_area_admin_membership_delete AFTER DELETE ON area_admin_membership BEGIN INSERT INTO geo_distribution_epoch(organization_id,epoch) VALUES(OLD.organization_id,1) ON CONFLICT(organization_id) DO UPDATE SET epoch=epoch+1; END"
+        }
+      ]
+    }
+  },
+  "revision_input_triggers": [
+    {
+      "name": "geo_distribution_org_clock",
+      "tbl_name": "organization",
+      "sql": "CREATE TRIGGER geo_distribution_org_clock AFTER UPDATE ON organization BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.id; END"
+    }
+  ]
+}

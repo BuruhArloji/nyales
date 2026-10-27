@@ -1,0 +1,874 @@
+{
+  "date": "2026-10-23",
+  "migration": "0035_administrative_boundaries.sql",
+  "tables": {
+    "admin_boundary_dataset": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 1
+        },
+        {
+          "name": "organization_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "provider",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "code_namespace",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "release_version",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "released_at",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "acquired_at",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "source_reference",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "source_checksum",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "metadata_json",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "coverage_json",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "manifest_sha256",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "expected_features",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "expected_chunks",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "license_reference",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "license_note",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "attribution",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "reviewed_by",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "reviewed_at",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "status",
+          "type": "TEXT",
+          "not_null": true,
+          "default": "'draft'",
+          "pk_order": 0
+        },
+        {
+          "name": "version",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": "1",
+          "pk_order": 0
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "reviewed_by",
+          "to": "id"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "app_user",
+          "from": "created_by",
+          "to": "id"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "admin_dataset_list",
+          "unique": false
+        },
+        {
+          "name": "admin_dataset_one_active",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_boundary_dataset_3",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_boundary_dataset_2",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_boundary_dataset_1",
+          "unique": true
+        }
+      ]
+    },
+    "admin_boundary_chunk": {
+      "columns": [
+        {
+          "name": "organization_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 1
+        },
+        {
+          "name": "dataset_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 2
+        },
+        {
+          "name": "chunk_index",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 3
+        },
+        {
+          "name": "checksum",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "storage_key",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "feature_count",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "byte_count",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "admin_boundary_dataset",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "admin_boundary_dataset",
+          "from": "dataset_id",
+          "to": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_admin_boundary_chunk_1",
+          "unique": true
+        }
+      ]
+    },
+    "admin_unit": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 1
+        },
+        {
+          "name": "organization_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "parent_unit_id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "code_namespace",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "admin_code",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "level",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "village_type",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "status",
+          "type": "TEXT",
+          "not_null": true,
+          "default": "'active'",
+          "pk_order": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "admin_unit",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "admin_unit",
+          "from": "parent_unit_id",
+          "to": "id"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "admin_unit_parent",
+          "unique": false
+        },
+        {
+          "name": "sqlite_autoindex_admin_unit_3",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_unit_2",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_unit_1",
+          "unique": true
+        }
+      ]
+    },
+    "admin_boundary": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 1
+        },
+        {
+          "name": "organization_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "dataset_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "admin_unit_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "source_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "name_snapshot",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "parent_code_snapshot",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "hierarchy_json",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "geometry_object_key",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "geometry_feature_index",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "geometry_type",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "geometry_checksum",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "min_longitude_e7",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "min_latitude_e7",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "max_longitude_e7",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "max_latitude_e7",
+          "type": "INTEGER",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "admin_unit",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "admin_unit",
+          "from": "admin_unit_id",
+          "to": "id"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "admin_boundary_dataset",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "admin_boundary_dataset",
+          "from": "dataset_id",
+          "to": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "admin_boundary_bbox",
+          "unique": false
+        },
+        {
+          "name": "sqlite_autoindex_admin_boundary_4",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_boundary_3",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_boundary_2",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_admin_boundary_1",
+          "unique": true
+        }
+      ]
+    },
+    "area_admin_membership": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 1
+        },
+        {
+          "name": "organization_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "area_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "admin_unit_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "boundary_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "effective_from_date",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "effective_to_date",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "reason",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "admin_boundary",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "admin_boundary",
+          "from": "boundary_id",
+          "to": "id"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "admin_unit",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "admin_unit",
+          "from": "admin_unit_id",
+          "to": "id"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "area",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "area",
+          "from": "area_id",
+          "to": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "area_admin_period",
+          "unique": false
+        },
+        {
+          "name": "sqlite_autoindex_area_admin_membership_2",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_area_admin_membership_1",
+          "unique": true
+        }
+      ]
+    },
+    "customer_admin_location": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 1
+        },
+        {
+          "name": "organization_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "outlet_id",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "admin_unit_id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "boundary_id",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "method",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "status",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "evidence_json",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "effective_from_date",
+          "type": "TEXT",
+          "not_null": true,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "effective_to_date",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "reviewed_by",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "reviewed_at",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        },
+        {
+          "name": "reason",
+          "type": "TEXT",
+          "not_null": false,
+          "default": null,
+          "pk_order": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "reviewed_by",
+          "to": "id"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "admin_boundary",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "admin_boundary",
+          "from": "boundary_id",
+          "to": "id"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "admin_unit",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "admin_unit",
+          "from": "admin_unit_id",
+          "to": "id"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "customer_outlet",
+          "from": "organization_id",
+          "to": "organization_id"
+        },
+        {
+          "id": 3,
+          "seq": 1,
+          "table": "customer_outlet",
+          "from": "outlet_id",
+          "to": "id"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "customer_admin_period",
+          "unique": false
+        },
+        {
+          "name": "sqlite_autoindex_customer_admin_location_2",
+          "unique": true
+        },
+        {
+          "name": "sqlite_autoindex_customer_admin_location_1",
+          "unique": true
+        }
+      ]
+    }
+  },
+  "production_accepted": false
+}

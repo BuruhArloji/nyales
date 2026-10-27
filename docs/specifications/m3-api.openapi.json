@@ -1,0 +1,4013 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES M3 implemented local API",
+    "version": "0.3.0",
+    "description": "Implementation slice /api. Full /api/v1 product contract remains design. Local acceptance only; no cloud deployment. JSON request shapes generated from Zod runtime schemas; cross-field/permission/calendar/amount/state constraints enforced by server and regression tests. Responses intentionally use variable data envelope, not a fully typed SDK response contract. Read scope applies organization/area/hierarchy/channel/assignment; settings Management/NSM; order and target approvals independent. Monetary minor fields are whole IDR rupiah."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5180"
+    },
+    {
+      "url": "http://127.0.0.1:5181"
+    }
+  ],
+  "security": [
+    {
+      "FirebaseBearer": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/incentive-plans": {
+      "get": {
+        "operationId": "m3_get__api_incentive_plans",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-plans",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      },
+      "post": {
+        "operationId": "m3_post__api_incentive_plans",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-plans",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_plan"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-plan-versions/{id}": {
+      "get": {
+        "operationId": "m3_get__api_incentive_plan_versions_id",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-plan-versions/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      },
+      "put": {
+        "operationId": "m3_put__api_incentive_plan_versions_id",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "PUT /api/incentive-plan-versions/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_INCENTIVE_RULES"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-enrollments": {
+      "get": {
+        "operationId": "m3_get__api_incentive_enrollments",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-enrollments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      },
+      "post": {
+        "operationId": "m3_post__api_incentive_enrollments",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-enrollments",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_ENROLLMENT"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-simulations": {
+      "post": {
+        "operationId": "m3_post__api_incentive_simulations",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-simulations",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required with save_preview=true; current plan-version ETag."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_SIMULATION"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-plan-versions/{id}/submit": {
+      "post": {
+        "operationId": "m3_post__api_incentive_plan_versions_id_submit",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-plan-versions/{id}/submit",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_REASON_REQUIRED"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-plan-versions/{id}/approve": {
+      "post": {
+        "operationId": "m3_post__api_incentive_plan_versions_id_approve",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-plan-versions/{id}/approve",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_REASON_REQUIRED"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-plan-versions/{id}/revise": {
+      "post": {
+        "operationId": "m3_post__api_incentive_plan_versions_id_revise",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-plan-versions/{id}/revise",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_REASON_REQUIRED"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-enrollments/{id}/estimate": {
+      "get": {
+        "operationId": "m3_get__api_incentive_enrollments_id_estimate",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-enrollments/{id}/estimate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      }
+    },
+    "/api/incentive-calculations": {
+      "post": {
+        "operationId": "m3_post__api_incentive_calculations",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-calculations",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_CALCULATION"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-statements": {
+      "get": {
+        "operationId": "m3_get__api_incentive_statements",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-statements",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      }
+    },
+    "/api/incentive-statements/{id}": {
+      "get": {
+        "operationId": "m3_get__api_incentive_statements_id",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-statements/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      }
+    },
+    "/api/incentive-statements/{id}/sources": {
+      "get": {
+        "operationId": "m3_get__api_incentive_statements_id_sources",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-statements/{id}/sources",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      }
+    },
+    "/api/incentive-statements/{id}/submit": {
+      "post": {
+        "operationId": "m3_post__api_incentive_statements_id_submit",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-statements/{id}/submit",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_REASON_REQUIRED_1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-statements/{id}/finalize": {
+      "post": {
+        "operationId": "m3_post__api_incentive_statements_id_finalize",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-statements/{id}/finalize",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_REASON_REQUIRED_1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-statements/{id}/revise": {
+      "post": {
+        "operationId": "m3_post__api_incentive_statements_id_revise",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-statements/{id}/revise",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_REASON_REQUIRED_1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-statements/{id}/recalculate": {
+      "post": {
+        "operationId": "m3_post__api_incentive_statements_id_recalculate",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-statements/{id}/recalculate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_REASON_REQUIRED_1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-statements/{id}/disputes": {
+      "post": {
+        "operationId": "m3_post__api_incentive_statements_id_disputes",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-statements/{id}/disputes",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_DISPUTE"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/disputes/{id}": {
+      "get": {
+        "operationId": "m3_get__api_disputes_id",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/disputes/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      }
+    },
+    "/api/disputes/{id}/resolve": {
+      "post": {
+        "operationId": "m3_post__api_disputes_id_resolve",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/disputes/{id}/resolve",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_RESOLUTION"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-exports": {
+      "post": {
+        "operationId": "m3_post__api_incentive_exports",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-exports",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_EXPORT"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incentive-exports/{id}": {
+      "get": {
+        "operationId": "m3_get__api_incentive_exports_id",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "GET /api/incentive-exports/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts"
+      }
+    },
+    "/api/incentive-statements/{id}/payment-confirmations": {
+      "post": {
+        "operationId": "m3_post__api_incentive_statements_id_payment_confirmations",
+        "tags": [
+          "incentives"
+        ],
+        "summary": "POST /api/incentive-statements/{id}/payment-confirmations",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/incentives.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/incentives_INVALID_PAYMENT_CONFIRMATION"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/summary": {
+      "get": {
+        "operationId": "m3_get__api_dashboard_summary",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/dashboard/summary",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "area_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "rep_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "team_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "description": "Scope/filters unchanged. SQL aggregates all eligible invoices and activities. sources are bounded compatibility previews (up to 50 each); source_pages declares total/has_more. KPI totals never derive from previews. workforce.observed_actual_minor is aggregated per rep and channel. Detailed lists use /api/dashboard/sources. Target and workforce groups remain limited to 2000; not a production capacity acceptance."
+      }
+    },
+    "/api/coaching": {
+      "get": {
+        "operationId": "m3_get__api_coaching",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/coaching",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      },
+      "post": {
+        "operationId": "m3_post__api_coaching",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "POST /api/coaching",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_coach"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/coaching/{id}": {
+      "get": {
+        "operationId": "m3_get__api_coaching_id",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/coaching/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      },
+      "put": {
+        "operationId": "m3_put__api_coaching_id",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "PUT /api/coaching/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_INVALID_COACHING_REVIEW"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exceptions/{id}": {
+      "get": {
+        "operationId": "m3_get__api_exceptions_id",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/exceptions/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      },
+      "put": {
+        "operationId": "m3_put__api_exceptions_id",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "PUT /api/exceptions/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\"",
+            "description": "Current resource version; stale version fails 412. Target items/allocations use target-version version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_INVALID_EXCEPTION_CHANGE"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exceptions": {
+      "post": {
+        "operationId": "m3_post__api_exceptions",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "POST /api/exceptions",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_INVALID_EXCEPTION"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exceptions/{id}/resolve": {
+      "post": {
+        "operationId": "m3_post__api_exceptions_id_resolve",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "POST /api/exceptions/{id}/resolve",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_REASON_REQUIRED"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notification-policy": {
+      "get": {
+        "operationId": "m3_get__api_notification_policy",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/notification-policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      },
+      "post": {
+        "operationId": "m3_post__api_notification_policy",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "POST /api/notification-policy",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_policy"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "operationId": "m3_get__api_notifications",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/notifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      }
+    },
+    "/api/notifications/{id}": {
+      "get": {
+        "operationId": "m3_get__api_notifications_id",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/notifications/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      }
+    },
+    "/api/notifications/{id}/read": {
+      "post": {
+        "operationId": "m3_post__api_notifications_id_read",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "POST /api/notifications/{id}/read",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_INVALID_BODY"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/audit-events": {
+      "get": {
+        "operationId": "m3_get__api_audit_events",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/audit-events",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      }
+    },
+    "/api/report-exports": {
+      "post": {
+        "operationId": "m3_post__api_report_exports",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "POST /api/report-exports",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stable key for same payload retry; conflicting payload = 409."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Resource created"
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/monitoring_INVALID_REPORT_EXPORT"
+              }
+            }
+          }
+        },
+        "description": "Management/NSM private report. Fetches the complete selected dataset independently of summary previews. Rejects >10000 rows or >5 MiB UTF-8 before storing the R2 object or report record; never silently truncates. Targets/workforce remain subject to their 2000-group guards. Existing idempotency/checksum/expiry and private download rules remain."
+      }
+    },
+    "/api/report-exports/{id}/download": {
+      "get": {
+        "operationId": "m3_get__api_report_exports_id_download",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "GET /api/report-exports/{id}/download",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated private attachment; Content-Disposition attachment; no-store; nosniff",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/device session required"
+          },
+          "403": {
+            "description": "Role/capability/approval/owner denied"
+          },
+          "404": {
+            "description": "Missing or outside current scope"
+          },
+          "409": {
+            "description": "State, overlap, lease, idempotency or reference changed"
+          },
+          "412": {
+            "description": "Stale version"
+          },
+          "422": {
+            "description": "Payload or business rule invalid"
+          }
+        },
+        "x-source": "src/server/monitoring.ts"
+      }
+    },
+    "/api/dashboard/sources": {
+      "get": {
+        "operationId": "m4_get_monitoring_sources",
+        "tags": [
+          "monitoring"
+        ],
+        "summary": "Keyset-paginated records behind Monitoring metrics",
+        "description": "Same organization/role/area/rep/team/branch/period filters as summary. covered applies only to customers, meaningful only to activities, source_channel only to activities or targets. Cursor bound to current identity, scope, cutoff, report filters and source selection; changing context requires restarting at page 1. Every request recomputes authorization. live_keyset is not a frozen export or snapshot. No-store. Unknown query keys and invalid filter combinations return 422.",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "area_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "rep_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "team_id",
+            "in": "query",
+            "schema": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "customers",
+                "invoices",
+                "activities",
+                "targets",
+                "workforce"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          },
+          {
+            "name": "covered",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          },
+          {
+            "name": "meaningful",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          },
+          {
+            "name": "source_channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One bounded page of current authorized source records",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "rows",
+                        "kind",
+                        "cutoff",
+                        "pagination"
+                      ],
+                      "properties": {
+                        "rows": {
+                          "type": "array",
+                          "maxItems": 100,
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "customers",
+                            "invoices",
+                            "activities",
+                            "targets",
+                            "workforce"
+                          ]
+                        },
+                        "cutoff": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "required": [
+                            "limit",
+                            "has_more",
+                            "next_cursor",
+                            "consistency"
+                          ],
+                          "properties": {
+                            "limit": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 100
+                            },
+                            "has_more": {
+                              "type": "boolean"
+                            },
+                            "next_cursor": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "consistency": {
+                              "const": "live_keyset"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication/session required"
+          },
+          "403": {
+            "description": "Scope denied"
+          },
+          "422": {
+            "description": "INVALID_REPORT_SOURCE_QUERY / INVALID_REPORT_CURSOR / FUTURE_PERIOD / AMOUNT_OVERFLOW / bounded target or workforce scope requires narrowing"
+          },
+          "503": {
+            "description": "Scoped storage unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "FirebaseBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "Envelope": {
+        "type": "object",
+        "properties": {
+          "data": {},
+          "meta": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "Empty": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "incentives_plan": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "role_code": {
+            "type": "string",
+            "enum": [
+              "SALES_REP",
+              "TELESALES",
+              "SUPERVISOR",
+              "AREA_MANAGER"
+            ]
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "target_version_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rules": {
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "string",
+                "enum": [
+                  "threshold_progressive",
+                  "flat",
+                  "whole_basis",
+                  "progressive",
+                  "milestone"
+                ]
+              },
+              "threshold_bps": {
+                "default": 8000,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "bonus_minor": {
+                "default": 0,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000000
+              },
+              "rate_bps": {
+                "default": 100,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "tiers": {
+                "maxItems": 30,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "from_bps": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1000000
+                    },
+                    "to_bps": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "rate_bps": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1000000
+                    },
+                    "bonus_minor": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1000000000000000
+                    }
+                  },
+                  "required": [
+                    "from_bps",
+                    "to_bps"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "milestone_mode": {
+                "default": "highest",
+                "type": "string",
+                "enum": [
+                  "highest",
+                  "cumulative"
+                ]
+              },
+              "cap_minor": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "basis": {
+                "default": "invoice_net",
+                "type": "string",
+                "const": "invoice_net"
+              },
+              "attribution": {
+                "default": "primary_100",
+                "type": "string",
+                "const": "primary_100"
+              },
+              "stacking": {
+                "default": "one_primary",
+                "type": "string",
+                "const": "one_primary"
+              },
+              "rounding": {
+                "default": "half_up_rupiah",
+                "type": "string",
+                "const": "half_up_rupiah"
+              },
+              "require_no_exceptions": {
+                "default": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "model",
+              "tiers"
+            ],
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "name",
+          "role_code",
+          "channel",
+          "target_version_id",
+          "rules",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_rules": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": [
+              "threshold_progressive",
+              "flat",
+              "whole_basis",
+              "progressive",
+              "milestone"
+            ]
+          },
+          "threshold_bps": {
+            "default": 8000,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "bonus_minor": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000000
+          },
+          "rate_bps": {
+            "default": 100,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "tiers": {
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "from_bps": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000
+                },
+                "to_bps": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1000000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "rate_bps": {
+                  "default": 0,
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000
+                },
+                "bonus_minor": {
+                  "default": 0,
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000000000
+                }
+              },
+              "required": [
+                "from_bps",
+                "to_bps"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "milestone_mode": {
+            "default": "highest",
+            "type": "string",
+            "enum": [
+              "highest",
+              "cumulative"
+            ]
+          },
+          "cap_minor": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "basis": {
+            "default": "invoice_net",
+            "type": "string",
+            "const": "invoice_net"
+          },
+          "attribution": {
+            "default": "primary_100",
+            "type": "string",
+            "const": "primary_100"
+          },
+          "stacking": {
+            "default": "one_primary",
+            "type": "string",
+            "const": "one_primary"
+          },
+          "rounding": {
+            "default": "half_up_rupiah",
+            "type": "string",
+            "const": "half_up_rupiah"
+          },
+          "require_no_exceptions": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "model",
+          "tiers"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_INCENTIVE_RULES": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "rules": {
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "string",
+                "enum": [
+                  "threshold_progressive",
+                  "flat",
+                  "whole_basis",
+                  "progressive",
+                  "milestone"
+                ]
+              },
+              "threshold_bps": {
+                "default": 8000,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "bonus_minor": {
+                "default": 0,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000000
+              },
+              "rate_bps": {
+                "default": 100,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "tiers": {
+                "maxItems": 30,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "from_bps": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1000000
+                    },
+                    "to_bps": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "rate_bps": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1000000
+                    },
+                    "bonus_minor": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1000000000000000
+                    }
+                  },
+                  "required": [
+                    "from_bps",
+                    "to_bps"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "milestone_mode": {
+                "default": "highest",
+                "type": "string",
+                "enum": [
+                  "highest",
+                  "cumulative"
+                ]
+              },
+              "cap_minor": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "basis": {
+                "default": "invoice_net",
+                "type": "string",
+                "const": "invoice_net"
+              },
+              "attribution": {
+                "default": "primary_100",
+                "type": "string",
+                "const": "primary_100"
+              },
+              "stacking": {
+                "default": "one_primary",
+                "type": "string",
+                "const": "one_primary"
+              },
+              "rounding": {
+                "default": "half_up_rupiah",
+                "type": "string",
+                "const": "half_up_rupiah"
+              },
+              "require_no_exceptions": {
+                "default": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "model",
+              "tiers"
+            ],
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "rules",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_ENROLLMENT": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "plan_version_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "target_item_ids": {
+            "minItems": 1,
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        },
+        "required": [
+          "plan_version_id",
+          "user_id",
+          "target_item_ids"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_SIMULATION": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "plan_version_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "target_minor": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 1000000000000000
+          },
+          "actual_minor": {
+            "type": "integer",
+            "minimum": -1000000000000000,
+            "maximum": 1000000000000000
+          },
+          "save_preview": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "plan_version_id",
+          "target_minor",
+          "actual_minor"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_REASON_REQUIRED": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "in_period_change": {
+            "default": false,
+            "type": "boolean"
+          },
+          "impact_reviewed": {
+            "default": false,
+            "type": "boolean"
+          },
+          "target_version_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_CALCULATION": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "enrollment_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "cutoff": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "enrollment_id",
+          "cutoff",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_REASON_REQUIRED_1": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "cutoff": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_DISPUTE": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "evidence": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_RESOLUTION": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "rejected"
+            ]
+          }
+        },
+        "required": [
+          "reason",
+          "outcome"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_EXPORT": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "statement_ids": {
+            "minItems": 1,
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "statement_ids",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "incentives_INVALID_PAYMENT_CONFIRMATION": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "reference": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 160
+          },
+          "amount_minor": {
+            "type": "integer",
+            "minimum": -1000000000000000,
+            "maximum": 1000000000000000
+          }
+        },
+        "required": [
+          "reason",
+          "reference",
+          "amount_minor"
+        ],
+        "additionalProperties": false
+      },
+      "monitoring_filters": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "branch_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "team_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "additionalProperties": false
+      },
+      "monitoring_coach": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "customer_id": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "next_action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "due_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          }
+        },
+        "required": [
+          "user_id",
+          "area_id",
+          "summary",
+          "next_action",
+          "due_at"
+        ],
+        "additionalProperties": false
+      },
+      "monitoring_policy": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "timezone": {
+            "type": "string"
+          },
+          "quiet_start": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "quiet_end": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "timezone",
+          "quiet_start",
+          "quiet_end",
+          "enabled"
+        ],
+        "additionalProperties": false
+      },
+      "monitoring_INVALID_COACHING_REVIEW": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "next_action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "reviewed",
+              "closed"
+            ]
+          }
+        },
+        "required": [
+          "summary",
+          "next_action",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "monitoring_INVALID_EXCEPTION": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "user_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "operational",
+              "mapping",
+              "order_pending",
+              "sync_failed",
+              "visit_open",
+              "callback_sla"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "due_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "customer_id",
+          "user_id",
+          "kind",
+          "severity",
+          "due_at",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "monitoring_INVALID_EXCEPTION_CHANGE": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "due_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "severity",
+          "due_at",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "monitoring_REASON_REQUIRED": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "monitoring_INVALID_BODY": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "monitoring_INVALID_REPORT_EXPORT": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "customers",
+              "invoices",
+              "activities",
+              "targets",
+              "workforce"
+            ]
+          },
+          "filters": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "period": {
+                "type": "string",
+                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+              },
+              "area_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "rep_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "channel": {
+                "type": "string",
+                "enum": [
+                  "field",
+                  "telesales"
+                ]
+              },
+              "branch_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "team_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "kind",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "workflows_script_create": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          },
+          "qualification": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          "campaign_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "name",
+          "content",
+          "qualification",
+          "campaign_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "x-pilot-limits": {
+    "incentive_sources": 2000,
+    "target_items": 200,
+    "order_lines": 50,
+    "attachment_bytes": 5242880,
+    "sync_events_per_request": 1,
+    "repeat_weeks": 12,
+    "slot_minutes": 30,
+    "gps_accuracy_cm": 10000,
+    "forecast_invoice_references": 100,
+    "monitoring_source_preview": 50,
+    "monitoring_source_page": 100,
+    "monitoring_export_rows": 10000,
+    "monitoring_export_bytes": 5242880,
+    "monitoring_workforce_groups": 2000,
+    "monitoring_target_leaves": 2000
+  },
+  "x-non-goals": [
+    "Android background GPS",
+    "provider CTI verification",
+    "automatic ERP submission",
+    "cloud deployment"
+  ]
+}

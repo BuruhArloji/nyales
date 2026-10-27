@@ -1,0 +1,26 @@
+INSERT OR IGNORE INTO organization(id,name,timezone) VALUES ('demo-org','NYALES Demo','Asia/Jakarta');
+INSERT OR IGNORE INTO area(id,organization_id,name) VALUES ('area-a','demo-org','Area A'),('area-b','demo-org','Area B');
+INSERT OR IGNORE INTO app_user(id,organization_id,name,status) VALUES ('demo-management','demo-org','Dina Pratiwi','active'),('demo-sr-01','demo-org','Sales Contoh 01','active'),('demo-sr-02','demo-org','Sales Contoh 02','active');
+INSERT OR IGNORE INTO customer_outlet(id,organization_id,area_id,external_code,name,address) VALUES ('CUS-001','demo-org','area-a','ERP-001','Toko Sumber Makmur','Jakarta'),('CUS-002','demo-org','area-a','ERP-002','Toko Maju Jaya','Jakarta'),('CUS-003','demo-org','area-b','ERP-003','Toko Sinar Baru','Bekasi');
+INSERT INTO customer_assignment(id,organization_id,outlet_id,rep_id,channel,effective_from_date) SELECT 'assign-001','demo-org','CUS-001','demo-sr-01','field','2026-01-01' WHERE NOT EXISTS(SELECT 1 FROM customer_assignment WHERE id='assign-001');
+INSERT INTO customer_assignment(id,organization_id,outlet_id,rep_id,channel,effective_from_date) SELECT 'assign-002','demo-org','CUS-002','demo-sr-02','telesales','2026-01-01' WHERE NOT EXISTS(SELECT 1 FROM customer_assignment WHERE id='assign-002');
+INSERT INTO customer_assignment(id,organization_id,outlet_id,rep_id,channel,effective_from_date) SELECT 'assign-003','demo-org','CUS-003','demo-sr-01','field','2026-01-01' WHERE NOT EXISTS(SELECT 1 FROM customer_assignment WHERE id='assign-003');
+INSERT OR IGNORE INTO invoice(id,organization_id,source_invoice_id,source_version,outlet_id,rep_id,area_id,channel,invoice_date,net_minor,status,validation_state) VALUES ('inv-001','demo-org','INV-2026-001','1','CUS-001','demo-sr-01','area-a','field','2026-10-15',180000000,'validated','validated'),('inv-002','demo-org','INV-2026-002','1','CUS-002','demo-sr-02','area-a','telesales','2026-10-12',95000000,'validated','validated');
+INSERT OR IGNORE INTO invoice(id,organization_id,source_invoice_id,source_version,outlet_id,rep_id,area_id,channel,invoice_date,net_minor,status,validation_state) VALUES ('inv-003','demo-org','INV-2026-003','1','CUS-003','demo-sr-01','area-b','field','2026-07-01',42000000,'validated','validated');
+
+INSERT INTO auth_role_assignment(id,organization_id,user_id,role_code,channel,effective_from_date) SELECT 'role-mgmt','demo-org','demo-management','MANAGEMENT',NULL,'2026-01-01' WHERE NOT EXISTS(SELECT 1 FROM auth_role_assignment WHERE id='role-mgmt');
+INSERT INTO auth_role_assignment(id,organization_id,user_id,role_code,channel,effective_from_date) SELECT 'role-sr01','demo-org','demo-sr-01','SALES_REP','field','2026-01-01' WHERE NOT EXISTS(SELECT 1 FROM auth_role_assignment WHERE id='role-sr01');
+INSERT INTO auth_role_assignment(id,organization_id,user_id,role_code,channel,effective_from_date) SELECT 'role-sr02','demo-org','demo-sr-02','TELESALES','telesales','2026-01-01' WHERE NOT EXISTS(SELECT 1 FROM auth_role_assignment WHERE id='role-sr02');
+INSERT OR IGNORE INTO user_area_scope(organization_id,user_id,area_id,effective_from_date) VALUES ('demo-org','demo-sr-01','area-a','2026-01-01');
+UPDATE customer_outlet SET latitude_e7=-62088000,longitude_e7=1068456000 WHERE id='CUS-001' AND organization_id='demo-org' AND latitude_e7 IS NULL AND longitude_e7 IS NULL;
+UPDATE customer_outlet SET latitude_e7=-62146000,longitude_e7=1068327000 WHERE id='CUS-002' AND organization_id='demo-org' AND latitude_e7 IS NULL AND longitude_e7 IS NULL;
+UPDATE customer_outlet SET latitude_e7=-62297000,longitude_e7=1067994000 WHERE id='CUS-003' AND organization_id='demo-org' AND latitude_e7 IS NULL AND longitude_e7 IS NULL;
+INSERT OR IGNORE INTO sales_last_position(organization_id,user_id,latitude_e7,longitude_e7,captured_at,source,accuracy_m) VALUES ('demo-org','demo-sr-01',-62160000,1068230000,'2026-10-17T02:02:00Z','check-in',28),('demo-org','demo-sr-02',-62010000,1068400000,'2026-10-17T01:47:00Z','check-in',35);
+
+INSERT OR IGNORE INTO branch(id,organization_id,name,timezone) VALUES('demo-branch','demo-org','Cabang Contoh Jakarta','Asia/Jakarta');
+UPDATE area SET branch_id='demo-branch' WHERE organization_id='demo-org' AND branch_id IS NULL;
+INSERT OR IGNORE INTO work_calendar(id,organization_id,branch_id,name,weekdays_json,start_time,end_time,holidays_json) VALUES('demo-calendar','demo-org','demo-branch','Kalender Contoh Senin–Jumat','[1,2,3,4,5]','08:00','17:00','[]');
+
+UPDATE customer_outlet SET coordinate_status='unverified' WHERE organization_id='demo-org' AND id IN ('CUS-001','CUS-002','CUS-003') AND latitude_e7 IS NOT NULL AND longitude_e7 IS NOT NULL AND coordinate_status='missing';
+UPDATE customer_outlet SET external_code_key=UPPER(TRIM(external_code)) WHERE organization_id='demo-org' AND id IN ('CUS-001','CUS-002','CUS-003') AND external_code_key IS NULL AND NULLIF(TRIM(external_code),'') IS NOT NULL AND NOT EXISTS(SELECT 1 FROM customer_outlet other WHERE other.organization_id=customer_outlet.organization_id AND other.id<>customer_outlet.id AND UPPER(TRIM(other.external_code))=UPPER(TRIM(customer_outlet.external_code)));
+UPDATE auth_role_assignment SET channel=CASE WHEN role_code='TELESALES' THEN 'telesales' WHEN role_code IN ('SALES_REP','SUPERVISOR','AREA_MANAGER') THEN 'field' ELSE NULL END WHERE id IN ('role-mgmt','role-sr01','role-sr02') AND channel IS NULL;

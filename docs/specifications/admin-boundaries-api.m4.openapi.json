@@ -1,0 +1,1632 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-063 administrative boundary administration - local implementation",
+    "version": "0.1.0",
+    "description": "Separate from full-product /api/v1 contract. Private versioned geometry in R2, metadata in D1. No matching, territory assignment or customer/owner changes. Activation requires reviewed usage rights and exact manifest; public source availability is not a license assertion."
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/admin-boundaries/config": {
+      "get": {
+        "operationId": "boundary_get_config",
+        "summary": "Limits, selected source and unverified usage-terms notice.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope; detail includes immutable metadata, reviewer and version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      }
+    },
+    "/api/admin-boundaries/datasets": {
+      "get": {
+        "operationId": "boundary_get_datasets",
+        "summary": "Organization release list; 50 rows, after cursor and next cursor.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope; detail includes immutable metadata, reviewer and version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      },
+      "post": {
+        "operationId": "boundary_post_datasets",
+        "summary": "Create immutable draft manifest (201) or resume an exact matching partial draft (200). Different provenance conflicts. No automatic source fetching.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope; detail includes immutable metadata, reviewer and version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Draft created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/dataset"
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      }
+    },
+    "/api/admin-boundaries/datasets/{id}": {
+      "get": {
+        "operationId": "boundary_get_datasets__id_",
+        "summary": "Release metadata/counts/chunk checksums and ETag.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope; detail includes immutable metadata, reviewer and version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      }
+    },
+    "/api/admin-boundaries/datasets/{id}/chunks": {
+      "post": {
+        "operationId": "boundary_post_datasets__id__chunks",
+        "summary": "Validate full topology, canonicalize, retain private R2 FeatureCollection and transactionally index its village metadata.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope; detail includes immutable metadata, reviewer and version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chunk"
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      }
+    },
+    "/api/admin-boundaries/datasets/{id}/activate": {
+      "post": {
+        "operationId": "boundary_post_datasets__id__activate",
+        "summary": "Verify complete manifest and source checksums; reviewed activation atomically retires previous release, preserving historical references.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "\"1\""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope; detail includes immutable metadata, reviewer and version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/review"
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      }
+    },
+    "/api/admin-boundaries/datasets/{id}/boundaries": {
+      "get": {
+        "operationId": "boundary_get_datasets__id__boundaries",
+        "summary": "Paginated full metadata and release hierarchy snapshots, 100 rows. No geometry or customer data.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "after",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope; detail includes immutable metadata, reviewer and version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      }
+    },
+    "/api/admin-boundaries/datasets/{id}/chunks/{index}": {
+      "get": {
+        "operationId": "boundary_get_datasets__id__chunks__index_",
+        "summary": "Private full-geometry download after SHA-256 verification; no public R2 URL.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 99
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified GeoJSON chunk",
+            "content": {
+              "application/geo+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/collection"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid idempotency header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer/device session missing or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Management/NSM organization-wide permission required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or foreign organization resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Immutable/duplicate/conflicting source or checksum; active release unchanged on failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "If-Match or expected_active_id stale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Actual request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid JSON/schema, topology, coordinate, complexity, date or count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Storage/source unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM in current organization for ALL WEB-063 routes, including reads. Scoped operational polygon views are deferred to WEB-064."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "dataset": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 250
+          },
+          "code_namespace": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$"
+          },
+          "release_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 250
+          },
+          "released_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "acquired_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "source_reference": {
+            "type": "string",
+            "format": "uri"
+          },
+          "source_checksum": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "reference_release": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "origin": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "code_mapping": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "usage_terms_status": {
+                "type": "string",
+                "enum": [
+                  "unverified",
+                  "documented"
+                ]
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 4000
+              }
+            },
+            "required": [
+              "reference_release",
+              "origin",
+              "code_mapping",
+              "usage_terms_status",
+              "notes"
+            ],
+            "additionalProperties": false
+          },
+          "coverage": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "source_filter": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "national_complete": {
+                "type": "boolean",
+                "const": false
+              }
+            },
+            "required": [
+              "label",
+              "source_filter",
+              "national_complete"
+            ],
+            "additionalProperties": false
+          },
+          "manifest_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expected_features": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "expected_chunks": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "provider",
+          "code_namespace",
+          "release_version",
+          "released_at",
+          "acquired_at",
+          "source_reference",
+          "source_checksum",
+          "metadata",
+          "coverage",
+          "manifest_sha256",
+          "expected_features",
+          "expected_chunks"
+        ],
+        "additionalProperties": false
+      },
+      "chunk": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 99
+          },
+          "collection": {
+            "$ref": "#/components/schemas/collection"
+          }
+        },
+        "required": [
+          "index",
+          "collection"
+        ],
+        "additionalProperties": false
+      },
+      "review": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 1000
+          },
+          "license_reference": {
+            "type": "string",
+            "format": "uri"
+          },
+          "license_note": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 2000
+          },
+          "attribution": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 1000
+          },
+          "confirm_usage_rights": {
+            "type": "boolean",
+            "const": true
+          },
+          "expected_active_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "reason",
+          "license_reference",
+          "license_note",
+          "attribution",
+          "confirm_usage_rights",
+          "expected_active_id"
+        ],
+        "additionalProperties": false
+      },
+      "properties": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "province": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              }
+            },
+            "required": [
+              "code",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "regency": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              }
+            },
+            "required": [
+              "code",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "district": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              }
+            },
+            "required": [
+              "code",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "village": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "desa",
+                  "kelurahan"
+                ]
+              }
+            },
+            "required": [
+              "code",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "source_id",
+          "province",
+          "regency",
+          "district",
+          "village"
+        ],
+        "additionalProperties": false
+      },
+      "geometry": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "coordinates"
+            ],
+            "properties": {
+              "type": {
+                "const": "Polygon"
+              },
+              "coordinates": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "minItems": 4,
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "coordinates"
+            ],
+            "properties": {
+              "type": {
+                "const": "MultiPolygon"
+              },
+              "coordinates": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "array",
+                    "minItems": 4,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "collection": {
+        "type": "object",
+        "required": [
+          "type",
+          "features"
+        ],
+        "properties": {
+          "type": {
+            "const": "FeatureCollection"
+          },
+          "features": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "properties",
+                "geometry"
+              ],
+              "properties": {
+                "type": {
+                  "const": "Feature"
+                },
+                "properties": {
+                  "$ref": "#/components/schemas/properties"
+                },
+                "geometry": {
+                  "$ref": "#/components/schemas/geometry"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "error": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "data": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {},
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dataset_status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "x-limits": {
+    "maxBytes": 1572864,
+    "maxDatasetBytes": 8388608,
+    "maxFeatures": 32,
+    "maxPositions": 40000,
+    "maxFeaturePositions": 20000,
+    "maxDatasetFeatures": 1000,
+    "maxChunks": 100
+  }
+}

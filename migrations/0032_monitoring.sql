@@ -1,0 +1,12 @@
+CREATE TABLE coaching_review(id TEXT PRIMARY KEY,organization_id TEXT NOT NULL,user_id TEXT NOT NULL,customer_id TEXT,area_id TEXT NOT NULL,summary TEXT NOT NULL,next_action TEXT NOT NULL,due_at TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'open',version INTEGER NOT NULL DEFAULT 1,created_by TEXT NOT NULL,created_at TEXT NOT NULL);
+ALTER TABLE sales_exception ADD COLUMN severity TEXT NOT NULL DEFAULT 'medium';
+ALTER TABLE sales_exception ADD COLUMN due_at TEXT;
+ALTER TABLE sales_exception ADD COLUMN resolution TEXT;
+ALTER TABLE sales_exception ADD COLUMN resolved_by TEXT;
+ALTER TABLE sales_exception ADD COLUMN resolved_at TEXT;
+ALTER TABLE sales_exception ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+CREATE TABLE notification_policy(organization_id TEXT PRIMARY KEY,version INTEGER NOT NULL DEFAULT 1,timezone TEXT NOT NULL,quiet_start TEXT NOT NULL DEFAULT '22:00',quiet_end TEXT NOT NULL DEFAULT '07:00',enabled INTEGER NOT NULL DEFAULT 1,updated_by TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE TABLE in_app_notification(id TEXT PRIMARY KEY,organization_id TEXT NOT NULL,user_id TEXT NOT NULL,kind TEXT NOT NULL,resource_id TEXT NOT NULL,trigger_id TEXT NOT NULL,rule_version INTEGER NOT NULL,title TEXT NOT NULL,created_at TEXT NOT NULL,read_at TEXT,UNIQUE(organization_id,user_id,trigger_id,rule_version));
+CREATE INDEX notification_owner ON in_app_notification(organization_id,user_id,created_at);
+CREATE TABLE report_export(id TEXT PRIMARY KEY,organization_id TEXT NOT NULL,kind TEXT NOT NULL,filters_json TEXT NOT NULL,cutoff TEXT NOT NULL,timezone TEXT NOT NULL,storage_key TEXT NOT NULL,checksum TEXT NOT NULL,created_by TEXT NOT NULL,created_at TEXT NOT NULL,expires_at TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'ready');
+CREATE INDEX coaching_scope ON coaching_review(organization_id,area_id,user_id,due_at);

@@ -1,0 +1,74 @@
+{
+  "format": "nyales-pilot-release-gate-1",
+  "date": "2026-10-28",
+  "classification": "synthetic-local-review",
+  "decision": "blocked",
+  "gates": [
+    {
+      "id": "LOCAL_TESTS",
+      "status": "passed",
+      "evidence": "test-results/web057-final-full-tests.log",
+      "detail": "Full local regression must pass without failures."
+    },
+    {
+      "id": "RECOVERY_OBJECT_DRILL",
+      "status": "passed",
+      "evidence": "docs/WEB057_OBJECT_EVIDENCE.json",
+      "detail": "At least one existing pilot object must pass bounded checksum verification."
+    },
+    {
+      "id": "BUSINESS_DATA_PRESERVED",
+      "status": "passed",
+      "evidence": "docs/WEB057_OBJECT_EVIDENCE.json",
+      "detail": "Preexisting business rows must remain unchanged."
+    },
+    {
+      "id": "REAL_ROLE_UAT",
+      "status": "blocked",
+      "evidence": "docs/WEB059_UAT_REGISTER.json",
+      "detail": "Named role/device reviewers have not signed the web scenarios."
+    },
+    {
+      "id": "REAL_SOURCE_MIGRATION",
+      "status": "blocked",
+      "evidence": "pilot/demo-10-sales/README.md",
+      "detail": "Production source migration is still deferred."
+    },
+    {
+      "id": "CLOUD_PROVIDER_ACCEPTANCE",
+      "status": "blocked",
+      "evidence": "docs/WEB062_STABILIZATION.json",
+      "detail": "Cloud restore, provider capacity, RPO/RTO and durability are not accepted."
+    },
+    {
+      "id": "HUMAN_TRAINING_HANDOVER",
+      "status": "blocked",
+      "evidence": "docs/WEB061_REGISTER.json",
+      "detail": "Training and support handover sign-off is pending."
+    },
+    {
+      "id": "PRODUCTION_APPROVAL",
+      "status": "blocked",
+      "evidence": "docs/WEB062_STABILIZATION.json",
+      "detail": "Production go-live approval is pending."
+    }
+  ],
+  "blockers": [
+    "REAL_ROLE_UAT",
+    "REAL_SOURCE_MIGRATION",
+    "CLOUD_PROVIDER_ACCEPTANCE",
+    "HUMAN_TRAINING_HANDOVER",
+    "PRODUCTION_APPROVAL"
+  ],
+  "production_accepted": false,
+  "cloud_deployed": false,
+  "mutated_data": false,
+  "test_evidence": {
+    "full_suite_passed": 319,
+    "full_suite_log": "test-results/web062-final-full-tests.log",
+    "release_gate_test": "test-results/web062-release-gate-test.log",
+    "typecheck_log": "test-results/web062-release-gate-typecheck.log",
+    "build": "passed; existing large client bundle warning remains",
+    "build_log": "test-results/web062-final-build.log"
+  }
+}

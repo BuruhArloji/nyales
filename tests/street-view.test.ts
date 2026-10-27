@@ -1,0 +1,7 @@
+import{test}from'node:test';import assert from'node:assert/strict';import{Hono}from'hono';import{fixture}from'./sales-fixture';import{scopedRoutes}from'../src/server/index';
+test('Street View requires scoped customer coordinates and configured key; never cached',async()=>{
+ const{sqlite,adapter}=fixture();sqlite.exec("UPDATE customer_outlet SET latitude_e7=-62000000,longitude_e7=1068000000 WHERE id='c';INSERT INTO area(id,organization_id,name,branch_id) VALUES('b','o','Other','br');INSERT INTO customer_outlet(id,organization_id,area_id,name) VALUES('outside','o','b','Outside'),('missing','o','a','No coordinates');");
+ async function req(id:string,key?:string){const app=new Hono();app.use('*',async(c,next)=>{c.set('identity' as never,{id:'sr',name:'SR',organization_id:'o',role:'SALES_REP'}as never);await next()});app.route('/',scopedRoutes);return app.request('/api/customers/'+id+'/street-view',{}, {DB:adapter,GOOGLE_MAPS_EMBED_API_KEY:key})}
+ assert.equal((await req('outside','test-key')).status,404);assert.equal((await req('missing','test-key')).status,422);assert.equal((await req('c')).status,503);
+ const r=await req('c','test-key');assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');const result=await r.json()as any,url=new URL(result.data.embed_url);assert.equal(url.origin,'https://www.google.com');assert.equal(url.pathname,'/maps/embed/v1/streetview');assert.equal(url.searchParams.get('location'),'-6.2,106.8');assert.equal(url.searchParams.get('key'),'test-key');
+});

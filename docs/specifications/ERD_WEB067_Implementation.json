@@ -1,0 +1,475 @@
+{
+  "date": "2026-10-24",
+  "migration": "0040_customer_risk_policy_runs.sql",
+  "definition": "nyales-risk-1",
+  "tables": {
+    "customer_risk_policy_version": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "revision_no",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "config_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "config_sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "updated_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "activated_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "activated_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "activated_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "app_user",
+          "from": "created_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_customer_risk_policy_version_1",
+          "sql": null
+        },
+        {
+          "name": "sqlite_autoindex_customer_risk_policy_version_2",
+          "sql": null
+        },
+        {
+          "name": "sqlite_autoindex_customer_risk_policy_version_3",
+          "sql": null
+        },
+        {
+          "name": "one_active_customer_risk_policy",
+          "sql": "CREATE UNIQUE INDEX one_active_customer_risk_policy ON customer_risk_policy_version(organization_id) WHERE status='active'"
+        },
+        {
+          "name": "customer_risk_policy_history",
+          "sql": "CREATE INDEX customer_risk_policy_history ON customer_risk_policy_version(organization_id,revision_no DESC)"
+        }
+      ],
+      "triggers": [
+        {
+          "name": "customer_risk_policy_no_delete",
+          "sql": "CREATE TRIGGER customer_risk_policy_no_delete BEFORE DELETE ON customer_risk_policy_version BEGIN SELECT RAISE(ABORT,'RISK_POLICY_HISTORY_IMMUTABLE'); END"
+        },
+        {
+          "name": "customer_risk_policy_guard",
+          "sql": "CREATE TRIGGER customer_risk_policy_guard BEFORE UPDATE ON customer_risk_policy_version BEGIN\n SELECT CASE WHEN NEW.id<>OLD.id OR NEW.organization_id<>OLD.organization_id OR NEW.revision_no<>OLD.revision_no OR NEW.created_by<>OLD.created_by OR NEW.created_at<>OLD.created_at OR NEW.version<>OLD.version+1 THEN RAISE(ABORT,'RISK_POLICY_VERSION_REQUIRED') END;\n SELECT CASE WHEN OLD.status='retired' OR (OLD.status='active' AND(NEW.status<>'retired' OR NEW.name<>OLD.name OR NEW.config_json<>OLD.config_json OR NEW.config_sha256<>OLD.config_sha256 OR NEW.activated_by IS NOT OLD.activated_by OR NEW.activated_at IS NOT OLD.activated_at)) THEN RAISE(ABORT,'ACTIVE_RISK_POLICY_IMMUTABLE') END;\n SELECT CASE WHEN OLD.status='draft' AND NEW.status='draft' AND(NEW.activated_by IS NOT NULL OR NEW.activated_at IS NOT NULL) THEN RAISE(ABORT,'RISK_POLICY_ACTIVATION_REQUIRED') END;\nEND"
+        },
+        {
+          "name": "customer_risk_policy_input_insert",
+          "sql": "CREATE TRIGGER customer_risk_policy_input_insert AFTER INSERT ON customer_risk_policy_version BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+        },
+        {
+          "name": "customer_risk_policy_input_update",
+          "sql": "CREATE TRIGGER customer_risk_policy_input_update AFTER UPDATE ON customer_risk_policy_version BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+        },
+        {
+          "name": "customer_risk_policy_input_delete",
+          "sql": "CREATE TRIGGER customer_risk_policy_input_delete AFTER DELETE ON customer_risk_policy_version BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=OLD.organization_id; END"
+        }
+      ]
+    },
+    "customer_risk_run": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "policy_version_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "dataset_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "scope_fingerprint",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "cache_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "filters_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "customer_ids_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "cutoff",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "input_revision",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "basis_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "storage_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "snapshot_sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "byte_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "customer_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "attention_customer_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "unknown_customer_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "actor_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "admin_boundary_dataset",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "admin_boundary_dataset",
+          "from": "dataset_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "customer_risk_policy_version",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "customer_risk_policy_version",
+          "from": "policy_version_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_customer_risk_run_1",
+          "sql": null
+        },
+        {
+          "name": "sqlite_autoindex_customer_risk_run_2",
+          "sql": null
+        },
+        {
+          "name": "sqlite_autoindex_customer_risk_run_3",
+          "sql": null
+        },
+        {
+          "name": "customer_risk_run_history",
+          "sql": "CREATE INDEX customer_risk_run_history ON customer_risk_run(organization_id,actor_id,created_at DESC)"
+        }
+      ],
+      "triggers": [
+        {
+          "name": "customer_risk_run_no_update",
+          "sql": "CREATE TRIGGER customer_risk_run_no_update BEFORE UPDATE ON customer_risk_run BEGIN SELECT RAISE(ABORT,'RISK_RUN_IMMUTABLE'); END"
+        },
+        {
+          "name": "customer_risk_run_no_delete",
+          "sql": "CREATE TRIGGER customer_risk_run_no_delete BEFORE DELETE ON customer_risk_run BEGIN SELECT RAISE(ABORT,'RISK_RUN_IMMUTABLE'); END"
+        }
+      ]
+    }
+  }
+}

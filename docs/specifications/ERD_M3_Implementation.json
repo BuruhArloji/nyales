@@ -1,0 +1,1634 @@
+{
+  "version": "M3-local-0.3",
+  "date": "2026-10-18",
+  "source": "migrations/0031-0032 plus preceding DDL",
+  "tables": [
+    {
+      "name": "incentive_plan",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "role_code",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "channel",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "model",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "basis",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'invoice_net'",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        [
+          0,
+          0,
+          "organization",
+          "organization_id",
+          "id",
+          "NO ACTION",
+          "NO ACTION",
+          "NONE"
+        ]
+      ],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_incentive_plan_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "incentive_plan_version",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "plan_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "revision_no",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "target_version_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "period_start",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "period_end",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "timezone",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "role_code",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "channel",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "rules_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "submitted_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "approved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "preview_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_incentive_plan_version_3",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_incentive_plan_version_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_incentive_plan_version_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "incentive_enrollment",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "plan_version_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "role_code",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "channel",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "period_start",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "period_end",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "area_ids_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "target_items_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'draft'",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "incentive_enrollment_owner",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_incentive_enrollment_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_incentive_enrollment_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "calculation_run",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "enrollment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "plan_version_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "cutoff",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "source_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "inputs_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "result_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_calculation_run_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "incentive_statement",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "enrollment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "run_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "plan_version_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "period_start",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "period_end",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "revision_no",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "previous_statement_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'prepared'",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "review_flags_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'[]'",
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "entitlement_minor",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "payable_delta_minor",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "submitted_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "finalized_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "finalized_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "dispute_deadline",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "payment_reference",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "statement_owner_period",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "incentive_statement_open",
+          1,
+          "c",
+          1
+        ],
+        [
+          2,
+          "sqlite_autoindex_incentive_statement_3",
+          1,
+          "u",
+          0
+        ],
+        [
+          3,
+          "sqlite_autoindex_incentive_statement_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          4,
+          "sqlite_autoindex_incentive_statement_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "statement_dispute",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "statement_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "evidence",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'open'",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "resolution",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "resolved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "source_run_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_statement_dispute_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "incentive_export",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "statement_ids_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "payload_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "checksum",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_incentive_export_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_incentive_export_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "payment_confirmation",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "statement_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "reference",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "amount_minor",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "confirmed_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "confirmed_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_payment_confirmation_3",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_payment_confirmation_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_payment_confirmation_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sensitive_access",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "resource",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "resource_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "occurred_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sensitive_access_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "coaching_review",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "area_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "summary",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "next_action",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "due_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'open'",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "coaching_scope",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_coaching_review_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_exception",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "resource_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'open'",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "severity",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'medium'",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "due_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "resolution",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "resolved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "resolved_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sales_exception_open_unique",
+          1,
+          "c",
+          1
+        ],
+        [
+          1,
+          "sqlite_autoindex_sales_exception_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "notification_policy",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "timezone",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "quiet_start",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'22:00'",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "quiet_end",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'07:00'",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "enabled",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "updated_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_notification_policy_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "in_app_notification",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "resource_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "trigger_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "rule_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "title",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "read_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "notification_owner",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_in_app_notification_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_in_app_notification_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "report_export",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "filters_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "cutoff",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "timezone",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "storage_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "checksum",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "expires_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'ready'",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_report_export_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    "Logical joins in organization scope do not imply SQL FK constraints for every link. Query checks, version guards and immutable triggers supplement schema.",
+    "Amounts are whole IDR integers; calculation rational numerator/denominator stored as strings with decimal before half-up rounding.",
+    "Account legal/business layer remains retired."
+  ]
+}

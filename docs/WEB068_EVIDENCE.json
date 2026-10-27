@@ -1,0 +1,344 @@
+{
+  "date": "2026-10-24",
+  "item": "WEB-068",
+  "status": "Implemented and verified local; real-source/provider/human acceptance pending",
+  "classification": "synthetic QA and main pilot; real boundary draft retained",
+  "definition_version": "nyales-workload-1",
+  "migration": "0041_workload_scenarios.sql",
+  "new_tables": 4,
+  "local_tables": 100,
+  "preview_url": "http://127.0.0.1:5193/#page=assignments&assignment_view=workload&scenario_id=a88f7ca5-8e42-4ec6-9f05-e644561fd6ee",
+  "main_url": "http://127.0.0.1:5183/#page=assignments&assignment_view=workload",
+  "tests": {
+    "unit_integration": 211,
+    "workload_tests": 27,
+    "engine_tests": 13,
+    "local_runtime_lock_tests": 1,
+    "typecheck": "passed",
+    "build": "passed; approximately 2.01 MB client chunk warning remains",
+    "browser": {
+      "passed": 2,
+      "regression_passed": 9,
+      "proof": {
+        "classification": "synthetic",
+        "scenario_id": "a88f7ca5-8e42-4ec6-9f05-e644561fd6ee",
+        "revision_id": "cc89a210-1e27-403b-bd92-7e670b07497b",
+        "policy_name": "Beban latihan 1792850849233",
+        "customers": [
+          "f1febda8-d7b5-4ff1-a715-6aa6a0006bd1",
+          "b5b03de9-206f-4fcb-a1a1-730189886166"
+        ],
+        "reps": [
+          "60d1e15b-cdb8-497f-85e6-1f7bb03465bb",
+          "57d7b1b4-7ec2-4a25-993a-ed7f1cfb7914"
+        ],
+        "effective_date": "2026-10-25",
+        "applications": 2,
+        "revisions": 2,
+        "invoice_history_unchanged": true,
+        "ui_preview_save_apply_revalidate_history": true,
+        "source_snapshot_immutable": true,
+        "axe_violations": 0,
+        "viewports": [
+          390,
+          768,
+          1440
+        ],
+        "page_errors": [],
+        "production_accepted": false
+      },
+      "logs": [
+        "test-results/web068-browser-run.log",
+        "test-results/web068-distribution-regression.log",
+        "test-results/web068-geography-regression.log",
+        "test-results/web068-regional-regression.log",
+        "test-results/web068-risk-regression.log"
+      ],
+      "axe_violations": 0,
+      "viewports": [
+        390,
+        768,
+        1440
+      ],
+      "reload_scenario_url": true
+    },
+    "full_log": "test-results/web068-full-tests.log",
+    "baseline_uat_scenarios": 82
+  },
+  "api": {
+    "runtime_operations": 276,
+    "linked": 276,
+    "unauthenticated_checked": 274,
+    "new_operations": 14,
+    "contract": "docs/specifications/workload-scenarios-api.m4.openapi.json"
+  },
+  "commercial_preservation": {
+    "classification": "synthetic",
+    "tables": {
+      "customer_outlet": {
+        "before": {
+          "count": 20,
+          "sha256": "27b8d6d39685563992337c225d1160f5120ca334d71c997a1a7a6743f11aba26"
+        },
+        "after": {
+          "count": 20,
+          "sha256": "27b8d6d39685563992337c225d1160f5120ca334d71c997a1a7a6743f11aba26"
+        },
+        "equal": true
+      },
+      "customer_assignment": {
+        "before": {
+          "count": 20,
+          "sha256": "5aec26859a7d9c2adcf450b25cdc9247d815c1246244a01c07148f8aebf09ea6"
+        },
+        "after": {
+          "count": 20,
+          "sha256": "5aec26859a7d9c2adcf450b25cdc9247d815c1246244a01c07148f8aebf09ea6"
+        },
+        "equal": true
+      },
+      "invoice": {
+        "before": {
+          "count": 80,
+          "sha256": "ae93df47ba6d275e362508bd480e3f47a2f31d886c2889eebaa666bbffbcfae1"
+        },
+        "after": {
+          "count": 80,
+          "sha256": "ae93df47ba6d275e362508bd480e3f47a2f31d886c2889eebaa666bbffbcfae1"
+        },
+        "equal": true
+      },
+      "invoice_line": {
+        "before": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "after": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "equal": true
+      },
+      "activity": {
+        "before": {
+          "count": 12,
+          "sha256": "ae46f1231860e899e644964f340937317736adf26acdb543fb83435c2ba0a0d8"
+        },
+        "after": {
+          "count": 12,
+          "sha256": "ae46f1231860e899e644964f340937317736adf26acdb543fb83435c2ba0a0d8"
+        },
+        "equal": true
+      },
+      "target_plan": {
+        "before": {
+          "count": 2,
+          "sha256": "5032f3af6083812670210b30701cd7ac0abd0645f8259bf2f2b00c35829211d6"
+        },
+        "after": {
+          "count": 2,
+          "sha256": "5032f3af6083812670210b30701cd7ac0abd0645f8259bf2f2b00c35829211d6"
+        },
+        "equal": true
+      },
+      "target_version": {
+        "before": {
+          "count": 2,
+          "sha256": "00e7cf19ee299f05cfbaf2480d1addc10182d8cedf3275d21b92453adac87fb1"
+        },
+        "after": {
+          "count": 2,
+          "sha256": "00e7cf19ee299f05cfbaf2480d1addc10182d8cedf3275d21b92453adac87fb1"
+        },
+        "equal": true
+      },
+      "target_item": {
+        "before": {
+          "count": 10,
+          "sha256": "53e48fbc2edd2e0c372f01bdcdbf54e69a22e196c5c7d691b79f88c3467fe4ee"
+        },
+        "after": {
+          "count": 10,
+          "sha256": "53e48fbc2edd2e0c372f01bdcdbf54e69a22e196c5c7d691b79f88c3467fe4ee"
+        },
+        "equal": true
+      },
+      "sales_order": {
+        "before": {
+          "count": 1,
+          "sha256": "75be0b535a365bd6f03ba574594c56a8a03a2705a6c71eb60ace89b69abf9df8"
+        },
+        "after": {
+          "count": 1,
+          "sha256": "75be0b535a365bd6f03ba574594c56a8a03a2705a6c71eb60ace89b69abf9df8"
+        },
+        "equal": true
+      },
+      "credit_note": {
+        "before": {
+          "count": 4,
+          "sha256": "6bffebab13a55a56e9eda645d135d442c9bfcf01694413d28a4b01246aa54485"
+        },
+        "after": {
+          "count": 4,
+          "sha256": "6bffebab13a55a56e9eda645d135d442c9bfcf01694413d28a4b01246aa54485"
+        },
+        "equal": true
+      },
+      "area_admin_membership": {
+        "before": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "after": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "equal": true
+      },
+      "customer_admin_location": {
+        "before": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "after": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "equal": true
+      },
+      "geo_distribution_run": {
+        "before": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "after": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "equal": true
+      },
+      "organization": {
+        "before": {
+          "count": 1,
+          "sha256": "2a45f2e9daafd3ac9ed2d8df2e7cc7984ef4ac2a6984a222145992eab3fa069a"
+        },
+        "after": {
+          "count": 1,
+          "sha256": "2a45f2e9daafd3ac9ed2d8df2e7cc7984ef4ac2a6984a222145992eab3fa069a"
+        },
+        "equal": true
+      },
+      "branch": {
+        "before": {
+          "count": 1,
+          "sha256": "e37abe3585d79dc022f7073fa561d7ee183ebf14e69989df30074db444756a9a"
+        },
+        "after": {
+          "count": 1,
+          "sha256": "e37abe3585d79dc022f7073fa561d7ee183ebf14e69989df30074db444756a9a"
+        },
+        "equal": true
+      },
+      "area": {
+        "before": {
+          "count": 1,
+          "sha256": "598db8e45f42b96c63bc141c17915fc2742ae0ace238befcdeefeae5c9f90bc4"
+        },
+        "after": {
+          "count": 1,
+          "sha256": "598db8e45f42b96c63bc141c17915fc2742ae0ace238befcdeefeae5c9f90bc4"
+        },
+        "equal": true
+      },
+      "work_calendar": {
+        "before": {
+          "count": 1,
+          "sha256": "29ff8e01146d3176140154fa46484a0ddb18a78b5392c5dfd431998c9ac5a554"
+        },
+        "after": {
+          "count": 1,
+          "sha256": "29ff8e01146d3176140154fa46484a0ddb18a78b5392c5dfd431998c9ac5a554"
+        },
+        "equal": true
+      },
+      "app_user": {
+        "before": {
+          "count": 17,
+          "sha256": "7cfcc447b1a615e8b895446bf4bf36ce93c5923603b1b98b675028204cc6bc73"
+        },
+        "after": {
+          "count": 17,
+          "sha256": "7cfcc447b1a615e8b895446bf4bf36ce93c5923603b1b98b675028204cc6bc73"
+        },
+        "equal": true
+      }
+    },
+    "all_equal": true,
+    "tables_compared": 18,
+    "workload_policies": 0,
+    "scenarios": 0,
+    "real_boundary_status": [
+      {
+        "id": "cd4525c0-0be7-43ce-98a7-3b8bcb5d70c9",
+        "status": "draft"
+      }
+    ],
+    "integrity": "ok",
+    "foreign_key_errors": 0,
+    "table_count": 100
+  },
+  "recovery": {
+    "main": {
+      "tables": 100,
+      "attachments": 1,
+      "boundary_chunks": 1,
+      "report": "test-results/web068-main-recovery-20261024/SUMMARY.json"
+    },
+    "nonempty_qa": {
+      "tables": 100,
+      "scenario_snapshots": 4,
+      "restored_scenario_api_reads": 4,
+      "other_r2_artifacts_restored": false,
+      "report": "test-results/web068-qa-recovery-final-20261024/SUMMARY.json"
+    },
+    "qa_incident": {
+      "classification": "synthetic only",
+      "cause_context": "duplicate local servers preceded malformed local storage; exact storage failure mechanism not established",
+      "source_archive": "test-results/web068-qa-integrity-1792850309873",
+      "recovered_persist": ".wrangler/web068-recovered-20261024",
+      "tables_restored": 100,
+      "r2_files_copied_and_compared": 41,
+      "newer_synthetic_rehearsal_rows_not_replayed": true,
+      "source_namespace_retained": true,
+      "main_pilot_affected": false,
+      "report": "test-results/web068-qa-recovered.json",
+      "preventive_startup": "scripts/local-runtime.cjs port and per-persistence ownership lock"
+    }
+  },
+  "known_limits": [
+    "No travel, routing, traffic, scheduling or optimization.",
+    "Calendar allocation is nominal planned service time; no individual leave/attendance feed.",
+    "Partial cohort cannot establish whole portfolio utilization or weighted share.",
+    "Apply one reviewed atomic batch then revalidate/revise remaining.",
+    "Limits are local bounds, not measured Free Cloudflare CPU/RPC capacity.",
+    "Logical allowlist backup is not full point-in-time recovery.",
+    "Cloud/provider/source rights and human acceptance remain pending."
+  ],
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "source_sha256": {
+    "src/shared/workload.ts": "5657b94bcff0607a366c77e5c9fdca34ba0313b625780ed43eb48f6df2e1db31",
+    "src/shared/workload-policy.ts": "9392725449520a2e41d08edaf86e161d63a900ec0e961404b5a6f82686371263",
+    "src/server/workload-engine.ts": "e9fb4bbb90c82d6323a18f73baabc83dcbea26274c41eed42786bdb9bd900c53",
+    "src/server/workload-source.ts": "924b18171260e6307f737fb977c7477b60995a59510f284f4d1c5e2f1a6b9c80",
+    "src/server/workload-policies.ts": "902fc6a8e304a66c566cb36ac791164a219c4a05b55a09c0c795e9c5ec87fa90",
+    "src/server/territory-scenarios.ts": "343ba8bd7cfca973ebcb05f97505ad44fae87e48162d802812917017d0c1b566",
+    "src/client/WorkloadBoard.tsx": "eca534e38c360a634067d369b4fbf2144757ebb0d6a971f37b2d4f9195eb45ea",
+    "src/client/WorkloadSettings.tsx": "af49160b4075769ad8367c4108f6b3056d7e07a40b856243e2278fb5a8733ef9",
+    "src/client/WorkloadComparison.tsx": "d840327018756e935db646d91dbab8efb133a0efff6101294fc25039eecc4289",
+    "src/server/distribution.ts": "c30f2b17a1ee87b3d0f652ddbf6d9acf9ddef112aee4b91c5eac7189e10d80ef",
+    "migrations/0041_workload_scenarios.sql": "384e39156a46ca7b46c41d89a0274482241d3a608d656bd401d25250ee7fc455",
+    "scripts/local-runtime.cjs": "e73a8cea7d7d00c71b0c7959627d355f65f9f076c727ad9c6d403e0be286f406"
+  }
+}

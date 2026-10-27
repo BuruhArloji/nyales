@@ -1,0 +1,16 @@
+{
+  "name": "nyales-visit-compute-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "daily": "tsx scripts/visit-daily.ts"
+  },
+  "dependencies": {
+    "tsx": "4.23.15",
+    "zod": "4.6.7"
+  }
+}

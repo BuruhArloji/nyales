@@ -1,0 +1,665 @@
+{
+  "date": "2026-10-25",
+  "migration": "0043_visit_agent_queue.sql",
+  "status": "connection-probe delivery queue only; business planning/graph/solver remain pending",
+  "application_tables": 108,
+  "local_tables_with_d1_metadata": 110,
+  "tables": {
+    "visit_agent_queue_attempt": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "environment",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "job_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "attempt_no",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "fence",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "credential_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "generation",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "claimed_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "heartbeat_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "ended_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "failure_code",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "visit_generator_credential",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "visit_generator_credential",
+          "from": "environment",
+          "to": "environment",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 2,
+          "table": "visit_generator_credential",
+          "from": "credential_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "visit_agent_queue_job",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "visit_agent_queue_job",
+          "from": "environment",
+          "to": "environment",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 2,
+          "table": "visit_agent_queue_job",
+          "from": "job_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_visit_agent_queue_attempt_3",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_visit_agent_queue_attempt_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 2,
+          "name": "sqlite_autoindex_visit_agent_queue_attempt_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": [
+        {
+          "name": "visit_agent_queue_attempt_guard",
+          "sql": "CREATE TRIGGER visit_agent_queue_attempt_guard BEFORE UPDATE ON visit_agent_queue_attempt WHEN OLD.status<>'running' OR NEW.id<>OLD.id OR NEW.organization_id<>OLD.organization_id OR NEW.environment<>OLD.environment OR NEW.job_id<>OLD.job_id OR NEW.attempt_no<>OLD.attempt_no OR NEW.fence<>OLD.fence OR NEW.credential_id<>OLD.credential_id OR NEW.generation<>OLD.generation OR NEW.claimed_at<>OLD.claimed_at BEGIN SELECT RAISE(ABORT,'AGENT_ATTEMPT_IMMUTABLE');END"
+        },
+        {
+          "name": "visit_agent_queue_attempt_no_delete",
+          "sql": "CREATE TRIGGER visit_agent_queue_attempt_no_delete BEFORE DELETE ON visit_agent_queue_attempt BEGIN SELECT RAISE(ABORT,'AGENT_ATTEMPT_IMMUTABLE');END"
+        }
+      ]
+    },
+    "visit_agent_queue_event": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "environment",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "job_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "job_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "event_code",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "actor_kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "details_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "visit_agent_queue_job",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "visit_agent_queue_job",
+          "from": "environment",
+          "to": "environment",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 2,
+          "table": "visit_agent_queue_job",
+          "from": "job_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_visit_agent_queue_event_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_visit_agent_queue_event_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": [
+        {
+          "name": "visit_agent_queue_event_no_delete",
+          "sql": "CREATE TRIGGER visit_agent_queue_event_no_delete BEFORE DELETE ON visit_agent_queue_event BEGIN SELECT RAISE(ABORT,'AGENT_QUEUE_EVENT_IMMUTABLE');END"
+        },
+        {
+          "name": "visit_agent_queue_event_no_update",
+          "sql": "CREATE TRIGGER visit_agent_queue_event_no_update BEFORE UPDATE ON visit_agent_queue_event BEGIN SELECT RAISE(ABORT,'AGENT_QUEUE_EVENT_IMMUTABLE');END"
+        }
+      ]
+    },
+    "visit_agent_queue_job": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "environment",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "target_agent_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "target_generation",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "requested_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "rep_ids_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "payload_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "payload_sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "attempt_no",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "fence",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "lease_credential_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "lease_until",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "checkpoint_code",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "failure_code",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "result_sha256",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "expires_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "ended_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "requested_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "visit_generator_credential",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "visit_generator_credential",
+          "from": "environment",
+          "to": "environment",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 2,
+          "table": "visit_generator_credential",
+          "from": "lease_credential_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "visit_generator_agent",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "visit_generator_agent",
+          "from": "environment",
+          "to": "environment",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 2,
+          "table": "visit_generator_agent",
+          "from": "target_agent_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "visit_agent_queue_one_pending",
+          "unique": 1,
+          "origin": "c",
+          "partial": 1
+        },
+        {
+          "seq": 1,
+          "name": "visit_agent_queue_expiry",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0
+        },
+        {
+          "seq": 2,
+          "name": "visit_agent_queue_recent",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_visit_agent_queue_job_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 4,
+          "name": "sqlite_autoindex_visit_agent_queue_job_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": [
+        {
+          "name": "visit_agent_queue_job_guard",
+          "sql": "CREATE TRIGGER visit_agent_queue_job_guard BEFORE UPDATE ON visit_agent_queue_job BEGIN\n SELECT CASE WHEN NEW.id<>OLD.id OR NEW.organization_id<>OLD.organization_id OR NEW.environment<>OLD.environment OR NEW.target_agent_id<>OLD.target_agent_id OR NEW.target_generation<>OLD.target_generation OR NEW.kind<>OLD.kind OR NEW.requested_by<>OLD.requested_by OR NEW.rep_ids_json<>OLD.rep_ids_json OR NEW.payload_json<>OLD.payload_json OR NEW.payload_sha256<>OLD.payload_sha256 OR NEW.created_at<>OLD.created_at OR NEW.expires_at<>OLD.expires_at OR NEW.version<>OLD.version+1 OR OLD.state IN('completed','failed','cancelled','expired') THEN RAISE(ABORT,'AGENT_QUEUE_IMMUTABLE_OR_VERSION') END;\n SELECT CASE WHEN NOT(\n  (OLD.state='queued' AND NEW.state='running' AND NEW.attempt_no=OLD.attempt_no+1 AND NEW.fence=OLD.fence+1) OR\n  (OLD.state='queued' AND NEW.state IN('cancelled','failed','expired') AND NEW.attempt_no=OLD.attempt_no AND NEW.fence=OLD.fence) OR\n  (OLD.state IN('running','cancel_requested') AND NEW.state IN('running','cancel_requested') AND (OLD.state='running' OR NEW.state='cancel_requested') AND NEW.attempt_no=OLD.attempt_no AND NEW.fence=OLD.fence AND NEW.lease_credential_id IS OLD.lease_credential_id) OR\n  (OLD.state='running' AND NEW.state IN('queued','completed','failed','cancelled','expired') AND NEW.attempt_no=OLD.attempt_no AND NEW.fence>=OLD.fence) OR\n  (OLD.state='cancel_requested' AND NEW.state='cancelled' AND NEW.attempt_no=OLD.attempt_no AND NEW.fence>=OLD.fence)\n ) THEN RAISE(ABORT,'AGENT_QUEUE_STATE_TRANSITION') END;\nEND"
+        },
+        {
+          "name": "visit_agent_queue_job_no_delete",
+          "sql": "CREATE TRIGGER visit_agent_queue_job_no_delete BEFORE DELETE ON visit_agent_queue_job BEGIN SELECT RAISE(ABORT,'AGENT_QUEUE_HISTORY_IMMUTABLE');END"
+        }
+      ]
+    }
+  },
+  "business_boundary": "No visit_generator_job/policy/graph/candidate/publish/agenda-epoch runtime tables installed. Existing WEB069 draft is not applied wholesale.",
+  "recovery": "Queue jobs/attempts/events included in logical allowlist; nonce/rate/response-cache remain ephemeral. Checksum/count drill is not production restore."
+}

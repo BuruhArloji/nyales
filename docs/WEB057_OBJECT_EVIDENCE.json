@@ -1,0 +1,403 @@
+{
+  "date": "2026-10-28",
+  "item": "WEB-057",
+  "classification": "synthetic-local",
+  "scope": "bounded R2 object-content verification and Recovery UI; no restore or deletion",
+  "runtime_operations": 318,
+  "application_tables": 114,
+  "tables_including_local_d1_metadata": 116,
+  "new_migrations": 0,
+  "new_runtime_endpoints": 0,
+  "unit_integration": {
+    "targeted_passed": 25,
+    "targeted_failed": 0,
+    "log": "test-results/web057-objects-final-regression.log"
+  },
+  "browser": {
+    "passed": 3,
+    "failed": 0,
+    "log": "test-results/web057-objects-browser-verified.log",
+    "proof_qa": {
+      "classification": "synthetic_local_qa",
+      "backup_id": "e3f53838-1579-4da1-8534-57b43707e33e",
+      "drill_id": "43332809-bbbf-460e-a01a-5cdad8435aba",
+      "actual_drill_status": "passed",
+      "object_report": {
+        "status": "passed",
+        "object_count": 0,
+        "verified_count": 0,
+        "expected_bytes": 0,
+        "verified_bytes": 0,
+        "reference_count": 0,
+        "skipped_uncommitted_attachments": 0,
+        "included_tables": [
+          "evidence_attachment"
+        ],
+        "excluded_scope": "Transient reports, import source files and objects outside the five supported table families are not verified by this drill.",
+        "checks": [],
+        "limits": {
+          "max_objects": 64,
+          "max_object_bytes": 8388608,
+          "max_total_bytes": 33554432,
+          "max_source_manifest_bytes": 8388608
+        },
+        "actual_restore_performed": false
+      },
+      "verify_objects_sent": true,
+      "reloaded": true,
+      "axe_violations": 0,
+      "viewports": [
+        390,
+        768,
+        1440
+      ],
+      "page_errors": [],
+      "actual_restore_performed": false,
+      "production_accepted": false
+    },
+    "proof_main": {
+      "classification": "existing_synthetic_local_pilot",
+      "backup_id": "079b647e-ff6b-4a40-9055-dec34ab7b14e",
+      "drill_id": "18067d6e-4975-4591-86d6-bd09cec876e7",
+      "object_report": {
+        "status": "passed",
+        "object_count": 1,
+        "verified_count": 1,
+        "expected_bytes": 73,
+        "verified_bytes": 73,
+        "reference_count": 1,
+        "skipped_uncommitted_attachments": 0,
+        "included_tables": [
+          "evidence_attachment"
+        ],
+        "excluded_scope": "Transient reports, import source files and objects outside the five supported table families are not verified by this drill.",
+        "checks": [
+          {
+            "resource_type": "attachment",
+            "resource_id": "aea7504c-1257-4f2a-91be-ece50874062a",
+            "status": "passed"
+          }
+        ],
+        "limits": {
+          "max_objects": 64,
+          "max_object_bytes": 8388608,
+          "max_total_bytes": 33554432,
+          "max_source_manifest_bytes": 8388608
+        },
+        "actual_restore_performed": false
+      },
+      "actual_restore_performed": false,
+      "production_accepted": false
+    },
+    "axe_violations": 0,
+    "viewports": [
+      390,
+      768,
+      1440
+    ],
+    "reload_verified": true,
+    "main_existing_private_object_verified": 1,
+    "actual_restore_performed": false
+  },
+  "typecheck": "passed",
+  "typecheck_log": "test-results/web057-objects-typecheck.log",
+  "build": "passed; existing large client bundle warning remains",
+  "build_log": "test-results/web057-objects-build.log",
+  "business_preservation": {
+    "main": {
+      "all_preexisting_business_rows_unchanged": true,
+      "tables": {
+        "customer_outlet": {
+          "before_rows": 20,
+          "after_rows": 20,
+          "before_sha256": "84b432ee2a259a8c7b7dea9ba4de7ba10249d810ffee9a2db345894361e6ba04",
+          "after_sha256": "84b432ee2a259a8c7b7dea9ba4de7ba10249d810ffee9a2db345894361e6ba04",
+          "equal": true
+        },
+        "customer_assignment": {
+          "before_rows": 20,
+          "after_rows": 20,
+          "before_sha256": "03e551fab9154be78edcac831a3e70d9dc4bebd2b5a14f9668940e510f939527",
+          "after_sha256": "03e551fab9154be78edcac831a3e70d9dc4bebd2b5a14f9668940e510f939527",
+          "equal": true
+        },
+        "invoice": {
+          "before_rows": 80,
+          "after_rows": 80,
+          "before_sha256": "bcc745721ffe3fa7c321d0f043c6075ac33e04e245dc0bc06260a7b624f01d66",
+          "after_sha256": "bcc745721ffe3fa7c321d0f043c6075ac33e04e245dc0bc06260a7b624f01d66",
+          "equal": true
+        },
+        "invoice_line": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "activity": {
+          "before_rows": 12,
+          "after_rows": 12,
+          "before_sha256": "206ef0b5a7ac5c879adfbbbcf905cc6e9506a8d335a2cbbc5be908f6adee1177",
+          "after_sha256": "206ef0b5a7ac5c879adfbbbcf905cc6e9506a8d335a2cbbc5be908f6adee1177",
+          "equal": true
+        },
+        "target_plan": {
+          "before_rows": 2,
+          "after_rows": 2,
+          "before_sha256": "2e138c7dafac61dcdb3930c91ff8702d69c9e7555dd7a44fd34af5d116a90ad3",
+          "after_sha256": "2e138c7dafac61dcdb3930c91ff8702d69c9e7555dd7a44fd34af5d116a90ad3",
+          "equal": true
+        },
+        "target_version": {
+          "before_rows": 2,
+          "after_rows": 2,
+          "before_sha256": "0f32d3f0994ba8dbfe3b64978570129cf2f39d9b1bfef3f103258777e1731b72",
+          "after_sha256": "0f32d3f0994ba8dbfe3b64978570129cf2f39d9b1bfef3f103258777e1731b72",
+          "equal": true
+        },
+        "target_item": {
+          "before_rows": 10,
+          "after_rows": 10,
+          "before_sha256": "a3e29710e892452b2e385e1e479213e149c640cc10fbf094ed589dc4160f9a1c",
+          "after_sha256": "a3e29710e892452b2e385e1e479213e149c640cc10fbf094ed589dc4160f9a1c",
+          "equal": true
+        },
+        "sales_order": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "94a8304ef149643ef80713ae95e011b8dc12380e0e0e6483c7bf2e07a40f86c0",
+          "after_sha256": "94a8304ef149643ef80713ae95e011b8dc12380e0e0e6483c7bf2e07a40f86c0",
+          "equal": true
+        },
+        "credit_note": {
+          "before_rows": 4,
+          "after_rows": 4,
+          "before_sha256": "812f6a35bbb26764085f69acae99bc1bf8047889b9a743395497b6cbc4fa987d",
+          "after_sha256": "812f6a35bbb26764085f69acae99bc1bf8047889b9a743395497b6cbc4fa987d",
+          "equal": true
+        },
+        "area_admin_membership": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "customer_admin_location": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "geo_distribution_run": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "organization": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "4c6be65b31bbdae44db42fc0ac0ebb1a28a73fed1b773714ce2ac126e29ca115",
+          "after_sha256": "4c6be65b31bbdae44db42fc0ac0ebb1a28a73fed1b773714ce2ac126e29ca115",
+          "equal": true
+        },
+        "branch": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "5f469951744bd1a9dd55141043b78c2462c5e0b2d85d1c7fc3a7097928e24344",
+          "after_sha256": "5f469951744bd1a9dd55141043b78c2462c5e0b2d85d1c7fc3a7097928e24344",
+          "equal": true
+        },
+        "area": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "eb1597355038c6d99cccb8ff824bd4500c285e94b304921ad57787f37940584d",
+          "after_sha256": "eb1597355038c6d99cccb8ff824bd4500c285e94b304921ad57787f37940584d",
+          "equal": true
+        },
+        "work_calendar": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "b732b1f910cf790d36c7fb274f9a92373be8297e3b0758c44c496fc47caf7341",
+          "after_sha256": "b732b1f910cf790d36c7fb274f9a92373be8297e3b0758c44c496fc47caf7341",
+          "equal": true
+        },
+        "app_user": {
+          "before_rows": 17,
+          "after_rows": 17,
+          "before_sha256": "ecb4dbd828edf7c36f952affb4cd263aa6672ab8784a5bddf8bacfe49d0bc4b6",
+          "after_sha256": "ecb4dbd828edf7c36f952affb4cd263aa6672ab8784a5bddf8bacfe49d0bc4b6",
+          "equal": true
+        }
+      },
+      "attachment_metadata_baseline": {
+        "rows": 1,
+        "sha256": "d17a586b277e6b21c2f3b1a4e5f7e6ab7257aa99ef8b90655d48ed7049488fdb"
+      }
+    },
+    "qa": {
+      "all_preexisting_business_rows_unchanged": true,
+      "tables": {
+        "customer_outlet": {
+          "before_rows": 18,
+          "after_rows": 18,
+          "before_sha256": "56485389a011386f5e238508f42d3b7a5754e5da312586869b784324f074bdbd",
+          "after_sha256": "56485389a011386f5e238508f42d3b7a5754e5da312586869b784324f074bdbd",
+          "equal": true
+        },
+        "customer_assignment": {
+          "before_rows": 16,
+          "after_rows": 16,
+          "before_sha256": "2f2a625a1dcaab6296bc2929ccf794fcc6a739d98eecd761391abb8cb5785e48",
+          "after_sha256": "2f2a625a1dcaab6296bc2929ccf794fcc6a739d98eecd761391abb8cb5785e48",
+          "equal": true
+        },
+        "invoice": {
+          "before_rows": 3,
+          "after_rows": 3,
+          "before_sha256": "27cc409b71ccc2e60c2296181a2dd45faacdc1f5180de819f0a92f624e666008",
+          "after_sha256": "27cc409b71ccc2e60c2296181a2dd45faacdc1f5180de819f0a92f624e666008",
+          "equal": true
+        },
+        "invoice_line": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "activity": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "target_plan": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "target_version": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "target_item": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "sales_order": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "credit_note": {
+          "before_rows": 0,
+          "after_rows": 0,
+          "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "equal": true
+        },
+        "area_admin_membership": {
+          "before_rows": 8,
+          "after_rows": 8,
+          "before_sha256": "17bb96ff4269f016855380bb566be93ae44d50794ec2bba341fb654394675256",
+          "after_sha256": "17bb96ff4269f016855380bb566be93ae44d50794ec2bba341fb654394675256",
+          "equal": true
+        },
+        "customer_admin_location": {
+          "before_rows": 28,
+          "after_rows": 28,
+          "before_sha256": "71da008995af57ee168089f4d9a1fc3f9b83e2e484db283db407e07cb39be2b5",
+          "after_sha256": "71da008995af57ee168089f4d9a1fc3f9b83e2e484db283db407e07cb39be2b5",
+          "equal": true
+        },
+        "geo_distribution_run": {
+          "before_rows": 12,
+          "after_rows": 12,
+          "before_sha256": "55a005c3db25ad98a147cbb8f0abb5b859b271fb78a0c02a5a952add126d4d73",
+          "after_sha256": "55a005c3db25ad98a147cbb8f0abb5b859b271fb78a0c02a5a952add126d4d73",
+          "equal": true
+        },
+        "organization": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "2c18d4a294e58bbb73cc11929b781846d87e1942c7914f3bac65c5c0acb84c89",
+          "after_sha256": "2c18d4a294e58bbb73cc11929b781846d87e1942c7914f3bac65c5c0acb84c89",
+          "equal": true
+        },
+        "branch": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "ec0a291a9fe03d0d9c780bf943b92bf4c89da7c8c7ebec4510ff57c39f3b3f05",
+          "after_sha256": "ec0a291a9fe03d0d9c780bf943b92bf4c89da7c8c7ebec4510ff57c39f3b3f05",
+          "equal": true
+        },
+        "area": {
+          "before_rows": 2,
+          "after_rows": 2,
+          "before_sha256": "545ee791c10f11d82fdd28d5fcc64c131b8e962789b4d1b1cbe61b6de6d2010e",
+          "after_sha256": "545ee791c10f11d82fdd28d5fcc64c131b8e962789b4d1b1cbe61b6de6d2010e",
+          "equal": true
+        },
+        "work_calendar": {
+          "before_rows": 1,
+          "after_rows": 1,
+          "before_sha256": "9760d0384cb18238d2672f1d639d71d55179156654876cb642c5a1df6740d67f",
+          "after_sha256": "9760d0384cb18238d2672f1d639d71d55179156654876cb642c5a1df6740d67f",
+          "equal": true
+        },
+        "app_user": {
+          "before_rows": 34,
+          "after_rows": 34,
+          "before_sha256": "dc25429d73aee314185eb5b8c23fcc625b1475307d48f1a59a5ba8cbdb17ac53",
+          "after_sha256": "dc25429d73aee314185eb5b8c23fcc625b1475307d48f1a59a5ba8cbdb17ac53",
+          "equal": true
+        }
+      },
+      "attachment_metadata_baseline": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "checks": {
+    "checksum_namespace_families": "passed",
+    "missing_corrupt_size_and_provider_failures": "passed",
+    "tenant_path_bounds_and_dedup": "passed",
+    "stream_cancel": "passed",
+    "metadata_only_compatibility": "passed",
+    "no_database_or_object_mutation": "passed"
+  },
+  "limits": {
+    "max_objects": 64,
+    "max_object_bytes": 8388608,
+    "max_total_bytes": 33554432,
+    "max_source_manifest_bytes": 8388608
+  },
+  "production_accepted": false,
+  "cloud_deployed": false,
+  "complete_restore_proven": false,
+  "rpo_rto_proven": false,
+  "note": "Logical backup remains an allowlist slice; supported object families are not a complete database snapshot.",
+  "full_suite": {
+    "passed": 318,
+    "failed": 0,
+    "skipped": 0,
+    "log": "test-results/web057-final-full-tests.log"
+  }
+}

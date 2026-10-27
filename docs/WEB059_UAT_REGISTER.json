@@ -1,0 +1,2038 @@
+{
+  "format": "nyales-uat-register-1",
+  "date": "2026-10-20",
+  "source_prd": "docs/specifications/PRD_Sales_Lapangan_dan_Telesales_v1_10.md",
+  "scope": "WEB-059 web release; 82 original PRD scenarios retained",
+  "acceptance_rule": "Supporting unit/route/browser evidence is not business sign-off. Deferred P1/integration/Android scenarios are never counted as passed. Real role/device/provider checks remain pending.",
+  "browser_evidence": "test-results/web059/results.json",
+  "scenarios": [
+    {
+      "id": "UAT-01",
+      "number": 1,
+      "scenario": "Sales hanya punya territory A",
+      "expected": "Tidak dapat membaca atau mengekspor territory B di luar izin",
+      "requirements": "RBAC-01",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/security-regression.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-02",
+      "number": 2,
+      "scenario": "Dua outlet berbagi nomor",
+      "expected": "Kandidat duplikat ditinjau; outlet sah tidak digabung otomatis",
+      "requirements": "CUS-02",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/customers.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-03",
+      "number": 3,
+      "scenario": "Dua agent mengambil queue bersamaan",
+      "expected": "Satu lease aktif; agent kedua mendapat item lain atau alasan",
+      "requirements": "TEL-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts",
+        "tests/security-regression.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-04",
+      "number": 4,
+      "scenario": "Pelanggan meminta DNC",
+      "expected": "Queue baru mengecualikan kontak; tindakan tercatat",
+      "requirements": "TEL-07, SEC-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-05",
+      "number": 5,
+      "scenario": "Kunjungan aktif dan telesales bersamaan",
+      "expected": "Peringatan dan hold sesuai cooldown; pengecualian beralasan",
+      "requirements": "COO-02",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-06",
+      "number": 6,
+      "scenario": "Panggilan manual diberi outcome tersambung",
+      "expected": "Tetap declared; tidak masuk talk time provider",
+      "requirements": "TEL-04",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-07",
+      "number": 7,
+      "scenario": "Webhook call dikirim tiga kali",
+      "expected": "Satu attempt dengan status final konsisten",
+      "requirements": "TEL-09",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-08",
+      "number": 8,
+      "scenario": "Callback dijadwal ulang setelah terlambat",
+      "expected": "Histori overdue awal tetap dapat dilaporkan",
+      "requirements": "TEL-06",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-09",
+      "number": 9,
+      "scenario": "Handoff ditolak",
+      "expected": "Alasan dan pekerjaan kembali terlihat pada pengirim/supervisor",
+      "requirements": "COO-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-10",
+      "number": 10,
+      "scenario": "Visit offline lalu restart aplikasi",
+      "expected": "Form pulih; sync membentuk satu visit",
+      "requirements": "OFF-01, OFF-06",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-11",
+      "number": 11,
+      "scenario": "Checkout tiba lebih dahulu",
+      "expected": "Event direkonsiliasi; durasi tidak negatif",
+      "requirements": "OFF-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-12",
+      "number": 12,
+      "scenario": "GPS akurasi buruk",
+      "expected": "Pending review dengan konteks; bukan fraud otomatis",
+      "requirements": "FLD-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-13",
+      "number": 13,
+      "scenario": "Izin lokasi ditolak",
+      "expected": "Penjelasan, retry, atau exception sesuai kebijakan",
+      "requirements": "FLD-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-14",
+      "number": 14,
+      "scenario": "Foto wajib gagal upload",
+      "expected": "Form tetap ada; bukti belum lengkap terlihat",
+      "requirements": "OFF-05",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-15",
+      "number": 15,
+      "scenario": "Double-click submit order",
+      "expected": "Satu order dengan ID yang sama",
+      "requirements": "ORD-05",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts",
+        "tests/finance.test.ts",
+        "tests/security-regression.test.ts"
+      ],
+      "browser_checks": [
+        {
+          "title": "offline order draft survives reload and sync retry keeps one order and original invoice totals",
+          "project": "chrome",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        }
+      ],
+      "local_evidence_status": "related_browser_check_passed_partial_scenario",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Browser demo hanya mencakup sebagian skenario; bukan login lintas role Firebase atau perangkat lapangan nyata.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-16",
+      "number": 16,
+      "scenario": "ERP menerima order lalu koneksi timeout",
+      "expected": "Status menunggu konfirmasi; rekonsiliasi menemukan order tanpa duplikasi",
+      "requirements": "ORD-05, INT-03",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-17",
+      "number": 17,
+      "scenario": "Harga direvisi setelah approval",
+      "expected": "Approval relevan dijalankan ulang",
+      "requirements": "ORD-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-18",
+      "number": 18,
+      "scenario": "Pelanggan pindah owner",
+      "expected": "Histori sales terdahulu tetap; akses mengikuti scope baru",
+      "requirements": "RBAC-03, CUS-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/customers.test.ts",
+        "tests/assignments.test.ts",
+        "tests/finance.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-19",
+      "number": 19,
+      "scenario": "Akurasi KPI coverage",
+      "expected": "Contoh 100 outlet menghasilkan 65%, bukan jumlah aktivitas",
+      "requirements": "Bagian 15",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-monitoring.test.ts",
+        "tests/m2-foundation.test.ts",
+        "tests/monitoring-capacity.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-20",
+      "number": 20,
+      "scenario": "Denominator KPI nol",
+      "expected": "Tidak berlaku; tidak tampil 0% atau 100% palsu",
+      "requirements": "Bagian 15",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-monitoring.test.ts",
+        "tests/m2-foundation.test.ts",
+        "tests/monitoring-capacity.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-21",
+      "number": 21,
+      "scenario": "Rencana diubah setelah hari berakhir",
+      "expected": "Versi awal tersimpan; completion tidak membaik diam-diam",
+      "requirements": "FLD-01",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-22",
+      "number": 22,
+      "scenario": "Opportunity dipindah ke Won tanpa order",
+      "expected": "Ditolak atau mengikuti definisi terkonfigurasi yang eksplisit",
+      "requirements": "CRM-02",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-23",
+      "number": 23,
+      "scenario": "Login user lain pada perangkat bersama",
+      "expected": "Data dan queue user sebelumnya tidak tampil",
+      "requirements": "OFF-06",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/security-regression.test.ts",
+        "tests/sessions.test.ts"
+      ],
+      "browser_checks": [
+        {
+          "title": "smoke logout revokes current token and second browser session stays active",
+          "project": "chrome",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        },
+        {
+          "title": "smoke logout revokes current token and second browser session stays active",
+          "project": "edge",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        }
+      ],
+      "local_evidence_status": "related_browser_check_passed_partial_scenario",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Browser demo hanya mencakup sebagian skenario; bukan login lintas role Firebase atau perangkat lapangan nyata.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-24",
+      "number": 24,
+      "scenario": "Hak akses dicabut saat offline",
+      "expected": "Server menolak mutation baru; exception lokal dapat ditangani",
+      "requirements": "OFF-04",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/security-regression.test.ts",
+        "tests/sessions.test.ts"
+      ],
+      "browser_checks": [
+        {
+          "title": "smoke logout revokes current token and second browser session stays active",
+          "project": "chrome",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        },
+        {
+          "title": "smoke logout revokes current token and second browser session stays active",
+          "project": "edge",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        }
+      ],
+      "local_evidence_status": "related_browser_check_passed_partial_scenario",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Browser demo hanya mencakup sebagian skenario; bukan login lintas role Firebase atau perangkat lapangan nyata.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-25",
+      "number": 25,
+      "scenario": "Webhook status lama tiba setelah final",
+      "expected": "Status final tidak mundur",
+      "requirements": "INT-03",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-26",
+      "number": 26,
+      "scenario": "Restore backup transaksi",
+      "expected": "Data pulih dalam RPO/RTO; hasil rekonsiliasi dapat diaudit",
+      "requirements": "NFR-04",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/security-regression.test.ts",
+        "tests/recovery.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "blocked_provider_restore",
+      "limitation": "Checksum/count drill belum membuktikan actual restore, RPO15m/RTO4h atau complete snapshot.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-27",
+      "number": 27,
+      "scenario": "Tracking native di luar sesi kerja",
+      "expected": "Tidak ada sample baru yang dikumpulkan oleh fitur",
+      "requirements": "FLD-07, SEC-04",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-28",
+      "number": 28,
+      "scenario": "Permintaan ekspor tanpa izin",
+      "expected": "Ditolak walau user dapat melihat dashboard",
+      "requirements": "RBAC-01",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/m3-monitoring.test.ts",
+        "tests/security-regression.test.ts",
+        "tests/monitoring-capacity.test.ts"
+      ],
+      "browser_checks": [
+        {
+          "title": "smoke Monitoring paginated drilldown export and channel filters",
+          "project": "chrome",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        },
+        {
+          "title": "smoke Monitoring paginated drilldown export and channel filters",
+          "project": "edge",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        }
+      ],
+      "local_evidence_status": "related_browser_check_passed_partial_scenario",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Browser demo hanya mencakup sebagian skenario; bukan login lintas role Firebase atau perangkat lapangan nyata.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-29",
+      "number": 29,
+      "scenario": "Status stok kedaluwarsa",
+      "expected": "Sumber dan umur data terlihat; tidak memberi janji tersedia",
+      "requirements": "ORD-04",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-30",
+      "number": 30,
+      "scenario": "User mencoba approve order sendiri",
+      "expected": "Diblokir dan diarahkan ke approver lain",
+      "requirements": "RBAC-02",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-31",
+      "number": 31,
+      "scenario": "Invoice eligible Rp10 juta merealisasikan Committed",
+      "expected": "Actual naik Rp10 juta dan residual turun sama; proyeksi tidak bertambah dua kali",
+      "requirements": "FRC-05",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts",
+        "tests/finance.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-32",
+      "number": 32,
+      "scenario": "Repeat order dan opportunity untuk kebutuhan sama",
+      "expected": "Link atau review overlap sebelum agregasi; satu contribution utama",
+      "requirements": "FRC-04, FRC-05",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-33",
+      "number": 33,
+      "scenario": "Deal Won belum diinvoicing",
+      "expected": "Tidak masuk actual invoice",
+      "requirements": "FRC-01",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts",
+        "tests/finance.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-34",
+      "number": 34,
+      "scenario": "Owner berpindah setelah snapshot",
+      "expected": "Snapshot lama tetap pada hierarchy awal",
+      "requirements": "FRC-08",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-35",
+      "number": 35,
+      "scenario": "Close date bergeser ke bulan berikutnya",
+      "expected": "Slippage dan pengurangan periode awal terlihat",
+      "requirements": "FRC-09",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-36",
+      "number": 36,
+      "scenario": "Supervisor memberi manager forecast",
+      "expected": "Angka alternatif tidak dijumlahkan dengan estimasi sales",
+      "requirements": "FRC-07",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-37",
+      "number": 37,
+      "scenario": "Actual evaluasi nol",
+      "expected": "WAPE/bias tidak berlaku dan error absolut ditampilkan",
+      "requirements": "FRC-10",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-38",
+      "number": 38,
+      "scenario": "Klik gap forecast",
+      "expected": "Daftar customer sumber dan pembuatan kunjungan/callback tersedia",
+      "requirements": "FRC-06",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-39",
+      "number": 39,
+      "scenario": "Realisasi invoice parsial",
+      "expected": "Hanya nilai residual yang tetap terbuka",
+      "requirements": "FRC-05",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts",
+        "tests/finance.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-40",
+      "number": 40,
+      "scenario": "Forecast berbeda basis atau satuan",
+      "expected": "Tidak dijumlahkan; UI menjelaskan basis yang tidak kompatibel",
+      "requirements": "FRC-01",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-workflows.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-41",
+      "number": 41,
+      "scenario": "Target Rp100 juta dan actual Rp125 juta pada contoh tier",
+      "expected": "Seluruh basis Rp2,5 juta; progresif Rp600 ribu",
+      "requirements": "INC-06",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-42",
+      "number": 42,
+      "scenario": "Achievement tepat pada ambang 80%",
+      "expected": "Pemilihan jenjang deterministik dan preview menunjukkan lompatan mode seluruh basis",
+      "requirements": "INC-05, INC-08",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-43",
+      "number": 43,
+      "scenario": "Target nol atau belum disahkan",
+      "expected": "Needs review; tidak membagi nol atau menganggap hasil final nol",
+      "requirements": "INC-01",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-foundation.test.ts",
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-44",
+      "number": 44,
+      "scenario": "Tarif aktif diubah",
+      "expected": "Versi baru dibuat; statement lama tetap",
+      "requirements": "INC-09",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-45",
+      "number": 45,
+      "scenario": "Dua komponen tumpang tindih tanpa aturan stacking",
+      "expected": "Aktivasi ditolak sampai konflik terselesaikan",
+      "requirements": "INC-07",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-46",
+      "number": 46,
+      "scenario": "Invoice Rp10 juta melibatkan aktivitas dua kanal",
+      "expected": "Satu kanal primer Rp10 juta; kanal bantuan tidak mendapat actual kedua; split pilot ditolak",
+      "requirements": "INC-10",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts",
+        "tests/finance.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-47",
+      "number": 47,
+      "scenario": "Run yang sama diulang",
+      "expected": "Hasil sama dan entitlement tidak ganda",
+      "requirements": "INC-11, INC-12",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-48",
+      "number": 48,
+      "scenario": "Retur setelah statement dibayar menurunkan jenjang",
+      "expected": "Selisih dihitung dengan rule/target periode asli dan menjadi adjustment terpisah",
+      "requirements": "INC-15",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-49",
+      "number": 49,
+      "scenario": "Export diulang",
+      "expected": "Batch/revision dapat dikenali; tidak menjadi pembayaran atau entitlement baru",
+      "requirements": "INC-16",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-50",
+      "number": 50,
+      "scenario": "Sales mengakses statement rekan atau approve miliknya",
+      "expected": "Akses ditolak sesuai scope dan pemisahan approver",
+      "requirements": "INC-02, INC-19",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/m3-incentives.test.ts",
+        "tests/security-regression.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-51",
+      "number": 51,
+      "scenario": "Scorecard berbobot 110% atau KPI hilang",
+      "expected": "Bobot tidak valid ditolak; missing metric mengikuti rule eksplisit",
+      "requirements": "INC-17",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-52",
+      "number": 52,
+      "scenario": "Pool team dibagi ke anggota",
+      "expected": "Total alokasi sama dengan pool setelah pembulatan; tidak dihitung dua kali",
+      "requirements": "INC-18",
+      "applicability": "Deferred integration/P1",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-53",
+      "number": 53,
+      "scenario": "Gate web belum diterima",
+      "expected": "Implementasi Android belum masuk tahap build; kontrak dan isu blocker tercatat",
+      "requirements": "AND-01",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-54",
+      "number": 54,
+      "scenario": "Android dan web memakai akun sama",
+      "expected": "Scope, customer, task dan angka snapshot konsisten",
+      "requirements": "AND-02, AND-04",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-55",
+      "number": 55,
+      "scenario": "Izin lokasi approximate atau ditolak",
+      "expected": "Akurasi/status terlihat dan tersedia alur perbaikan; tidak memberi label valid palsu",
+      "requirements": "AND-06, AND-09",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-56",
+      "number": 56,
+      "scenario": "Shift dimulai lalu layar dikunci",
+      "expected": "Uji service/indikator dan pencatatan pada HP nyata; gap tercatat bila OS membatasi",
+      "requirements": "AND-08, AND-21",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-57",
+      "number": 57,
+      "scenario": "End Shift saat offline",
+      "expected": "Pengambilan GPS berhenti lokal dan event akhir menunggu sync",
+      "requirements": "AND-08",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-58",
+      "number": 58,
+      "scenario": "Batas sesi lokal tercapai",
+      "expected": "Pengambilan berhenti sesuai aturan dan alasan terlihat",
+      "requirements": "AND-11",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-59",
+      "number": 59,
+      "scenario": "Force-stop atau reboot",
+      "expected": "Tidak mengklaim tracking kontinu atau resume diam-diam; user mendapat status saat membuka app",
+      "requirements": "AND-11",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-60",
+      "number": 60,
+      "scenario": "Crash setelah saved locally",
+      "expected": "Event/form pulih setelah aplikasi dibuka",
+      "requirements": "AND-13",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-61",
+      "number": 61,
+      "scenario": "Timeout batch setelah server menyimpan",
+      "expected": "Retry tidak membuat event/order ganda dan ack dapat dipulihkan",
+      "requirements": "AND-14",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-62",
+      "number": 62,
+      "scenario": "Batch lama diterima setelah lokasi baru",
+      "expected": "Posisi terakhir tidak mundur",
+      "requirements": "AND-12",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-63",
+      "number": 63,
+      "scenario": "Token atau akses dicabut",
+      "expected": "Refresh/reject sesuai policy; data akun lain tetap terisolasi",
+      "requirements": "AND-02, AND-15",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-64",
+      "number": 64,
+      "scenario": "Upload foto gagal",
+      "expected": "Visit/form tetap ada; bukti pending terlihat",
+      "requirements": "AND-16",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-65",
+      "number": 65,
+      "scenario": "R2 gagal atau digest arsip tidak cocok",
+      "expected": "GPS hot tidak dihapus dari D1",
+      "requirements": "AND-18",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-66",
+      "number": 66,
+      "scenario": "Job arsip crash lalu diulang",
+      "expected": "Satu manifest verified yang konsisten, tidak kehilangan titik",
+      "requirements": "AND-18",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-67",
+      "number": 67,
+      "scenario": "GPS terlambat untuk hari yang sudah diarsipkan",
+      "expected": "Segmen tambahan tercatat dan perjalanan tidak ganda",
+      "requirements": "AND-14, AND-18",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-68",
+      "number": 68,
+      "scenario": "Supervisor membuka perjalanan lama",
+      "expected": "Dibaca dari manifest/R2 sesuai scope; gap dan timestamp tetap terlihat",
+      "requirements": "AND-20",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-69",
+      "number": 69,
+      "scenario": "Upgrade APK ketika masih ada antrean",
+      "expected": "Migrasi mempertahankan event dan retry",
+      "requirements": "AND-22",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-70",
+      "number": 70,
+      "scenario": "Disk mendekati penuh",
+      "expected": "Warning dan pembatasan lampiran tanpa menghapus event belum ack",
+      "requirements": "AND-13",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-71",
+      "number": 71,
+      "scenario": "Budget penyimpanan/request mendekati batas",
+      "expected": "Alert muncul; tidak upgrade berbayar atau menghapus data bisnis otomatis",
+      "requirements": "AND-19",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-72",
+      "number": 72,
+      "scenario": "Build kandidat akan didistribusikan",
+      "expected": "Signing, kepemilikan akun, package registration serta jalur distribusi lolos checklist",
+      "requirements": "AND-22, AND-23",
+      "applicability": "Deferred Android",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [],
+      "browser_checks": [],
+      "local_evidence_status": "not_applicable_this_web_release",
+      "acceptance_status": "deferred",
+      "limitation": "Diuji pada milestone fitur terkait; bukan pass web.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-73",
+      "number": 73,
+      "scenario": "Invoice header memiliki beberapa line dan diimport ulang",
+      "expected": "Header dihitung sekali; line unik; total sama dengan sumber",
+      "requirements": "INT-01, Bagian 20.1",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/finance.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-74",
+      "number": 74,
+      "scenario": "Owner berpindah 16 Oktober",
+      "expected": "Invoice sebelum/sesudah mengikuti atribusi bertanggal efektif; konflik masuk review",
+      "requirements": "CUS-03, RBAC-03",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/assignments.test.ts",
+        "tests/finance.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-75",
+      "number": 75,
+      "scenario": "Customer tepat 90 dan 91 hari sejak invoice",
+      "expected": "Aktif pada batas 90 hari; Churn pada 91 hari berdasarkan tanggal bisnis",
+      "requirements": "CUS-06",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-foundation.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-76",
+      "number": 76,
+      "scenario": "Target bottom-up dan top-down dijalankan",
+      "expected": "Masing-masing sama dengan parent; tidak dijumlahkan antar skenario",
+      "requirements": "TGT-01, FRC-07",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-foundation.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-77",
+      "number": 77,
+      "scenario": "Customer baru belum memiliki histori bulan penuh",
+      "expected": "Gunakan target onboarding; tidak memakai penjualan masa depan",
+      "requirements": "FRC-07",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m2-foundation.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-78",
+      "number": 78,
+      "scenario": "AM Area A meminta daftar atau ekspor Area B",
+      "expected": "Backend menolak akses walau mengetahui ID",
+      "requirements": "RBAC-01",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/security-regression.test.ts",
+        "tests/monitoring-capacity.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-79",
+      "number": 79,
+      "scenario": "SR atau AM mencoba mengubah skema/target",
+      "expected": "Ditolak; konfigurasi hanya Management/NSM",
+      "requirements": "RBAC-01, INC-02",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/scope.test.ts",
+        "tests/m3-incentives.test.ts",
+        "tests/security-regression.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-80",
+      "number": 80,
+      "scenario": "Insentif 80%, 81%, 102% dan role berbeda",
+      "expected": "Sesuai contoh progresif; pembulatan rupiah; tidak ada finalisasi otomatis",
+      "requirements": "INC-06, INC-14",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-81",
+      "number": 81,
+      "scenario": "Retur setelah statement final",
+      "expected": "Revision dan selisih terlacak; statement original tetap tersedia",
+      "requirements": "INC-15",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-incentives.test.ts"
+      ],
+      "browser_checks": [],
+      "local_evidence_status": "supporting_route_regression_available",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Route fixtures mendukung aturan bisnis; perlu pelaksanaan skenario pada role/perangkat yang disepakati.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    },
+    {
+      "id": "UAT-82",
+      "number": 82,
+      "scenario": "Sync gagal setelah dashboard direfresh",
+      "expected": "Timestamp sumber tidak maju; stale/provisional dan data belum tersedia jujur",
+      "requirements": "NFR-06, Bagian 20.2",
+      "applicability": "Web release gate",
+      "execution_steps": [
+        "Gunakan akun, scope dan data sintetis/pilot yang disetujui untuk skenario ini.",
+        "Jalankan pemicu pada kolom scenario; periksa UI, respons API dan fakta tersimpan.",
+        "Bandingkan dengan expected; simpan evidence, defect ID dan reviewer sebelum sign-off."
+      ],
+      "supporting_regression": [
+        "tests/m3-monitoring.test.ts",
+        "tests/overview-uat.test.ts",
+        "tests/monitoring-capacity.test.ts"
+      ],
+      "browser_checks": [
+        {
+          "title": "request failure preserves an actionable retry in drilldown and recovers",
+          "project": "chrome",
+          "outcome": "expected",
+          "attempts": [
+            "passed"
+          ]
+        }
+      ],
+      "local_evidence_status": "related_browser_check_passed_partial_scenario",
+      "acceptance_status": "pending_named_reviewer_role_device_uat",
+      "limitation": "Browser demo hanya mencakup sebagian skenario; bukan login lintas role Firebase atau perangkat lapangan nyata.",
+      "reviewer": null,
+      "reviewed_at": null,
+      "defect_ids": [],
+      "signoff_evidence": []
+    }
+  ],
+  "browser_summary": {
+    "total": 11,
+    "passed": 11,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "start_time": "2026-10-20T15:27:16.579Z",
+    "duration_ms": 152707.799
+  },
+  "counts": {
+    "total": 82,
+    "web_release": 53,
+    "deferred_integration_p1": 8,
+    "deferred_android": 21,
+    "accepted": 0
+  }
+}

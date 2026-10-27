@@ -1,0 +1,2110 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-066 regional performance and coverage API",
+    "version": "0.1.0",
+    "description": "Local implementation. Mapping current at read cutoff; historical facts unchanged. Active canonical coverage cohort; invoice attribution remains historical and inaccessible current geography uses unmapped bucket. Definition nyales-geo-kpi-1; bounds 2000 customers/50000 invoices/10000 activities/2000 targets. Not market share or provider-completeness evidence."
+  },
+  "paths": {
+    "/api/geo/analytics": {
+      "get": {
+        "operationId": "regional_filters",
+        "summary": "Scoped region and unmapped KPI reconciliation with current-read mapping applied consistently to both financial periods.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "period",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "in": "query",
+            "name": "area_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "rep_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "dataset_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "boundary_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapping_bucket",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "const": "unmapped"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data envelope; null is unknown/not applicable, observed amounts remain separate.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/summary_response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization and role/area/team/channel/customer/invoice predicates; current customer visibility never expands historic invoice scope.",
+        "x-rules": [
+          "boundary_id and mapping_bucket are mutually exclusive.",
+          "Active dataset only; draft/retired never operational.",
+          "Explicit customer targets only; unallocated or invalid leaves/reserve suppress regional achievement.",
+          "Source completeness required for confirmed actual/growth; growth needs positive comparable prior baseline.",
+          "Received meaningful coverage is not provider verification. Zero denominator is null.",
+          "Sources/export require exact snapshot; live read with input revision detection, not immutable long-term report storage."
+        ]
+      }
+    },
+    "/api/geo/analytics/sources": {
+      "get": {
+        "operationId": "regional_sources",
+        "summary": "Snapshot-bound sources, 50 default / 100 maximum per page; changes require refetch.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "period",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "in": "query",
+            "name": "area_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "rep_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "dataset_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "boundary_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapping_bucket",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "const": "unmapped"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "customers",
+                "invoices",
+                "activities",
+                "targets",
+                "sales"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 50000
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "in": "query",
+            "name": "snapshot",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data envelope; null is unknown/not applicable, observed amounts remain separate.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/source_response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization and role/area/team/channel/customer/invoice predicates; current customer visibility never expands historic invoice scope.",
+        "x-rules": [
+          "boundary_id and mapping_bucket are mutually exclusive.",
+          "Active dataset only; draft/retired never operational.",
+          "Explicit customer targets only; unallocated or invalid leaves/reserve suppress regional achievement.",
+          "Source completeness required for confirmed actual/growth; growth needs positive comparable prior baseline.",
+          "Received meaningful coverage is not provider verification. Zero denominator is null.",
+          "Sources/export require exact snapshot; live read with input revision detection, not immutable long-term report storage."
+        ]
+      }
+    },
+    "/api/geo/analytics/export": {
+      "get": {
+        "operationId": "regional_export",
+        "summary": "Snapshot-bound UTF-8 CSV regional summary carrying filters, mapping basis, source status and release.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "period",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "in": "query",
+            "name": "area_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "rep_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "channel",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "dataset_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "boundary_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapping_bucket",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "const": "unmapped"
+            }
+          },
+          {
+            "in": "query",
+            "name": "snapshot",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV; empty fields remain unknown, with status columns.",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; source/scope/snapshot/limit errors fail closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current organization and role/area/team/channel/customer/invoice predicates; current customer visibility never expands historic invoice scope.",
+        "x-rules": [
+          "boundary_id and mapping_bucket are mutually exclusive.",
+          "Active dataset only; draft/retired never operational.",
+          "Explicit customer targets only; unallocated or invalid leaves/reserve suppress regional achievement.",
+          "Source completeness required for confirmed actual/growth; growth needs positive comparable prior baseline.",
+          "Received meaningful coverage is not provider verification. Zero denominator is null.",
+          "Sources/export require exact snapshot; live read with input revision detection, not immutable long-term report storage."
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "filters": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "branch_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "team_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "mapping_bucket": {
+            "type": "string",
+            "const": "unmapped"
+          }
+        },
+        "additionalProperties": false,
+        "not": {
+          "required": [
+            "boundary_id",
+            "mapping_bucket"
+          ]
+        }
+      },
+      "sources": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "branch_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "team_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "mapping_bucket": {
+            "type": "string",
+            "const": "unmapped"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "customers",
+              "invoices",
+              "activities",
+              "targets",
+              "sales"
+            ]
+          },
+          "offset": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50000
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "snapshot": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "kind",
+          "snapshot"
+        ],
+        "additionalProperties": false,
+        "not": {
+          "required": [
+            "boundary_id",
+            "mapping_bucket"
+          ]
+        }
+      },
+      "export": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "branch_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "team_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "mapping_bucket": {
+            "type": "string",
+            "const": "unmapped"
+          },
+          "snapshot": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "additionalProperties": false,
+        "not": {
+          "required": [
+            "boundary_id",
+            "mapping_bucket"
+          ]
+        }
+      },
+      "metric_row": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "boundary_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "hierarchy": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "customer_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "covered_customer_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "activity_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "meaningful_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "invoice_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unknown_customer_status_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "new_customer_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unassigned_customer_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unassigned_field_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unassigned_telesales_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "overdue_service_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unknown_service_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "observed_actual_net_minor": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "observed_previous_net_minor": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "actual_net_minor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_minor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eligible_actual_minor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "coverage_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "growth_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "achievement_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "active_customer_count": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "churn_customer_count": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "growth_status": {
+            "enum": [
+              "source_incomplete",
+              "nonpositive_baseline",
+              "available"
+            ]
+          },
+          "target_status": {
+            "enum": [
+              "no_target",
+              "target_not_fully_allocated_or_needs_review",
+              "source_incomplete",
+              "zero_target",
+              "available"
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "boundary_id",
+          "name",
+          "hierarchy",
+          "customer_count",
+          "covered_customer_count",
+          "activity_count",
+          "meaningful_count",
+          "invoice_count",
+          "unknown_customer_status_count",
+          "new_customer_count",
+          "unassigned_customer_count",
+          "unassigned_field_count",
+          "unassigned_telesales_count",
+          "overdue_service_count",
+          "unknown_service_count",
+          "observed_actual_net_minor",
+          "observed_previous_net_minor",
+          "actual_net_minor",
+          "target_minor",
+          "eligible_actual_minor",
+          "coverage_percent",
+          "growth_percent",
+          "achievement_percent",
+          "active_customer_count",
+          "churn_customer_count",
+          "growth_status",
+          "target_status"
+        ],
+        "additionalProperties": true
+      },
+      "basis": {
+        "type": "object",
+        "properties": {
+          "definition_version": {
+            "const": "nyales-geo-kpi-1"
+          },
+          "scope_fingerprint": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "kpi_base": {
+            "type": "string"
+          },
+          "geography": {
+            "const": "current_confirmed_mapping_at_read_cutoff"
+          },
+          "mapping_cutoff": {
+            "type": "string"
+          },
+          "effective_channel": {
+            "enum": [
+              "field",
+              "telesales",
+              "combined"
+            ]
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string"
+          },
+          "cutoff": {
+            "type": "string"
+          },
+          "comparison": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string"
+              },
+              "cutoff": {
+                "type": "string"
+              },
+              "comparison": {
+                "enum": [
+                  "full_month_previous_month",
+                  "month_to_date_same_day_clamped_to_previous_month_end"
+                ]
+              }
+            },
+            "required": [
+              "start",
+              "cutoff",
+              "comparison"
+            ],
+            "additionalProperties": true
+          },
+          "boundary_dataset": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "release_version": {
+                "type": "string"
+              },
+              "code_namespace": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "release_version",
+              "code_namespace"
+            ],
+            "additionalProperties": true
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cohort": {
+            "type": "string"
+          },
+          "coverage": {
+            "type": "string"
+          },
+          "unmapped": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "definition_version",
+          "scope_fingerprint",
+          "kpi_base",
+          "geography",
+          "mapping_cutoff",
+          "effective_channel",
+          "timezone",
+          "period",
+          "start",
+          "cutoff",
+          "comparison",
+          "boundary_dataset",
+          "revision",
+          "cohort",
+          "coverage",
+          "unmapped",
+          "target",
+          "service"
+        ],
+        "additionalProperties": true
+      },
+      "freshness": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "source_coverage": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_complete": {
+            "type": "boolean"
+          },
+          "source_cutoff": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ui_read_at": {
+            "type": "string"
+          },
+          "validation_state": {
+            "enum": [
+              "validated",
+              "provisional"
+            ]
+          }
+        },
+        "required": [
+          "source",
+          "source_coverage",
+          "source_complete",
+          "source_cutoff",
+          "ui_read_at",
+          "validation_state"
+        ],
+        "additionalProperties": true
+      },
+      "summary_data": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "$ref": "#/components/schemas/filters"
+          },
+          "basis": {
+            "$ref": "#/components/schemas/basis"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/freshness"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/metric_row"
+            }
+          },
+          "totals": {
+            "type": "object",
+            "properties": {
+              "customer_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "covered_customer_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "activity_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "meaningful_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "observed_actual_net_minor": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "invoice_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "customer_count",
+              "covered_customer_count",
+              "activity_count",
+              "meaningful_count",
+              "observed_actual_net_minor",
+              "invoice_count"
+            ],
+            "additionalProperties": true
+          },
+          "coverage_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_allocation": {
+            "type": "object",
+            "properties": {
+              "complete": {
+                "type": "boolean"
+              },
+              "unallocated_leaf_minor": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "reserve_minor": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reserve_present": {
+                "type": "boolean"
+              },
+              "reserve_scope": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "complete",
+              "unallocated_leaf_minor",
+              "reserve_minor",
+              "reserve_present",
+              "reserve_scope",
+              "status"
+            ],
+            "additionalProperties": true
+          },
+          "limits": {
+            "type": "object",
+            "properties": {
+              "customers": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "invoices": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "activities": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "targets": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "customers",
+              "invoices",
+              "activities",
+              "targets"
+            ],
+            "additionalProperties": true
+          },
+          "selected_boundary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "snapshot": {
+            "type": "string"
+          },
+          "read_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "filters",
+          "basis",
+          "freshness",
+          "rows",
+          "totals",
+          "coverage_percent",
+          "target_allocation",
+          "limits",
+          "selected_boundary",
+          "snapshot",
+          "read_at"
+        ],
+        "additionalProperties": true
+      },
+      "summary_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/summary_data"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": true
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": true
+      },
+      "source_response": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "customers"
+                  },
+                  "rows": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "boundary_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "status": {
+                          "enum": [
+                            "Aktif",
+                            "Churn",
+                            "New",
+                            "Unknown"
+                          ]
+                        },
+                        "observed_status": {
+                          "enum": [
+                            "Aktif",
+                            "Churn",
+                            "New"
+                          ]
+                        },
+                        "covered": {
+                          "type": "boolean"
+                        },
+                        "service_due": {
+                          "anyOf": [
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "service_frequency_days": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "boundary_id",
+                        "status",
+                        "observed_status",
+                        "covered",
+                        "service_due",
+                        "service_frequency_days"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "snapshot": {
+                    "type": "string"
+                  },
+                  "basis": {
+                    "$ref": "#/components/schemas/basis"
+                  },
+                  "pagination": {
+                    "type": "object",
+                    "properties": {
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      "total": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "has_more": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "offset",
+                      "limit",
+                      "total",
+                      "has_more"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "kind",
+                  "rows",
+                  "snapshot",
+                  "basis",
+                  "pagination"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "additionalProperties": true
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "invoices"
+                  },
+                  "rows": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "source_invoice_id": {
+                          "type": "string"
+                        },
+                        "invoice_date": {
+                          "type": "string"
+                        },
+                        "channel": {
+                          "enum": [
+                            "field",
+                            "telesales"
+                          ]
+                        },
+                        "rep_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "area_id": {
+                          "type": "string"
+                        },
+                        "net_minor": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "customer_id": {
+                          "type": "string"
+                        },
+                        "customer_name": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "boundary_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "source_invoice_id",
+                        "invoice_date",
+                        "channel",
+                        "rep_id",
+                        "area_id",
+                        "net_minor",
+                        "customer_id",
+                        "customer_name",
+                        "boundary_id"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "snapshot": {
+                    "type": "string"
+                  },
+                  "basis": {
+                    "$ref": "#/components/schemas/basis"
+                  },
+                  "pagination": {
+                    "type": "object",
+                    "properties": {
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      "total": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "has_more": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "offset",
+                      "limit",
+                      "total",
+                      "has_more"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "kind",
+                  "rows",
+                  "snapshot",
+                  "basis",
+                  "pagination"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "additionalProperties": true
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "activities"
+                  },
+                  "rows": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "type": "string"
+                        },
+                        "channel": {
+                          "enum": [
+                            "field",
+                            "telesales"
+                          ]
+                        },
+                        "activity_kind": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "occurred_at": {
+                          "type": "string"
+                        },
+                        "customer_id": {
+                          "type": "string"
+                        },
+                        "meaningful": {
+                          "enum": [
+                            0,
+                            1
+                          ]
+                        },
+                        "connected_pic": {
+                          "enum": [
+                            0,
+                            1
+                          ]
+                        },
+                        "boundary_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "user_id",
+                        "channel",
+                        "activity_kind",
+                        "status",
+                        "occurred_at",
+                        "customer_id",
+                        "meaningful",
+                        "connected_pic",
+                        "boundary_id"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "snapshot": {
+                    "type": "string"
+                  },
+                  "basis": {
+                    "$ref": "#/components/schemas/basis"
+                  },
+                  "pagination": {
+                    "type": "object",
+                    "properties": {
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      "total": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "has_more": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "offset",
+                      "limit",
+                      "total",
+                      "has_more"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "kind",
+                  "rows",
+                  "snapshot",
+                  "basis",
+                  "pagination"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "additionalProperties": true
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "targets"
+                  },
+                  "rows": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "customer_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "boundary_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "channel": {
+                          "enum": [
+                            "field",
+                            "telesales"
+                          ]
+                        },
+                        "area_id": {
+                          "type": "string"
+                        },
+                        "rep_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "target_minor": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "actual_minor": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "needs_review": {
+                          "type": "boolean"
+                        },
+                        "period_start": {
+                          "type": "string"
+                        },
+                        "period_end": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "customer_id",
+                        "boundary_id",
+                        "channel",
+                        "area_id",
+                        "rep_id",
+                        "target_minor",
+                        "actual_minor",
+                        "needs_review",
+                        "period_start",
+                        "period_end"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "snapshot": {
+                    "type": "string"
+                  },
+                  "basis": {
+                    "$ref": "#/components/schemas/basis"
+                  },
+                  "pagination": {
+                    "type": "object",
+                    "properties": {
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      "total": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "has_more": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "offset",
+                      "limit",
+                      "total",
+                      "has_more"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "kind",
+                  "rows",
+                  "snapshot",
+                  "basis",
+                  "pagination"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "additionalProperties": true
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "sales"
+                  },
+                  "rows": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "rep_id": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "channel": {
+                          "enum": [
+                            "field",
+                            "telesales"
+                          ]
+                        },
+                        "invoice_count": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "observed_actual_net_minor": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "rep_id",
+                        "channel",
+                        "invoice_count",
+                        "observed_actual_net_minor"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "snapshot": {
+                    "type": "string"
+                  },
+                  "basis": {
+                    "$ref": "#/components/schemas/basis"
+                  },
+                  "pagination": {
+                    "type": "object",
+                    "properties": {
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      "total": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "has_more": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "offset",
+                      "limit",
+                      "total",
+                      "has_more"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "kind",
+                  "rows",
+                  "snapshot",
+                  "basis",
+                  "pagination"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ]
+}

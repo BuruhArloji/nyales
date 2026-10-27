@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-28",
+  "classification": "synthetic",
+  "status": "local_operational_pilot_and_recovery_object_verification_verified; real pilot/go-live pending",
+  "url": "http://127.0.0.1:5183",
+  "operations": {
+    "source": "pilot/operations-20261022-v2/SUMMARY.json",
+    "simulated_clock": "2026-10-21T03:00:00.000Z",
+    "activities": 12,
+    "meaningful": 8,
+    "covered_customers": 8,
+    "customer_count": 20,
+    "coverage_percent": 40,
+    "manual_pic_connections": 2,
+    "provider_verified_connections": null,
+    "sales_positions": 8,
+    "open_followup_tasks": 3,
+    "invoice_values_unchanged": true,
+    "role_checks": [
+      {
+        "actor": "demo-management",
+        "customers": 20
+      },
+      {
+        "actor": "demo-reviewer",
+        "customers": 20
+      },
+      {
+        "actor": "demo-sales-01",
+        "customers": 20
+      },
+      {
+        "actor": "demo-sales-09",
+        "customers": 2
+      },
+      {
+        "actor": "spv-field",
+        "customers": 16
+      },
+      {
+        "actor": "spv-telesales",
+        "customers": 4
+      },
+      {
+        "actor": "am-field",
+        "customers": 20
+      }
+    ],
+    "scope_negative_controls_passed": true,
+    "auth_boundary": "injected scoped-route identities; no Firebase/browser role login proof"
+  },
+  "browser": {
+    "classification": "synthetic",
+    "verified_at": "2026-10-21T18:21:30.384Z",
+    "activities": 12,
+    "meaningful": 8,
+    "coverage_percent": 40,
+    "manual_connections": 2,
+    "verified_connections": null,
+    "sales_positions": 8,
+    "downloaded_attachment_sha256": "d527c4a8505b18ee441486b7de19b410ff47f5960c466d900c923410fe3baa8f",
+    "actual_unchanged": true,
+    "browser_errors": [],
+    "human_training_completed": false,
+    "production_accepted": false
+  },
+  "restore": {
+    "evidence": "test-results/pilot-restore-20261022/SUMMARY.json",
+    "status": "local_full_database_and_attachment_restore_passed",
+    "method": "SQLite online backup of running local D1, full inventory comparison, Wrangler D1 query, R2 byte copy and download comparison",
+    "table_count": 86,
+    "schema_sha256": "0bee44783aea4da40b3ae188ece888b30972792e8728f8afcb59423436d431b6",
+    "snapshot_sha256": "f17279ddf2bf1322fcac5acc855de98ed4979742ee361df5a8fc8587d58067fd",
+    "attachments": [
+      {
+        "id": "aea7504c-1257-4f2a-91be-ece50874062a",
+        "size": 73,
+        "sha256": "d527c4a8505b18ee441486b7de19b410ff47f5960c466d900c923410fe3baa8f",
+        "restored_bytes_match": true
+      }
+    ],
+    "restored_d1": {
+      "invoice_count": 80,
+      "activity_count": 12,
+      "ready_attachments": 1,
+      "october_net": 36520000
+    },
+    "duration_ms": 25167,
+    "source_database_modified": false,
+    "cloud_restore_verified": false,
+    "rpo_rto_sla_accepted": false
+  },
+  "checks": {
+    "unit_integration_passed": 135,
+    "unit_integration_failed": 0,
+    "typescript": "passed",
+    "browser_operational_scenarios_passed": 1,
+    "scope": "new operational scenario; previous launch test evidence retained"
+  },
+  "source_coverage": {
+    "complete_through": "2026-10-21",
+    "business_date_during_browser_test": "2026-10-22",
+    "current_month_actual": "provisional observed",
+    "observed_actual_idr": 36520000,
+    "auto_extended": false
+  },
+  "human_training_completed": false,
+  "production_accepted": false,
+  "cloud_deployed": false,
+  "remaining": [
+    "Real role login/Firebase/MFA and physical GPS/offline/device acceptance",
+    "Telephony provider connections remain unavailable; all call results synthetic manual",
+    "Named human training and support/handover sign-off",
+    "Cloud backup/restore, provider capacity and business go-live approval",
+    "Complete cloud/provider restore, RPO/RTO and durability acceptance; local bounded object drill is not complete restore",
+    "Named human UAT/training and production go-live approval"
+  ],
+  "recovery_object_verification": {
+    "evidence": "docs/WEB057_OBJECT_EVIDENCE.json",
+    "full_suite_passed": 318,
+    "browser_scenarios_passed": 3,
+    "main_existing_attachment_verified_bytes": 73,
+    "qa_object_count": 0,
+    "actual_restore_performed": false,
+    "complete_restore_proven": false,
+    "production_accepted": false
+  },
+  "release_gate": {
+    "script": "scripts/pilot-release-gate.ts",
+    "evidence": "docs/WEB062_RELEASE_GATE.json",
+    "decision": "blocked",
+    "full_suite_passed": 319,
+    "full_suite_log": "test-results/web062-final-full-tests.log"
+  }
+}

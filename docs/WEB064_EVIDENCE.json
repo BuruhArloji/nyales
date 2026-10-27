@@ -1,0 +1,120 @@
+{
+  "date": "2026-10-24",
+  "item": "WEB-064",
+  "status": "Implemented and verified local; source/provider/human gates pending",
+  "preview_url": "http://127.0.0.1:5183/#page=map",
+  "classification": "synthetic pilot with separately labelled real-source boundary draft",
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "migration": "0036_customer_geography_review.sql",
+  "tests": {
+    "unit_integration": {
+      "passed": 149,
+      "failed": 0,
+      "log": "test-results/web064-full-tests.log",
+      "new_geography_tests": 6
+    },
+    "browser": {
+      "passed": 2,
+      "failed": 0,
+      "report": "test-results/web064-browser/results.json",
+      "synthetic": {
+        "dataset_id": "bc28fb2b-479f-437e-a176-dadea7744947",
+        "classification": "synthetic",
+        "flow": "UI -> API -> D1/R2 -> review -> reload -> map -> customers -> map",
+        "commercial_customer_rows_unchanged": true,
+        "viewport_widths": [
+          390,
+          768,
+          1440
+        ],
+        "keyboard_selection": true,
+        "polygon_click_and_tooltip": true,
+        "fullscreen_preserves_selection": true,
+        "basemap": "empty style fixture for deterministic QA; real MapLibre polygon renderer",
+        "axe_violations": 0,
+        "page_errors": [],
+        "production_accepted": false
+      },
+      "real_source": "Six retained Gambir boundaries previewed as draft; customer rows unchanged; draft operational drilldown disabled"
+    },
+    "typecheck": "passed",
+    "build": "passed; existing large-client-bundle warning remains (about 1.90 MB before gzip)",
+    "baseline_uat": "82 scenarios preserved; automated regression does not replace human sign-off",
+    "targeted_final_regression": {
+      "passed": 9,
+      "failed": 0,
+      "log": "test-results/web064-final-regression.log"
+    },
+    "live_provider_smoke": {
+      "proof": "test-results/web064-live-provider.json",
+      "screenshot": "test-results/web064-live-provider-loaded.png",
+      "style_and_tile_http_200_responses": 11,
+      "final_basemap_warning": null,
+      "production_sla_verified": false,
+      "full_geometry_features_received": 6,
+      "polygon_overlay_visually_verified": true
+    }
+  },
+  "api": {
+    "operations": 245,
+    "linked": 245,
+    "unauthenticated_rejections_tested": 243,
+    "new_operations": 5,
+    "contract": "docs/specifications/geography-api.m4.openapi.json"
+  },
+  "commercial_preservation": {
+    "tables_compared": 16,
+    "all_equal": true,
+    "record_comparison": "test-results/web064-commercial-reconciliation.json",
+    "baseline": "retained WEB-063 full restore snapshot; compared with post-0036 pilot snapshot",
+    "invoice_count": 80,
+    "october_net": 36520000
+  },
+  "restore": {
+    "status": "local_full_database_and_attachment_restore_passed",
+    "tables": 92,
+    "attachments": 1,
+    "boundary_chunks": 1,
+    "proof": "test-results/web064-full-restore/SUMMARY.json",
+    "scope": "full main synthetic pilot D1 schema/rows and private R2 bytes; no cloud restore claim"
+  },
+  "source": {
+    "features": 6,
+    "status": "draft",
+    "usage_rights_reviewed": false,
+    "namespace_review_pending": true,
+    "national_complete": false,
+    "active_real_dataset": false
+  },
+  "limits": {
+    "display_features": 50,
+    "geometry_response_bytes": 2097152,
+    "geometry_read_bytes": 8388608,
+    "match_candidates": 100,
+    "history_rows_per_response": 50,
+    "dataset_features": 1000,
+    "provider_capacity_at_maximum_verified": false
+  },
+  "geography_basis": "Current effective mapping/counts; period is navigation context only; no regional finance allocation/analytics yet",
+  "next": "WEB-065; WEB-066/067 regional analytics remain Planned",
+  "pending": [
+    "Documented real-source usage rights/namespace/metadata review and activation",
+    "Real role Firebase/device/business acceptance",
+    "Provider Free CPU/concurrency/quota and cloud deployment/restore",
+    "WEB-065 territory assignment and WEB-066 regional performance/coverage"
+  ],
+  "source_sha256": {
+    "migrations/0036_customer_geography_review.sql": "50b13440cccf4832ba362b54d4f365098385311642f26c0c2a74c9140bf561ce",
+    "src/server/geography.ts": "941f607186329fab9e5cd0bfbddd4ad9f2cdbb19aaf1be24ff1c4f23c15ac676",
+    "src/shared/geography.ts": "f6716fa2b52be583a0af9576f3b41242c72af5083054347d866a35ac16d7620f",
+    "src/client/GeographyPage.tsx": "ceca8618cd46139751db8e2e2814f16b2ac6b5d1e85c245b4c93dded9f80734e",
+    "src/client/CustomerMappingReview.tsx": "4cf41a45bff0cb61a88da13d54b9df6d94f4169bb8aa0323bd6023050f851e20",
+    "src/client/geo-navigation.ts": "801375b4a6e8c4311df0e94b6af7788f1b16f4593793b79bd3b04b2ee2baeab0",
+    "src/client/MapView.tsx": "0abfdaa46b4b10bb510e962f59b3ad252a96c4b153da9cb919c379efe768e87d",
+    "tests/geography.test.ts": "3f1424913208c7b020f2ea09fbce6eb9c24167c25c0f35969983d81d1d6be7b9",
+    "tests/browser/geography.spec.cjs": "ee8672288f0b936fcdf8f3b2a0f7ed9f233e6b2e57412875882f0c3453e24555",
+    "src/client/boundary-data.ts": "02fb4fc98df0ca2e2389a04b6e7e60ecd782b3cb4d5f04de48ebcaa98454a47b",
+    "scripts/generate-geography-contract.ts": "bade37fc8f468e4ddb51da6a8ff64dea2f82866946faa0dcfda6ea1b53d3afec"
+  }
+}

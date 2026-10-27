@@ -1,0 +1,16 @@
+import {readFileSync} from 'node:fs';
+import {database} from './sqlite-helper';
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {fixture} from './sales-fixture';
+import {digest} from '../src/server/operations';
+import {canonicalJson,manifestJson,type BoundaryCollection,type Geometry} from '../src/shared/boundaries';
+import {locateGeometry} from '../src/server/geography';
+export const square=(x=106,y=-6):Geometry=>({type:'Polygon',coordinates:[[[x,y],[x+.1,y],[x+.1,y+.1],[x,y+.1],[x,y]]]});
+export const collection=(geometries:Geometry[]=[square()]):BoundaryCollection=>({type:'FeatureCollection',features:geometries.map((geometry,i)=>({type:'Feature',properties:{source_id:'v'+i,province:{code:'31',name:'Province'},regency:{code:'31.71',name:'City'},district:{code:'31.71.01',name:'District'},village:{code:'v'+i,name:'Village '+i,type:'kelurahan'}},geometry}))});
+export function harness(){const f=fixture();const req=(m:string,p:string,b?:any,v?:number,key=crypto.randomUUID(),actor='mg',role=actor==='mg'?'MANAGEMENT':actor==='tele'?'TELESALES':'SALES_REP',org='o')=>f.req(m,p,b,v,actor,role,org,key,v===0?{'If-Match':'"0"'}:{});return {...f,req,
+ point:(x:number|null=106.05,y:number|null=-5.95,status='verified')=>f.sqlite.prepare('UPDATE customer_outlet SET longitude_e7=?,latitude_e7=?,coordinate_status=?,version=version+1 WHERE id=?').run(x===null?null:Math.round(x*1e7),y===null?null:Math.round(y*1e7),status,'c'),
+ release:async(geos:Geometry[]=[square()],activate=true,previous:string|null=null)=>{const c=collection(geos);let d=await f.data(await req('POST','/api/admin-boundaries/datasets',{provider:'Synthetic geometry',code_namespace:'fixture',release_version:crypto.randomUUID(),released_at:null,acquired_at:'2026-01-01T00:00:00Z',source_reference:'https://example.test/fixture',source_checksum:await digest('fixture'),metadata:{reference_release:'Fixture',origin:'Authored for test',code_mapping:'Fixture namespace',usage_terms_status:'unverified',notes:'Synthetic test only'},coverage:{label:'Fixture scope',source_filter:'fixture',national_complete:false},manifest_sha256:await digest(manifestJson([await digest(canonicalJson(c))])),expected_features:c.features.length,expected_chunks:1}));d=await f.data(await req('POST',`/api/admin-boundaries/datasets/${d.id}/chunks`,{index:0,collection:c},d.version));if(activate)d=await f.data(await req('POST',`/api/admin-boundaries/datasets/${d.id}/activate`,{reason:'Synthetic review for tests',license_reference:'https://example.test/fixture-terms',license_note:'Geometry authored solely for this test.',attribution:'NYALES synthetic fixture',confirm_usage_rights:true,expected_active_id:previous},d.version));return d},
+ preview:async(body:any={})=>f.data(await req('POST','/api/geo/customers/c/preview',body)),
+ review:(p:any,decision='confirm_candidate',boundary=p.suggested_boundary_id,key=crypto.randomUUID())=>req('POST','/api/geo/customers/c/review',{dataset_id:p.dataset_id,preview_hash:p.preview_hash,customer_version:p.customer_version,mapping_revision:p.mapping_revision,decision,boundary_id:boundary,reason:'Reviewed synthetic customer mapping',...(p.admin_code?{admin_code:p.admin_code,code_namespace:p.code_namespace}:{})},p.mapping_revision,key)
+ }}

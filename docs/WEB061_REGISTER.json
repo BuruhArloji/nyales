@@ -1,0 +1,484 @@
+{
+  "format": "nyales-training-register-1",
+  "date": "2026-10-21",
+  "materials_status": "prepared_for_dummy_training",
+  "human_training_completed": false,
+  "production_accepted": false,
+  "coordinator": {
+    "name": "Rizky Aditya",
+    "responsibility": "Koordinasi pilot; bukan otomatis L1/L2/Finance."
+  },
+  "named_participants": [
+    "Novely",
+    "Didik",
+    "Mursal"
+  ],
+  "capacity": 10,
+  "materials": [
+    "docs/WEB061_TRAINING.md",
+    "docs/WEB061_SOP.md",
+    "docs/WEB061_SUPPORT.md",
+    "docs/WEB060_PILOT.md",
+    "docs/WEB061_HANDOVER.md"
+  ],
+  "support": {
+    "l1_owner": null,
+    "l1_backup": null,
+    "l2_owner": null,
+    "l2_backup": null,
+    "finance_reviewer": null,
+    "support_channel": null,
+    "service_hours": null,
+    "response_policy": null
+  },
+  "cases": [
+    {
+      "id": "TR-01",
+      "title": "Login, identitas dan scope",
+      "roles": [
+        "SALES_REP",
+        "TELESALES",
+        "SUPERVISOR",
+        "AREA_MANAGER",
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-09",
+      "steps": [
+        "Masuk dengan akun latihan sendiri.",
+        "Periksa role/area dan coba resource area di luar scope melalui UI.",
+        "Logout online dan periksa token lama tidak dapat mengakses kembali."
+      ],
+      "expected": "Resource di luar scope ditolak; sesi lain tidak ikut dicabut.",
+      "required_evidence": [
+        "identity-scope",
+        "denial",
+        "logout-result"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-02",
+      "title": "Customer salah dan duplikat",
+      "roles": [
+        "SALES_REP",
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-01",
+      "steps": [
+        "Cocokkan dua customer dengan alamat berbeda.",
+        "Ajukan review kepada pengelola tanpa merge otomatis.",
+        "Pada kasus satu lokasi, tinjau preview merge dan alias sebelum konfirmasi."
+      ],
+      "expected": "Dua lokasi tetap terpisah; histori invoice dan izin kontak tidak digabung sembarang.",
+      "required_evidence": [
+        "customer-records",
+        "merge-preview",
+        "audit"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-03",
+      "title": "GPS buruk atau izin ditolak",
+      "roles": [
+        "SALES_REP",
+        "SUPERVISOR"
+      ],
+      "sop": "SOP-02",
+      "steps": [
+        "Mulai sesi dan aktivitas dummy.",
+        "Tolak GPS atau gunakan akurasi buruk yang nyata dari perangkat uji.",
+        "Isi alasan, submit dan reviewer lain meninjau."
+      ],
+      "expected": "Exception jujur/needs_review; tidak ada koordinat atau attendance yang dipalsukan.",
+      "required_evidence": [
+        "gps-permission",
+        "exception",
+        "independent-review"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-04",
+      "title": "Draft offline dan respons hilang",
+      "roles": [
+        "SALES_REP",
+        "TELESALES"
+      ],
+      "sop": "SOP-03",
+      "steps": [
+        "Simpan draft di perangkat uji.",
+        "Reload, pulihkan, submit offline dan sambungkan jaringan kembali.",
+        "Simulasikan response hilang, retry event yang sama dan periksa fakta server."
+      ],
+      "expected": "Draft kembali; pending/synced jelas; satu order/event tersimpan.",
+      "required_evidence": [
+        "draft-restored",
+        "event-id",
+        "single-server-record"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-05",
+      "title": "Upload bukti gagal",
+      "roles": [
+        "SALES_REP",
+        "SUPERVISOR"
+      ],
+      "sop": "SOP-04",
+      "steps": [
+        "Pilih file bukti dummy di bawah batas.",
+        "Ganggu jaringan saat upload lalu retry terkontrol.",
+        "Periksa checksum/status ready di server dan akses di luar scope."
+      ],
+      "expected": "Belum ready tidak disebut uploaded; bukti privat dan terikat activity.",
+      "required_evidence": [
+        "attachment-intent",
+        "upload-failure",
+        "ready-checksum",
+        "denial"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-06",
+      "title": "Telesales, DNC, lease dan callback",
+      "roles": [
+        "TELESALES",
+        "SUPERVISOR"
+      ],
+      "sop": "SOP-10",
+      "steps": [
+        "Claim customer assigned dengan izin.",
+        "Gunakan script versi lease dan catat disposition manual/callback.",
+        "Uji DNC, claim paralel dan lease kedaluwarsa."
+      ],
+      "expected": "DNC/batas kontak dihormati; satu lease; connected_pic bukan provider verified.",
+      "required_evidence": [
+        "lease",
+        "disposition",
+        "dnc-denial",
+        "callback-deadline"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-07",
+      "title": "Retur dan net invoice",
+      "roles": [
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-05",
+      "steps": [
+        "Import invoice dummy dengan credit flag eksplisit.",
+        "Buat retur/revisi/cancelled credit sesuai fixture.",
+        "Periksa net per invoice dan actual periode dengan Finance latihan."
+      ],
+      "expected": "Retur terkurang sekali; cancelled credit memulihkan dampak; current revision tunggal.",
+      "required_evidence": [
+        "source-hash",
+        "job",
+        "invoice-revisions",
+        "net-control"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-08",
+      "title": "Duplicate import dan stale validation",
+      "roles": [
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-06",
+      "steps": [
+        "Dry-run file dummy dan catat hash/job/version.",
+        "Retry commit yang sama.",
+        "Ubah referensi atau payload lalu ulangi permintaan memakai validation lama."
+      ],
+      "expected": "Retry tidak menggandakan; stale/hash berbeda ditolak dan perlu validasi ulang.",
+      "required_evidence": [
+        "dry-run",
+        "retry-result",
+        "revalidation"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-09",
+      "title": "Target revisi dan approval",
+      "roles": [
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-07",
+      "steps": [
+        "Buat bottom-up atau top-down dummy.",
+        "Periksa leaf + reserve sama parent dan periode/kanal.",
+        "Submit; pembuat mencoba approve lalu aktor lain approve/revise."
+      ],
+      "expected": "Self approval ditolak; versi approved jelas; parent tidak dihitung ulang.",
+      "required_evidence": [
+        "target-leaves",
+        "parent-control",
+        "approval-denial",
+        "approved-version"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-10",
+      "title": "Dispute dan revisi insentif",
+      "roles": [
+        "SALES_REP",
+        "TELESALES",
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-08",
+      "steps": [
+        "Simulasikan 79.99/80/81/100/di atas 100 persen.",
+        "Kalkulasi cutoff lengkap, review dan finalisasi manual.",
+        "Ajukan dispute; reviewer meninjau dan koreksi melalui revision/delta."
+      ],
+      "expected": "Tier marginal/bonus/rounding cocok; final tidak ditimpa; tidak ada transfer uang.",
+      "required_evidence": [
+        "boundary-preview",
+        "statement-detail",
+        "dispute",
+        "revision-delta"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-11",
+      "title": "Monitoring dan coverage",
+      "roles": [
+        "SUPERVISOR",
+        "AREA_MANAGER",
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-11",
+      "steps": [
+        "Filter periode/area/kanal/sales.",
+        "Buka sumber KPI dan semua halaman sumber.",
+        "Bandingkan visit berulang, toko tutup dan customer unik."
+      ],
+      "expected": "Coverage unik bermakna; forecast/order berbeda dari actual; Unknown bukan nol.",
+      "required_evidence": [
+        "filters",
+        "source-pages",
+        "coverage-control"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-12",
+      "title": "Coaching dan notifikasi",
+      "roles": [
+        "SUPERVISOR",
+        "AREA_MANAGER",
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-11",
+      "steps": [
+        "Buka exception dari fakta server.",
+        "Buat coaching dengan penerima, tindakan dan tenggat.",
+        "Tinjau reminder/penyelesaian sesuai scope oleh pihak berwenang."
+      ],
+      "expected": "Status beralasan; in-app reminder bukan bukti email/WA terkirim.",
+      "required_evidence": [
+        "exception-reference",
+        "coaching",
+        "reminder"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-13",
+      "title": "Perangkat bersama dan revoke",
+      "roles": [
+        "SALES_REP",
+        "TELESALES",
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-09",
+      "steps": [
+        "Sinkronkan outbox sebelum pindah akun.",
+        "Logout dan masuk dengan identitas uji kedua.",
+        "Admin revoke sesi pertama lalu uji ulang online/offline sesuai kebijakan."
+      ],
+      "expected": "Draft tidak dibaca akun lain; revoke server dikonfirmasi; cache tidak dihapus saat pending.",
+      "required_evidence": [
+        "outbox-status",
+        "identity-separation",
+        "server-revoke"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-14",
+      "title": "Insiden dan eskalasi",
+      "roles": [
+        "SUPERVISOR",
+        "AREA_MANAGER",
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-12",
+      "steps": [
+        "Buat tiket dummy dengan dampak/request ID tanpa secret.",
+        "Klasifikasikan severity dan arahkan L1/L2/Finance.",
+        "Uji jalur cadangan dan tutup setelah retest serta validator."
+      ],
+      "expected": "Kontak/penerimaan nyata terdokumentasi; tidak ada password/OTP/token di tiket.",
+      "required_evidence": [
+        "ticket",
+        "acknowledgement",
+        "retest",
+        "closure"
+      ],
+      "status": "pending",
+      "executions": []
+    },
+    {
+      "id": "TR-15",
+      "title": "Recovery, source dan handover",
+      "roles": [
+        "MANAGEMENT",
+        "NSM"
+      ],
+      "sop": "SOP-12",
+      "steps": [
+        "Periksa daftar source/provider/config tanpa nilai secret.",
+        "Lakukan actual restore database serta attachment di lingkungan terpisah.",
+        "Rekonsiliasi counts/net/scope dan catat RPO/RTO serta penerima."
+      ],
+      "expected": "Full restore dibuktikan terpisah; checksum dry-run saja tidak cukup.",
+      "required_evidence": [
+        "source-ownership",
+        "provider-ownership",
+        "actual-restore",
+        "handover-acceptance"
+      ],
+      "status": "pending",
+      "executions": []
+    }
+  ],
+  "handover": [
+    {
+      "id": "HO-01",
+      "deliverable": "Source/build/specification ownership",
+      "owner_role": "IT/pemilik layanan",
+      "status": "pending",
+      "recipient": null,
+      "accepted_at": null,
+      "evidence": []
+    },
+    {
+      "id": "HO-02",
+      "deliverable": "Provider accounts, environment, billing and secret-recovery routes without plaintext secrets",
+      "owner_role": "IT/pemilik provider",
+      "status": "pending",
+      "recipient": null,
+      "accepted_at": null,
+      "evidence": []
+    },
+    {
+      "id": "HO-03",
+      "deliverable": "Role/hierarchy/scope/session administration",
+      "owner_role": "Management/NSM",
+      "status": "pending",
+      "recipient": null,
+      "accepted_at": null,
+      "evidence": []
+    },
+    {
+      "id": "HO-04",
+      "deliverable": "Invoice/credit/net/target/incentive definitions and reconciliation",
+      "owner_role": "Finance/Sales Ops",
+      "status": "pending",
+      "recipient": null,
+      "accepted_at": null,
+      "evidence": []
+    },
+    {
+      "id": "HO-05",
+      "deliverable": "Actual full restore, attachment bytes, rollback and RPO/RTO",
+      "owner_role": "IT/QA",
+      "status": "pending",
+      "recipient": null,
+      "accepted_at": null,
+      "evidence": []
+    },
+    {
+      "id": "HO-06",
+      "deliverable": "L1/L2/backup contacts, service hours and incident drill",
+      "owner_role": "PIC/pemilik layanan",
+      "status": "pending",
+      "recipient": null,
+      "accepted_at": null,
+      "evidence": []
+    },
+    {
+      "id": "HO-07",
+      "deliverable": "Named participant attendance, evaluation and defects",
+      "owner_role": "Fasilitator/QA",
+      "status": "pending",
+      "recipient": null,
+      "accepted_at": null,
+      "evidence": []
+    }
+  ],
+  "defects": [],
+  "signoffs": [
+    {
+      "function": "PIC",
+      "reviewer": null,
+      "reviewed_at": null,
+      "decision": "pending",
+      "evidence": []
+    },
+    {
+      "function": "Finance/Sales Ops",
+      "reviewer": null,
+      "reviewed_at": null,
+      "decision": "pending",
+      "evidence": []
+    },
+    {
+      "function": "QA",
+      "reviewer": null,
+      "reviewed_at": null,
+      "decision": "pending",
+      "evidence": []
+    },
+    {
+      "function": "IT/pemilik layanan",
+      "reviewer": null,
+      "reviewed_at": null,
+      "decision": "pending",
+      "evidence": []
+    }
+  ]
+}

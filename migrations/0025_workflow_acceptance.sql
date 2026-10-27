@@ -1,0 +1,16 @@
+ALTER TABLE sales_lead ADD COLUMN proposal_summary TEXT NOT NULL DEFAULT '';
+ALTER TABLE sales_lead ADD COLUMN order_id TEXT;
+ALTER TABLE sales_handoff ADD COLUMN created_at TEXT;
+UPDATE sales_handoff SET created_at=COALESCE((SELECT MIN(occurred_at) FROM master_audit WHERE master_audit.organization_id=sales_handoff.organization_id AND resource_id=sales_handoff.id),strftime('%Y-%m-%dT%H:%M:%fZ','now'));
+ALTER TABLE sales_task RENAME TO sales_task_previous;
+CREATE TABLE sales_task(id TEXT PRIMARY KEY,organization_id TEXT NOT NULL,customer_id TEXT NOT NULL,user_id TEXT NOT NULL,channel TEXT NOT NULL,title TEXT NOT NULL,due_at TEXT NOT NULL,original_due_at TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'open' CHECK(status IN('open','in_progress','done','cancelled')),created_by TEXT NOT NULL,version INTEGER NOT NULL DEFAULT 1,reason TEXT NOT NULL,outcome TEXT NOT NULL DEFAULT '',completed_at TEXT,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,priority INTEGER NOT NULL DEFAULT 2 CHECK(priority BETWEEN 1 AND 3));
+INSERT INTO sales_task(id,organization_id,customer_id,user_id,channel,title,due_at,original_due_at,status,created_by,version,reason) SELECT id,organization_id,customer_id,user_id,channel,title,due_at,original_due_at,status,created_by,version,reason FROM sales_task_previous;
+DROP TABLE sales_task_previous;
+ALTER TABLE sales_order ADD COLUMN input_hash TEXT;
+ALTER TABLE sales_order ADD COLUMN submit_snapshot_json TEXT;
+ALTER TABLE order_policy ADD COLUMN parameters_json TEXT NOT NULL DEFAULT '{"max_discount_bps":10000,"allow_special_price":true}';
+ALTER TABLE forecast_contribution ADD COLUMN evidence_ref TEXT;
+ALTER TABLE forecast_contribution ADD COLUMN product_id TEXT;
+ALTER TABLE forecast_contribution ADD COLUMN product_group_id TEXT;
+ALTER TABLE forecast_realization ADD COLUMN allocation_minor INTEGER;
+UPDATE forecast_contribution SET category=CASE category WHEN 'commit' THEN 'committed' WHEN 'base' THEN 'best_case' ELSE category END;

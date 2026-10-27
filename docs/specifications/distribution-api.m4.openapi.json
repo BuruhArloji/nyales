@@ -1,0 +1,488 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-065 village distribution local API",
+    "version": "0.1.0",
+    "description": "Membership alone never transfers customers or expands customer read scope. Assignments use current active confirmed geography cohort, optionally an explicit subset and separately reasoned exception customers. Both channels must be reviewed for customer area transfers; null recipient explicitly unassigns that channel. All relevant org inputs are epoch guarded. Single batch: 50 villages across at most 16 immutable R2 chunks, 25 assignment customers, 600 total prepared statements; larger cohorts require explicit subsets, never silent partial commit. No cloud capacity guarantee. Historical context is current-month observed stored validated current IDR invoice net (whole IDR rupiah), all channels for the full active confirmed selected geography cohort, excluding explicit exceptions; never reattributes invoices/targets/visits/incentives. Preview epoch may be invalidated conservatively by any relevant organization change. Future committed cohort is frozen; later mapping changes do not automatically cancel or expand it."
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/geo/distribution": {
+      "get": {
+        "summary": "Latest 200 village/area membership intervals and 50 immutable distribution runs, with explicit has_more flags. Current business date and epoch.",
+        "parameters": [],
+        "operationId": "distribution_get__api_geo_distribution",
+        "x-access-policy": "Management/NSM current organization only, including reads",
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope. Preview returns membership/customer before/after, cohort, summary, observed historical context, conflicts, can_commit, epoch/hash and limits."
+          },
+          "400": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "401": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "403": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "404": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "409": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "412": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "413": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "422": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "428": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "503": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          }
+        }
+      }
+    },
+    "/api/geo/distribution/{id}": {
+      "get": {
+        "summary": "Immutable distribution input, source/epoch/hash, reviewed before/after result and actual assignment record references.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          }
+        ],
+        "operationId": "distribution_get__api_geo_distribution__id_",
+        "x-access-policy": "Management/NSM current organization only, including reads",
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope. Preview returns membership/customer before/after, cohort, summary, observed historical context, conflicts, can_commit, epoch/hash and limits."
+          },
+          "400": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "401": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "403": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "404": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "409": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "412": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "413": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "422": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "428": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "503": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          }
+        }
+      }
+    },
+    "/api/geo/distribution/preview": {
+      "post": {
+        "summary": "Read-only plan for active-release village membership and optional customer-channel assignments. Full source geometry checksums verified. Conflict list blocks commit.",
+        "parameters": [],
+        "operationId": "distribution_post__api_geo_distribution_preview",
+        "x-access-policy": "Management/NSM current organization only, including reads",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/preview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope. Preview returns membership/customer before/after, cohort, summary, observed historical context, conflicts, can_commit, epoch/hash and limits."
+          },
+          "400": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "401": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "403": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "404": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "409": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "412": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "413": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "422": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "428": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "503": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          }
+        }
+      }
+    },
+    "/api/geo/distribution/commit": {
+      "post": {
+        "summary": "Atomically apply an exact reviewed preview with epoch/hash/If-Match, idempotency and audit. No backdating. Future membership and customer transfers retain existing date semantics.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted basis_epoch from the preview, including \"0\"."
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "operationId": "distribution_post__api_geo_distribution_commit",
+        "x-access-policy": "Management/NSM current organization only, including reads",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/commit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource-specific data envelope. Preview returns membership/customer before/after, cohort, summary, observed historical context, conflicts, can_commit, epoch/hash and limits."
+          },
+          "201": {
+            "description": "Resource-specific data envelope. Preview returns membership/customer before/after, cohort, summary, observed historical context, conflicts, can_commit, epoch/hash and limits."
+          },
+          "400": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "401": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "403": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "404": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "409": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "412": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "413": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "422": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "428": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          },
+          "503": {
+            "description": "Stable code error envelope: scope/resource denied, source missing/tampered, inactive release/area, invalid role/hierarchy, interval conflict, stale preview, invalid/missing headers or bounded batch/input."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "preview": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_ids": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "assignment_mode": {
+            "type": "string",
+            "enum": [
+              "none",
+              "field",
+              "telesales",
+              "both"
+            ]
+          },
+          "field_rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "telesales_rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "customer_ids": {
+            "maxItems": 25,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "exception_customer_ids": {
+            "maxItems": 25,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "exception_reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "dataset_id",
+          "boundary_ids",
+          "area_id",
+          "effective_from_date",
+          "reason",
+          "assignment_mode",
+          "field_rep_id",
+          "telesales_rep_id"
+        ],
+        "additionalProperties": false
+      },
+      "commit": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_ids": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "assignment_mode": {
+            "type": "string",
+            "enum": [
+              "none",
+              "field",
+              "telesales",
+              "both"
+            ]
+          },
+          "field_rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "telesales_rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "customer_ids": {
+            "maxItems": 25,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "exception_customer_ids": {
+            "maxItems": 25,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "exception_reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "preview_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "basis_epoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "dataset_id",
+          "boundary_ids",
+          "area_id",
+          "effective_from_date",
+          "reason",
+          "assignment_mode",
+          "field_rep_id",
+          "telesales_rep_id",
+          "preview_hash",
+          "basis_epoch",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "x-cross-field-rules": [
+    "assignment_mode none rejects recipients/customer subset/exceptions",
+    "field mode requires telesales_rep_id null, telesales mode requires field_rep_id null",
+    "exception_customer_ids and exception_reason supplied together",
+    "customer_ids must belong to current active confirmed selected village cohort; omitted means all, explicit empty array means no cohort customers",
+    "exceptions must be active canonical customers in the organization, outside selected cohort",
+    "membership same date/future conflicts block the whole plan",
+    "current or future conflicting customer assignment blocks the whole plan",
+    "preview does not persist a draft; only reviewed exact commit writes"
+  ]
+}

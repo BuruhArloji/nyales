@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-20",
+  "boundary": "Local synthetic fixture; automated browser evidence, not named business UAT or provider/device acceptance.",
+  "source": "test-results/web059/results.json",
+  "summary": {
+    "total": 11,
+    "passed": 11,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "start_time": "2026-10-20T15:27:16.579Z",
+    "duration_ms": 152707.799
+  },
+  "checks": [
+    {
+      "title": "smoke all workspace pages and 320/390/768/1440 reflow retain chart and scoped content",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "automated accessibility audit of representative pages and dialogs",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "keyboard modal focus trapping Escape restoration and tab arrow navigation",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "smoke Monitoring paginated drilldown export and channel filters",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "request failure preserves an actionable retry in drilldown and recovers",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "4G simulation loads scoped Monitoring and reduced motion remains available",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "offline order draft survives reload and sync retry keeps one order and original invoice totals",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "smoke logout revokes current token and second browser session stays active",
+      "project": "chrome",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "smoke all workspace pages and 320/390/768/1440 reflow retain chart and scoped content",
+      "project": "edge",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "smoke Monitoring paginated drilldown export and channel filters",
+      "project": "edge",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    },
+    {
+      "title": "smoke logout revokes current token and second browser session stays active",
+      "project": "edge",
+      "outcome": "expected",
+      "attempts": [
+        "passed"
+      ]
+    }
+  ]
+}

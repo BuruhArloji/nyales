@@ -1,0 +1,272 @@
+{
+  "date": "2026-10-24",
+  "migration": "0036_customer_geography_review.sql",
+  "tables": {
+    "customer_admin_location": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "outlet_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "admin_unit_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "boundary_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "method",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "evidence_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "effective_from_date",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "effective_to_date",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "reviewed_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "reviewed_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "revision",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "superseded_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "reviewed_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "admin_boundary",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "admin_boundary",
+          "from": "boundary_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "admin_unit",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "admin_unit",
+          "from": "admin_unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "customer_outlet",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 1,
+          "table": "customer_outlet",
+          "from": "outlet_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "customer_admin_current",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0
+        },
+        {
+          "seq": 1,
+          "name": "customer_admin_revision",
+          "unique": 1,
+          "origin": "c",
+          "partial": 0
+        },
+        {
+          "seq": 2,
+          "name": "customer_admin_period",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_customer_admin_location_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 4,
+          "name": "sqlite_autoindex_customer_admin_location_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": [
+        {
+          "name": "customer_admin_insert_guard",
+          "sql": "CREATE TRIGGER customer_admin_insert_guard BEFORE INSERT ON customer_admin_location BEGIN\r\n SELECT CASE WHEN NEW.admin_unit_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM admin_unit u WHERE u.organization_id=NEW.organization_id AND u.id=NEW.admin_unit_id AND u.level='village') THEN RAISE(ABORT,'CUSTOMER_ADMIN_UNIT_INVALID') END;\r\n SELECT CASE WHEN (NEW.boundary_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM admin_boundary b WHERE b.organization_id=NEW.organization_id AND b.id=NEW.boundary_id AND b.admin_unit_id=NEW.admin_unit_id)) OR (NEW.superseded_at IS NOT NULL) OR (NEW.status='confirmed' AND EXISTS(SELECT 1 FROM customer_admin_location x WHERE x.organization_id=NEW.organization_id AND x.outlet_id=NEW.outlet_id AND x.status='confirmed' AND x.superseded_at IS NULL AND x.effective_from_date<COALESCE(NEW.effective_to_date,'9999-12-31') AND NEW.effective_from_date<COALESCE(x.effective_to_date,'9999-12-31'))) THEN RAISE(ABORT,'CUSTOMER_ADMIN_CONFLICT') END;\r\nEND"
+        },
+        {
+          "name": "customer_admin_update_guard",
+          "sql": "CREATE TRIGGER customer_admin_update_guard BEFORE UPDATE ON customer_admin_location BEGIN\r\n SELECT CASE WHEN NEW.id IS NOT OLD.id OR NEW.organization_id IS NOT OLD.organization_id OR NEW.outlet_id IS NOT OLD.outlet_id OR NEW.admin_unit_id IS NOT OLD.admin_unit_id OR NEW.boundary_id IS NOT OLD.boundary_id OR NEW.method IS NOT OLD.method OR NEW.status IS NOT OLD.status OR NEW.evidence_json IS NOT OLD.evidence_json OR NEW.effective_from_date IS NOT OLD.effective_from_date OR NEW.reviewed_by IS NOT OLD.reviewed_by OR NEW.reviewed_at IS NOT OLD.reviewed_at OR NEW.reason IS NOT OLD.reason OR NEW.revision IS NOT OLD.revision OR NEW.created_at IS NOT OLD.created_at OR OLD.superseded_at IS NOT NULL OR (NEW.superseded_at IS NULL AND (NEW.effective_to_date IS NULL OR (OLD.effective_to_date IS NOT NULL AND NEW.effective_to_date>=OLD.effective_to_date))) OR (NEW.superseded_at IS NOT NULL AND NEW.effective_to_date IS NOT OLD.effective_to_date) THEN RAISE(ABORT,'CUSTOMER_ADMIN_REQUIRES_NEW_REVISION') END;\r\nEND"
+        },
+        {
+          "name": "customer_admin_no_delete",
+          "sql": "CREATE TRIGGER customer_admin_no_delete BEFORE DELETE ON customer_admin_location BEGIN SELECT RAISE(ABORT,'CUSTOMER_ADMIN_HISTORY_IMMUTABLE'); END"
+        }
+      ]
+    }
+  },
+  "production_accepted": false
+}

@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-26",
+  "item": "WEB-071",
+  "status": "Deferred by user; partial local implementation preserved",
+  "actual_ortools_exercised": true,
+  "ortools_version": "9.15.6755",
+  "python_version": "3.13.15",
+  "tested_platform": "Windows x64",
+  "linux_verified": false,
+  "actual_osrm_exercised": false,
+  "engine_identity_verified": false,
+  "matrix_source": "Authored synthetic fixtures, including real loopback HTTP transport; not a road graph",
+  "full_suite": {
+    "passed": 311,
+    "failed": 0,
+    "skipped": 0,
+    "log": "test-results/web071-final-full-tests.log"
+  },
+  "daily_tests": 12,
+  "post_full_suite_regression": {
+    "passed": 3,
+    "log": "test-results/web071-final-file-regression.log"
+  },
+  "typecheck": "passed",
+  "build": "passed with existing large client chunk warning",
+  "new_runtime_operations": 0,
+  "new_runtime_tables": 0,
+  "runtime_operations_total": 318,
+  "application_tables": 114,
+  "can_generate_from_web": false,
+  "publishable": false,
+  "agenda_written": false,
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "user_has_administrator_access": false,
+  "routing_host": "not_available_installation_kit_requested_first",
+  "compute_kit": {
+    "output": "C:\\Users\\didik.priyo.id\\Documents\\ChatGPT\\NYALES\\artifacts\\nyales-visit-compute-kit-20261026-v2.zip",
+    "files": 21,
+    "bytes": 42865,
+    "sha256": "1202656901dd1e4ecf7b373ea8ea5e4643b1d46c65940a7025a5f0c0d20b36c2",
+    "credentials_included": false,
+    "customer_data_included": false,
+    "graphs_included": false
+  },
+  "kit_verification": "test-results/web071-kit-v2-verify.json",
+  "kit_runbook": "tools/visit-compute-kit/README.md",
+  "limitations": [
+    "Single rep/day, up to98visits/100nodes, solver <=120seconds",
+    "Prepared priority must be supplied by a correct frozen-source builder; policy components not yet built from application sources",
+    "Locked/protected agenda integration rejected rather than ignored",
+    "Independent validation is structural/matrix-consistency, not mathematical verification of a remote engine",
+    "No business job/API/queue/UI review/publish integration",
+    "Linux runtime and signed-agent credential storage not verified/implemented"
+  ],
+  "next": [
+    "Identify operator/OS/address/pilot scope/profile for routing host",
+    "Prepare actual pinned graph/runtime, verify process binding and road-matrix benchmark",
+    "Complete source history/cross-channel/agenda and business snapshot builder",
+    "Integrate signed business job, server validation, review/publish and monthly planning"
+  ],
+  "source_sha256": {
+    "src/solver/daily.py": "23e92f5bfebc35d68808b438fa5c4660394dd5417ced9e99db288df1abd98c1f",
+    "src/solver/requirements.txt": "b53b6f0a57d946b2cb8a2c4ba9f879aca681cde60b03fe63d9f24dcc2bf084ad",
+    "src/solver/requirements.lock.txt": "9be158fd0380cab451abadc56af66f5015d74a50557dcdc203d7a2e41fecae90",
+    "src/agent/daily-solver.ts": "aeee0bb19361c55db2531634cec782a5a8afcb338a5393d5ad8dc4d074005794",
+    "src/agent/daily-planner.ts": "e99c380becbccfb675abd312ef7556f7c371efff8e69e79af26784d2ad55ebea",
+    "src/agent/daily-files.ts": "e97c8cf360806cc20269aff423b3095c8c02585a9e889500390afb8c1c96df68",
+    "scripts/visit-daily.ts": "2d57b1936ad8b104eb65fc958fc59515801c770e1ea8b7359bdde5a8323f366c",
+    "scripts/visit-solver-setup.py": "5a48c6f5c022c3415c908fc4022c889f86cca635d067285eea50e446a9607ddf",
+    "scripts/package-visit-compute.py": "8243ffbbbb12f8b436bdf3d8066b81b2981062fc5c2430a7518a4cd8a89b5b31",
+    "tests/daily-solver.test.ts": "776a5080afab9829742279da628790a4beecda8c48f194d6ce36fa98b165e67b",
+    "tests/daily-planner.test.ts": "eb8acfb580a04d9587d1c3039cf222c31c390a518de988cf90978986db5ea6fc",
+    "tests/daily-files.test.ts": "a5e70aa73ecb78f38a6f649c853edcad2f89ed3a40d2b4688eb88f9a219254f9",
+    "tests/visit-generator-fixture.ts": "0a2def2acf3aa9bb0dd55035a8d168798a5df085584b58fec9728eb1f05a11f7",
+    "tools/visit-compute-kit/check-installation.py": "780170419a03cea95701bbbccffe52ad617f086b5a135002a3d563de41f18d67",
+    "tools/visit-compute-kit/START-HERE.md": "2b481da8484b37cf0ccd6465c04d1387f1fd8fe7062636acb6ee8211d582e130",
+    "tools/visit-compute-kit/README.md": "648523d6fbfa88561c5419b8852ae0825b5528fe284c4ccacd58ee01203d6c14",
+    "tests/visit-compute-kit.test.py": "a10a67583c933e6b2f67c625214f374764bd00fedfca5b4d171865f3a844e1c9"
+  },
+  "compute_kit_checks": {
+    "revision": 2,
+    "manifest_and_import_closure": "passed",
+    "extracted_doctor": "passed, detects missing dependencies without installation",
+    "checksum_boundary_tests": 4,
+    "source_only": true,
+    "host_provisioned": false,
+    "proof": "test-results/web071-kit-v2-verify.json",
+    "npm_ci_in_extracted_kit": "passed",
+    "cli_usage_import_smoke": "passed"
+  },
+  "routing_host_available": false,
+  "routing_host_decision": {
+    "date": "2026-10-26",
+    "user_reply": "Belum tersedia; siapkan paket pemasangan dahulu",
+    "scope": "Prepare installation kit; no OS installation or remote provisioning"
+  },
+  "compute_kit_previous": {
+    "output": "C:\\Users\\didik.priyo.id\\Documents\\ChatGPT\\NYALES\\artifacts\\nyales-visit-compute-kit-20261026.zip",
+    "files": 19,
+    "bytes": 38812,
+    "sha256": "979f3fbb2fe3492d6f407445d828e1d38a8c2cb31e2d8369230b349efec09fb7",
+    "credentials_included": false,
+    "customer_data_included": false,
+    "graphs_included": false
+  },
+  "installation_kit_revision": 2,
+  "execution_status": "deferred_by_user",
+  "deferred_on": "2026-10-26",
+  "deferral_reason": "User requested to skip routing setup and continue other backlog work",
+  "implementation_status_before_deferral": "In progress - native daily solver, validated adapter and operator CLI tested with synthetic matrices; live OSRM and web job integration pending"
+}

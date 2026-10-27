@@ -1,0 +1,5052 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-070 planning settings and readiness evidence",
+    "version": "0.1.0",
+    "description": "Policy draft/activation, unverified graph declarations, private immutable readiness snapshots. No business planning job/solver/agenda endpoint. Readiness blockers can never be zeroed by empty source. Local acceptance only."
+  },
+  "paths": {
+    "/api/visit-generator/policies": {
+      "get": {
+        "operationId": "visit_planning_get__api_visit_generator_policies",
+        "summary": "GET /api/visit-generator/policies",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policies"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      },
+      "post": {
+        "operationId": "visit_planning_post__api_visit_generator_policies",
+        "summary": "POST /api/visit-generator/policies",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/policy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/policies/{id}": {
+      "get": {
+        "operationId": "visit_planning_get__api_visit_generator_policies__id_",
+        "summary": "GET /api/visit-generator/policies/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_detail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      },
+      "put": {
+        "operationId": "visit_planning_put__api_visit_generator_policies__id_",
+        "summary": "PUT /api/visit-generator/policies/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/policy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/policies/{id}/activate": {
+      "post": {
+        "operationId": "visit_planning_post__api_visit_generator_policies__id__activate",
+        "summary": "POST /api/visit-generator/policies/{id}/activate",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/activate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/policies/{id}/retire": {
+      "post": {
+        "operationId": "visit_planning_post__api_visit_generator_policies__id__retire",
+        "summary": "POST /api/visit-generator/policies/{id}/retire",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/decision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/graphs": {
+      "get": {
+        "operationId": "visit_planning_get__api_visit_generator_graphs",
+        "summary": "GET /api/visit-generator/graphs",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/graphs"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      },
+      "post": {
+        "operationId": "visit_planning_post__api_visit_generator_graphs",
+        "summary": "POST /api/visit-generator/graphs",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/graph"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/graph_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/graphs/{id}": {
+      "get": {
+        "operationId": "visit_planning_get__api_visit_generator_graphs__id_",
+        "summary": "GET /api/visit-generator/graphs/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/graph_detail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      },
+      "put": {
+        "operationId": "visit_planning_put__api_visit_generator_graphs__id_",
+        "summary": "PUT /api/visit-generator/graphs/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/graph"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/graph_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/graphs/{id}/retire": {
+      "post": {
+        "operationId": "visit_planning_post__api_visit_generator_graphs__id__retire",
+        "summary": "POST /api/visit-generator/graphs/{id}/retire",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/decision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/graph_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/preflights": {
+      "post": {
+        "operationId": "visit_planning_post__api_visit_generator_preflights",
+        "summary": "POST /api/visit-generator/preflights",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/readiness"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/preflight_created"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      },
+      "get": {
+        "operationId": "visit_planning_get__api_visit_generator_preflights",
+        "summary": "GET /api/visit-generator/preflights",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/preflights"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    },
+    "/api/visit-generator/preflights/{id}": {
+      "get": {
+        "operationId": "visit_planning_get__api_visit_generator_preflights__id_",
+        "summary": "GET /api/visit-generator/preflights/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only. Preflight is immutable readiness evidence; cannot generate or publish.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/preflight_detail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code, guarded mutation or checksum/revision conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-readiness-only",
+        "x-access-policy": "Management/NSM settings only. No machine/customer-role grant; no graph URL fetch, automatic routing or scheduling."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "policy": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "contract_version": {
+                "type": "string",
+                "const": "nyales-visit-generator-1"
+              },
+              "channel": {
+                "type": "string",
+                "const": "field"
+              },
+              "weights": {
+                "type": "object",
+                "properties": {
+                  "service_priority": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "overdue_priority": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "observed_sales": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "travel_cost": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                },
+                "required": [
+                  "service_priority",
+                  "overdue_priority",
+                  "observed_sales",
+                  "travel_cost"
+                ],
+                "additionalProperties": false
+              },
+              "cadence": {
+                "type": "object",
+                "properties": {
+                  "contacts_per_calendar_month": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 31
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "minimum_gap_days": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 366
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "contacts_per_calendar_month",
+                  "minimum_gap_days"
+                ],
+                "additionalProperties": false
+              },
+              "customer_overrides": {
+                "maxItems": 1000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "customer_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "contacts_per_calendar_month": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 31
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "minimum_gap_days": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 366
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "service_seconds": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 60,
+                          "maximum": 86400
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "customer_id",
+                    "contacts_per_calendar_month",
+                    "minimum_gap_days",
+                    "service_seconds",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "missing_data": {
+                "type": "object",
+                "properties": {
+                  "coordinates": {
+                    "type": "string",
+                    "const": "block"
+                  },
+                  "calendar": {
+                    "type": "string",
+                    "const": "block"
+                  },
+                  "assignment": {
+                    "type": "string",
+                    "const": "block"
+                  },
+                  "travel": {
+                    "type": "string",
+                    "const": "block"
+                  },
+                  "service_duration": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "block"
+                          }
+                        },
+                        "required": [
+                          "mode"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "explicit_default"
+                          },
+                          "seconds": {
+                            "type": "integer",
+                            "minimum": 60,
+                            "maximum": 86400
+                          },
+                          "reason": {
+                            "type": "string",
+                            "minLength": 8,
+                            "maxLength": 500
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "seconds",
+                          "reason"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "opening_hours": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "block"
+                          }
+                        },
+                        "required": [
+                          "mode"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "explicit_window"
+                          },
+                          "weekdays": {
+                            "minItems": 1,
+                            "maxItems": 7,
+                            "type": "array",
+                            "items": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 7
+                            }
+                          },
+                          "start_time": {
+                            "type": "string",
+                            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                          },
+                          "end_time": {
+                            "type": "string",
+                            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                          },
+                          "timezone": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100
+                          },
+                          "reason": {
+                            "type": "string",
+                            "minLength": 8,
+                            "maxLength": 500
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "weekdays",
+                          "start_time",
+                          "end_time",
+                          "timezone",
+                          "reason"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "sales_baseline": {
+                    "type": "string",
+                    "enum": [
+                      "block_weighted_metric",
+                      "omit_metric_and_renormalize_with_disclosure"
+                    ]
+                  }
+                },
+                "required": [
+                  "coordinates",
+                  "calendar",
+                  "assignment",
+                  "travel",
+                  "service_duration",
+                  "opening_hours",
+                  "sales_baseline"
+                ],
+                "additionalProperties": false
+              },
+              "constraints": {
+                "type": "object",
+                "properties": {
+                  "preserve_locked_appointments": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "preserve_completed_visits": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "preserve_past_dates": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "assignment_per_service_date": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "minimum_frequency": {
+                    "type": "string",
+                    "const": "hard"
+                  },
+                  "minimum_gap": {
+                    "type": "string",
+                    "const": "hard"
+                  },
+                  "daily_time_windows": {
+                    "type": "string",
+                    "const": "hard"
+                  },
+                  "breaks": {
+                    "type": "string",
+                    "const": "hard"
+                  },
+                  "allow_owner_redistribution": {
+                    "type": "boolean",
+                    "const": false
+                  },
+                  "traffic": {
+                    "type": "string",
+                    "const": "none"
+                  }
+                },
+                "required": [
+                  "preserve_locked_appointments",
+                  "preserve_completed_visits",
+                  "preserve_past_dates",
+                  "assignment_per_service_date",
+                  "minimum_frequency",
+                  "minimum_gap",
+                  "daily_time_windows",
+                  "breaks",
+                  "allow_owner_redistribution",
+                  "traffic"
+                ],
+                "additionalProperties": false
+              },
+              "runtime": {
+                "type": "object",
+                "properties": {
+                  "solver_seconds": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 7200
+                  },
+                  "job_deadline_seconds": {
+                    "type": "integer",
+                    "minimum": 60,
+                    "maximum": 604800
+                  },
+                  "lease_seconds": {
+                    "type": "integer",
+                    "minimum": 30,
+                    "maximum": 600
+                  },
+                  "heartbeat_seconds": {
+                    "type": "integer",
+                    "minimum": 5,
+                    "maximum": 120
+                  },
+                  "max_attempts": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "max_matrix_nodes": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 100
+                  },
+                  "maximum_snap_metres": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5000
+                  }
+                },
+                "required": [
+                  "solver_seconds",
+                  "job_deadline_seconds",
+                  "lease_seconds",
+                  "heartbeat_seconds",
+                  "max_attempts",
+                  "max_matrix_nodes",
+                  "maximum_snap_metres"
+                ],
+                "additionalProperties": false
+              },
+              "retention": {
+                "type": "object",
+                "properties": {
+                  "input_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 365
+                  },
+                  "result_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 365
+                  },
+                  "local_cache_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30
+                  },
+                  "uncommitted_upload_hours": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 168
+                  }
+                },
+                "required": [
+                  "input_days",
+                  "result_days",
+                  "local_cache_days",
+                  "uncommitted_upload_hours"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "contract_version",
+              "channel",
+              "weights",
+              "cadence",
+              "customer_overrides",
+              "missing_data",
+              "constraints",
+              "runtime",
+              "retention"
+            ],
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "config",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "activate": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "config_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expected_active_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "reason",
+          "config_sha256",
+          "expected_active_id",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "decision": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "graph": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "manifest": {
+            "type": "object",
+            "properties": {
+              "contract_version": {
+                "type": "string",
+                "const": "nyales-visit-generator-1"
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "extract_date": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "extract_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "graph_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "profile": {
+                "type": "string",
+                "enum": [
+                  "car",
+                  "motorcycle",
+                  "bicycle",
+                  "foot"
+                ]
+              },
+              "profile_version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "profile_validation_reference": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 500
+              },
+              "engine": {
+                "type": "string",
+                "const": "osrm"
+              },
+              "engine_version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "coverage_bbox": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  }
+                ],
+                "items": false,
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "source_reference": {
+                "type": "string",
+                "format": "uri"
+              },
+              "license_reference": {
+                "type": "string",
+                "format": "uri"
+              },
+              "attribution": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "contract_version",
+              "id",
+              "version",
+              "extract_date",
+              "extract_sha256",
+              "graph_sha256",
+              "profile",
+              "profile_version",
+              "profile_validation_reference",
+              "engine",
+              "engine_version",
+              "coverage_bbox",
+              "source_reference",
+              "license_reference",
+              "attribution"
+            ],
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "manifest",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "readiness": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "monthly"
+            ]
+          },
+          "period": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "end": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ],
+            "additionalProperties": false
+          },
+          "rep_ids": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "policy_version_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "graph_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "history": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "cutoff": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              }
+            },
+            "required": [
+              "start",
+              "cutoff"
+            ],
+            "additionalProperties": false
+          },
+          "customer_ids": {
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "mode",
+          "period",
+          "rep_ids",
+          "policy_version_id",
+          "graph_id",
+          "history",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "policy_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "draft",
+                  "active",
+                  "retired"
+                ]
+              },
+              "version": {
+                "type": "integer"
+              },
+              "config_sha256": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "activated_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "revision_no",
+              "status",
+              "version",
+              "config_sha256",
+              "created_at",
+              "activated_at"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "policy_detail": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "draft",
+                  "active",
+                  "retired"
+                ]
+              },
+              "version": {
+                "type": "integer"
+              },
+              "config_sha256": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "activated_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "config": {
+                "type": "object",
+                "properties": {
+                  "contract_version": {
+                    "type": "string",
+                    "const": "nyales-visit-generator-1"
+                  },
+                  "channel": {
+                    "type": "string",
+                    "const": "field"
+                  },
+                  "weights": {
+                    "type": "object",
+                    "properties": {
+                      "service_priority": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                      },
+                      "overdue_priority": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                      },
+                      "observed_sales": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                      },
+                      "travel_cost": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": [
+                      "service_priority",
+                      "overdue_priority",
+                      "observed_sales",
+                      "travel_cost"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "cadence": {
+                    "type": "object",
+                    "properties": {
+                      "contacts_per_calendar_month": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 31
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "minimum_gap_days": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 366
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "contacts_per_calendar_month",
+                      "minimum_gap_days"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "customer_overrides": {
+                    "maxItems": 1000,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "customer_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        "contacts_per_calendar_month": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 31
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "minimum_gap_days": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 366
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "service_seconds": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 60,
+                              "maximum": 86400
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reason": {
+                          "type": "string",
+                          "minLength": 8,
+                          "maxLength": 500
+                        }
+                      },
+                      "required": [
+                        "customer_id",
+                        "contacts_per_calendar_month",
+                        "minimum_gap_days",
+                        "service_seconds",
+                        "reason"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "missing_data": {
+                    "type": "object",
+                    "properties": {
+                      "coordinates": {
+                        "type": "string",
+                        "const": "block"
+                      },
+                      "calendar": {
+                        "type": "string",
+                        "const": "block"
+                      },
+                      "assignment": {
+                        "type": "string",
+                        "const": "block"
+                      },
+                      "travel": {
+                        "type": "string",
+                        "const": "block"
+                      },
+                      "service_duration": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "block"
+                              }
+                            },
+                            "required": [
+                              "mode"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "explicit_default"
+                              },
+                              "seconds": {
+                                "type": "integer",
+                                "minimum": 60,
+                                "maximum": 86400
+                              },
+                              "reason": {
+                                "type": "string",
+                                "minLength": 8,
+                                "maxLength": 500
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "seconds",
+                              "reason"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "opening_hours": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "block"
+                              }
+                            },
+                            "required": [
+                              "mode"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "explicit_window"
+                              },
+                              "weekdays": {
+                                "minItems": 1,
+                                "maxItems": 7,
+                                "type": "array",
+                                "items": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 7
+                                }
+                              },
+                              "start_time": {
+                                "type": "string",
+                                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                              },
+                              "end_time": {
+                                "type": "string",
+                                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                              },
+                              "timezone": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                              },
+                              "reason": {
+                                "type": "string",
+                                "minLength": 8,
+                                "maxLength": 500
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "weekdays",
+                              "start_time",
+                              "end_time",
+                              "timezone",
+                              "reason"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "sales_baseline": {
+                        "type": "string",
+                        "enum": [
+                          "block_weighted_metric",
+                          "omit_metric_and_renormalize_with_disclosure"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "coordinates",
+                      "calendar",
+                      "assignment",
+                      "travel",
+                      "service_duration",
+                      "opening_hours",
+                      "sales_baseline"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "constraints": {
+                    "type": "object",
+                    "properties": {
+                      "preserve_locked_appointments": {
+                        "type": "boolean",
+                        "const": true
+                      },
+                      "preserve_completed_visits": {
+                        "type": "boolean",
+                        "const": true
+                      },
+                      "preserve_past_dates": {
+                        "type": "boolean",
+                        "const": true
+                      },
+                      "assignment_per_service_date": {
+                        "type": "boolean",
+                        "const": true
+                      },
+                      "minimum_frequency": {
+                        "type": "string",
+                        "const": "hard"
+                      },
+                      "minimum_gap": {
+                        "type": "string",
+                        "const": "hard"
+                      },
+                      "daily_time_windows": {
+                        "type": "string",
+                        "const": "hard"
+                      },
+                      "breaks": {
+                        "type": "string",
+                        "const": "hard"
+                      },
+                      "allow_owner_redistribution": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "traffic": {
+                        "type": "string",
+                        "const": "none"
+                      }
+                    },
+                    "required": [
+                      "preserve_locked_appointments",
+                      "preserve_completed_visits",
+                      "preserve_past_dates",
+                      "assignment_per_service_date",
+                      "minimum_frequency",
+                      "minimum_gap",
+                      "daily_time_windows",
+                      "breaks",
+                      "allow_owner_redistribution",
+                      "traffic"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "runtime": {
+                    "type": "object",
+                    "properties": {
+                      "solver_seconds": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 7200
+                      },
+                      "job_deadline_seconds": {
+                        "type": "integer",
+                        "minimum": 60,
+                        "maximum": 604800
+                      },
+                      "lease_seconds": {
+                        "type": "integer",
+                        "minimum": 30,
+                        "maximum": 600
+                      },
+                      "heartbeat_seconds": {
+                        "type": "integer",
+                        "minimum": 5,
+                        "maximum": 120
+                      },
+                      "max_attempts": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5
+                      },
+                      "max_matrix_nodes": {
+                        "type": "integer",
+                        "minimum": 2,
+                        "maximum": 100
+                      },
+                      "maximum_snap_metres": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5000
+                      }
+                    },
+                    "required": [
+                      "solver_seconds",
+                      "job_deadline_seconds",
+                      "lease_seconds",
+                      "heartbeat_seconds",
+                      "max_attempts",
+                      "max_matrix_nodes",
+                      "maximum_snap_metres"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "retention": {
+                    "type": "object",
+                    "properties": {
+                      "input_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 365
+                      },
+                      "result_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 365
+                      },
+                      "local_cache_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 30
+                      },
+                      "uncommitted_upload_hours": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 168
+                      }
+                    },
+                    "required": [
+                      "input_days",
+                      "result_days",
+                      "local_cache_days",
+                      "uncommitted_upload_hours"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "contract_version",
+                  "channel",
+                  "weights",
+                  "cadence",
+                  "customer_overrides",
+                  "missing_data",
+                  "constraints",
+                  "runtime",
+                  "retention"
+                ],
+                "additionalProperties": false
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "revision_no",
+              "status",
+              "version",
+              "config_sha256",
+              "created_at",
+              "activated_at",
+              "config",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "policies": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "revision_no": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "draft",
+                        "active",
+                        "retired"
+                      ]
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "config_sha256": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "activated_at": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "revision_no",
+                    "status",
+                    "version",
+                    "config_sha256",
+                    "created_at",
+                    "activated_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "revision_no": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "enum": [
+                          "draft",
+                          "active",
+                          "retired"
+                        ]
+                      },
+                      "version": {
+                        "type": "integer"
+                      },
+                      "config_sha256": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "activated_at": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "revision_no",
+                      "status",
+                      "version",
+                      "config_sha256",
+                      "created_at",
+                      "activated_at"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "versions",
+              "active",
+              "has_more"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "graph_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "draft",
+                  "retired"
+                ]
+              },
+              "version": {
+                "type": "integer"
+              },
+              "manifest_sha256": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "engine_verified": {
+                "const": false
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "status",
+              "version",
+              "manifest_sha256",
+              "created_at",
+              "engine_verified"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "graph_detail": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "draft",
+                  "retired"
+                ]
+              },
+              "version": {
+                "type": "integer"
+              },
+              "manifest_sha256": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "engine_verified": {
+                "const": false
+              },
+              "manifest": {
+                "type": "object",
+                "properties": {
+                  "contract_version": {
+                    "type": "string",
+                    "const": "nyales-visit-generator-1"
+                  },
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "version": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "extract_date": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "extract_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "graph_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "profile": {
+                    "type": "string",
+                    "enum": [
+                      "car",
+                      "motorcycle",
+                      "bicycle",
+                      "foot"
+                    ]
+                  },
+                  "profile_version": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "profile_validation_reference": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 500
+                  },
+                  "engine": {
+                    "type": "string",
+                    "const": "osrm"
+                  },
+                  "engine_version": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "coverage_bbox": {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 4,
+                    "maxItems": 4
+                  },
+                  "source_reference": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "license_reference": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "attribution": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "contract_version",
+                  "id",
+                  "version",
+                  "extract_date",
+                  "extract_sha256",
+                  "graph_sha256",
+                  "profile",
+                  "profile_version",
+                  "profile_validation_reference",
+                  "engine",
+                  "engine_version",
+                  "coverage_bbox",
+                  "source_reference",
+                  "license_reference",
+                  "attribution"
+                ],
+                "additionalProperties": false
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "status",
+              "version",
+              "manifest_sha256",
+              "created_at",
+              "engine_verified",
+              "manifest",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "graphs": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "graphs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "draft",
+                        "retired"
+                      ]
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "manifest_sha256": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "engine_verified": {
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "status",
+                    "version",
+                    "manifest_sha256",
+                    "created_at",
+                    "engine_verified"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "engine_verification_available": {
+                "const": false
+              }
+            },
+            "required": [
+              "graphs",
+              "has_more",
+              "engine_verification_available"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "preflight_created": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "policy_version_id": {
+                "type": "string"
+              },
+              "graph_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "customer_count": {
+                "type": "integer"
+              },
+              "blocking_count": {
+                "type": "integer"
+              },
+              "snapshot_sha256": {
+                "type": "string"
+              },
+              "byte_count": {
+                "type": "integer"
+              },
+              "can_generate": {
+                "const": false
+              },
+              "publishable": {
+                "const": false
+              },
+              "rep_count": {
+                "type": "integer"
+              },
+              "customers_with_input_gaps": {
+                "type": "integer"
+              },
+              "assumption_count": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "policy_version_id",
+              "graph_id",
+              "created_at",
+              "customer_count",
+              "blocking_count",
+              "snapshot_sha256",
+              "byte_count",
+              "can_generate",
+              "publishable",
+              "rep_count",
+              "customers_with_input_gaps",
+              "assumption_count"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "preflights": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "preflights": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "policy_version_id": {
+                      "type": "string"
+                    },
+                    "graph_id": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "customer_count": {
+                      "type": "integer"
+                    },
+                    "blocking_count": {
+                      "type": "integer"
+                    },
+                    "snapshot_sha256": {
+                      "type": "string"
+                    },
+                    "byte_count": {
+                      "type": "integer"
+                    },
+                    "can_generate": {
+                      "const": false
+                    },
+                    "publishable": {
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "policy_version_id",
+                    "graph_id",
+                    "created_at",
+                    "customer_count",
+                    "blocking_count",
+                    "snapshot_sha256",
+                    "byte_count",
+                    "can_generate",
+                    "publishable"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "solver_input_available": {
+                "const": false
+              }
+            },
+            "required": [
+              "preflights",
+              "has_more",
+              "solver_input_available"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "preflight_detail": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "policy_version_id": {
+                    "type": "string"
+                  },
+                  "graph_id": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "customer_count": {
+                    "type": "integer"
+                  },
+                  "blocking_count": {
+                    "type": "integer"
+                  },
+                  "snapshot_sha256": {
+                    "type": "string"
+                  },
+                  "byte_count": {
+                    "type": "integer"
+                  },
+                  "can_generate": {
+                    "const": false
+                  },
+                  "publishable": {
+                    "const": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "policy_version_id",
+                  "graph_id",
+                  "created_at",
+                  "customer_count",
+                  "blocking_count",
+                  "snapshot_sha256",
+                  "byte_count",
+                  "can_generate",
+                  "publishable"
+                ],
+                "additionalProperties": false
+              },
+              "current": {
+                "type": "boolean"
+              },
+              "stale_reasons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "snapshot": {
+                "type": "object",
+                "properties": {
+                  "format": {
+                    "const": "nyales-visit-readiness-1"
+                  },
+                  "organization_id": {
+                    "type": "string"
+                  },
+                  "environment": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "actor_id": {
+                    "type": "string"
+                  },
+                  "request": {
+                    "$ref": "#/components/schemas/readiness"
+                  },
+                  "basis": {
+                    "type": "object",
+                    "properties": {
+                      "source_epoch": {
+                        "type": "integer"
+                      },
+                      "agenda_epoch": {
+                        "type": "integer"
+                      },
+                      "business_date": {
+                        "type": "string"
+                      },
+                      "timezone": {
+                        "type": "string"
+                      },
+                      "sales_history_complete": {
+                        "type": "boolean"
+                      },
+                      "service_history_complete": {
+                        "const": false
+                      }
+                    },
+                    "required": [
+                      "source_epoch",
+                      "agenda_epoch",
+                      "business_date",
+                      "timezone",
+                      "sales_history_complete",
+                      "service_history_complete"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "policy": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "config_sha256": {
+                        "type": "string"
+                      },
+                      "config": {
+                        "type": "object",
+                        "properties": {
+                          "contract_version": {
+                            "type": "string",
+                            "const": "nyales-visit-generator-1"
+                          },
+                          "channel": {
+                            "type": "string",
+                            "const": "field"
+                          },
+                          "weights": {
+                            "type": "object",
+                            "properties": {
+                              "service_priority": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 10000
+                              },
+                              "overdue_priority": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 10000
+                              },
+                              "observed_sales": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 10000
+                              },
+                              "travel_cost": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 10000
+                              }
+                            },
+                            "required": [
+                              "service_priority",
+                              "overdue_priority",
+                              "observed_sales",
+                              "travel_cost"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "cadence": {
+                            "type": "object",
+                            "properties": {
+                              "contacts_per_calendar_month": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 31
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "minimum_gap_days": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 366
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "contacts_per_calendar_month",
+                              "minimum_gap_days"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "customer_overrides": {
+                            "maxItems": 1000,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "customer_id": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                },
+                                "contacts_per_calendar_month": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 31
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "minimum_gap_days": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 366
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "service_seconds": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": 60,
+                                      "maximum": 86400
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "reason": {
+                                  "type": "string",
+                                  "minLength": 8,
+                                  "maxLength": 500
+                                }
+                              },
+                              "required": [
+                                "customer_id",
+                                "contacts_per_calendar_month",
+                                "minimum_gap_days",
+                                "service_seconds",
+                                "reason"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "missing_data": {
+                            "type": "object",
+                            "properties": {
+                              "coordinates": {
+                                "type": "string",
+                                "const": "block"
+                              },
+                              "calendar": {
+                                "type": "string",
+                                "const": "block"
+                              },
+                              "assignment": {
+                                "type": "string",
+                                "const": "block"
+                              },
+                              "travel": {
+                                "type": "string",
+                                "const": "block"
+                              },
+                              "service_duration": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "mode": {
+                                        "type": "string",
+                                        "const": "block"
+                                      }
+                                    },
+                                    "required": [
+                                      "mode"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "mode": {
+                                        "type": "string",
+                                        "const": "explicit_default"
+                                      },
+                                      "seconds": {
+                                        "type": "integer",
+                                        "minimum": 60,
+                                        "maximum": 86400
+                                      },
+                                      "reason": {
+                                        "type": "string",
+                                        "minLength": 8,
+                                        "maxLength": 500
+                                      }
+                                    },
+                                    "required": [
+                                      "mode",
+                                      "seconds",
+                                      "reason"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              },
+                              "opening_hours": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "mode": {
+                                        "type": "string",
+                                        "const": "block"
+                                      }
+                                    },
+                                    "required": [
+                                      "mode"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "mode": {
+                                        "type": "string",
+                                        "const": "explicit_window"
+                                      },
+                                      "weekdays": {
+                                        "minItems": 1,
+                                        "maxItems": 7,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "integer",
+                                          "minimum": 1,
+                                          "maximum": 7
+                                        }
+                                      },
+                                      "start_time": {
+                                        "type": "string",
+                                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                                      },
+                                      "end_time": {
+                                        "type": "string",
+                                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                                      },
+                                      "timezone": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
+                                      },
+                                      "reason": {
+                                        "type": "string",
+                                        "minLength": 8,
+                                        "maxLength": 500
+                                      }
+                                    },
+                                    "required": [
+                                      "mode",
+                                      "weekdays",
+                                      "start_time",
+                                      "end_time",
+                                      "timezone",
+                                      "reason"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              },
+                              "sales_baseline": {
+                                "type": "string",
+                                "enum": [
+                                  "block_weighted_metric",
+                                  "omit_metric_and_renormalize_with_disclosure"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "coordinates",
+                              "calendar",
+                              "assignment",
+                              "travel",
+                              "service_duration",
+                              "opening_hours",
+                              "sales_baseline"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "constraints": {
+                            "type": "object",
+                            "properties": {
+                              "preserve_locked_appointments": {
+                                "type": "boolean",
+                                "const": true
+                              },
+                              "preserve_completed_visits": {
+                                "type": "boolean",
+                                "const": true
+                              },
+                              "preserve_past_dates": {
+                                "type": "boolean",
+                                "const": true
+                              },
+                              "assignment_per_service_date": {
+                                "type": "boolean",
+                                "const": true
+                              },
+                              "minimum_frequency": {
+                                "type": "string",
+                                "const": "hard"
+                              },
+                              "minimum_gap": {
+                                "type": "string",
+                                "const": "hard"
+                              },
+                              "daily_time_windows": {
+                                "type": "string",
+                                "const": "hard"
+                              },
+                              "breaks": {
+                                "type": "string",
+                                "const": "hard"
+                              },
+                              "allow_owner_redistribution": {
+                                "type": "boolean",
+                                "const": false
+                              },
+                              "traffic": {
+                                "type": "string",
+                                "const": "none"
+                              }
+                            },
+                            "required": [
+                              "preserve_locked_appointments",
+                              "preserve_completed_visits",
+                              "preserve_past_dates",
+                              "assignment_per_service_date",
+                              "minimum_frequency",
+                              "minimum_gap",
+                              "daily_time_windows",
+                              "breaks",
+                              "allow_owner_redistribution",
+                              "traffic"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "runtime": {
+                            "type": "object",
+                            "properties": {
+                              "solver_seconds": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 7200
+                              },
+                              "job_deadline_seconds": {
+                                "type": "integer",
+                                "minimum": 60,
+                                "maximum": 604800
+                              },
+                              "lease_seconds": {
+                                "type": "integer",
+                                "minimum": 30,
+                                "maximum": 600
+                              },
+                              "heartbeat_seconds": {
+                                "type": "integer",
+                                "minimum": 5,
+                                "maximum": 120
+                              },
+                              "max_attempts": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 5
+                              },
+                              "max_matrix_nodes": {
+                                "type": "integer",
+                                "minimum": 2,
+                                "maximum": 100
+                              },
+                              "maximum_snap_metres": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 5000
+                              }
+                            },
+                            "required": [
+                              "solver_seconds",
+                              "job_deadline_seconds",
+                              "lease_seconds",
+                              "heartbeat_seconds",
+                              "max_attempts",
+                              "max_matrix_nodes",
+                              "maximum_snap_metres"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "retention": {
+                            "type": "object",
+                            "properties": {
+                              "input_days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 365
+                              },
+                              "result_days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 365
+                              },
+                              "local_cache_days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 30
+                              },
+                              "uncommitted_upload_hours": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 168
+                              }
+                            },
+                            "required": [
+                              "input_days",
+                              "result_days",
+                              "local_cache_days",
+                              "uncommitted_upload_hours"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "contract_version",
+                          "channel",
+                          "weights",
+                          "cadence",
+                          "customer_overrides",
+                          "missing_data",
+                          "constraints",
+                          "runtime",
+                          "retention"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "version",
+                      "status",
+                      "config_sha256",
+                      "config"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "graph": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "integer"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "manifest_sha256": {
+                            "type": "string"
+                          },
+                          "manifest": {
+                            "type": "object",
+                            "properties": {
+                              "contract_version": {
+                                "type": "string",
+                                "const": "nyales-visit-generator-1"
+                              },
+                              "id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "version": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "extract_date": {
+                                "type": "string",
+                                "format": "date",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                              },
+                              "extract_sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "graph_sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "profile": {
+                                "type": "string",
+                                "enum": [
+                                  "car",
+                                  "motorcycle",
+                                  "bicycle",
+                                  "foot"
+                                ]
+                              },
+                              "profile_version": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "profile_validation_reference": {
+                                "type": "string",
+                                "minLength": 8,
+                                "maxLength": 500
+                              },
+                              "engine": {
+                                "type": "string",
+                                "const": "osrm"
+                              },
+                              "engine_version": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "coverage_bbox": {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -90,
+                                    "maximum": 90
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -90,
+                                    "maximum": 90
+                                  }
+                                ],
+                                "items": false,
+                                "minItems": 4,
+                                "maxItems": 4
+                              },
+                              "source_reference": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "license_reference": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "attribution": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 500
+                              }
+                            },
+                            "required": [
+                              "contract_version",
+                              "id",
+                              "version",
+                              "extract_date",
+                              "extract_sha256",
+                              "graph_sha256",
+                              "profile",
+                              "profile_version",
+                              "profile_validation_reference",
+                              "engine",
+                              "engine_version",
+                              "coverage_bbox",
+                              "source_reference",
+                              "license_reference",
+                              "attribution"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "engine_verified": {
+                            "const": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "version",
+                          "status",
+                          "manifest_sha256",
+                          "manifest",
+                          "engine_verified"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "source": {
+                    "type": "object"
+                  },
+                  "reps": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "branch_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "blockers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "branch_ids",
+                        "blockers"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "customers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "customer_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "customer_version": {
+                          "type": "integer"
+                        },
+                        "point": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "longitude_e7": {
+                                  "type": "integer"
+                                },
+                                "latitude_e7": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "longitude_e7",
+                                "latitude_e7"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "required_contacts_per_month": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "minimum_gap_days": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "service_seconds": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "eligible_dates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string"
+                              },
+                              "rep_id": {
+                                "type": "string"
+                              },
+                              "assignment_id": {
+                                "type": "string"
+                              },
+                              "area_id": {
+                                "type": "string"
+                              },
+                              "branch_id": {
+                                "type": "string"
+                              },
+                              "calendar_id": {
+                                "type": "string"
+                              },
+                              "calendar_version": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "date",
+                              "rep_id",
+                              "assignment_id",
+                              "area_id",
+                              "branch_id",
+                              "calendar_id",
+                              "calendar_version"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "observed_sales_rupiah": {
+                          "type": "integer"
+                        },
+                        "sales_rupiah": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "known_completed_contacts": {
+                          "type": "null"
+                        },
+                        "remaining_contacts": {
+                          "type": "null"
+                        },
+                        "assumptions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "field": {
+                                "type": "string"
+                              },
+                              "reason": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "field",
+                              "reason"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "blockers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "customer_id",
+                        "name",
+                        "customer_version",
+                        "point",
+                        "required_contacts_per_month",
+                        "minimum_gap_days",
+                        "service_seconds",
+                        "eligible_dates",
+                        "observed_sales_rupiah",
+                        "sales_rupiah",
+                        "known_completed_contacts",
+                        "remaining_contacts",
+                        "assumptions",
+                        "blockers"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "blockers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "scope": {
+                          "enum": [
+                            "global",
+                            "rep",
+                            "customer"
+                          ]
+                        },
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "scope",
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "summary": {
+                    "type": "object",
+                    "properties": {
+                      "customer_count": {
+                        "type": "integer"
+                      },
+                      "rep_count": {
+                        "type": "integer"
+                      },
+                      "blocking_count": {
+                        "type": "integer"
+                      },
+                      "customers_with_input_gaps": {
+                        "type": "integer"
+                      },
+                      "assumption_count": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "customer_count",
+                      "rep_count",
+                      "blocking_count",
+                      "customers_with_input_gaps",
+                      "assumption_count"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "can_generate": {
+                    "const": false
+                  },
+                  "publishable": {
+                    "const": false
+                  },
+                  "notice": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "format",
+                  "organization_id",
+                  "environment",
+                  "id",
+                  "created_at",
+                  "actor_id",
+                  "request",
+                  "basis",
+                  "policy",
+                  "graph",
+                  "source",
+                  "reps",
+                  "customers",
+                  "blockers",
+                  "summary",
+                  "can_generate",
+                  "publishable",
+                  "notice"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "metadata",
+              "current",
+              "stale_reasons",
+              "snapshot"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "x-migration": "0044_visit_planning_readiness.sql",
+  "x-limits": {
+    "customers": 200,
+    "invoice_rows": 50000,
+    "activity_rows": 10000,
+    "assignment_rows": 5000,
+    "snapshot_bytes": 4194304
+  },
+  "x-boundary": "nyales-visit-readiness-1 is not the solver VisitSnapshot. Policy metadata and graph registration do not establish engine verification; all snapshots can_generate=false and publishable=false."
+}

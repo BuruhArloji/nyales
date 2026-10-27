@@ -1,0 +1,12 @@
+CREATE TRIGGER work_plan_collision_insert BEFORE INSERT ON work_plan WHEN NEW.status IN('planned','proposed') BEGIN
+ SELECT CASE WHEN EXISTS(SELECT 1 FROM work_plan w WHERE w.organization_id=NEW.organization_id AND w.user_id=NEW.user_id AND w.status IN('planned','proposed') AND ABS(julianday(w.scheduled_at)-julianday(NEW.scheduled_at))*1440<29.999) OR EXISTS(SELECT 1 FROM sales_task t WHERE t.organization_id=NEW.organization_id AND t.user_id=NEW.user_id AND t.status IN('open','in_progress') AND ABS(julianday(t.due_at)-julianday(NEW.scheduled_at))*1440<29.999) THEN RAISE(ABORT,'CALENDAR_COLLISION') END;
+END;
+CREATE TRIGGER work_plan_collision_update BEFORE UPDATE OF scheduled_at,status ON work_plan WHEN NEW.status IN('planned','proposed') BEGIN
+ SELECT CASE WHEN EXISTS(SELECT 1 FROM work_plan w WHERE w.organization_id=NEW.organization_id AND w.user_id=NEW.user_id AND w.id<>NEW.id AND w.status IN('planned','proposed') AND ABS(julianday(w.scheduled_at)-julianday(NEW.scheduled_at))*1440<29.999) OR EXISTS(SELECT 1 FROM sales_task t WHERE t.organization_id=NEW.organization_id AND t.user_id=NEW.user_id AND t.status IN('open','in_progress') AND ABS(julianday(t.due_at)-julianday(NEW.scheduled_at))*1440<29.999) THEN RAISE(ABORT,'CALENDAR_COLLISION') END;
+END;
+CREATE TRIGGER task_collision_insert BEFORE INSERT ON sales_task WHEN NEW.status IN('open','in_progress') BEGIN
+ SELECT CASE WHEN EXISTS(SELECT 1 FROM work_plan w WHERE w.organization_id=NEW.organization_id AND w.user_id=NEW.user_id AND w.status IN('planned','proposed') AND ABS(julianday(w.scheduled_at)-julianday(NEW.due_at))*1440<29.999) OR EXISTS(SELECT 1 FROM sales_task t WHERE t.organization_id=NEW.organization_id AND t.user_id=NEW.user_id AND t.status IN('open','in_progress') AND ABS(julianday(t.due_at)-julianday(NEW.due_at))*1440<29.999) THEN RAISE(ABORT,'CALENDAR_COLLISION') END;
+END;
+CREATE TRIGGER task_collision_update BEFORE UPDATE OF due_at ON sales_task WHEN NEW.status IN('open','in_progress') BEGIN
+ SELECT CASE WHEN EXISTS(SELECT 1 FROM work_plan w WHERE w.organization_id=NEW.organization_id AND w.user_id=NEW.user_id AND w.status IN('planned','proposed') AND ABS(julianday(w.scheduled_at)-julianday(NEW.due_at))*1440<29.999) OR EXISTS(SELECT 1 FROM sales_task t WHERE t.organization_id=NEW.organization_id AND t.user_id=NEW.user_id AND t.id<>NEW.id AND t.status IN('open','in_progress') AND ABS(julianday(t.due_at)-julianday(NEW.due_at))*1440<29.999) THEN RAISE(ABORT,'CALENDAR_COLLISION') END;
+END;

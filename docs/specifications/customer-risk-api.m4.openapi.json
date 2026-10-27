@@ -1,0 +1,2874 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-067 customer risk API",
+    "version": "0.1.0",
+    "description": "Local analysis, nyales-risk-1. Explicit versioned policies, immutable evidence in private R2 and references in D1. Financial amounts are whole IDR rupiah. History is not a persistent access grant. Does not modify customer status, owner, targets, visits, incentives or telesales permissions."
+  },
+  "paths": {
+    "/api/customer-risk-policies": {
+      "get": {
+        "operationId": "risk_get__api_customer_risk_policies",
+        "summary": "GET /api/customer-risk-policies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_list_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only. No implicit active policy."
+      },
+      "post": {
+        "operationId": "risk_post__api_customer_risk_policies",
+        "summary": "POST /api/customer-risk-policies",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/policy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only. No implicit active policy."
+      }
+    },
+    "/api/customer-risk-policies/{id}": {
+      "put": {
+        "operationId": "risk_put__api_customer_risk_policies__id_",
+        "summary": "PUT /api/customer-risk-policies/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version from the reviewed draft/active row."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/policy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only. No implicit active policy."
+      }
+    },
+    "/api/customer-risk-policies/{id}/activate": {
+      "post": {
+        "operationId": "risk_post__api_customer_risk_policies__id__activate",
+        "summary": "POST /api/customer-risk-policies/{id}/activate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version from the reviewed draft/active row."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/activate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only. No implicit active policy."
+      }
+    },
+    "/api/customer-risk-policies/{id}/retire": {
+      "post": {
+        "operationId": "risk_post__api_customer_risk_policies__id__retire",
+        "summary": "POST /api/customer-risk-policies/{id}/retire",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version from the reviewed draft/active row."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retire"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only. No implicit active policy."
+      }
+    },
+    "/api/risks/policy": {
+      "get": {
+        "operationId": "risk_get__api_risks_policy",
+        "summary": "GET /api/risks/policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/active_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current scope; nonadmin saved runs require own actor and exact scope fingerprint. Customer visibility is checked again. No raw private R2 inputs returned."
+      }
+    },
+    "/api/risks/evaluations": {
+      "post": {
+        "operationId": "risk_post__api_risks_evaluations",
+        "summary": "POST /api/risks/evaluations",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/evaluation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/evaluation_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/evaluation_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current scope; nonadmin saved runs require own actor and exact scope fingerprint. Customer visibility is checked again. No raw private R2 inputs returned."
+      }
+    },
+    "/api/risks/current": {
+      "get": {
+        "operationId": "risk_get__api_risks_current",
+        "summary": "GET /api/risks/current",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "area_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "rep_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "team_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "dataset_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "boundary_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "mapping_bucket",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "const": "unmapped"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/current_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current scope; nonadmin saved runs require own actor and exact scope fingerprint. Customer visibility is checked again. No raw private R2 inputs returned."
+      }
+    },
+    "/api/risks/runs": {
+      "get": {
+        "operationId": "risk_get__api_risks_runs",
+        "summary": "GET /api/risks/runs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/history_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current scope; nonadmin saved runs require own actor and exact scope fingerprint. Customer visibility is checked again. No raw private R2 inputs returned."
+      }
+    },
+    "/api/risks/runs/{id}": {
+      "get": {
+        "operationId": "risk_get__api_risks_runs__id_",
+        "summary": "GET /api/risks/runs/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope. Null/unknown remains distinct from zero.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/run_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code envelope; stale/access/source/limits fail closed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current scope; nonadmin saved runs require own actor and exact scope fingerprint. Customer visibility is checked again. No raw private R2 inputs returned."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "policy": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema_version": {
+                "type": "number",
+                "const": 1
+              },
+              "basis": {
+                "type": "string",
+                "const": "authorized_invoice_scope"
+              },
+              "near_churn": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "const": false
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "const": true
+                      },
+                      "after_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 90
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "after_days"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "repeat_order": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "const": false
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "const": true
+                      },
+                      "lookback_days": {
+                        "type": "integer",
+                        "minimum": 90,
+                        "maximum": 730
+                      },
+                      "minimum_order_dates": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 60
+                      },
+                      "overdue_multiplier_milli": {
+                        "type": "integer",
+                        "minimum": 1000,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "lookback_days",
+                      "minimum_order_dates",
+                      "overdue_multiplier_milli"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "sales_decline": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "const": false
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "const": true
+                      },
+                      "comparison": {
+                        "type": "string",
+                        "enum": [
+                          "completed_months",
+                          "comparable_mtd"
+                        ]
+                      },
+                      "drop_basis_points": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 10000
+                      },
+                      "minimum_baseline_minor": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "minimum_baseline_order_dates": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 31
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "comparison",
+                      "drop_basis_points",
+                      "minimum_baseline_minor",
+                      "minimum_baseline_order_dates"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "schema_version",
+              "basis",
+              "near_churn",
+              "repeat_order",
+              "sales_decline"
+            ],
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "config",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "activate": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "config_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expected_active_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "reason",
+          "config_sha256",
+          "expected_active_id",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "retire": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "evaluation": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "object",
+            "properties": {
+              "period": {
+                "type": "string",
+                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+              },
+              "area_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "rep_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "channel": {
+                "type": "string",
+                "enum": [
+                  "field",
+                  "telesales"
+                ]
+              },
+              "branch_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "team_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "dataset_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "boundary_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "mapping_bucket": {
+                "type": "string",
+                "const": "unmapped"
+              }
+            },
+            "additionalProperties": false
+          },
+          "customer_ids": {
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        },
+        "required": [
+          "filters"
+        ],
+        "additionalProperties": false
+      },
+      "filters": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "branch_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "team_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "mapping_bucket": {
+            "type": "string",
+            "const": "unmapped"
+          }
+        },
+        "additionalProperties": false
+      },
+      "config": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "number",
+            "const": 1
+          },
+          "basis": {
+            "type": "string",
+            "const": "authorized_invoice_scope"
+          },
+          "near_churn": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": false
+                  }
+                },
+                "required": [
+                  "enabled"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "after_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 90
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "after_days"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "repeat_order": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": false
+                  }
+                },
+                "required": [
+                  "enabled"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "lookback_days": {
+                    "type": "integer",
+                    "minimum": 90,
+                    "maximum": 730
+                  },
+                  "minimum_order_dates": {
+                    "type": "integer",
+                    "minimum": 3,
+                    "maximum": 60
+                  },
+                  "overdue_multiplier_milli": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "maximum": 10000
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "lookback_days",
+                  "minimum_order_dates",
+                  "overdue_multiplier_milli"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "sales_decline": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": false
+                  }
+                },
+                "required": [
+                  "enabled"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "comparison": {
+                    "type": "string",
+                    "enum": [
+                      "completed_months",
+                      "comparable_mtd"
+                    ]
+                  },
+                  "drop_basis_points": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000
+                  },
+                  "minimum_baseline_minor": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "minimum_baseline_order_dates": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "comparison",
+                  "drop_basis_points",
+                  "minimum_baseline_minor",
+                  "minimum_baseline_order_dates"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "schema_version",
+          "basis",
+          "near_churn",
+          "repeat_order",
+          "sales_decline"
+        ],
+        "additionalProperties": false
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": true
+      },
+      "run": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "policy_version_id": {
+            "type": "string"
+          },
+          "dataset_id": {
+            "type": "string"
+          },
+          "cutoff": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "customer_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "attention_customer_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unknown_customer_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "status": {
+            "const": "ready"
+          },
+          "version": {
+            "const": 1
+          },
+          "filters": {
+            "$ref": "#/components/schemas/filters"
+          },
+          "scope_trimmed": {
+            "type": "boolean"
+          },
+          "policy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "config_sha256": {
+                "type": "string"
+              },
+              "config": {
+                "$ref": "#/components/schemas/config"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "revision_no",
+              "config_sha256"
+            ],
+            "additionalProperties": false
+          },
+          "basis": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "complete_from": {
+                    "type": "string"
+                  },
+                  "complete_through": {
+                    "type": "string"
+                  },
+                  "history_complete": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "complete_from",
+                  "complete_through",
+                  "history_complete"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "customer_id": {
+                  "type": "string"
+                },
+                "customer_name": {
+                  "type": "string"
+                },
+                "boundary_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "boundary_name": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "customer_id": {
+                      "type": "string"
+                    },
+                    "customer_status": {
+                      "type": "string"
+                    },
+                    "definition_version": {
+                      "const": "nyales-risk-1"
+                    },
+                    "cutoff": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "enum": [
+                        "attention",
+                        "attention_with_gaps",
+                        "insufficient_data",
+                        "no_flag_observed"
+                      ]
+                    },
+                    "flag_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "unknown_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "metrics": {
+                      "type": "object",
+                      "properties": {
+                        "near_churn": {
+                          "type": "object",
+                          "properties": {
+                            "state": {
+                              "enum": [
+                                "disabled",
+                                "insufficient_data",
+                                "not_applicable",
+                                "flag",
+                                "no_flag"
+                              ]
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "evidence": {
+                              "type": "object",
+                              "additionalProperties": true
+                            }
+                          },
+                          "required": [
+                            "state",
+                            "code",
+                            "evidence"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "repeat_order": {
+                          "type": "object",
+                          "properties": {
+                            "state": {
+                              "enum": [
+                                "disabled",
+                                "insufficient_data",
+                                "not_applicable",
+                                "flag",
+                                "no_flag"
+                              ]
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "evidence": {
+                              "type": "object",
+                              "additionalProperties": true
+                            }
+                          },
+                          "required": [
+                            "state",
+                            "code",
+                            "evidence"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "sales_decline": {
+                          "type": "object",
+                          "properties": {
+                            "state": {
+                              "enum": [
+                                "disabled",
+                                "insufficient_data",
+                                "not_applicable",
+                                "flag",
+                                "no_flag"
+                              ]
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "evidence": {
+                              "type": "object",
+                              "additionalProperties": true
+                            }
+                          },
+                          "required": [
+                            "state",
+                            "code",
+                            "evidence"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "near_churn",
+                        "repeat_order",
+                        "sales_decline"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "customer_id",
+                    "customer_status",
+                    "definition_version",
+                    "cutoff",
+                    "state",
+                    "flag_count",
+                    "unknown_count",
+                    "metrics"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "customer_id",
+                "customer_name",
+                "boundary_id",
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "definition_version": {
+            "const": "nyales-risk-1"
+          },
+          "snapshot_sha256": {
+            "type": "string"
+          },
+          "current": {
+            "type": "boolean"
+          },
+          "history_notice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "policy_version_id",
+          "dataset_id",
+          "cutoff",
+          "created_at",
+          "customer_count",
+          "attention_customer_count",
+          "unknown_customer_count",
+          "status",
+          "version",
+          "filters",
+          "scope_trimmed",
+          "policy",
+          "basis",
+          "source",
+          "results",
+          "definition_version",
+          "snapshot_sha256",
+          "current",
+          "history_notice"
+        ],
+        "additionalProperties": false
+      },
+      "run_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/run"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "evaluation_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "policy_version_id": {
+                "type": "string"
+              },
+              "dataset_id": {
+                "type": "string"
+              },
+              "cutoff": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "customer_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "attention_customer_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unknown_customer_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "status": {
+                "const": "ready"
+              },
+              "version": {
+                "const": 1
+              },
+              "cached": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "policy_version_id",
+              "dataset_id",
+              "cutoff",
+              "created_at",
+              "customer_count",
+              "attention_customer_count",
+              "unknown_customer_count",
+              "status",
+              "version",
+              "cached"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "current_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_configured",
+                  "evaluation_required",
+                  "ready"
+                ]
+              },
+              "run": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/run"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "policy": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "revision_no": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "revision_no"
+                ],
+                "additionalProperties": false
+              },
+              "customer_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "state",
+              "run"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "history_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "runs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "policy_version_id": {
+                      "type": "string"
+                    },
+                    "dataset_id": {
+                      "type": "string"
+                    },
+                    "cutoff": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "customer_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "attention_customer_count": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "unknown_customer_count": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "const": "ready"
+                    },
+                    "version": {
+                      "const": 1
+                    },
+                    "policy_name": {
+                      "type": "string"
+                    },
+                    "filters": {
+                      "$ref": "#/components/schemas/filters"
+                    },
+                    "scope_trimmed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "policy_version_id",
+                    "dataset_id",
+                    "cutoff",
+                    "created_at",
+                    "customer_count",
+                    "attention_customer_count",
+                    "unknown_customer_count",
+                    "status",
+                    "version",
+                    "policy_name",
+                    "filters",
+                    "scope_trimmed"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "runs",
+              "has_more"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "policy_list_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "revision_no": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "status": {
+                      "enum": [
+                        "draft",
+                        "active",
+                        "retired"
+                      ]
+                    },
+                    "config": {
+                      "$ref": "#/components/schemas/config"
+                    },
+                    "config_sha256": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "version",
+                    "revision_no",
+                    "status",
+                    "config",
+                    "config_sha256",
+                    "reason"
+                  ],
+                  "additionalProperties": true
+                }
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "revision_no": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "status": {
+                        "enum": [
+                          "draft",
+                          "active",
+                          "retired"
+                        ]
+                      },
+                      "config": {
+                        "$ref": "#/components/schemas/config"
+                      },
+                      "config_sha256": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "version",
+                      "revision_no",
+                      "status",
+                      "config",
+                      "config_sha256",
+                      "reason"
+                    ],
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "versions",
+              "active",
+              "has_more"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "policy_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "status": {
+                "enum": [
+                  "draft",
+                  "active",
+                  "retired"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "status"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "active_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "configured",
+                  "not_configured"
+                ]
+              },
+              "policy": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "revision_no": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "config_sha256": {
+                        "type": "string"
+                      },
+                      "activated_at": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "revision_no",
+                      "config_sha256",
+                      "activated_at"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "can_manage": {
+                "type": "boolean"
+              },
+              "definition_version": {
+                "const": "nyales-risk-1"
+              }
+            },
+            "required": [
+              "state",
+              "policy",
+              "can_manage",
+              "definition_version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "x-bounds": {
+    "customers": 200,
+    "invoices": 50000,
+    "snapshot_bytes": 4194304,
+    "history_latest": 50,
+    "policy_versions_latest": 100
+  },
+  "x-rules": [
+    "Enabled policy rules require all thresholds; no business defaults.",
+    "Only one active policy; active config immutable. Activation uses If-Match, hash, expected active ID and explicit confirmation.",
+    "GET current does not run the risk engine or write. A bounded regional input scan is still required for freshness/cache validation. POST freezes source/basis and requires unchanged revision and active policy at commit.",
+    "Cache binds actor/scope, filters, policy, release and input snapshot; changed input requires new evaluation.",
+    "Missing or tampered R2 fails closed; unreferenced upload is removed only after DB proves it is not committed.",
+    "All invoice inputs stay inside authorized historical finance scope. Company-wide near-churn history requires organization-wide permission; otherwise unknown.",
+    "Retired boundary history is shown as evidence, never silently overlaid on a replacement release.",
+    "Received-source completeness and sufficient positive baseline required; absent flag does not mean safe."
+  ]
+}

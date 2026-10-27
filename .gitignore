@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+.env.local
+test-results/
+*.log
+pilot/**/LOCAL-STATE.json
+
+.nyales-agent/
+*.agent.dpapi.json
+
+# generated deployment config and CI evidence
+.github/.generated/
+docs/release-gate-ci.json
+
+deliverables/
+
+docs/release-gate-local.json
+
+pilot/*/rehearsal/
+pilot/local-*/PREPARED.json
+pilot/local-*/LOCAL-STATE.json
+pilot/local-*/migration.log
+pilot/local-*/seed.log
+pilot/local-*/source-data.json
+pilot/local-*/rehearsal/

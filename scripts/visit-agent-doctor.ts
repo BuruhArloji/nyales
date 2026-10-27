@@ -1,0 +1,19 @@
+import {availableParallelism,cpus,freemem,totalmem,platform,arch,release} from 'node:os';
+import {statfsSync,writeFileSync,existsSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
+type Probe={found:boolean;status:'available'|'unavailable'|'not_installed'|'probe_failed';output:string;exit_code:number|null};
+function probe(command:string,args:string[]):Probe{const result=spawnSync(command,args,{encoding:'utf8',timeout:10000,maxBuffer:256*1024,windowsHide:true});const output=((result.stdout||'')+(result.stderr||'')).replaceAll('\0','').trim().slice(0,2000);return{found:!((result.error as NodeJS.ErrnoException|undefined)?.code==='ENOENT'),status:result.error||result.status!==0?'probe_failed':'available',output,exit_code:result.status}}
+export function classifyVisitMachine(value:{docker:Probe;wsl:Probe;ortools:boolean;free_disk_bytes:number;free_ram_bytes:number}){
+ const observations:string[]=[];if(value.docker.status!=='available')observations.push('DOCKER_NOT_AVAILABLE');if(value.wsl.status!=='available')observations.push('WSL_NOT_READY');if(!value.ortools)observations.push('ORTOOLS_NOT_AVAILABLE');if(value.free_disk_bytes<30*1024**3)observations.push('DISK_HEADROOM_REVIEW_BEFORE_GRAPH_DOWNLOAD');if(value.free_ram_bytes<8*1024**3)observations.push('AVAILABLE_RAM_REVIEW_BEFORE_PREPROCESS');
+ return{observations,readiness:'operator_and_graph_benchmark_required' as const,can_claim_osrm_capacity:false as const,can_claim_cost_zero:false as const,notes:'30 GiB disk / 8 GiB available RAM are doctor review thresholds, not OSRM minimum requirements or guarantees. A bounded pilot extract and measured preprocessing are still required.'};
+}
+export function collectVisitMachineReadiness(){
+ const docker=probe('docker',['version','--format','{{json .Server.Version}}']),wsl=platform()==='win32'?probe('wsl.exe',['--status']):{found:false,status:'unavailable' as const,output:'Not a Windows host',exit_code:null};
+ if(/not installed/i.test(wsl.output))wsl.status='not_installed';
+ const localPython=resolve(platform()==='win32'?'.nyales-agent/solver-python/Scripts/python.exe':'.nyales-agent/solver-python/bin/python'),python=probe(existsSync(localPython)?localPython:'python',['-c',"import sys,importlib.util,json;print(json.dumps({'version':sys.version.split()[0],'ortools':importlib.util.find_spec('ortools') is not None}))"]);let ortools=false;try{ortools=JSON.parse(python.output).ortools===true}catch{/* Unknown never becomes an installed solver. */}
+ const disk=statfsSync(process.cwd()),diskFree=disk.bavail*disk.bsize,ramFree=freemem();
+ return{format:'nyales-visit-agent-readiness-1',checked_at:new Date().toISOString(),classification:'local_machine_read_only',machine_identity_collected:false,node_version:process.version,platform:platform(),architecture:arch(),os_release:release(),cpu_model:cpus()[0]?.model||null,logical_processors:cpus().length,available_parallelism:availableParallelism(),total_ram_bytes:totalmem(),free_ram_bytes:ramFree,workspace_disk_free_bytes:diskFree,docker,wsl,python,ortools,assessment:classifyVisitMachine({docker,wsl,ortools,free_disk_bytes:diskFree,free_ram_bytes:ramFree}),installed_by_this_command:false,network_requests:false,graphs_downloaded:0,osrm_verified:false,production_accepted:false};
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){const report=collectVisitMachineReadiness(),destination=process.argv[2];if(destination){const path=resolve(destination);if(existsSync(path))throw Error('Output exists; choose a fresh evidence file.');writeFileSync(path,JSON.stringify(report,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({readiness:report.assessment.readiness,observations:report.assessment.observations,evidence:path}))}else console.log(JSON.stringify(report,null,2))}

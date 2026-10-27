@@ -1,0 +1,896 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-057 implemented local recovery API",
+    "version": "0.1.2",
+    "description": "Request schemas generated from runtime Zod validators. Local implementation only. Logical allowlist backup is a slice, not a complete point-in-time database snapshot. Drill verifies payload and counts; optional verify_objects checks bounded current R2 bytes for five supported reference families, not a copied-object or actual restore. Cross-region/provider/legal/privacy approval gates remain open."
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/recovery/summary": {
+      "get": {
+        "operationId": "recovery_summary",
+        "summary": "GET /api/recovery/summary",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/policy": {
+      "post": {
+        "operationId": "recovery_policy",
+        "summary": "POST /api/recovery/policy",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Current version in double quotes. Policy requires this only when updating an existing policy."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/policy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/backups": {
+      "post": {
+        "operationId": "recovery_backups",
+        "summary": "POST /api/recovery/backups",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/drills": {
+      "post": {
+        "operationId": "recovery_drills",
+        "summary": "POST /api/recovery/drills",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/drill"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/holds": {
+      "post": {
+        "operationId": "recovery_holds",
+        "summary": "POST /api/recovery/holds",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/hold"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/holds/{id}/release": {
+      "post": {
+        "operationId": "recovery_holds__id__release",
+        "summary": "POST /api/recovery/holds/{id}/release",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Current version in double quotes. Policy requires this only when updating an existing policy."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/release"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/privacy-requests": {
+      "post": {
+        "operationId": "recovery_privacy_requests",
+        "summary": "POST /api/recovery/privacy-requests",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/privacy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/privacy-requests/{id}/review": {
+      "post": {
+        "operationId": "recovery_privacy_requests__id__review",
+        "summary": "POST /api/recovery/privacy-requests/{id}/review",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Current version in double quotes. Policy requires this only when updating an existing policy."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/review"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/retention/preview": {
+      "post": {
+        "operationId": "recovery_retention_preview",
+        "summary": "POST /api/recovery/retention/preview",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    },
+    "/api/recovery/migration-rollback/plan": {
+      "post": {
+        "operationId": "recovery_migration_rollback_plan",
+        "summary": "POST /api/recovery/migration-rollback/plan",
+        "x-access-policy": "Management/NSM of current organization; no business deletion",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/rollback"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data envelope; dry-run operations do not restore/delete business data"
+          },
+          "400": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "401": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "403": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "404": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "409": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "412": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "413": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "422": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "428": {
+            "description": "Stable code error envelope; status depends on operation"
+          },
+          "503": {
+            "description": "Stable code error envelope; status depends on operation"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    },
+    "schemas": {
+      "policy": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "backup_interval_minutes": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 1440
+          },
+          "rpo_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "rto_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3650
+          },
+          "gps_detail_days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "attachment_days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3650
+          },
+          "backup_days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3650
+          },
+          "legal_hold_required": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "backup_interval_minutes",
+          "rpo_minutes",
+          "rto_minutes",
+          "retention_days",
+          "gps_detail_days",
+          "attachment_days",
+          "backup_days",
+          "legal_hold_required",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "backup": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "logical",
+              "attachment_metadata"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "kind",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "drill": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "manifest_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          },
+          "verify_objects": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "manifest_id",
+          "notes"
+        ],
+        "additionalProperties": false
+      },
+      "hold": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "resource_type": {
+            "type": "string",
+            "enum": [
+              "customer",
+              "invoice",
+              "activity",
+              "attachment",
+              "report_export",
+              "backup",
+              "privacy_subject"
+            ]
+          },
+          "resource_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "resource_type",
+          "resource_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "release": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "privacy": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "subject_type": {
+            "type": "string",
+            "enum": [
+              "customer",
+              "user",
+              "contact",
+              "privacy_subject"
+            ]
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "request_kind": {
+            "type": "string",
+            "enum": [
+              "access",
+              "correction",
+              "erasure"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "subject_type",
+          "subject_id",
+          "request_kind",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "review": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "rejected",
+              "completed"
+            ]
+          },
+          "outcome": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "status",
+          "outcome"
+        ],
+        "additionalProperties": false
+      },
+      "rollback": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "migration_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "migration_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

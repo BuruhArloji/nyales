@@ -1,0 +1,3838 @@
+{
+  "format": "nyales-runtime-inventory-1",
+  "auth_mode": "user bearer plus device session; separate machine credential/pairing proof gateway; cookie authentication disabled",
+  "public_operations": [
+    "GET /api/health",
+    "GET /api/auth/config"
+  ],
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/api/activities/:id/revisions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/activities/{id}/revisions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/activities/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/activities"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/activities",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/activities"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin-boundaries/config",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/config"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin-boundaries/datasets/:id/activate",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/datasets/{id}/activate"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin-boundaries/datasets/:id/boundaries",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/datasets/{id}/boundaries"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin-boundaries/datasets/:id/chunks/:index",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/datasets/{id}/chunks/{index}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin-boundaries/datasets/:id/chunks",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/datasets/{id}/chunks"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin-boundaries/datasets/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/datasets/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin-boundaries/datasets",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/datasets"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin-boundaries/datasets",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "admin-boundaries-api.m4.openapi.json",
+          "path": "/api/admin-boundaries/datasets"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/approval-policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/approval-policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/approval-policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/approval-policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/areas/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/areas/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/areas/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/areas/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/areas/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/areas/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/areas",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/areas"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/areas",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/areas"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/assignment-options",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "assignment-api.web015.openapi.json",
+          "path": "/assignment-options"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/attachment-intents",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/attachment-intents"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/attachments/:id/download",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/attachments/{id}/download"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/attachments/:id/finalize",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/attachments/{id}/finalize"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/attachments/:id/upload",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/attachments/{id}/upload"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/attachments/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/attachments/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/audit-events",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/audit-events"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/config",
+      "authentication": "public",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/auth/config"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/branches/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/branches/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/branches/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/branches/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/branches/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/branches/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/branches",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/branches"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/branches",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/branches"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/calendars/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/calendars/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/calendars/:id/clock",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/calendars/{id}/clock"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/calendars/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/calendars/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/calendars/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/calendars/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/calendars",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/calendars"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/calendars",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/calendars"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/campaigns/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/campaigns/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/campaigns/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/campaigns/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/campaigns/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/campaigns/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/campaigns",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/campaigns"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/campaigns",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/campaigns"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/coaching/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/coaching/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/coaching/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/coaching/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/coaching",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/coaching"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/coaching",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/coaching"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/contacts/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/contacts/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/contacts/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/contacts/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/contacts/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/contacts/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/contacts",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/contacts"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/contacts",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/contacts"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customer-aliases",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/customer-aliases"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customer-duplicates",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/customer-duplicates"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customer-risk-policies/:id/activate",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/customer-risk-policies/{id}/activate"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customer-risk-policies/:id/retire",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/customer-risk-policies/{id}/retire"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/customer-risk-policies/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/customer-risk-policies/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customer-risk-policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/customer-risk-policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customer-risk-policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/customer-risk-policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customer-segmentation",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-segmentation"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customer-source-coverage",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-source-coverage"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customer-source-coverage",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-source-coverage"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customer-tier-rules/:id/approve",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-tier-rules/{id}/approve"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customer-tier-rules/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-tier-rules/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customer-tier-rules/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-tier-rules/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customer-tier-rules",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-tier-rules"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customer-tier-rules",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/customer-tier-rules"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customers/:id/assignments",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "assignment-api.web015.openapi.json",
+          "path": "/customers/{id}/assignments"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customers/:id/assignments",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "assignment-api.web015.openapi.json",
+          "path": "/customers/{id}/assignments"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customers/:id/merge-preview",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/customers/{id}/merge-preview"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customers/:id/merge",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/customers/{id}/merge"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customers/:id/street-view",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/customers/{id}/street-view"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customers/:id/timeline",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/customers/{id}/timeline"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customers/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/customers/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/customers/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/customers/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/customers",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "assignment-api.web015.openapi.json",
+          "path": "/customers"
+        },
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/customers"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/customers",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-api.web012.openapi.json",
+          "path": "/api/customers"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard/sources",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/dashboard/sources"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard/summary",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/dashboard/summary"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/dashboard",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/dashboard"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/device-sessions/:id/revoke",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/device-sessions/{id}/revoke"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/device-sessions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/device-sessions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/device-sessions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/device-sessions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/device-sessions",
+      "authentication": "bearer plus recent auth; admin MFA nonlocal",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/device-sessions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/disputes/:id/resolve",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/disputes/{id}/resolve"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/disputes/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/disputes/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/exceptions/:id/resolve",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/exceptions/{id}/resolve"
+        },
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/exceptions/{id}/resolve"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/exceptions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/exceptions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/exceptions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/exceptions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/exceptions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/exceptions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/exceptions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/exceptions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/forecast-contributions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/forecast-contributions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/forecast-contributions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/forecast-contributions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/forecast-contributions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/forecast-contributions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/forecast-review",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/forecast-review"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/analytics/export",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "regional-analytics-api.m4.openapi.json",
+          "path": "/api/geo/analytics/export"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/analytics/sources",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "regional-analytics-api.m4.openapi.json",
+          "path": "/api/geo/analytics/sources"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/analytics",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "regional-analytics-api.m4.openapi.json",
+          "path": "/api/geo/analytics"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/geo/customers/:id/preview",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "geography-api.m4.openapi.json",
+          "path": "/api/geo/customers/{id}/preview"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/geo/customers/:id/review",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "geography-api.m4.openapi.json",
+          "path": "/api/geo/customers/{id}/review"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/customers/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "geography-api.m4.openapi.json",
+          "path": "/api/geo/customers/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/distribution/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "distribution-api.m4.openapi.json",
+          "path": "/api/geo/distribution/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/geo/distribution/commit",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "distribution-api.m4.openapi.json",
+          "path": "/api/geo/distribution/commit"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/geo/distribution/preview",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "distribution-api.m4.openapi.json",
+          "path": "/api/geo/distribution/preview"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/distribution",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "distribution-api.m4.openapi.json",
+          "path": "/api/geo/distribution"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/geometry",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "geography-api.m4.openapi.json",
+          "path": "/api/geo/geometry"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/map",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "geography-api.m4.openapi.json",
+          "path": "/api/geo/map"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/handoff-recipients",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/handoff-recipients"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/handoffs/:id/accept",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/handoffs/{id}/accept"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/handoffs/:id/cancel",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/handoffs/{id}/cancel"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/handoffs/:id/complete",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/handoffs/{id}/complete"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/handoffs/:id/decline",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/handoffs/{id}/decline"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/handoffs",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/handoffs"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/handoffs",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/handoffs"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "authentication": "public",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/health"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/hierarchy-assignments/:id/end",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/hierarchy-assignments/{id}/end"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/hierarchy-assignments/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/hierarchy-assignments/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/hierarchy-assignments",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/hierarchy-assignments"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/hierarchy-assignments",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/hierarchy-assignments"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/import-files/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/import-files/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/import-files",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/import-files"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-calculations",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-calculations"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-enrollments/:id/estimate",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-enrollments/{id}/estimate"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-enrollments",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-enrollments"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-enrollments",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-enrollments"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-exports/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-exports/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-exports",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-exports"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-plan-versions/:id/approve",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-plan-versions/{id}/approve"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-plan-versions/:id/revise",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-plan-versions/{id}/revise"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-plan-versions/:id/submit",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-plan-versions/{id}/submit"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-plan-versions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-plan-versions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/incentive-plan-versions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-plan-versions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-plans",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-plans"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-plans",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-plans"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-simulations",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-simulations"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-statements/:id/disputes",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}/disputes"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-statements/:id/finalize",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}/finalize"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-statements/:id/payment-confirmations",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}/payment-confirmations"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-statements/:id/recalculate",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}/recalculate"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-statements/:id/revise",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}/revise"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-statements/:id/sources",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}/sources"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/incentive-statements/:id/submit",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}/submit"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-statements/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/incentive-statements",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/incentive-statements"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/invoice-imports/template",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/invoice-imports/template"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/invoice-imports",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/invoice-imports"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/invoice-imports",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/invoice-imports"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/invoices/:id/revisions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/invoices/{id}/revisions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/invoices/:id/revisions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/invoices/{id}/revisions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/invoices/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/invoices/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/invoices",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/invoices"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/:id/download",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/jobs/{id}/download"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/:id/errors",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/jobs/{id}/errors"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/jobs/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/leads/:id/reopen",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/leads/{id}/reopen"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/leads/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/leads/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/leads",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/leads"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/leads",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/leads"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/map",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/map"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/master-imports/:id/errors",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/master-imports/{id}/errors"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/master-imports/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/master-imports/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/master-imports/template/:kind",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/master-imports/template/{kind}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/master-imports",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/master-imports"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/master-imports",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/master-imports"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/me",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/me"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/notification-policy",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/notification-policy"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/notification-policy",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/notification-policy"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/notifications/:id/read",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/notifications/{id}/read"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/notifications/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/notifications"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/observability/events",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-observability-api.openapi.json",
+          "path": "/api/observability/events"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/observability/policy",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-observability-api.openapi.json",
+          "path": "/api/observability/policy"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/observability/summary",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-observability-api.openapi.json",
+          "path": "/api/observability/summary"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/observability/usage",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-observability-api.openapi.json",
+          "path": "/api/observability/usage"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/opportunities/:id/reopen",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/opportunities/{id}/reopen"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/opportunities/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/opportunities/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/opportunities",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/opportunities"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/opportunities",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/opportunities"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/approve",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders/{id}/approve"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/cancel",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders/{id}/cancel"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/external-confirmations",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders/{id}/external-confirmations"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/reject",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders/{id}/reject"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/revisions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders/{id}/revisions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/submit",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders/{id}/submit"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/orders/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/orders"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/organization",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/organization"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/organization",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/organization"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/product-groups/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/product-groups/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/product-groups/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/product-groups/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/product-groups/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/product-groups/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/product-groups",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/product-groups"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/product-groups",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/product-groups"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/products/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/products/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/products/:id/prices",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/products/{id}/prices"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/products/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/products/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/products/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/products/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/products",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/products"
+        },
+        {
+          "file": "operations-api.web013-014.openapi.json",
+          "path": "/api/products"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/products",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/products"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/backups",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/backups"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/drills",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/drills"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/holds/:id/release",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/holds/{id}/release"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/holds",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/holds"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/migration-rollback/plan",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/migration-rollback/plan"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/policy",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/policy"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/privacy-requests/:id/review",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/privacy-requests/{id}/review"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/privacy-requests",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/privacy-requests"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/recovery/retention/preview",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/retention/preview"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/recovery/summary",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m4-recovery-api.openapi.json",
+          "path": "/api/recovery/summary"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/report-exports/:id/download",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/report-exports/{id}/download"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/report-exports",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m3-api.openapi.json",
+          "path": "/api/report-exports"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/risks/current",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/risks/current"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/risks/evaluations",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/risks/evaluations"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/risks/policy",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/risks/policy"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/risks/runs/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/risks/runs/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/risks/runs",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-risk-api.m4.openapi.json",
+          "path": "/api/risks/runs"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/sales/last-positions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "finance-map-api.m1.openapi.json",
+          "path": "/sales/last-positions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/scripts/:id/archive",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/scripts/{id}/archive"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/scripts/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/scripts/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/scripts/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/scripts/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/scripts",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/scripts"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/scripts",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/scripts"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/sync/events",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/sync/events"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/target-plans",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-plans"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/target-plans",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-plans"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/target-versions/:id/allocations",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-versions/{id}/allocations"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/target-versions/:id/approve",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-versions/{id}/approve"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/target-versions/:id/items",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-versions/{id}/items"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/target-versions/:id/items",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-versions/{id}/items"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/target-versions/:id/revise",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-versions/{id}/revise"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/target-versions/:id/submit",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-versions/{id}/submit"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/target-versions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/target-versions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/targets",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/targets"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/:id/cancel",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/tasks/{id}/cancel"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/:id/complete",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/tasks/{id}/complete"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/:id/start",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/tasks/{id}/start"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/tasks/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/tasks/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/tasks/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/tasks"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/tasks"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/telesales/queue/:id/complete",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/telesales/queue/{id}/complete"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/telesales/queue/:id/renew",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/telesales/queue/{id}/renew"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/telesales/queue/claim",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/telesales/queue/claim"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/telesales/queue",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/telesales/queue"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/telesales/workbench",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/telesales/workbench"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/territory-scenarios/:id/applications",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/territory-scenarios/{id}/applications"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/territory-scenarios/:id/revisions/:revisionId",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/territory-scenarios/{id}/revisions/{revisionId}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/territory-scenarios/:id/revisions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/territory-scenarios/{id}/revisions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/territory-scenarios/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/territory-scenarios/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/territory-scenarios/preview",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/territory-scenarios/preview"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/territory-scenarios",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/territory-scenarios"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/territory-scenarios",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/territory-scenarios"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/users/:id/deactivate",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/users/{id}/deactivate"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/users/:id/roles",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/users/{id}/roles"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/users/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/users/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/users/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/users",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/users"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/users",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/users"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/heartbeat",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-agent/heartbeat"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/nonces",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-agent/nonces"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/pair",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-agent/pair"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/queue/claim",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-agent/queue/claim"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/queue/jobs/:id/cancel-ack",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-agent/queue/jobs/{id}/cancel-ack"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/queue/jobs/:id/checkpoint",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-agent/queue/jobs/{id}/checkpoint"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/queue/jobs/:id/complete",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-agent/queue/jobs/{id}/complete"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/queue/jobs/:id/fail",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-agent/queue/jobs/{id}/fail"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-agent/queue/jobs/:id/renew",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-agent/queue/jobs/{id}/renew"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-agent/queue/jobs/:id",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-agent/queue/jobs/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-agent/status",
+      "authentication": "pairing proof or machine credential plus proof; no user session grant",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-agent/status"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/agents/:id/diagnostics",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-generator/agents/{id}/diagnostics"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/agents/:id/pairings",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-generator/agents/{id}/pairings"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/agents/:id/revoke",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-generator/agents/{id}/revoke"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/visit-generator/agents/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-generator/agents/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/agents",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-generator/agents"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/agents",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-identity.m4.openapi.json",
+          "path": "/api/visit-generator/agents"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/customer-profiles/:id/retire",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/customer-profiles/{id}/retire"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/customer-profiles/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/customer-profiles/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/customer-profiles",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/customer-profiles"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/customer-profiles",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/customer-profiles"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/graphs/:id/retire",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/graphs/{id}/retire"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/graphs/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/graphs/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/visit-generator/graphs/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/graphs/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/graphs",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/graphs"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/graphs",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/graphs"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/policies/:id/activate",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/policies/{id}/activate"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/policies/:id/retire",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/policies/{id}/retire"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/policies/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/policies/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/visit-generator/policies/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/policies/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/preflights/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/preflights/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/preflights",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/preflights"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/preflights",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-planning-readiness.m4.openapi.json",
+          "path": "/api/visit-generator/preflights"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/queue-jobs/:id/cancel",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-generator/queue-jobs/{id}/cancel"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/queue-jobs/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-generator/queue-jobs/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/queue-jobs",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-agent-queue.m4.openapi.json",
+          "path": "/api/visit-generator/queue-jobs"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/rep-profiles/:id/retire",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/rep-profiles/{id}/retire"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/rep-profiles/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/rep-profiles/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/rep-profiles",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/rep-profiles"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/rep-profiles",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-operational-profiles.m4.openapi.json",
+          "path": "/api/visit-generator/rep-profiles"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visits/:id/check-in",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/visits/{id}/check-in"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visits/:id/check-out",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/visits/{id}/check-out"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/work-plans/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-plans/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/work-plans/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-plans/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/work-plans",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-plans"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/work-plans",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-plans"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/work-sessions/:id/end",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-sessions/{id}/end"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/work-sessions/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-sessions/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/work-sessions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-sessions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/work-sessions",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "m2-api.openapi.json",
+          "path": "/api/work-sessions"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/workload-policies/:id/activate",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/workload-policies/{id}/activate"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/workload-policies/:id/retire",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/workload-policies/{id}/retire"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/workload-policies/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/workload-policies/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/workload-policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/workload-policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/workload-policies",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/workload-policies"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/workload/policy",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/workload/policy"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/workload/summary",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "workload-scenarios-api.m4.openapi.json",
+          "path": "/api/workload/summary"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export const invoiceCsvFields=['record_type','source_invoice_id','source_version','customer_code','invoice_date','currency','channel','rep_id','area_id','status','net_minor','net_includes_credit','source_line_id','sku','quantity_scaled','quantity_scale','unit_code','line_net_minor','source_credit_id','credit_date','credit_amount_minor'] as const;

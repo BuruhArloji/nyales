@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-24",
+  "migration": "0039_geography_analytics_revision.sql",
+  "new_tables": [],
+  "revision_table": "geo_distribution_epoch",
+  "new_triggers": [
+    {
+      "name": "geo_analytics_activity_insert",
+      "tbl_name": "activity",
+      "sql": "CREATE TRIGGER geo_analytics_activity_insert AFTER INSERT ON activity BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_activity_update",
+      "tbl_name": "activity",
+      "sql": "CREATE TRIGGER geo_analytics_activity_update AFTER UPDATE ON activity BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_activity_delete",
+      "tbl_name": "activity",
+      "sql": "CREATE TRIGGER geo_analytics_activity_delete AFTER DELETE ON activity BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=OLD.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_plan_insert",
+      "tbl_name": "target_plan",
+      "sql": "CREATE TRIGGER geo_analytics_target_plan_insert AFTER INSERT ON target_plan BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_plan_update",
+      "tbl_name": "target_plan",
+      "sql": "CREATE TRIGGER geo_analytics_target_plan_update AFTER UPDATE ON target_plan BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_plan_delete",
+      "tbl_name": "target_plan",
+      "sql": "CREATE TRIGGER geo_analytics_target_plan_delete AFTER DELETE ON target_plan BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=OLD.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_version_insert",
+      "tbl_name": "target_version",
+      "sql": "CREATE TRIGGER geo_analytics_target_version_insert AFTER INSERT ON target_version BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_version_update",
+      "tbl_name": "target_version",
+      "sql": "CREATE TRIGGER geo_analytics_target_version_update AFTER UPDATE ON target_version BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_version_delete",
+      "tbl_name": "target_version",
+      "sql": "CREATE TRIGGER geo_analytics_target_version_delete AFTER DELETE ON target_version BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=OLD.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_item_insert",
+      "tbl_name": "target_item",
+      "sql": "CREATE TRIGGER geo_analytics_target_item_insert AFTER INSERT ON target_item BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_item_update",
+      "tbl_name": "target_item",
+      "sql": "CREATE TRIGGER geo_analytics_target_item_update AFTER UPDATE ON target_item BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_target_item_delete",
+      "tbl_name": "target_item",
+      "sql": "CREATE TRIGGER geo_analytics_target_item_delete AFTER DELETE ON target_item BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=OLD.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_customer_source_coverage_insert",
+      "tbl_name": "customer_source_coverage",
+      "sql": "CREATE TRIGGER geo_analytics_customer_source_coverage_insert AFTER INSERT ON customer_source_coverage BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_customer_source_coverage_update",
+      "tbl_name": "customer_source_coverage",
+      "sql": "CREATE TRIGGER geo_analytics_customer_source_coverage_update AFTER UPDATE ON customer_source_coverage BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.organization_id; END"
+    },
+    {
+      "name": "geo_analytics_customer_source_coverage_delete",
+      "tbl_name": "customer_source_coverage",
+      "sql": "CREATE TRIGGER geo_analytics_customer_source_coverage_delete AFTER DELETE ON customer_source_coverage BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=OLD.organization_id; END"
+    }
+  ],
+  "definition": "nyales-geo-kpi-1",
+  "mapping_basis": "current_confirmed_mapping_at_read_cutoff",
+  "persisted_report_snapshots": false,
+  "logical_backup_schema": "0039",
+  "contract": "docs/specifications/regional-analytics-api.m4.openapi.json"
+}

@@ -1,0 +1,2 @@
+const {defineConfig}=require('@playwright/test');
+module.exports=defineConfig({testDir:'./tests/browser',testMatch:'workload.spec.cjs',workers:1,timeout:180000,expect:{timeout:15000},outputDir:'test-results/web068-browser/artifacts',reporter:[['list'],['json',{outputFile:'test-results/web068-browser/results.json'}]],use:{baseURL:'http://127.0.0.1:5193',browserName:'chromium',channel:'chrome',viewport:{width:1440,height:1100},timezoneId:'Asia/Jakarta',reducedMotion:'reduce',actionTimeout:20000,trace:'retain-on-failure',screenshot:'only-on-failure'}});

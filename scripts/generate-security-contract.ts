@@ -1,0 +1,55 @@
+import {readFileSync,readdirSync,writeFileSync} from 'node:fs';
+import {z} from 'zod';
+import app from '../src/server/index';
+import {recoveryRequestSchemas} from '../src/server/recovery';
+import {masterRequestSchemas} from '../src/server/masters';
+import {peopleRequestSchemas} from '../src/server/people';
+import {sessionRequestSchemas} from '../src/server/sessions';
+
+export function normalizePath(path:string){return (path.startsWith('/api/')?path:'/api'+path).replace(/:[\w]+|\{[^}]+\}/g,'{}')}
+export function runtimeOperations(){return [...new Map(app.routes.filter(r=>['GET','POST','PUT','PATCH','DELETE'].includes(r.method)&&r.path.startsWith('/api/')&&!r.path.includes('*')).map(r=>[r.method+' '+r.path,{method:r.method,path:r.path}])).values()].sort((a,b)=>(a.path+a.method).localeCompare(b.path+b.method))}
+
+export function generateRecoveryContract(){
+ const shapes=Object.fromEntries(Object.entries(recoveryRequestSchemas).map(([name,s])=>[name,z.toJSONSchema(s,{io:'input'})]));
+ const paths:Record<string,any>={};
+ const endpoints=[['GET','summary',null],['POST','policy','policy'],['POST','backups','backup'],['POST','drills','drill'],['POST','holds','hold'],['POST','holds/{id}/release','release'],['POST','privacy-requests','privacy'],['POST','privacy-requests/{id}/review','review'],['POST','retention/preview',null],['POST','migration-rollback/plan','rollback']] as const;
+ for(const [method,suffix,schema] of endpoints){
+  const path='/api/recovery/'+suffix,parameters:any[]=[];
+  if(path.includes('{id}'))parameters.push({in:'path',name:'id',required:true,schema:{type:'string',minLength:1,maxLength:128}});
+  if(method==='POST'&&!['drills','retention/preview','migration-rollback/plan'].includes(suffix))parameters.push({in:'header',name:'Idempotency-Key',required:true,schema:{type:'string',minLength:8,maxLength:128}});
+  if(['policy','holds/{id}/release','privacy-requests/{id}/review'].includes(suffix))parameters.push({in:'header',name:'If-Match',required:suffix!=='policy',schema:{type:'string'},description:'Current version in double quotes. Policy requires this only when updating an existing policy.'});
+  paths[path]={[method.toLowerCase()]:{operationId:'recovery_'+suffix.replace(/\W/g,'_'),summary:method+' '+path,'x-access-policy':'Management/NSM of current organization; no business deletion',parameters,...(schema?{requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/'+schema}}}}}:{}),responses:Object.fromEntries([200,400,401,403,404,409,412,413,422,428,503].map(status=>[status,{description:status===200?'data envelope; dry-run operations do not restore/delete business data':'Stable code error envelope; status depends on operation'}]))}};
+ }
+ return {openapi:'3.1.0',info:{title:'NYALES WEB-057 implemented local recovery API',version:'0.1.2',description:'Request schemas generated from runtime Zod validators. Local implementation only. Logical allowlist backup is a slice, not a complete point-in-time database snapshot. Drill verifies payload and counts; optional verify_objects checks bounded current R2 bytes for five supported reference families, not a copied-object or actual restore. Cross-region/provider/legal/privacy approval gates remain open.'},security:[{BearerAuth:[],DeviceSession:[]}],paths,components:{securitySchemes:{BearerAuth:{type:'http',scheme:'bearer'},DeviceSession:{type:'apiKey',in:'header',name:'X-Device-Session'}},schemas:shapes}};
+}
+
+export function generateInventory(){
+ const docs=readdirSync('docs/specifications').filter(f=>f.endsWith('.openapi.json')&&!f.startsWith('Sales_')&&!f.endsWith('.design.openapi.json'));
+ const contracts=new Map<string,{file:string;path:string}[]>();
+ for(const file of docs){const d=JSON.parse(readFileSync('docs/specifications/'+file,'utf8'));for(const [path,ops] of Object.entries(d.paths) as any)for(const method of Object.keys(ops)){if(!['get','post','put','patch','delete'].includes(method))continue;const key=method.toUpperCase()+' '+normalizePath(path);contracts.set(key,[...(contracts.get(key)||[]),{file,path}])}}
+ return {format:'nyales-runtime-inventory-1',auth_mode:'user bearer plus device session; separate machine credential/pairing proof gateway; cookie authentication disabled',public_operations:['GET /api/health','GET /api/auth/config'],operations:runtimeOperations().map(r=>({...r,authentication:r.path.startsWith('/api/visit-agent/')?'pairing proof or machine credential plus proof; no user session grant':['/api/health','/api/auth/config'].includes(r.path)?'public':r.path==='/api/device-sessions'&&r.method==='POST'?'bearer plus recent auth; admin MFA nonlocal':'bearer plus device session; scope checked server-side',contracts:contracts.get(r.method+' '+normalizePath(r.path))||[],contract_boundary:'Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract.'}))};
+}
+
+export function generateCoreContract(){
+ const schemas:Record<string,any>={};for(const [prefix,set] of Object.entries({master:masterRequestSchemas,people:peopleRequestSchemas,session:sessionRequestSchemas}))for(const [name,schema] of Object.entries(set))schemas[prefix+'_'+name]=z.toJSONSchema(schema,{io:'input',unrepresentable:'any'});
+ const paths:Record<string,any>={};
+ for(const r of runtimeOperations().filter(r=>(/^\/api\/(areas|branches|calendars|organization|users|hierarchy-assignments|device-sessions|health|auth\/config|me|dashboard|telesales\/queue)(\/|$)/.test(r.path)||/^\/api\/customers\/[^/]+\/street-view$/.test(r.path))&&!r.path.startsWith('/api/dashboard/')&&!/\/telesales\/queue\//.test(r.path))){
+  const path=r.path.replace(/:([\w]+)/g,'{$1}'),method=r.method.toLowerCase(),mutation=method!=='get',session=path.startsWith('/api/device-sessions'),parameters:any[]=[];
+  for(const m of path.matchAll(/\{(\w+)\}/g))parameters.push({in:'path',name:m[1],required:true,schema:{type:'string'}});
+  if(mutation&&!session)parameters.push({in:'header',name:'Idempotency-Key',required:true,schema:{type:'string',minLength:8,maxLength:128}});
+  if(mutation&&(path.includes('{id}')||path==='/api/organization'))parameters.push({in:'header',name:'If-Match',required:true,schema:{type:'string'},example:'"1"'});
+  let schema:string|undefined;
+  if(mutation){if(session)schema=path.endsWith('/revoke')?'session_revoke':'session_create';else if(path.startsWith('/api/users'))schema=path.endsWith('/roles')?'people_role':path.endsWith('/deactivate')?'people_deactivate':method==='post'?'people_user':'people_profile';else if(path.startsWith('/api/hierarchy-assignments'))schema=path.endsWith('/end')?'people_end':'people_assignment';else schema=path.endsWith('/archive')?'master_empty':path==='/api/organization'?'master_organization':path.startsWith('/api/areas')?'master_area':path.startsWith('/api/branches')?'master_branch':'master_calendar';}
+  const publicRead=['/api/health','/api/auth/config'].includes(path);
+  paths[path]??={};paths[path][method]={operationId:'core_'+method+'_'+path.replace(/\W/g,'_'),summary:r.method+' '+path,parameters,...(publicRead?{security:[]}:session&&mutation&&path==='/api/device-sessions'?{security:[{BearerAuth:[]}]}:{}),...(schema?{requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/'+schema}}}}}:{}),responses:{200:{description:'Role-scoped JSON data; auth_subject only for org-wide Management/NSM'},...(mutation?{201:{description:'Created; operation dependent'}}:{}),401:{description:'Bearer/session/reauth required'},403:{description:'Role/scope/MFA denied'},404:{description:'Missing/outside scope'},409:{description:'Conflict'},412:{description:'Stale ETag'},422:{description:'Invalid payload'},428:{description:'If-Match required'}},'x-constraints':'Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent.'};
+ }
+ paths['/api/dashboard'].get.responses[200].content={'application/json':{schema:{type:'object',properties:{data:{type:'object',properties:{active_customer_count:{type:['integer','null'],description:'Null when any active-master customer has unknown status; zero only when classification is complete.'},customer_status_unknown_count:{type:'integer',minimum:0},observed_active_customer_count:{type:'integer',minimum:0,description:'Observed rolling-90-day count; not a confirmed completeness claim.'}},required:['active_customer_count','customer_status_unknown_count','observed_active_customer_count'],additionalProperties:true}},required:['data'],additionalProperties:true}}};
+ return {openapi:'3.1.0',info:{title:'NYALES implemented local identity, masters and people API',version:'0.1.1',description:'Request shapes generated from runtime Zod. Role-scoped reads and Management/NSM master writes. Response fields remain resource specific. Same-origin API, no cookie authentication; no production deployment proof.'},security:[{BearerAuth:[],DeviceSession:[]}],paths,components:{securitySchemes:{BearerAuth:{type:'http',scheme:'bearer'},DeviceSession:{type:'apiKey',in:'header',name:'X-Device-Session'}},schemas}};
+}
+
+if(process.argv[1]?.replaceAll('\\','/').endsWith('/generate-security-contract.ts')){
+ writeFileSync('docs/specifications/core-api.openapi.json',JSON.stringify(generateCoreContract(),null,2)+'\n');
+ writeFileSync('docs/specifications/m4-recovery-api.openapi.json',JSON.stringify(generateRecoveryContract(),null,2)+'\n');
+ const inventory=generateInventory();writeFileSync('docs/specifications/runtime-api.inventory.json',JSON.stringify(inventory,null,2)+'\n');
+ console.log(JSON.stringify({runtime_operations:inventory.operations.length,linked_operations:inventory.operations.filter(r=>r.contracts.length).length,unlinked:inventory.operations.filter(r=>!r.contracts.length).map(r=>r.method+' '+r.path)}));
+}

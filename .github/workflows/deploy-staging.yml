@@ -1,0 +1,43 @@
+name: NYALES staging deploy
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: nyales-staging
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 24, cache: npm}
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: mkdir -p test-results
+      - run: npm test
+      - run: npm run build
+      - name: Prepare staging Wrangler config
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_D1_DATABASE_ID: ${{ secrets.CF_D1_DATABASE_ID }}
+          CF_R2_BUCKET: ${{ secrets.CF_R2_BUCKET }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: node scripts/prepare-staging-wrangler.mjs
+      - name: Apply D1 migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: d1 migrations apply nyales-staging --remote --config .github/.generated/wrangler.staging.json
+      - name: Deploy Worker and assets
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: deploy --config .github/.generated/wrangler.staging.json

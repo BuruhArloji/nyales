@@ -1,0 +1,27 @@
+import {agentRequestTarget,agentSha256,signAgentProof,type VisitAgentProofClaims} from '../shared/visit-agent-proof';
+import {z} from 'zod';
+const nonceResponse=z.object({data:z.object({nonce:z.string().regex(/^[A-Za-z0-9_-]{32,128}$/),expires_at:z.iso.datetime({offset:true}),server_time:z.iso.datetime({offset:true})}).strict()}).strict();
+type Identity={organization_id:string;environment:string;agent_id:string;credential_id:string;generation:number;credential_secret:string;private_key:CryptoKey};
+/** Signed in-memory transport; provisioning, encrypted credential storage and explicit polling are separate modules. */
+export class VisitAgentTransport{
+ readonly #origin:string;readonly #identity:Identity;readonly #allowLocal:boolean;readonly #fetch:typeof fetch;readonly #clock:()=>number;
+ constructor(origin:string,identity:Identity,options:{allow_local?:boolean;fetcher?:typeof fetch;clock?:()=>number}={}){
+  const target=agentRequestTarget(new URL('/api/visit-agent/heartbeat',origin).href,options.allow_local);if(new URL(origin).href!==target.origin+'/')throw Error('AGENT_ORIGIN_ONLY_REQUIRED');if(identity.private_key.type!=='private'||identity.private_key.extractable||identity.private_key.algorithm.name!=='ECDSA'||(identity.private_key.algorithm as EcKeyAlgorithm).namedCurve!=='P-256')throw Error('AGENT_NONEXTRACTABLE_P256_KEY_REQUIRED');
+  this.#origin=target.origin;this.#identity={...identity};this.#allowLocal=options.allow_local||false;this.#fetch=options.fetcher||fetch;this.#clock=options.clock||(()=>Math.floor(Date.now()/1000));
+ }
+ async #proof(purpose:VisitAgentProofClaims['purpose'],method:'GET'|'POST'|'PUT',target:string,body:Uint8Array,key:string|null,nonce:string|null){const i=this.#identity,now=this.#clock();return signAgentProof({v:1,purpose,organization_id:i.organization_id,environment:i.environment,agent_id:i.agent_id,credential_id:i.credential_id,generation:i.generation,method,origin:this.#origin,target,body_sha256:await agentSha256(body),idempotency_key:key,credential_sha256:await agentSha256(i.credential_secret),nonce,jti:crypto.randomUUID(),iat:now,exp:now+60},i.private_key)}
+ async #send(target:string,method:'GET'|'POST'|'PUT',body:Uint8Array,key:string|null,proof:string,signal:AbortSignal,maxBytes:number){const response=await this.#fetch(this.#origin+target,{method,redirect:'error',signal,headers:{Authorization:'Agent '+this.#identity.credential_id+'.'+this.#identity.credential_secret,'X-Agent-Proof':proof,...(key?{'Idempotency-Key':key}:{}),...(method==='GET'?{}:{'Content-Type':'application/json'}),Accept:'application/json'},...(method==='GET'?{}:{body:Uint8Array.from(body).buffer})});
+  if(response.status===204){await response.body?.cancel();return{status:204,data:null}}
+  if(!response.ok){await response.body?.cancel();throw Error('AGENT_HTTP_'+response.status)}
+  if(Number(response.headers.get('Content-Length'))>maxBytes){await response.body?.cancel();throw Error('AGENT_RESPONSE_LIMIT')}const reader=response.body?.getReader();if(!reader)throw Error('AGENT_RESPONSE_EMPTY');const parts:Uint8Array[]=[];let size=0;try{for(;;){const r=await reader.read();if(r.done)break;size+=r.value.length;if(size>maxBytes)throw Error('AGENT_RESPONSE_LIMIT');parts.push(r.value)}}catch(error){await reader.cancel().catch(()=>{});throw error}const bytes=new Uint8Array(size);let pos=0;for(const p of parts){bytes.set(p,pos);pos+=p.length}try{return{status:response.status,data:JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes))}}catch{throw Error('AGENT_RESPONSE_INVALID')}
+ }
+ async json(method:'GET'|'POST'|'PUT',target:string,body:unknown=null,options:{idempotency_key?:string;signal?:AbortSignal;timeout_ms?:number;max_response_bytes?:number}={}){
+  const parsed=agentRequestTarget(new URL(target,this.#origin).href,this.#allowLocal);if(parsed.origin!==this.#origin||parsed.target!==target||target==='/api/visit-agent/nonces'||method==='GET'&&body!==null)throw Error('AGENT_TARGET_DENIED');
+  const key=method==='GET'?null:options.idempotency_key||null;if(method!=='GET'&&(!key||key.length<8||key.length>128))throw Error('AGENT_IDEMPOTENCY_KEY_REQUIRED');
+  const timeout=options.timeout_ms??30000,limit=options.max_response_bytes??1024*1024;if(!Number.isInteger(timeout)||timeout<1||timeout>120000||!Number.isInteger(limit)||limit<1||limit>8*1024*1024)throw Error('AGENT_REQUEST_BOUND');
+  const bytes=new TextEncoder().encode(method==='GET'?'':JSON.stringify(body));if(bytes.length>1024*1024)throw Error('AGENT_REQUEST_LIMIT');const signal=options.signal?AbortSignal.any([options.signal,AbortSignal.timeout(timeout)]):AbortSignal.timeout(timeout);signal.throwIfAborted();
+  const nonceBody=new TextEncoder().encode(JSON.stringify({method,target,body_sha256:await agentSha256(bytes),idempotency_key:key})),nonceKey=crypto.randomUUID(),bootstrap=await this.#proof('nonce_request','POST','/api/visit-agent/nonces',nonceBody,nonceKey,null),response=await this.#send('/api/visit-agent/nonces','POST',nonceBody,nonceKey,bootstrap,signal,16384),value=nonceResponse.parse(response.data).data,now=this.#clock();
+  if(Math.abs(Date.parse(value.server_time)/1000-now)>30||Date.parse(value.expires_at)<=now*1000||Date.parse(value.expires_at)-Date.parse(value.server_time)>120000)throw Error('AGENT_CLOCK_OR_NONCE_EXPIRY');
+  const proof=await this.#proof('request',method,target,bytes,key,value.nonce);return this.#send(target,method,bytes,key,proof,signal,limit);
+ }
+}

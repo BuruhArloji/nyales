@@ -1,0 +1,400 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-015 implemented API slice",
+    "version": "0.1.0",
+    "description": "Local implementation snapshot, 18 October 2026. Baseline future OpenAPI remains separate. Latest 200 assignment/territory rows plus has_more; no cursor or bulk transfer/cancellation API in this slice. Effective territory projection is applied atomically before every domain scope resolution in the organization timezone; no browser timing or external scheduled service required. Real Firebase and production rollout remain gated."
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/customers/{id}/assignments": {
+      "get": {
+        "operationId": "customerAssignments",
+        "summary": "Scoped family assignment history",
+        "description": "Canonical customer and its aliases. Admin receives reasons, actor IDs and territory history. Others receive only assignment rows permitted by area/subtree/channel/self scope. ETag is current canonical customer version. meta.business_date uses organization timezone.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Idempotency header required or malformed"
+          },
+          "401": {
+            "description": "Identity or device session required"
+          },
+          "403": {
+            "description": "Outside permitted role"
+          },
+          "404": {
+            "description": "Resource absent or outside scope"
+          },
+          "409": {
+            "description": "Schedule, dependency or atomic conflict"
+          },
+          "412": {
+            "description": "Customer ETag changed"
+          },
+          "422": {
+            "description": "Invalid input, backdate or ineligible PIC"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Scope/data unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "assignCustomer",
+        "summary": "Assign, unassign or schedule owner/territory transfer",
+        "description": "Management/NSM only. If-Match is the canonical customer version. rep_id=null releases the selected channel. Area transfer requires an explicit other_channel_rep_id, including null to release that channel. Start dates inclusive; closing dates exclusive. Cannot backdate, overwrite a start on the same day, or insert ahead of a conflicting scheduled change. A pending territory transfer blocks new changes until effective. All family intervals, customer version, audit and idempotency commit atomically. Invoices, targets, contacts and activities retain physical IDs and original attribution.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"3\""
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignCustomer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Idempotency header required or malformed"
+          },
+          "401": {
+            "description": "Identity or device session required"
+          },
+          "403": {
+            "description": "Outside permitted role"
+          },
+          "404": {
+            "description": "Resource absent or outside scope"
+          },
+          "409": {
+            "description": "Schedule, dependency or atomic conflict"
+          },
+          "412": {
+            "description": "Customer ETag changed"
+          },
+          "422": {
+            "description": "Invalid input, backdate or ineligible PIC"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Scope/data unavailable"
+          },
+          "201": {
+            "description": "Effective or scheduled; data.id is canonical customer ID and data.version is its new version; ETag returned.",
+            "headers": {
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assignment-options": {
+      "get": {
+        "operationId": "assignmentOptions",
+        "summary": "Eligible PIC choices; Management/NSM only",
+        "description": "Active user with channel-specific role and area scope covering an open-ended assignment, one active Supervisor at the effective date, and no later hierarchy move to another area. Supervisor role/channel checked. All eligibility is checked again inside commit.",
+        "parameters": [
+          {
+            "name": "area_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "name": "effective_from_date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Idempotency header required or malformed"
+          },
+          "401": {
+            "description": "Identity or device session required"
+          },
+          "403": {
+            "description": "Outside permitted role"
+          },
+          "404": {
+            "description": "Resource absent or outside scope"
+          },
+          "409": {
+            "description": "Schedule, dependency or atomic conflict"
+          },
+          "412": {
+            "description": "Customer ETag changed"
+          },
+          "422": {
+            "description": "Invalid input, backdate or ineligible PIC"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Scope/data unavailable"
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "operationId": "customerDistribution",
+        "summary": "Scoped canonical customer distribution",
+        "description": "Extends WEB-012 customer reads with field_rep_id, telesales_rep_id and telesales_owner. Current assignments use organization business date. Inactive outlet status is explicit. Filters do not expand authorization scope.",
+        "parameters": [
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ],
+              "default": "field"
+            }
+          },
+          {
+            "name": "assignment_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "assigned",
+                "unassigned"
+              ]
+            }
+          },
+          {
+            "name": "rep_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "area_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Idempotency header required or malformed"
+          },
+          "401": {
+            "description": "Identity or device session required"
+          },
+          "403": {
+            "description": "Outside permitted role"
+          },
+          "404": {
+            "description": "Resource absent or outside scope"
+          },
+          "409": {
+            "description": "Schedule, dependency or atomic conflict"
+          },
+          "412": {
+            "description": "Customer ETag changed"
+          },
+          "422": {
+            "description": "Invalid input, backdate or ineligible PIC"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Scope/data unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    },
+    "schemas": {
+      "AssignCustomer": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "rep_id",
+          "area_id",
+          "channel",
+          "effective_from_date",
+          "reason"
+        ],
+        "properties": {
+          "rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "other_channel_rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required only when area changes; opposite of selected channel; null means unassigned."
+          }
+        }
+      }
+    }
+  }
+}

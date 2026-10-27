@@ -1,0 +1,570 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "number",
+      "const": 1
+    },
+    "origin": {
+      "type": "string",
+      "enum": [
+        "source",
+        "nyales"
+      ]
+    },
+    "data_classification": {
+      "type": "string",
+      "enum": [
+        "real_pilot",
+        "synthetic"
+      ]
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "organization_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "area_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "period_start": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+        },
+        "period_end": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+        },
+        "history_start": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+        },
+        "cutoff": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+        }
+      },
+      "required": [
+        "organization_id",
+        "area_ids",
+        "period_start",
+        "period_end",
+        "history_start",
+        "cutoff"
+      ],
+      "additionalProperties": false
+    },
+    "current_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "complete": {
+      "type": "boolean",
+      "const": true
+    },
+    "users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "SALES_REP",
+              "TELESALES"
+            ]
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "area_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "role",
+          "channel",
+          "area_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "customers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "external_code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "record_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
+          "latitude_e7": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -900000000,
+                "maximum": 900000000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "longitude_e7": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -1800000000,
+                "maximum": 1800000000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "external_code",
+          "name",
+          "area_id",
+          "record_status",
+          "latitude_e7",
+          "longitude_e7"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "owners": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "effective_to_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "customer_id",
+          "rep_id",
+          "area_id",
+          "channel",
+          "effective_from_date",
+          "effective_to_date"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "invoices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_system": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "source_invoice_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "source_version": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,14}$"
+          },
+          "customer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "invoice_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "validated",
+              "draft",
+              "cancelled"
+            ]
+          },
+          "validation_state": {
+            "type": "string",
+            "enum": [
+              "validated",
+              "needs_review",
+              "unmapped"
+            ]
+          },
+          "source_net_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "net_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "net_includes_credit": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "source_system",
+          "source_invoice_id",
+          "source_version",
+          "customer_id",
+          "rep_id",
+          "area_id",
+          "channel",
+          "invoice_date",
+          "status",
+          "validation_state",
+          "source_net_minor",
+          "net_minor",
+          "net_includes_credit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "credits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_system": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "source_credit_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "source_invoice_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "source_version": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,14}$"
+          },
+          "credit_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "amount_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "validated",
+              "cancelled"
+            ]
+          }
+        },
+        "required": [
+          "source_system",
+          "source_credit_id",
+          "source_invoice_id",
+          "source_version",
+          "credit_date",
+          "amount_minor",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "target_versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "plan_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,14}$"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "approved"
+            ]
+          },
+          "parent_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000000
+          },
+          "reserve_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000000
+          }
+        },
+        "required": [
+          "plan_key",
+          "version",
+          "period_start",
+          "period_end",
+          "channel",
+          "status",
+          "parent_minor",
+          "reserve_minor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "plan_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9]\\d{0,14}$"
+          },
+          "customer_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "product_group_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000000
+          }
+        },
+        "required": [
+          "plan_key",
+          "version",
+          "customer_id",
+          "rep_id",
+          "area_id",
+          "product_id",
+          "product_group_id",
+          "target_minor"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "origin",
+    "data_classification",
+    "exported_at",
+    "scope",
+    "current_only",
+    "complete",
+    "users",
+    "customers",
+    "owners",
+    "invoices",
+    "credits",
+    "target_versions",
+    "targets"
+  ],
+  "additionalProperties": false
+}

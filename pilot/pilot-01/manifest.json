@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "pilot_id": "nyales-pilot-01",
+  "data_classification": "real_pilot",
+  "timezone": "Asia/Jakarta",
+  "max_sales": 10,
+  "pic": {
+    "name": "Rizky Aditya",
+    "user_id": null
+  },
+  "participants": [
+    {
+      "name": "Novely",
+      "user_id": null,
+      "role": null,
+      "area_ids": []
+    },
+    {
+      "name": "Didik",
+      "user_id": null,
+      "role": null,
+      "area_ids": []
+    },
+    {
+      "name": "Mursal",
+      "user_id": null,
+      "role": null,
+      "area_ids": []
+    }
+  ],
+  "scope": {
+    "organization_id": null,
+    "area_ids": [],
+    "period_start": null,
+    "period_end": null,
+    "cutoff": null,
+    "history_start": null
+  },
+  "source_review": {
+    "source_system": null,
+    "reviewer": null,
+    "reviewed_at": null,
+    "net_definition": null,
+    "id_mapping_reference": null
+  },
+  "inputs": {
+    "source_snapshot": null,
+    "nyales_snapshot": null,
+    "source_files": []
+  }
+}

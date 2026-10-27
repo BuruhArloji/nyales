@@ -1,0 +1,118 @@
+{
+  "date": "2026-10-18",
+  "milestone": "M3",
+  "local_implementation": "implemented_pilot",
+  "production_acceptance": "pending",
+  "deployed": false,
+  "item_count": 10,
+  "items": [
+    {
+      "id": "WEB-046",
+      "title": "Konfigurasi plan, role, kanal dan layer",
+      "note": "Wizard plan/version, lima model P0, enrollment leaf beku, role/kanal dan cap nonaktif default; one primary per peserta/periode, preview wajib dan approval independen. Aktivasi langsung dari submitted setelah approval; tidak ada prorata diam-diam."
+    },
+    {
+      "id": "WEB-047",
+      "title": "Engine deterministic dan progressive pilot",
+      "note": "Engine BigInt rational, threshold bonus + progressive, flat, whole-basis, progressive dan milestone highest/cumulative. Half-up total rupiah; breakdown exact numerator/denominator dan decimal disimpan pada run immutable."
+    },
+    {
+      "id": "WEB-048",
+      "title": "Simulasi, estimasi dan statement drill-down",
+      "note": "Simulasi what-if + boundary bawah/tepat/atas dan perbandingan whole/progressive. Estimasi pribadi tidak membuat run/entitlement; statement menampilkan target/actual/credited source/rule/cap/exclusion, sumber historis diproyeksikan ulang menurut izin saat dibaca."
+    },
+    {
+      "id": "WEB-049",
+      "title": "Review, dispute dan finalisasi manual",
+      "note": "Prepared → under_review → finalize manual, ETag/idempotensi, creator/submitter/beneficiary tidak self-approve. Dispute open/accepted run sama menahan approval. Deadline dispute pilot tujuh hari, belum configurable. Tidak membayar uang."
+    },
+    {
+      "id": "WEB-050",
+      "title": "Revisi retur dan export statement",
+      "note": "Recalculation draft membuat revision baru, final lama tidak berubah; return/revision menghitung ulang dengan rule/target periode asli dan menyimpan entitlement delta. Export JSON batch+checksum dapat diulang sebagai copy; konfirmasi finance terpisah."
+    },
+    {
+      "id": "WEB-051",
+      "title": "Dashboard empat pilar dan distribusi beban",
+      "note": "Monitoring empat pilar, filter periode/cabang/area/team/sales/kanal, lapangan/telesales/gabungan dan record drill-down; sumber invoice terpisah dari aktivitas. Cohort pelanggan memakai master aktif dan scope saat ini, bukan historical cohort snapshot."
+    },
+    {
+      "id": "WEB-052",
+      "title": "KPI, cohort dan rekonsiliasi agregat",
+      "note": "KPI definition nyales-kpi-1, coverage unique meaningful 13/20=65%, denominator nol=null, source belum lengkap=provisional/null dengan observed terpisah. Invoice gabungan tidak ganda; koneksi PIC manual bukan verified provider."
+    },
+    {
+      "id": "WEB-053",
+      "title": "Exception inbox, coaching dan tindak lanjut",
+      "note": "Exception prioritas/owner/due/resolution audit dan coaching summary/next action/close sesuai scope. Visit belum checkout >12 jam masuk job; mapping/order/sync dapat dicatat manual dan job tersedia untuk SLA/overdue."
+    },
+    {
+      "id": "WEB-054",
+      "title": "Reminder, automation dan quiet hours",
+      "note": "In-app notification unik trigger+rule version, callback/SLA/approval/sync conflict, read owner-only; policy quiet hours Management/NSM. Zona penerima memakai satu cabang efektif bila tersedia, fallback zona kebijakan bila ambigu. Cron perlu deploy untuk otomatis."
+    },
+    {
+      "id": "WEB-055",
+      "title": "Freshness, audit search dan export umum",
+      "note": "Freshness sumber terpisah dari UI read time; audit metadata tanpa raw before/after PII, sensitive-access audit, private report CSV R2/checksum/cutoff/filter/timezone/KPI version, expire 24 jam. Ekspor umum hanya Management/NSM pada pilot."
+    }
+  ],
+  "checks": {
+    "automated_tests": {
+      "passed": 82,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "build": "passed with existing client bundle warning",
+    "browser": {
+      "status": "passed",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "page_errors": 0,
+      "coaching": "create/review/close passed",
+      "financial_approval": "multi-role route fixture; Firebase browser UAT pending"
+    },
+    "database_reconciliation": {
+      "status": "passed",
+      "original_tables": 64,
+      "exact_tables": 59,
+      "append_only_tables": 5,
+      "new_tables": 12,
+      "foreign_key_violations": 0,
+      "integrity_check": "ok"
+    },
+    "scheduled": {
+      "manual_local_trigger": "HTTP 200",
+      "cloud_automatic": "not deployed"
+    },
+    "preview_health": {
+      "url": "http://127.0.0.1:5181/api/health",
+      "status": 200,
+      "environment": "local"
+    }
+  },
+  "gates": [
+    "Firebase/MFA real users and independent approvers UAT",
+    "Approved real target, policy/rates and invoice coverage validation",
+    "Native multi-device/offline P95, capacity and restore/retention drill",
+    "Cloud D1/R2/cron provisioning and deployment",
+    "Finance settlement integration; no payment execution or payroll"
+  ],
+  "boundaries": [
+    "No deployment",
+    "No automatic financial finalization",
+    "No forecast used for final incentive",
+    "No cross-channel split/prorata",
+    "No Android work started",
+    "P1 scorecard, per-unit and team-pool not enabled"
+  ],
+  "actual_api": {
+    "operations": 42,
+    "paths": 35,
+    "request_schema_gaps": 0
+  }
+}

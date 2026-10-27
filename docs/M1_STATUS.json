@@ -1,0 +1,224 @@
+{
+  "as_of": "2026-10-18",
+  "milestone": "M1",
+  "scope": "Local implementation; not production acceptance",
+  "automated_tests": 48,
+  "baseline": "PRD v1.10 / ERD v1.2 / API v1.2",
+  "items": [
+    {
+      "id": "WEB-007",
+      "title": "Login Firebase dan mapping user internal",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Firebase project and real-account login/provisioning not configured."
+      ],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "Issuer/audience/signature/expiry diverifikasi; org dari mapping server; user nonaktif ditolak; tidak ada token di log. SR tidak dapat mendaftarkan diri sebagai Management."
+    },
+    {
+      "id": "WEB-008",
+      "title": "Scope access middleware dan field permissions",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Real multi-user provider UAT pending; future resources require their own authorization tests."
+      ],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "SR dapat melihat pelanggan dalam area atau assignment-nya; transaksi/aktivitas pribadi tetap memakai atribusi dan scope kanal; SPV team; AM area sendiri; Management/NSM pengaturan. Uji negatif list/search/detail/export lintas scope dan tenant lulus; nama ID valid tidak memperluas izin."
+    },
+    {
+      "id": "WEB-009",
+      "title": "Master organisasi, cabang, area dan kalender",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "SLA job integration belongs to later workflow modules."
+      ],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "Timezone/hari libur/jam kerja dipakai SLA; AM tidak mengubah area atau melihat area lain. Timestamp disimpan UTC dan tanggal bisnis dihitung timezone cabang."
+    },
+    {
+      "id": "WEB-010",
+      "title": "User, role dan hirarki bertanggal efektif",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "verified_local",
+      "gates": [],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "Satu SR satu SPV aktif; tidak ada cycle/overlap; perubahan tidak mengubah histori. SPV/AM tidak diwajibkan visit. Telesales terpisah dari lapangan."
+    },
+    {
+      "id": "WEB-011",
+      "title": "Sesi perangkat, revoke dan proteksi admin",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "MFA provider/enrollment/recovery, budget and production setup pending; nonlocal admin access remains gated."
+      ],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "Revoke efektif di backend; cache akun terisolasi. Mekanisme MFA admin/approver dan opsi provider diverifikasi terhadap prioritas gratis; jika belum tersedia status gate jelas, bukan klaim MFA aktif. Firebase TOTP memerlukan Identity Platform; verifikasi metode MFA dan budget aktual sebelum produksi, tanpa otomatis mengaktifkan paket berbayar. Device session binding mendukung revoke per perangkat."
+    },
+    {
+      "id": "WEB-012",
+      "title": "Master pelanggan/toko dan kontak",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "verified_local",
+      "gates": [],
+      "evidence": [
+        "docs/BUILD_STATUS.md",
+        "test-results/account-removal-reconciliation.json"
+      ],
+      "baseline_acceptance": "Satu pelanggan/toko satu lokasi; tidak ada lapisan Account bisnis/legal. Input manual langsung nama, alamat dan area; kode ERP opsional. Kontak/nomor dinormalisasi. Koordinat hilang ditandai tanpa mengurangi total pelanggan. Hanya Management/NSM mengubah pengaturan. Histori invoice, assignment dan alias tetap utuh."
+    },
+    {
+      "id": "WEB-013",
+      "title": "Import customer/produk dan laporan error",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Organization retention policy pending; original sources held; no cloud R2 provisioned."
+      ],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "Field wajib/tipe/tanggal/ID diperiksa; hasil parsial terlihat; retry tidak menggandakan record; error per baris dapat diunduh sesuai scope. File sumber asli disimpan sesuai retensi."
+    },
+    {
+      "id": "WEB-014",
+      "title": "Deduplikasi dan merge berhistori",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "verified_local",
+      "gates": [],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "Kode eksternal unik di org; nomor sama tidak otomatis merge; relasi transaksi/timeline tetap dapat ditelusuri setelah merge."
+    },
+    {
+      "id": "WEB-015",
+      "title": "Assignment, transfer owner dan territory",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "verified_local",
+      "gates": [],
+      "evidence": [
+        "docs/BUILD_STATUS.md"
+      ],
+      "baseline_acceptance": "Pelanggan assigned/unassigned dapat difilter; hanya satu owner primer aktif; telesales assignment bukan owner lapangan; transfer tanggal tertentu tidak memindahkan invoice historis."
+    },
+    {
+      "id": "WEB-016",
+      "title": "Tabel dan peta distribusi customer",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Basemap provider key/capacity review pending; local fallback uses OSM; tile network failures explicitly shown."
+      ],
+      "evidence": [
+        "tests/finance.test.ts",
+        "test-results/m1-complete.cjs",
+        "test-results/m1-final.cjs"
+      ],
+      "baseline_acceptance": "Tidak ada routing/ETA. Atribusi basemap ditampilkan; customer tanpa koordinat tetap masuk daftar/perbaikan. Posisi sales hanya data lokasi diterima dengan umur/akurasi. Peta termasuk scope web karena keputusan eksplisit pengguna walau INT-05 awal P1."
+    },
+    {
+      "id": "WEB-019",
+      "title": "Mapping source invoice dan template final",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Actual company invoice source, mappings and tax/discount/freight/net semantics pending."
+      ],
+      "evidence": [
+        "tests/finance.test.ts",
+        "test-results/m1-complete.cjs",
+        "test-results/m1-final.cjs"
+      ],
+      "baseline_acceptance": "Invoice ID/tanggal/net/retur/source-version didefinisikan; net termasuk credit tidak dipotong lagi. Bila sumber nyata belum ada, adapter memakai fixture dan pekerjaan integrasi nyata ditandai menunggu input, bukan selesai."
+    },
+    {
+      "id": "WEB-020",
+      "title": "Master produk, unit, kelompok dan harga",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "verified_local",
+      "gates": [],
+      "evidence": [
+        "tests/finance.test.ts",
+        "test-results/m1-complete.cjs",
+        "test-results/m1-final.cjs"
+      ],
+      "baseline_acceptance": "SKU unik per org; unit/quantity scale eksplisit; harga efektif dan sumber terlihat. Stok/kredit tanpa sumber tidak diisi tersedia/lolos."
+    },
+    {
+      "id": "WEB-021",
+      "title": "Pipeline invoice import dry-run/commit",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Real source integration/acceptance and production capacity pending."
+      ],
+      "evidence": [
+        "tests/finance.test.ts",
+        "test-results/m1-complete.cjs",
+        "test-results/m1-final.cjs"
+      ],
+      "baseline_acceptance": "Commit memerlukan hasil validasi/hash sesuai payload; header tidak dikali line; duplicate invoice/credit tidak dihitung ulang; mapping ambigu masuk review, bukan actual final."
+    },
+    {
+      "id": "WEB-022",
+      "title": "Revisi invoice, retur dan credit note",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Real source integration/acceptance and production capacity pending.",
+        "Later statement finalization must write finance_period_lock and consume finance_adjustment; no final statement/payroll module active."
+      ],
+      "evidence": [
+        "tests/finance.test.ts",
+        "test-results/m1-complete.cjs",
+        "test-results/m1-final.cjs"
+      ],
+      "baseline_acceptance": "Credit unik/ref invoice asal; invoice batal tidak actual; period invoice asal direstate dengan versi. Setelah statement final, revision memicu adjustment terkontrol."
+    },
+    {
+      "id": "WEB-023",
+      "title": "Atribusi rep dan kanal invoice",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Real source integration/acceptance and production capacity pending."
+      ],
+      "evidence": [
+        "tests/finance.test.ts",
+        "test-results/m1-complete.cjs",
+        "test-results/m1-final.cjs"
+      ],
+      "baseline_acceptance": "Rep invoice valid diprioritaskan; fallback assignment pada tanggal invoice; konflik area/owner ditahan untuk review. Satu invoice satu kanal primer; total kanal sama organisasi."
+    },
+    {
+      "id": "WEB-024",
+      "title": "Daftar/detail invoice dan rekonsiliasi actual",
+      "implementation_status": "implemented_local",
+      "acceptance_status": "pending_external_gate",
+      "gates": [
+        "Real source integration/acceptance and production capacity pending."
+      ],
+      "evidence": [
+        "tests/finance.test.ts",
+        "test-results/m1-complete.cjs",
+        "test-results/m1-final.cjs"
+      ],
+      "baseline_acceptance": "Fixture net Rp160 juta, lapangan Rp135 juta, telesales Rp25 juta. Filter/export konsisten; draft order tidak masuk actual invoice. Histori total dapat direkonsiliasi ke sumber/revision."
+    }
+  ],
+  "architecture": "Customer primary, no Account business layer; migration0017 applied locally"
+}

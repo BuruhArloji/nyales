@@ -1,0 +1,2871 @@
+{
+  "version": "M2-local-0.2",
+  "date": "2026-10-18",
+  "source_of_truth": "migrations/0018-0030 plus preceding schema",
+  "tables": [
+    {
+      "name": "call_result",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "lease_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "contact_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "disposition",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "notes",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "callback_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "occurred_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "connection_evidence",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'manual_unverified'",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "script_snapshot_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "qualification_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_call_result_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_call_result_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "customer_segmentation_run",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "cutoff",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "source_epoch",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "coverage_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "rule_versions_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "input_snapshot_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'{}'",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "segmentation_input_lookup",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_customer_segmentation_run_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_customer_segmentation_run_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "customer_source_coverage",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "complete_from",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "complete_through",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "updated_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "history_complete",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "0",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        [
+          0,
+          0,
+          "organization",
+          "organization_id",
+          "id",
+          "NO ACTION",
+          "NO ACTION",
+          "NONE"
+        ]
+      ],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_customer_source_coverage_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "customer_status_snapshot",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "run_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 2
+        },
+        {
+          "cid": 3,
+          "name": "cutoff",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "observed_status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "provisional",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "last_invoice_date",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "net_minor",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "tier",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "rule_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "rule_version",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "cohort_size",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        [
+          0,
+          0,
+          "customer_segmentation_run",
+          "run_id",
+          "id",
+          "NO ACTION",
+          "NO ACTION",
+          "NONE"
+        ]
+      ],
+      "indexes": [
+        [
+          0,
+          "customer_status_cutoff",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_customer_status_snapshot_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "customer_tier_rule",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "method",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "parameters_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "area_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "approved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "approved_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        [
+          0,
+          0,
+          "organization",
+          "organization_id",
+          "id",
+          "NO ACTION",
+          "NO ACTION",
+          "NONE"
+        ]
+      ],
+      "indexes": [
+        [
+          0,
+          "customer_tier_active",
+          1,
+          "c",
+          1
+        ],
+        [
+          1,
+          "sqlite_autoindex_customer_tier_rule_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_customer_tier_rule_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "evidence_attachment",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "activity_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "storage_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "size",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "mime",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'pending'",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "expires_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_evidence_attachment_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "forecast_contribution",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "channel",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "source_kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "source_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "category",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "view_kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "expected_invoice_date",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "amount_minor",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "evidence_ref",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "product_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "product_group_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "forecast_exclusive_customer",
+          1,
+          "c",
+          1
+        ],
+        [
+          1,
+          "sqlite_autoindex_forecast_contribution_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "forecast_realization",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "contribution_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "view_kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "source_system",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "external_invoice_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "allocation_minor",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_forecast_realization_3",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_forecast_realization_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_forecast_realization_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "order_policy",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "require_stock_credit_review",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "parameters_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'{\"max_discount_bps\":10000,\"allow_special_price\":true}'",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_order_policy_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_campaign",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "start_time",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "end_time",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "max_attempts",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "lease_seconds",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "hold_active_visit",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'active'",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sales_campaign_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_exception",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "resource_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'open'",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sales_exception_open_unique",
+          1,
+          "c",
+          1
+        ],
+        [
+          1,
+          "sqlite_autoindex_sales_exception_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_handoff",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "sender_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "receiver_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "channel",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "due_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "need",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'pending'",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "''",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "task_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sales_handoff_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_lead",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "source",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "need",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "stage",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "expected_minor",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "0",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "expected_invoice_date",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "next_action",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "next_due_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "lost_reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "''",
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "stage_changed_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "proposal_summary",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "''",
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "order_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sales_lead_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_order",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "channel",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "client_order_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "lines_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "net_minor",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "submitted_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "approved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "external_reference",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "input_hash",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "submit_snapshot_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "approval_review_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sales_order_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_sales_order_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_order_revision",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "order_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "occurred_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "before_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "after_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sales_order_revision_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_script",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "campaign_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "content",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "qualification_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'active'",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sales_script_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "sales_task",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "channel",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "title",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "due_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "original_due_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'open'",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "outcome",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "''",
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "completed_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "priority",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "2",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_sales_task_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "target_allocation",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "target_version_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "input_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "result_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_target_allocation_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "target_version",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "target_plan_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "revision_no",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "parent_minor",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reserve_minor",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "0",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "submitted_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "approved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "approved_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "baseline_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        [
+          0,
+          0,
+          "target_plan",
+          "target_plan_id",
+          "id",
+          "NO ACTION",
+          "NO ACTION",
+          "NONE"
+        ]
+      ],
+      "indexes": [
+        [
+          0,
+          "target_current_approved",
+          1,
+          "c",
+          1
+        ],
+        [
+          1,
+          "sqlite_autoindex_target_version_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          2,
+          "sqlite_autoindex_target_version_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "telesales_lease",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "contact_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "campaign_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "script_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "expires_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "script_snapshot_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "one_active_customer_lease",
+          1,
+          "c",
+          1
+        ],
+        [
+          1,
+          "sqlite_autoindex_telesales_lease_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "visit_active",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "activity_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "started_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_visit_active_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_visit_active_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "visit_event",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "activity_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "event_kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "occurred_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "received_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "latitude_e7",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "longitude_e7",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "accuracy_cm",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "source",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "quality",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "payload_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_visit_event_2",
+          1,
+          "u",
+          0
+        ],
+        [
+          1,
+          "sqlite_autoindex_visit_event_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "work_plan",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "customer_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "scheduled_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "original_scheduled_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "calendar_snapshot_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_work_plan_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "work_plan_revision",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "plan_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "occurred_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "before_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "after_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "sqlite_autoindex_work_plan_revision_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    {
+      "name": "work_session",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "started_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "ended_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": "1",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "one_open_work_session",
+          1,
+          "c",
+          1
+        ],
+        [
+          1,
+          "sqlite_autoindex_work_session_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    }
+  ],
+  "logical_relationships": [
+    [
+      "customer_outlet",
+      "customer_status_snapshot",
+      "customer_id"
+    ],
+    [
+      "customer_segmentation_run",
+      "customer_status_snapshot",
+      "run_id"
+    ],
+    [
+      "customer_tier_rule",
+      "customer_status_snapshot",
+      "rule_id / rule_version snapshot"
+    ],
+    [
+      "target_plan",
+      "target_version",
+      "target_plan_id"
+    ],
+    [
+      "target_version",
+      "target_item",
+      "target_version_id"
+    ],
+    [
+      "customer_outlet",
+      "target_item",
+      "outlet_id (optional customer leaf)"
+    ],
+    [
+      "app_user",
+      "target_item",
+      "rep_id_snapshot (optional rep leaf)"
+    ],
+    [
+      "customer_outlet",
+      "work_plan",
+      "customer_id"
+    ],
+    [
+      "app_user",
+      "work_session",
+      "user_id"
+    ],
+    [
+      "activity",
+      "visit_event",
+      "activity_id"
+    ],
+    [
+      "activity",
+      "evidence_attachment",
+      "activity_id"
+    ],
+    [
+      "customer_outlet",
+      "sales_task",
+      "customer_id"
+    ],
+    [
+      "customer_outlet",
+      "sales_handoff",
+      "customer_id"
+    ],
+    [
+      "sales_campaign",
+      "sales_script",
+      "campaign_id"
+    ],
+    [
+      "sales_script",
+      "telesales_lease",
+      "script_id + immutable lease snapshot"
+    ],
+    [
+      "telesales_lease",
+      "call_result",
+      "lease_id"
+    ],
+    [
+      "customer_outlet",
+      "sales_lead",
+      "customer_id"
+    ],
+    [
+      "customer_outlet",
+      "sales_order",
+      "customer_id"
+    ],
+    [
+      "sales_order",
+      "sales_order_revision",
+      "order_id"
+    ],
+    [
+      "customer_outlet",
+      "forecast_contribution",
+      "customer_id"
+    ],
+    [
+      "forecast_contribution",
+      "forecast_realization",
+      "contribution_id"
+    ],
+    [
+      "invoice",
+      "forecast_realization",
+      "source_system / source_invoice_id (logical current revision)"
+    ]
+  ],
+  "notes": [
+    "Column and FK inventories are physical SQLite results. Logical relationships are not assertions of SQL FK coverage. Tenant/scope/state checks also enforced by prepared application queries and mutation guards.",
+    "Money *_minor is whole IDR rupiah. Coordinates E7; accuracy cm. Event and source timestamps distinguished.",
+    "No active Account business/legal entity; customer_outlet is one customer at one location.",
+    "Original M1 tables target_plan,target_item,activity are extended by M2; see all migrations for complete column inventory."
+  ]
+}

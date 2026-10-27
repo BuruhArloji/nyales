@@ -1,0 +1,115 @@
+{
+  "version": "1.1.0",
+  "format": "Sales Operations flat semantic token groups; CSS output generated locally",
+  "color": {
+    "canvas": "#F0EFED",
+    "surface": "#FFFFFF",
+    "surface-subtle": "#F2F2F0",
+    "ink": "#111111",
+    "muted": "#6B6966",
+    "border": "#D8DDD8",
+    "control-border": "#7C8986",
+    "primary": "#171D35",
+    "primary-hover": "#252C45",
+    "primary-pressed": "#101529",
+    "primary-soft": "#E9EBF0",
+    "navy": "#171D35",
+    "peach": "#F6D8B5",
+    "focus": "#234DD4",
+    "success": "#187B3D",
+    "success-soft": "#E8F5ED",
+    "warning": "#805000",
+    "warning-soft": "#FFF1D6",
+    "danger": "#AB273C",
+    "danger-soft": "#FDECEF",
+    "info": "#245E9B",
+    "info-soft": "#EAF2FC",
+    "cream": "#F1E7DA",
+    "accent": "#00ADB5",
+    "accent-soft": "#DAEFEB",
+    "success-bright": "#38BE69"
+  },
+  "space": {
+    "0": "0px",
+    "4": "4px",
+    "8": "8px",
+    "12": "12px",
+    "16": "16px",
+    "20": "20px",
+    "24": "24px",
+    "32": "32px",
+    "40": "40px",
+    "48": "48px",
+    "64": "64px"
+  },
+  "radius": {
+    "control": "999px",
+    "small": "24px",
+    "card": "28px",
+    "pill": "999px"
+  },
+  "font": {
+    "family": "\"Poppins\", system-ui, sans-serif",
+    "display": "40px",
+    "display-mobile": "32px",
+    "title": "26px",
+    "heading": "18px",
+    "body": "16px",
+    "small": "14px",
+    "caption": "12px",
+    "weight-normal": "400",
+    "weight-label": "500",
+    "weight-heading": "500"
+  },
+  "line": {
+    "display": "48px",
+    "display-mobile": "40px",
+    "title": "36px",
+    "heading": "28px",
+    "body": "24px",
+    "small": "20px",
+    "caption": "18px"
+  },
+  "size": {
+    "touch": "44px",
+    "compact-control": "36px",
+    "row": "56px",
+    "compact-row": "40px",
+    "sidebar": "240px",
+    "drawer": "480px",
+    "form-max": "640px",
+    "content-max": "1600px"
+  },
+  "breakpoint": {
+    "tablet": "768px",
+    "desktop": "1200px"
+  },
+  "motion": {
+    "fast": "120ms",
+    "normal": "180ms",
+    "slow": "240ms",
+    "easing": "cubic-bezier(.2,0,0,1)"
+  },
+  "layer": {
+    "base": "0",
+    "sticky": "10",
+    "dropdown": "20",
+    "navigation": "30",
+    "backdrop": "40",
+    "dialog": "50",
+    "toast": "60",
+    "tooltip": "70"
+  },
+  "shadow": {
+    "card": "none",
+    "overlay": "0 20px 40px rgb(24 32 39 / 0.12)"
+  },
+  "chart": {
+    "teal": "#007570",
+    "blue": "#245E9B",
+    "purple": "#7546A3",
+    "amber": "#946000",
+    "rose": "#AB273C",
+    "slate": "#4F626D"
+  }
+}

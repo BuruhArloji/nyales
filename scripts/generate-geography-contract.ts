@@ -1,0 +1,23 @@
+import {writeFileSync} from 'node:fs';
+import {z} from 'zod';
+import {geoRequestSchemas} from '../src/server/geography';
+export function generateGeographyContract(){
+ const schemas:Record<string,any>=Object.fromEntries(Object.entries(geoRequestSchemas).map(([k,v])=>[k,z.toJSONSchema(v,{io:'input'})]));
+ for(const key of ['preview','review'])schemas[key].dependentRequired={admin_code:['code_namespace'],code_namespace:['admin_code']};
+ schemas.error={type:'object',required:['code'],properties:{code:{type:'string'}}};schemas.envelope={type:'object',required:['data'],properties:{data:{}},additionalProperties:true};
+ const paths:Record<string,any>={};
+ for(const [method,path,body,summary] of [
+  ['get','/api/geo/map',null,'Scoped operational customer pins, last received sales positions, boundary metadata and current confirmed/unmapped totals. Draft preview is Management/NSM only.'],
+  ['get','/api/geo/geometry',null,'Up to 50 authorized full polygon features from private R2, verified against release and feature checksums; no storage keys.'],
+  ['get','/api/geo/customers/{id}',null,'Scoped current mapping and latest 50 immutable revisions, descending, plus ETag for mapping revision.'],
+  ['post','/api/geo/customers/{id}/preview','preview','Management/NSM read-only point-in-full-polygon or explicit namespaced code matching. Edges/overlap/conflicts require review.'],
+  ['post','/api/geo/customers/{id}/review','review','Management/NSM audited revision for current date only. Active release, preview hash, customer version and mapping revision must match. No master/owner/fact changes.']
+ ] as const){const parameters:any[]=[];if(path.includes('{id}'))parameters.push({in:'path',name:'id',required:true,schema:{type:'string',minLength:1,maxLength:128}});
+  const queries=path==='/api/geo/map'?['area_id','rep_id','channel','customer_status','period','dataset_id']:path==='/api/geo/geometry'?['dataset_id','ids']:[];
+  for(const name of queries)parameters.push({in:'query',name,required:name==='ids',schema:{type:'string'},description:name==='period'?'YYYY-MM navigation context only; matching and counts use current effective date.':name==='ids'?'Comma-separated authorized boundary IDs, 1-50. Selection response max 2 MiB.':'Current scope applies.'});
+  if(body==='review')parameters.push({in:'header',name:'Idempotency-Key',required:true,schema:{type:'string',minLength:8,maxLength:128}},{in:'header',name:'If-Match',required:true,schema:{type:'string'},description:'Quoted mapping revision, including "0" when no history exists.'});
+  paths[path]??={};paths[path][method]={summary,operationId:'geo_'+method+'_'+path.replace(/\W/g,'_'),parameters,'x-access-policy':method==='get'?'Tenant and customer/area/team/channel scope; non-active releases require Management/NSM.':'Management/NSM current organization only.',...(body?{requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/'+body}}}}}:{}),responses:Object.fromEntries([200,400,401,403,404,409,412,422,428,503].map(code=>[code,{description:code===200?'Resource envelope. See endpoint summary; not a fully typed response SDK.':({400:'Idempotency header invalid',401:'Authentication or device session missing',403:'Scope denied',404:'Unknown or foreign resource',409:'No active dataset, retired release, draft operational query, checksum mismatch or idempotency conflict',412:'Active dataset, customer, preview or mapping version changed',422:'Invalid input, ambiguous confirmation, geometry read/response bound, or unproven outside coverage',428:'If-Match required',503:'Geometry/source storage unavailable'})[code],content:{'application/json':{schema:{$ref:'#/components/schemas/'+(code===200?'envelope':'error')}}}}]))};
+ }
+ return {openapi:'3.1.0',info:{title:'NYALES WEB-064 implemented geography API',version:'0.1.0',description:'Local implementation, current operational mapping only. D1 metadata and immutable review history; private R2 full geometry. Regional financial/coverage analytics are WEB-066. /api/customers additionally supports geo_boundary_id OR geo_bucket (unmapped, confirmed, stale, needs_review, outside_coverage), geo_dataset_id (active only), alongside existing scoped area/rep/channel filters. No routing or territory commit.'},paths,security:[{BearerAuth:[],DeviceSession:[]}],components:{schemas,securitySchemes:{BearerAuth:{type:'http',scheme:'bearer'},DeviceSession:{type:'apiKey',in:'header',name:'X-Device-Session'}}}};
+}
+if(process.argv[1]?.replaceAll('\\','/').endsWith('/generate-geography-contract.ts')){writeFileSync('docs/specifications/geography-api.m4.openapi.json',JSON.stringify(generateGeographyContract(),null,2)+'\n');console.log('Wrote WEB-064 geography contract: 5 operations')}

@@ -1,0 +1,2442 @@
+{
+  "tables": {
+    "organization": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:name text:timezone",
+      "notes": ""
+    },
+    "branch": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:name text:timezone text:organization_id:FK",
+      "notes": ""
+    },
+    "area": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:branch_id:FK text:name text:organization_id:FK",
+      "notes": " Keputusan 22 Oktober: area bisnis dapat dibentuk dari beberapa kelurahan/desa melalui area_admin_membership; bukan identitas administrasi itu sendiri."
+    },
+    "app_user": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:auth_subject text:name text:status text:organization_id:FK",
+      "notes": "Identitas Firebase dipetakan ke user internal; auth_subject unik per provider/organisasi."
+    },
+    "role": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:code text:organization_id:FK",
+      "notes": "Kode: MANAGEMENT, NSM, AREA_MANAGER, SUPERVISOR, SALES_REP, TELESALES; admin teknis tidak otomatis memperoleh pengaturan bisnis."
+    },
+    "user_role": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:user_id:FK text:role_id:FK text:effective_from text:effective_to text:organization_id:FK",
+      "notes": ""
+    },
+    "user_scope": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:user_id:FK text:area_id:FK text:branch_id:FK text:scope_level text:organization_id:FK",
+      "notes": "Area/branch nullable menurut scope_level; ORG hanya Management/NSM. CHECK scope_level memastikan kombinasi field sah."
+    },
+    "reporting_assignment": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:subordinate_id:FK text:manager_id:FK text:area_id:FK text:channel text:effective_from_date text:effective_to_date text:organization_id:FK",
+      "notes": "Satu SR tepat satu SPV aktif; periode tidak overlap; hirarki tidak siklik. SPV/AM tidak wajib memiliki visit. Effective date business-local [from,to) menjadi acuan invoice date; timestamp perubahan tetap diaudit."
+    },
+    "customer_outlet": {
+      "group": "Customer dan distribusi",
+      "fields": "text:id:PK text:area_id:FK text:name text:address integer:latitude_e7 integer:longitude_e7 text:organization_id:FK",
+      "notes": "Satu pelanggan/toko = satu lokasi. Tidak ada parent Account bisnis/legal. Area saat ini dan histori assignment dipisahkan; invoice dan fakta historis mempertahankan atribusi asal. Pemetaan kelurahan/desa berversi disimpan terpisah dalam customer_admin_location; satu pelanggan tetap satu lokasi/area."
+    },
+    "contact": {
+      "group": "Customer dan distribusi",
+      "fields": "text:id:PK text:outlet_id:FK text:name text:phone text:preferred_channel text:organization_id:FK",
+      "notes": ""
+    },
+    "customer_assignment": {
+      "group": "Customer dan distribusi",
+      "fields": "text:id:PK text:outlet_id:FK text:rep_id:FK text:area_id:FK text:channel text:assignment_kind text:effective_from_date text:effective_to_date text:organization_id:FK",
+      "notes": "Owner lapangan primer tunggal per outlet pada satu waktu. Penugasan telesales terpisah dari owner lapangan; invoice tetap satu kanal primer. Effective date business-local [from,to) menjadi acuan invoice date; timestamp perubahan tetap diaudit."
+    },
+    "segmentation_rule": {
+      "group": "Customer dan distribusi",
+      "fields": "text:id:PK integer:version text:method text:parameters_json text:effective_from text:organization_id:FK",
+      "notes": "Metode nominal/percentile/custom tervalidasi; basis hanya penjualan invoice. Rule aktif immutable."
+    },
+    "customer_status_snapshot": {
+      "group": "Customer dan distribusi",
+      "fields": "text:id:PK text:outlet_id:FK text:rule_id:FK text:cutoff_date text:last_invoice_date text:activity_status text:value_tier integer:net_sales_minor text:data_state text:organization_id:FK",
+      "notes": "Status Active bila last_invoice_age_days <= 90. Churn bila >90; customer belum pernah bertransaksi ditandai New/needs-baseline, bukan disamakan dengan churn tanpa informasi. Tier Low/Mid/High dipisahkan dari status; snapshot tidak mengubah histori."
+    },
+    "contact_preference": {
+      "group": "Customer dan distribusi",
+      "fields": "text:id:PK text:contact_id:FK text:channel text:purpose text:state text:effective_at text:organization_id:FK",
+      "notes": "DNC/consent/suppression memiliki histori dan sumber perubahan."
+    },
+    "work_session": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:user_id:FK text:channel text:started_at text:ended_at text:status text:organization_id:FK",
+      "notes": ""
+    },
+    "activity": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:outlet_id:FK text:actor_id:FK text:session_id:FK text:channel text:kind text:occurred_at text:outcome text:evidence_state text:organization_id:FK",
+      "notes": ""
+    },
+    "visit": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:activity_id:FK text:planned_at text:checkin_at text:checkout_at integer:latitude_e7 integer:longitude_e7 integer:accuracy_cm text:organization_id:FK",
+      "notes": "activity_id unik; subtype activity. Jadwal rencana dapat disimpan sebelum check-in."
+    },
+    "call_attempt": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:activity_id:FK text:contact_id:FK text:provider_event_id text:technical_status text:disposition text:provenance text:organization_id:FK",
+      "notes": "activity_id unik; provider technical status berbeda dari outcome deklarasi agent."
+    },
+    "campaign": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:name text:status text:organization_id:FK",
+      "notes": ""
+    },
+    "queue_item": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:campaign_id:FK text:outlet_id:FK text:leased_by_id:FK text:lease_until text:status text:due_at text:organization_id:FK",
+      "notes": "Claim atomik; satu lease aktif atas item eligible; DNC diperiksa sebelum penugasan."
+    },
+    "task": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:outlet_id:FK text:assignee_id:FK text:activity_id:FK text:due_at text:type text:status text:organization_id:FK",
+      "notes": ""
+    },
+    "handoff": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:outlet_id:FK text:sender_id:FK text:recipient_id:FK text:task_id:FK text:status text:due_at text:organization_id:FK",
+      "notes": "Tidak memindahkan owner dan tidak memberi penjualan tambahan otomatis."
+    },
+    "opportunity": {
+      "group": "Aktivitas dan pekerjaan",
+      "fields": "text:id:PK text:outlet_id:FK text:owner_id:FK text:channel text:stage integer:value_minor text:expected_invoice_date text:lead_id:FK text:organization_id:FK",
+      "notes": ""
+    },
+    "product": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:sku text:name text:base_unit text:group_code text:product_group_id:FK text:organization_id:FK",
+      "notes": ""
+    },
+    "import_batch": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:source_system text:source_cutoff text:received_at text:status integer:accepted_count integer:rejected_count text:organization_id:FK",
+      "notes": "Kesalahan mapping disimpan sebagai staging/error batch; tidak dipaksakan masuk fact tervalidasi."
+    },
+    "sales_order": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:outlet_id:FK text:rep_id:FK text:channel text:status text:idempotency_key integer:net_minor text:organization_id:FK",
+      "notes": ""
+    },
+    "order_line": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:order_id:FK text:product_id:FK integer:quantity_scaled integer:net_minor integer:quantity_scale text:unit_code text:organization_id:FK",
+      "notes": ""
+    },
+    "invoice": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:outlet_id:FK text:batch_id:FK text:rep_id:FK text:assignment_id:FK text:source_system text:source_invoice_id text:invoice_date text:channel text:status text:currency text:organization_id:FK",
+      "notes": "Identitas invoice unik per org/sumber. rep/assignment boleh null selama needs_review, wajib sah sebelum eligible. Tanggal invoice dan Sales Rep sumber dipertahankan."
+    },
+    "invoice_revision": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:invoice_id:FK text:batch_id:FK integer:revision_no integer:base_net_minor integer:credit_minor integer:eligible_net_minor text:source_version text:validation_state text:recorded_at text:outlet_id:FK text:rep_id:FK text:assignment_id:FK text:area_id:FK text:channel text:invoice_date text:currency text:status text:net_includes_credit text:effective_from text:effective_to text:organization_id:FK",
+      "notes": "Immutable: eligible_net = base_net - credit yang belum termasuk base. Tepat satu revisi efektif dipilih per invoice/cutoff; histori final calculation mereferensikan revisi, bukan nilai latest. Snapshot dimensi customer/rep/area/channel/date wajib; perubahan identitas header tidak mengubah kalkulasi lama."
+    },
+    "invoice_line": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:invoice_revision_id:FK text:product_id:FK text:source_line_id integer:quantity_scaled integer:net_minor integer:quantity_scale text:unit_code text:organization_id:FK",
+      "notes": "Total header tidak dijumlahkan per line. Detail produk hanya valid bila line tersedia dan rekonsiliasi lulus."
+    },
+    "credit_note": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:invoice_id:FK text:batch_id:FK text:source_credit_id text:credit_date integer:amount_minor text:status text:source_system text:organization_id:FK",
+      "notes": "Unique per org/sumber/credit ID. Credit sudah termasuk net sumber tidak dikurangkan kembali."
+    },
+    "order_invoice_link": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:order_line_id:FK text:invoice_line_id:FK integer:allocated_minor text:organization_id:FK",
+      "notes": "Order/invoice dapat parsial dan banyak-ke-banyak; nilai alokasi tidak boleh melebihi sumber. Tidak wajib bila invoice sumber tidak membawa link order."
+    },
+    "target_plan": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:period_start text:period_end text:channel text:method text:basis text:organization_id:FK",
+      "notes": ""
+    },
+    "target_version": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:plan_id:FK integer:version text:baseline_start text:baseline_end text:policy_json text:status text:approved_by_id:FK text:organization_id:FK",
+      "notes": "Bottom-up/top-down merupakan alternatif, hanya satu versi aktif per scope/kanal/periode. Target yang disahkan immutable."
+    },
+    "target_item": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:target_version_id:FK text:parent_item_id:FK text:area_id:FK text:user_id:FK text:outlet_id:FK text:product_id:FK text:scope_level integer:target_minor text:product_group_id:FK text:scope_snapshot_json text:organization_id:FK",
+      "notes": "Scope_level menentukan subject: ORG/AREA/USER/OUTLET; product opsional sebagai dimensi. Rollup memilih leaf atau parent, bukan keduanya. USER scope dapat mewakili SR/SPV/AM; agregasi memakai snapshot subtree role. Jangan menjumlahkan node target overlap; PRODUCT atau PRODUCT_GROUP eksklusif."
+    },
+    "target_allocation": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:target_version_id:FK text:parent_item_id:FK text:child_item_id:FK integer:baseline_minor integer:allocated_minor integer:rounding_residual text:reason text:organization_id:FK",
+      "notes": "Snapshot baseline, histori tiga bulan selesai dan onboarding input. Tidak menggunakan realisasi masa depan untuk target awal."
+    },
+    "forecast_contribution": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:target_item_id:FK text:outlet_id:FK text:opportunity_id:FK text:owner_id:FK text:category text:expected_invoice_date integer:open_minor text:status text:organization_id:FK text:estimate_kind text:source_kind text:source_key",
+      "notes": "Repeat order boleh tanpa opportunity; contribution ID tetap unik. Owner estimate dan manager alternative dibedakan, tidak dijumlahkan."
+    },
+    "forecast_realization": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:contribution_id:FK text:invoice_revision_id:FK integer:consumed_minor text:organization_id:FK",
+      "notes": "Hanya nilai eligible pada basis sama mengonsumsi residual; invoice baru tidak menaikkan actual+residual dua kali. Revisi invoice baru mensupersede alokasi revision lama untuk view latest, tidak keduanya ditambahkan. Manager alternative dan rep forecast tidak digabung; snapshot menyimpan estimate_kind."
+    },
+    "forecast_snapshot": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:target_version_id:FK text:cutoff_at text:policy_version text:status integer:actual_minor text:organization_id:FK",
+      "notes": "Snapshot immutable setelah submit; actual cutoff dan hierarchy version dibekukan."
+    },
+    "forecast_snapshot_item": {
+      "group": "Target dan forecast",
+      "fields": "text:id:PK text:snapshot_id:FK text:contribution_id:FK text:category integer:residual_minor text:source_revision text:organization_id:FK text:estimate_kind",
+      "notes": "Membekukan kategori/nilai kontribusi saat snapshot; perubahan berikutnya tidak menulis ulang snapshot lama."
+    },
+    "incentive_plan": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:name text:role_id:FK text:channel text:organization_id:FK",
+      "notes": ""
+    },
+    "incentive_plan_version": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:plan_id:FK integer:version text:model integer:base_bonus_minor text:threshold_decimal text:parameters_json text:status text:effective_from text:effective_to text:organization_id:FK",
+      "notes": "Plan per role/kanal; template progressive plus bonus, whole-basis dan model lain dipisahkan eksplisit."
+    },
+    "incentive_tier": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:plan_version_id:FK text:lower_achievement text:upper_achievement text:rate_decimal text:organization_id:FK",
+      "notes": "Batas dan rate memakai decimal string/canonical scaled integer; bukan float. Upper null berarti tanpa batas atas."
+    },
+    "incentive_enrollment": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:plan_version_id:FK text:user_id:FK text:target_item_id:FK text:effective_from text:effective_to text:organization_id:FK",
+      "notes": "Penerima harus sesuai role/kanal/scope target. Membership dibekukan dalam run."
+    },
+    "calculation_run": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:plan_version_id:FK text:target_version_id:FK text:source_cutoff text:input_hash text:formula_version text:status text:organization_id:FK",
+      "notes": "Run key mencakup policy, target, peserta dan source snapshot; retry identik tidak membuat entitlement ganda."
+    },
+    "incentive_statement": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:run_id:FK text:enrollment_id:FK text:previous_statement_id:FK integer:revision_no integer:actual_minor integer:payout_minor text:status text:finalized_by_id:FK text:finalized_at text:target_snapshot_json text:hierarchy_snapshot_json text:organization_id:FK",
+      "notes": "Finalisasi tombol manual Management/NSM; larangan self-approval. Revision mengacu statement lama; exported bukan paid."
+    },
+    "statement_source": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:statement_id:FK text:invoice_revision_id:FK integer:eligible_minor text:reason text:organization_id:FK",
+      "notes": "Menyimpan input invoice exact; invoice bukan disalin ke payout kedua. Nilai source dapat ditelusuri per penerima."
+    },
+    "statement_component": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:statement_id:FK text:tier_id:FK text:kind integer:basis_minor text:rate_decimal integer:payout_minor text:payout_unrounded_decimal text:rounding_delta_decimal text:organization_id:FK",
+      "notes": "Nilai decimal unrounded disimpan; pembulatan half-up pada total statement. Selisih tampilan pembulatan dicatat eksplisit, tidak mengubah total."
+    },
+    "incentive_adjustment": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:original_statement_id:FK text:revised_statement_id:FK integer:delta_minor text:reason text:status text:organization_id:FK",
+      "notes": "Selisih entitlement original vs revised; tidak dipotong/dibayar otomatis."
+    },
+    "export_batch": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:created_by_id:FK text:status text:payment_reference text:organization_id:FK",
+      "notes": ""
+    },
+    "export_item": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:batch_id:FK text:statement_id:FK text:organization_id:FK",
+      "notes": "Export ulang mengacu revision yang sama; tidak membuat hak pembayaran baru."
+    },
+    "audit_event": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:actor_id:FK text:resource_type text:resource_id text:action text:before_json text:after_json text:reason text:correlation_id text:organization_id:FK",
+      "notes": "resource_type/resource_id adalah referensi audit generik tanpa FK fisik lintas tabel; actor boleh null untuk system job."
+    },
+    "sync_event": {
+      "group": "Sinkronisasi dan Android",
+      "fields": "text:id:PK text:user_id:FK text:device_id text:session_id:FK text:event_id text:payload_version text:received_at text:ack_state text:organization_id:FK",
+      "notes": "Unique org/device/event untuk retry; received_at berbeda dari captured_at."
+    },
+    "integration_outbox": {
+      "group": "Sinkronisasi dan Android",
+      "fields": "text:id:PK text:event_id text:resource_type text:resource_id text:status integer:attempts text:next_attempt_at text:organization_id:FK",
+      "notes": ""
+    },
+    "attachment": {
+      "group": "Sinkronisasi dan Android",
+      "fields": "text:id:PK text:uploaded_by_id:FK text:object_key text:checksum text:status text:expires_at text:organization_id:FK",
+      "notes": ""
+    },
+    "activity_attachment": {
+      "group": "Sinkronisasi dan Android",
+      "fields": "text:id:PK text:activity_id:FK text:attachment_id:FK text:organization_id:FK",
+      "notes": "Link eksplisit menjamin bukti activity tidak hilang tanpa jejak."
+    },
+    "gps_sample": {
+      "group": "Sinkronisasi dan Android",
+      "fields": "text:id:PK text:user_id:FK text:session_id:FK text:event_id text:captured_at text:received_at integer:latitude_e7 integer:longitude_e7 integer:accuracy_cm text:organization_id:FK",
+      "notes": "Tahap Android. D1 hot tujuh hari; titik bukan bukti visit otomatis."
+    },
+    "last_position": {
+      "group": "Sinkronisasi dan Android",
+      "fields": "text:id:PK text:user_id:FK text:session_id:FK text:source_event_id text:source_kind text:captured_at text:received_at integer:latitude_e7 integer:longitude_e7 text:organization_id:FK",
+      "notes": "UNIQUE org/user; event terlambat tidak memundurkan posisi. source_event_id bukan FK wajib ke gps hot karena arsip/expiry."
+    },
+    "gps_archive": {
+      "group": "Sinkronisasi dan Android",
+      "fields": "text:id:PK text:user_id:FK text:session_id:FK text:object_key text:start_at text:end_at integer:point_count text:checksum text:state text:expires_at text:organization_id:FK",
+      "notes": "Manifest di D1, payload R2 privat. Verified count/digest/readback sebelum hapus hot; legal hold mengalahkan expiry."
+    },
+    "product_group": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:name text:code text:organization_id:FK",
+      "notes": "Kelompok produk target/KPI; kode unik per organisasi."
+    },
+    "calendar": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:branch_id:FK text:timezone text:working_days_json text:holidays_json text:organization_id:FK",
+      "notes": "Konfigurasi Management/NSM; hari kerja dipakai SLA dan cadence."
+    },
+    "work_plan": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:owner_id:FK text:period_start text:period_end text:status integer:revision_no text:organization_id:FK",
+      "notes": "Snapshot agenda; perubahan menghasilkan versi."
+    },
+    "plan_item": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:plan_id:FK text:outlet_id:FK text:assignee_id:FK text:activity_id:FK text:due_at text:status text:organization_id:FK",
+      "notes": "Snapshot denominator completion dan kapasitas."
+    },
+    "lead": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:outlet_id:FK text:owner_id:FK text:channel text:source text:status text:response_due_at text:organization_id:FK",
+      "notes": "Prospect boleh belum cocok outlet; conversion membuat link tanpa kehilangan histori."
+    },
+    "script_version": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:campaign_id:FK integer:revision_no text:content_json text:status text:organization_id:FK",
+      "notes": "Script/qualification schema versi Management."
+    },
+    "exception_case": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:owner_id:FK text:outlet_id:FK text:resource_type text:resource_id text:kind text:status text:due_at text:resolution text:organization_id:FK",
+      "notes": "Link generik diaudit; tidak menggantikan validasi izin resource."
+    },
+    "coaching_note": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:rep_id:FK text:coach_id:FK text:task_id:FK text:note text:review_at text:organization_id:FK",
+      "notes": "Coaching menurut hirarki tanpa hak ubah parameter bisnis."
+    },
+    "notification": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:user_id:FK text:trigger_key text:payload_json text:read_at text:organization_id:FK",
+      "notes": "Trigger unik per rule/version/recipient/event; quiet hours."
+    },
+    "automation_rule": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:name integer:revision_no text:rule_json text:status text:organization_id:FK",
+      "notes": "Rule terbatas tervalidasi; tidak mengeksekusi kode bebas."
+    },
+    "job": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:requested_by_id:FK text:kind text:status text:input_hash text:checkpoint_json text:result_resource_id text:organization_id:FK",
+      "notes": "Job async/import/export/calculation dengan owner, checkpoint, count dan result."
+    },
+    "import_row": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:batch_id:FK integer:row_no text:payload_json text:errors_json text:status text:organization_id:FK",
+      "notes": "Staging boleh invalid; tidak masuk fact sampai valid; payload PII dibatasi retensi."
+    },
+    "approval_policy": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:kind integer:revision_no text:rules_json text:status text:organization_id:FK",
+      "notes": "Harga/kredit/order; Management mengatur rule."
+    },
+    "approval_request": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:policy_id:FK text:order_id:FK text:submitted_by_id:FK text:decided_by_id:FK text:status text:reason text:decided_at text:organization_id:FK",
+      "notes": "Nilai dan policy disnapshot; perubahan material memerlukan approval ulang; no self approval."
+    },
+    "statement_dispute": {
+      "group": "Insentif dan audit",
+      "fields": "text:id:PK text:statement_id:FK text:submitted_by_id:FK text:resolved_by_id:FK text:reason text:resolution text:status text:organization_id:FK",
+      "notes": "Dispute terbuka menahan finalisasi; deadline policy disimpan."
+    },
+    "device_session": {
+      "group": "Organisasi dan akses",
+      "fields": "text:id:PK text:user_id:FK text:device_id text:session_token_hash text:revoked_at text:last_seen_at text:organization_id:FK",
+      "notes": "Sesi API tambahan untuk revocation per device; JWT Firebase bukan identitas device unik."
+    },
+    "idempotency_record": {
+      "group": "Operasional pendukung web",
+      "fields": "text:id:PK text:user_id:FK text:method text:path text:key text:request_hash text:response_json text:expires_at text:organization_id:FK",
+      "notes": "Unique org/user/method/path/key; payload mismatch 409; mutation+record atomic."
+    },
+    "credit_note_revision": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:credit_note_id:FK text:batch_id:FK text:source_version integer:revision_no integer:amount_minor text:status text:credit_date text:organization_id:FK",
+      "notes": "Credit correction append-only; source ID idempotent; applied amount and source net definition frozen in invoice revision."
+    },
+    "invoice_revision_credit": {
+      "group": "Transaksi invoice",
+      "fields": "text:id:PK text:invoice_revision_id:FK text:credit_revision_id:FK integer:applied_minor text:already_in_source_net text:organization_id:FK",
+      "notes": "Menyimpan credit revision yang dipakai pada invoice revision; unique pasangan; credit yang sudah termasuk net sumber tidak dikurangi lagi."
+    },
+    "admin_boundary_dataset": {
+      "group": "Wilayah administrasi",
+      "fields": "text:id:PK text:organization_id:FK text:provider text:code_namespace text:release_version text:released_at:nullable text:acquired_at text:source_reference text:source_checksum text:metadata_json text:coverage_json text:manifest_sha256 integer:expected_features integer:expected_chunks text:license_reference text:license_note text:attribution text:reviewed_by:FK text:reviewed_at text:status integer:version text:created_by:FK text:created_at",
+      "notes": "WEB-063 local migration 0035: draft -> active -> retired, immutable release metadata; at most one active release per organization. Atomic reviewed activation verifies complete canonical chunk manifest and R2 checksums. Exact release date nullable when unknown. Real source rights review pending; local implementation is not production acceptance."
+    },
+    "admin_unit": {
+      "group": "Wilayah administrasi",
+      "fields": "text:id:PK text:organization_id:FK text:parent_unit_id:FK text:code_namespace text:admin_code text:name text:level text:village_type text:status",
+      "notes": "Hierarki provinsi/kabupaten_kota/kecamatan/kelurahan_desa. parent nullable untuk root; code_namespace+admin_code unik dalam organisasi; nama bukan kunci. Perubahan identitas/kode tidak ditimpa: simpan unit penerus serta relasi mapping dalam metadata rilis."
+    },
+    "admin_boundary": {
+      "group": "Wilayah administrasi",
+      "fields": "text:id:PK text:organization_id:FK text:dataset_id:FK text:admin_unit_id:FK text:source_id text:name_snapshot text:parent_code_snapshot text:hierarchy_json text:geometry_object_key integer:geometry_feature_index text:geometry_type integer:min_longitude_e7 integer:min_latitude_e7 integer:max_longitude_e7 integer:max_latitude_e7 text:geometry_checksum",
+      "notes": "WEB-063 local: unique org/dataset/unit and org/dataset/source_id. geometry_object_key references one private R2 full FeatureCollection chunk; geometry_feature_index selects the feature. Per-geometry SHA-256, bounded bbox and release hierarchy/name snapshots; immutable. Operational matching and overlay remain WEB-064."
+    },
+    "area_admin_membership": {
+      "group": "Wilayah administrasi",
+      "fields": "text:id:PK text:organization_id:FK text:area_id:FK text:admin_unit_id:FK text:boundary_id:FK text:effective_from_date text:effective_to_date text:reason",
+      "notes": "Kelurahan/desa dapat unassigned atau milik satu area bisnis per organisasi/tanggal. Satu area mencakup beberapa kelurahan/desa. Interval [from,to), tanpa overlap. Tidak otomatis mengubah customer.area_id, izin atau owner."
+    },
+    "customer_admin_location": {
+      "group": "Wilayah administrasi",
+      "fields": "text:id:PK text:organization_id:FK text:outlet_id:FK text:admin_unit_id:FK text:boundary_id:FK text:method text:status text:evidence_json text:effective_from_date text:effective_to_date text:reviewed_by:FK text:reviewed_at text:reason int:revision text:superseded_at text:created_at",
+      "notes": "Reviewed mapping history; preview proposals are read-only. Methods coordinate/admin_code/manual. Confirmed/manual review requires a village boundary and reviewer/reason. Revisions are unique per organization/customer; same-day correction supersedes prior row, later-date correction closes interval. Unknown mapping remains unresolved; runtime stale is derived from current coordinates/status/active release. No owner or invoice rewrite."
+    },
+    "admin_boundary_chunk": {
+      "group": "Wilayah administrasi",
+      "fields": "text:organization_id:PK:FK text:dataset_id:PK:FK integer:chunk_index:PK text:checksum text:storage_key integer:feature_count integer:byte_count text:created_at",
+      "notes": "WEB-063 migration 0035 support table. Immutable contiguous canonical GeoJSON chunks indexed from 0; source in private R2. Composite PK; activation checks count, byte/source checksum and ordered checksum manifest. No public geometry URL."
+    },
+    "geo_distribution_epoch": {
+      "group": "Wilayah administrasi",
+      "fields": "text:organization_id:PK:FK integer:epoch",
+      "notes": "Implemented 0037/0038; conservative snapshot revision; preserved on restore."
+    },
+    "geo_distribution_run": {
+      "group": "Wilayah administrasi",
+      "fields": "text:id:PK text:organization_id:FK text:dataset_id:FK text:area_id:FK text:effective_from_date text:reason text:preview_hash integer:basis_epoch text:input_json text:result_json text:created_by:FK text:created_at",
+      "notes": "Immutable admin-only distribution record; compact cohort IDs/digest, mapping revisions, actual assignment IDs; no geometry."
+    },
+    "visit_generator_agent": {
+      "group": "Plan Visit Generator - runtime identity WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:name text:status text:granted_rep_ids_json integer:credential_generation integer:version text:public_key_jwk_json text:last_seen_at text:capabilities_json text:created_by text:created_at text:revoked_at",
+      "notes": "Implemented identity schema 0042. Physical constraints/FK/index/trigger authoritative in ERD_WEB070_Implementation.json. No plaintext pairing code, secret or private key stored."
+    },
+    "visit_generator_agent_event": {
+      "group": "Plan Visit Generator - runtime identity WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:agent_id text:event_kind integer:generation text:occurred_at text:details_json",
+      "notes": "Implemented identity schema 0042. Physical constraints/FK/index/trigger authoritative in ERD_WEB070_Implementation.json. No plaintext pairing code, secret or private key stored."
+    },
+    "visit_generator_agent_nonce": {
+      "group": "Plan Visit Generator - runtime identity WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:credential_id integer:generation text:kind text:value_sha256 text:target_sha256 text:created_at text:expires_at text:consumed_at",
+      "notes": "Implemented identity schema 0042. Physical constraints/FK/index/trigger authoritative in ERD_WEB070_Implementation.json. No plaintext pairing code, secret or private key stored."
+    },
+    "visit_generator_agent_operation": {
+      "group": "Plan Visit Generator - runtime identity WEB-070",
+      "fields": "text:organization_id:PK text:environment:PK text:agent_id:PK integer:generation:PK text:path:PK text:key:PK text:payload_sha256 text:response_json text:created_at text:expires_at",
+      "notes": "Implemented identity schema 0042. Physical constraints/FK/index/trigger authoritative in ERD_WEB070_Implementation.json. No plaintext pairing code, secret or private key stored."
+    },
+    "visit_generator_agent_rate": {
+      "group": "Plan Visit Generator - runtime identity WEB-070",
+      "fields": "text:scope_sha256:PK integer:bucket:PK integer:calls text:expires_at",
+      "notes": "Implemented identity schema 0042. Physical constraints/FK/index/trigger authoritative in ERD_WEB070_Implementation.json. No plaintext pairing code, secret or private key stored."
+    },
+    "visit_generator_credential": {
+      "group": "Plan Visit Generator - runtime identity WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:agent_id integer:generation text:secret_sha256 text:key_thumbprint text:expires_at text:revoked_at text:created_at",
+      "notes": "Implemented identity schema 0042. Physical constraints/FK/index/trigger authoritative in ERD_WEB070_Implementation.json. No plaintext pairing code, secret or private key stored."
+    },
+    "visit_generator_pairing": {
+      "group": "Plan Visit Generator - runtime identity WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:agent_id integer:generation text:code_sha256 text:expires_at text:consumed_at text:revoked_at text:created_by text:created_at",
+      "notes": "Implemented identity schema 0042. Physical constraints/FK/index/trigger authoritative in ERD_WEB070_Implementation.json. No plaintext pairing code, secret or private key stored."
+    },
+    "visit_generator_agenda_epoch": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:organization_id:PK integer:epoch",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_generator_artifact": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:id:PK text:organization_id text:job_id text:attempt_id text:kind integer:part_no text:status text:storage_key text:sha256 integer:byte_count text:created_at text:expires_at",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_generator_attempt": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:id:PK text:organization_id text:environment text:job_id integer:attempt_no integer:fence text:agent_id integer:credential_generation text:status text:claimed_at text:heartbeat_at text:ended_at text:failure_code",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_generator_candidate_revision": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:id:PK text:organization_id text:job_id text:attempt_id integer:revision_no text:supersedes_id text:result_manifest_json text:result_sha256 text:validation_json text:solver_outcome integer:source_epoch integer:agenda_version text:created_by text:created_at",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_generator_graph_release": {
+      "group": "Visit planning readiness - runtime WEB-070",
+      "fields": "text:id:PK text:organization_id text:name text:manifest_json text:manifest_sha256 text:status integer:version text:reason text:created_by text:created_at text:updated_at",
+      "notes": "Runtime0044. Settings/declaration/readiness only; no solver job. Physical FK/index/trigger authoritative in ERD_WEB070_Readiness_Implementation.json."
+    },
+    "visit_generator_job": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:id:PK text:organization_id text:environment text:requested_by text:policy_version_id text:graph_id text:request_json text:scope_fingerprint text:snapshot_storage_key text:snapshot_sha256 integer:snapshot_bytes integer:source_epoch integer:agenda_version text:state integer:attempt_no integer:fence integer:max_attempts integer:version text:leased_agent_id integer:leased_generation text:lease_until text:result_sha256 text:failure_code text:created_at text:expires_at",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_generator_plan_link": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:organization_id:PK text:batch_id:PK text:publish_item_id:PK text:work_plan_id text:created_at",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_generator_policy_version": {
+      "group": "Visit planning readiness - runtime WEB-070",
+      "fields": "text:id:PK text:organization_id integer:revision_no text:name text:config_json text:config_sha256 text:status integer:version text:reason text:created_by text:created_at text:updated_at text:activated_by text:activated_at",
+      "notes": "Runtime0044. Settings/declaration/readiness only; no solver job. Physical FK/index/trigger authoritative in ERD_WEB070_Readiness_Implementation.json."
+    },
+    "visit_generator_publish_batch": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:id:PK text:organization_id text:candidate_revision_id text:status integer:expected_source_epoch integer:expected_agenda_version text:review_sha256 integer:expected_items integer:version text:reason text:reviewed_by text:created_at text:expires_at text:activated_at",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_generator_publish_item": {
+      "group": "Plan Visit Generator - design only WEB-069",
+      "fields": "text:id:PK text:organization_id text:batch_id text:occurrence_id text:action text:existing_work_plan_id integer:expected_work_plan_version text:new_work_plan_id text:rep_id text:customer_id text:scheduled_at text:row_json text:row_sha256",
+      "notes": "DESIGN ONLY: not a runtime table. Source ERD_WEB069_Design.json; remaining job/graph/lease/solver/publish migrations are pending."
+    },
+    "visit_agent_queue_attempt": {
+      "group": "Agent delivery queue - runtime diagnostic WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:job_id integer:attempt_no integer:fence text:credential_id integer:generation text:status text:claimed_at text:heartbeat_at text:ended_at text:failure_code",
+      "notes": "Implemented migration 0043. connection_probe only; planning snapshot/graph/solver/publish pending. Physical FK/index/trigger authoritative in ERD_WEB070_Queue_Implementation.json."
+    },
+    "visit_agent_queue_event": {
+      "group": "Agent delivery queue - runtime diagnostic WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:job_id integer:job_version text:event_code text:actor_kind text:actor_id text:details_json text:created_at",
+      "notes": "Implemented migration 0043. connection_probe only; planning snapshot/graph/solver/publish pending. Physical FK/index/trigger authoritative in ERD_WEB070_Queue_Implementation.json."
+    },
+    "visit_agent_queue_job": {
+      "group": "Agent delivery queue - runtime diagnostic WEB-070",
+      "fields": "text:id:PK text:organization_id text:environment text:target_agent_id integer:target_generation text:kind text:requested_by text:rep_ids_json text:payload_json text:payload_sha256 text:state integer:version integer:attempt_no integer:fence text:lease_credential_id text:lease_until text:checkpoint_code text:failure_code text:result_sha256 text:created_at text:expires_at text:ended_at",
+      "notes": "Implemented migration 0043. connection_probe only; planning snapshot/graph/solver/publish pending. Physical FK/index/trigger authoritative in ERD_WEB070_Queue_Implementation.json."
+    },
+    "visit_planning_revision": {
+      "group": "Visit planning readiness - runtime WEB-070",
+      "fields": "text:organization_id:PK integer:source_epoch integer:agenda_epoch",
+      "notes": "Runtime0044. Settings/declaration/readiness only; no solver job. Physical FK/index/trigger authoritative in ERD_WEB070_Readiness_Implementation.json."
+    },
+    "visit_planning_preflight": {
+      "group": "Visit planning readiness - runtime WEB-070",
+      "fields": "text:id:PK text:organization_id text:policy_version_id text:graph_id text:actor_id text:input_json integer:source_epoch integer:agenda_epoch text:business_date text:storage_key text:snapshot_sha256 integer:byte_count integer:customer_count integer:blocking_count text:created_at",
+      "notes": "Runtime0044. Settings/declaration/readiness only; no solver job. Physical FK/index/trigger authoritative in ERD_WEB070_Readiness_Implementation.json."
+    }
+  },
+  "relations": [
+    {
+      "parent": "branch",
+      "child": "area",
+      "fk": "branch_id",
+      "optional": false,
+      "label": "branch_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "user_role",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "role",
+      "child": "user_role",
+      "fk": "role_id",
+      "optional": false,
+      "label": "role_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "user_scope",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "area",
+      "child": "user_scope",
+      "fk": "area_id",
+      "optional": true,
+      "label": "area_id"
+    },
+    {
+      "parent": "branch",
+      "child": "user_scope",
+      "fk": "branch_id",
+      "optional": true,
+      "label": "branch_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "reporting_assignment",
+      "fk": "subordinate_id",
+      "optional": false,
+      "label": "subordinate_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "reporting_assignment",
+      "fk": "manager_id",
+      "optional": false,
+      "label": "manager_id"
+    },
+    {
+      "parent": "area",
+      "child": "reporting_assignment",
+      "fk": "area_id",
+      "optional": true,
+      "label": "area_id"
+    },
+    {
+      "parent": "area",
+      "child": "customer_outlet",
+      "fk": "area_id",
+      "optional": false,
+      "label": "area_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "contact",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "customer_assignment",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "customer_assignment",
+      "fk": "rep_id",
+      "optional": false,
+      "label": "rep_id"
+    },
+    {
+      "parent": "area",
+      "child": "customer_assignment",
+      "fk": "area_id",
+      "optional": false,
+      "label": "area_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "customer_status_snapshot",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "segmentation_rule",
+      "child": "customer_status_snapshot",
+      "fk": "rule_id",
+      "optional": true,
+      "label": "rule_id"
+    },
+    {
+      "parent": "contact",
+      "child": "contact_preference",
+      "fk": "contact_id",
+      "optional": false,
+      "label": "contact_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "work_session",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "activity",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "activity",
+      "fk": "actor_id",
+      "optional": false,
+      "label": "actor_id"
+    },
+    {
+      "parent": "work_session",
+      "child": "activity",
+      "fk": "session_id",
+      "optional": true,
+      "label": "session_id"
+    },
+    {
+      "parent": "activity",
+      "child": "visit",
+      "fk": "activity_id",
+      "optional": false,
+      "label": "activity_id"
+    },
+    {
+      "parent": "activity",
+      "child": "call_attempt",
+      "fk": "activity_id",
+      "optional": false,
+      "label": "activity_id"
+    },
+    {
+      "parent": "contact",
+      "child": "call_attempt",
+      "fk": "contact_id",
+      "optional": true,
+      "label": "contact_id"
+    },
+    {
+      "parent": "campaign",
+      "child": "queue_item",
+      "fk": "campaign_id",
+      "optional": false,
+      "label": "campaign_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "queue_item",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "queue_item",
+      "fk": "leased_by_id",
+      "optional": true,
+      "label": "leased_by_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "task",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "task",
+      "fk": "assignee_id",
+      "optional": false,
+      "label": "assignee_id"
+    },
+    {
+      "parent": "activity",
+      "child": "task",
+      "fk": "activity_id",
+      "optional": true,
+      "label": "activity_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "handoff",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "handoff",
+      "fk": "sender_id",
+      "optional": false,
+      "label": "sender_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "handoff",
+      "fk": "recipient_id",
+      "optional": false,
+      "label": "recipient_id"
+    },
+    {
+      "parent": "task",
+      "child": "handoff",
+      "fk": "task_id",
+      "optional": true,
+      "label": "task_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "opportunity",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "opportunity",
+      "fk": "owner_id",
+      "optional": false,
+      "label": "owner_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "sales_order",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "sales_order",
+      "fk": "rep_id",
+      "optional": false,
+      "label": "rep_id"
+    },
+    {
+      "parent": "sales_order",
+      "child": "order_line",
+      "fk": "order_id",
+      "optional": false,
+      "label": "order_id"
+    },
+    {
+      "parent": "product",
+      "child": "order_line",
+      "fk": "product_id",
+      "optional": false,
+      "label": "product_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "invoice",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "import_batch",
+      "child": "invoice",
+      "fk": "batch_id",
+      "optional": false,
+      "label": "batch_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "invoice",
+      "fk": "rep_id",
+      "optional": true,
+      "label": "rep_id"
+    },
+    {
+      "parent": "customer_assignment",
+      "child": "invoice",
+      "fk": "assignment_id",
+      "optional": true,
+      "label": "assignment_id"
+    },
+    {
+      "parent": "invoice",
+      "child": "invoice_revision",
+      "fk": "invoice_id",
+      "optional": false,
+      "label": "invoice_id"
+    },
+    {
+      "parent": "import_batch",
+      "child": "invoice_revision",
+      "fk": "batch_id",
+      "optional": false,
+      "label": "batch_id"
+    },
+    {
+      "parent": "invoice_revision",
+      "child": "invoice_line",
+      "fk": "invoice_revision_id",
+      "optional": false,
+      "label": "invoice_revision_id"
+    },
+    {
+      "parent": "product",
+      "child": "invoice_line",
+      "fk": "product_id",
+      "optional": true,
+      "label": "product_id"
+    },
+    {
+      "parent": "invoice",
+      "child": "credit_note",
+      "fk": "invoice_id",
+      "optional": false,
+      "label": "invoice_id"
+    },
+    {
+      "parent": "import_batch",
+      "child": "credit_note",
+      "fk": "batch_id",
+      "optional": false,
+      "label": "batch_id"
+    },
+    {
+      "parent": "order_line",
+      "child": "order_invoice_link",
+      "fk": "order_line_id",
+      "optional": false,
+      "label": "order_line_id"
+    },
+    {
+      "parent": "invoice_line",
+      "child": "order_invoice_link",
+      "fk": "invoice_line_id",
+      "optional": false,
+      "label": "invoice_line_id"
+    },
+    {
+      "parent": "target_plan",
+      "child": "target_version",
+      "fk": "plan_id",
+      "optional": false,
+      "label": "plan_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "target_version",
+      "fk": "approved_by_id",
+      "optional": true,
+      "label": "approved_by_id"
+    },
+    {
+      "parent": "target_version",
+      "child": "target_item",
+      "fk": "target_version_id",
+      "optional": false,
+      "label": "target_version_id"
+    },
+    {
+      "parent": "target_item",
+      "child": "target_item",
+      "fk": "parent_item_id",
+      "optional": true,
+      "label": "parent_item_id"
+    },
+    {
+      "parent": "area",
+      "child": "target_item",
+      "fk": "area_id",
+      "optional": true,
+      "label": "area_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "target_item",
+      "fk": "user_id",
+      "optional": true,
+      "label": "user_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "target_item",
+      "fk": "outlet_id",
+      "optional": true,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "product",
+      "child": "target_item",
+      "fk": "product_id",
+      "optional": true,
+      "label": "product_id"
+    },
+    {
+      "parent": "target_version",
+      "child": "target_allocation",
+      "fk": "target_version_id",
+      "optional": false,
+      "label": "target_version_id"
+    },
+    {
+      "parent": "target_item",
+      "child": "target_allocation",
+      "fk": "parent_item_id",
+      "optional": false,
+      "label": "parent_item_id"
+    },
+    {
+      "parent": "target_item",
+      "child": "target_allocation",
+      "fk": "child_item_id",
+      "optional": false,
+      "label": "child_item_id"
+    },
+    {
+      "parent": "target_item",
+      "child": "forecast_contribution",
+      "fk": "target_item_id",
+      "optional": false,
+      "label": "target_item_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "forecast_contribution",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "opportunity",
+      "child": "forecast_contribution",
+      "fk": "opportunity_id",
+      "optional": true,
+      "label": "opportunity_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "forecast_contribution",
+      "fk": "owner_id",
+      "optional": false,
+      "label": "owner_id"
+    },
+    {
+      "parent": "forecast_contribution",
+      "child": "forecast_realization",
+      "fk": "contribution_id",
+      "optional": false,
+      "label": "contribution_id"
+    },
+    {
+      "parent": "invoice_revision",
+      "child": "forecast_realization",
+      "fk": "invoice_revision_id",
+      "optional": false,
+      "label": "invoice_revision_id"
+    },
+    {
+      "parent": "target_version",
+      "child": "forecast_snapshot",
+      "fk": "target_version_id",
+      "optional": false,
+      "label": "target_version_id"
+    },
+    {
+      "parent": "forecast_snapshot",
+      "child": "forecast_snapshot_item",
+      "fk": "snapshot_id",
+      "optional": false,
+      "label": "snapshot_id"
+    },
+    {
+      "parent": "forecast_contribution",
+      "child": "forecast_snapshot_item",
+      "fk": "contribution_id",
+      "optional": false,
+      "label": "contribution_id"
+    },
+    {
+      "parent": "role",
+      "child": "incentive_plan",
+      "fk": "role_id",
+      "optional": false,
+      "label": "role_id"
+    },
+    {
+      "parent": "incentive_plan",
+      "child": "incentive_plan_version",
+      "fk": "plan_id",
+      "optional": false,
+      "label": "plan_id"
+    },
+    {
+      "parent": "incentive_plan_version",
+      "child": "incentive_tier",
+      "fk": "plan_version_id",
+      "optional": false,
+      "label": "plan_version_id"
+    },
+    {
+      "parent": "incentive_plan_version",
+      "child": "incentive_enrollment",
+      "fk": "plan_version_id",
+      "optional": false,
+      "label": "plan_version_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "incentive_enrollment",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "target_item",
+      "child": "incentive_enrollment",
+      "fk": "target_item_id",
+      "optional": false,
+      "label": "target_item_id"
+    },
+    {
+      "parent": "incentive_plan_version",
+      "child": "calculation_run",
+      "fk": "plan_version_id",
+      "optional": false,
+      "label": "plan_version_id"
+    },
+    {
+      "parent": "target_version",
+      "child": "calculation_run",
+      "fk": "target_version_id",
+      "optional": false,
+      "label": "target_version_id"
+    },
+    {
+      "parent": "calculation_run",
+      "child": "incentive_statement",
+      "fk": "run_id",
+      "optional": false,
+      "label": "run_id"
+    },
+    {
+      "parent": "incentive_enrollment",
+      "child": "incentive_statement",
+      "fk": "enrollment_id",
+      "optional": false,
+      "label": "enrollment_id"
+    },
+    {
+      "parent": "incentive_statement",
+      "child": "incentive_statement",
+      "fk": "previous_statement_id",
+      "optional": true,
+      "label": "previous_statement_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "incentive_statement",
+      "fk": "finalized_by_id",
+      "optional": true,
+      "label": "finalized_by_id"
+    },
+    {
+      "parent": "incentive_statement",
+      "child": "statement_source",
+      "fk": "statement_id",
+      "optional": false,
+      "label": "statement_id"
+    },
+    {
+      "parent": "invoice_revision",
+      "child": "statement_source",
+      "fk": "invoice_revision_id",
+      "optional": false,
+      "label": "invoice_revision_id"
+    },
+    {
+      "parent": "incentive_statement",
+      "child": "statement_component",
+      "fk": "statement_id",
+      "optional": false,
+      "label": "statement_id"
+    },
+    {
+      "parent": "incentive_tier",
+      "child": "statement_component",
+      "fk": "tier_id",
+      "optional": true,
+      "label": "tier_id"
+    },
+    {
+      "parent": "incentive_statement",
+      "child": "incentive_adjustment",
+      "fk": "original_statement_id",
+      "optional": false,
+      "label": "original_statement_id"
+    },
+    {
+      "parent": "incentive_statement",
+      "child": "incentive_adjustment",
+      "fk": "revised_statement_id",
+      "optional": false,
+      "label": "revised_statement_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "export_batch",
+      "fk": "created_by_id",
+      "optional": false,
+      "label": "created_by_id"
+    },
+    {
+      "parent": "export_batch",
+      "child": "export_item",
+      "fk": "batch_id",
+      "optional": false,
+      "label": "batch_id"
+    },
+    {
+      "parent": "incentive_statement",
+      "child": "export_item",
+      "fk": "statement_id",
+      "optional": false,
+      "label": "statement_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "audit_event",
+      "fk": "actor_id",
+      "optional": true,
+      "label": "actor_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "sync_event",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "work_session",
+      "child": "sync_event",
+      "fk": "session_id",
+      "optional": true,
+      "label": "session_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "attachment",
+      "fk": "uploaded_by_id",
+      "optional": false,
+      "label": "uploaded_by_id"
+    },
+    {
+      "parent": "activity",
+      "child": "activity_attachment",
+      "fk": "activity_id",
+      "optional": false,
+      "label": "activity_id"
+    },
+    {
+      "parent": "attachment",
+      "child": "activity_attachment",
+      "fk": "attachment_id",
+      "optional": false,
+      "label": "attachment_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "gps_sample",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "work_session",
+      "child": "gps_sample",
+      "fk": "session_id",
+      "optional": false,
+      "label": "session_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "last_position",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "work_session",
+      "child": "last_position",
+      "fk": "session_id",
+      "optional": true,
+      "label": "session_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "gps_archive",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "work_session",
+      "child": "gps_archive",
+      "fk": "session_id",
+      "optional": false,
+      "label": "session_id"
+    },
+    {
+      "parent": "product_group",
+      "child": "product",
+      "fk": "product_group_id",
+      "optional": true,
+      "label": "product_group_id"
+    },
+    {
+      "parent": "product_group",
+      "child": "target_item",
+      "fk": "product_group_id",
+      "optional": true,
+      "label": "product_group_id"
+    },
+    {
+      "parent": "branch",
+      "child": "calendar",
+      "fk": "branch_id",
+      "optional": false,
+      "label": "branch_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "work_plan",
+      "fk": "owner_id",
+      "optional": false,
+      "label": "owner_id"
+    },
+    {
+      "parent": "work_plan",
+      "child": "plan_item",
+      "fk": "plan_id",
+      "optional": false,
+      "label": "plan_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "plan_item",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "plan_item",
+      "fk": "assignee_id",
+      "optional": false,
+      "label": "assignee_id"
+    },
+    {
+      "parent": "activity",
+      "child": "plan_item",
+      "fk": "activity_id",
+      "optional": true,
+      "label": "activity_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "lead",
+      "fk": "outlet_id",
+      "optional": true,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "lead",
+      "fk": "owner_id",
+      "optional": false,
+      "label": "owner_id"
+    },
+    {
+      "parent": "lead",
+      "child": "opportunity",
+      "fk": "lead_id",
+      "optional": true,
+      "label": "lead_id"
+    },
+    {
+      "parent": "campaign",
+      "child": "script_version",
+      "fk": "campaign_id",
+      "optional": false,
+      "label": "campaign_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "exception_case",
+      "fk": "owner_id",
+      "optional": false,
+      "label": "owner_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "exception_case",
+      "fk": "outlet_id",
+      "optional": true,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "coaching_note",
+      "fk": "rep_id",
+      "optional": false,
+      "label": "rep_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "coaching_note",
+      "fk": "coach_id",
+      "optional": false,
+      "label": "coach_id"
+    },
+    {
+      "parent": "task",
+      "child": "coaching_note",
+      "fk": "task_id",
+      "optional": true,
+      "label": "task_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "notification",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "job",
+      "fk": "requested_by_id",
+      "optional": true,
+      "label": "requested_by_id"
+    },
+    {
+      "parent": "import_batch",
+      "child": "import_row",
+      "fk": "batch_id",
+      "optional": false,
+      "label": "batch_id"
+    },
+    {
+      "parent": "approval_policy",
+      "child": "approval_request",
+      "fk": "policy_id",
+      "optional": false,
+      "label": "policy_id"
+    },
+    {
+      "parent": "sales_order",
+      "child": "approval_request",
+      "fk": "order_id",
+      "optional": false,
+      "label": "order_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "approval_request",
+      "fk": "submitted_by_id",
+      "optional": false,
+      "label": "submitted_by_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "approval_request",
+      "fk": "decided_by_id",
+      "optional": true,
+      "label": "decided_by_id"
+    },
+    {
+      "parent": "incentive_statement",
+      "child": "statement_dispute",
+      "fk": "statement_id",
+      "optional": false,
+      "label": "statement_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "statement_dispute",
+      "fk": "submitted_by_id",
+      "optional": false,
+      "label": "submitted_by_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "statement_dispute",
+      "fk": "resolved_by_id",
+      "optional": true,
+      "label": "resolved_by_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "device_session",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "idempotency_record",
+      "fk": "user_id",
+      "optional": false,
+      "label": "user_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "invoice_revision",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "invoice_revision",
+      "fk": "rep_id",
+      "optional": true,
+      "label": "rep_id"
+    },
+    {
+      "parent": "customer_assignment",
+      "child": "invoice_revision",
+      "fk": "assignment_id",
+      "optional": true,
+      "label": "assignment_id"
+    },
+    {
+      "parent": "area",
+      "child": "invoice_revision",
+      "fk": "area_id",
+      "optional": true,
+      "label": "area_id"
+    },
+    {
+      "parent": "credit_note",
+      "child": "credit_note_revision",
+      "fk": "credit_note_id",
+      "optional": false,
+      "label": "credit_note_id"
+    },
+    {
+      "parent": "import_batch",
+      "child": "credit_note_revision",
+      "fk": "batch_id",
+      "optional": false,
+      "label": "batch_id"
+    },
+    {
+      "parent": "invoice_revision",
+      "child": "invoice_revision_credit",
+      "fk": "invoice_revision_id",
+      "optional": false,
+      "label": "invoice_revision_id"
+    },
+    {
+      "parent": "credit_note_revision",
+      "child": "invoice_revision_credit",
+      "fk": "credit_revision_id",
+      "optional": false,
+      "label": "credit_revision_id"
+    },
+    {
+      "parent": "organization",
+      "child": "branch",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "area",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "app_user",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "role",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "user_role",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "user_scope",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "reporting_assignment",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "customer_outlet",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "contact",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "customer_assignment",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "segmentation_rule",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "customer_status_snapshot",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "contact_preference",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "work_session",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "activity",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "visit",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "call_attempt",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "campaign",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "queue_item",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "task",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "handoff",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "opportunity",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "product",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "import_batch",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "sales_order",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "order_line",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "invoice",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "invoice_revision",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "invoice_line",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "credit_note",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "order_invoice_link",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "target_plan",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "target_version",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "target_item",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "target_allocation",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "forecast_contribution",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "forecast_realization",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "forecast_snapshot",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "forecast_snapshot_item",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "incentive_plan",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "incentive_plan_version",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "incentive_tier",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "incentive_enrollment",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "calculation_run",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "incentive_statement",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "statement_source",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "statement_component",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "incentive_adjustment",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "export_batch",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "export_item",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "audit_event",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "sync_event",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "integration_outbox",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "attachment",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "activity_attachment",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "gps_sample",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "last_position",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "gps_archive",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "product_group",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "calendar",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "work_plan",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "plan_item",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "lead",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "script_version",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "exception_case",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "coaching_note",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "notification",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "automation_rule",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "job",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "import_row",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "approval_policy",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "approval_request",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "statement_dispute",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "device_session",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "idempotency_record",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "credit_note_revision",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "invoice_revision_credit",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "admin_unit",
+      "child": "admin_unit",
+      "fk": "parent_unit_id",
+      "optional": true,
+      "label": "parent_unit_id"
+    },
+    {
+      "parent": "admin_boundary_dataset",
+      "child": "admin_boundary",
+      "fk": "dataset_id",
+      "optional": false,
+      "label": "dataset_id"
+    },
+    {
+      "parent": "admin_unit",
+      "child": "admin_boundary",
+      "fk": "admin_unit_id",
+      "optional": false,
+      "label": "admin_unit_id"
+    },
+    {
+      "parent": "area",
+      "child": "area_admin_membership",
+      "fk": "area_id",
+      "optional": false,
+      "label": "area_id"
+    },
+    {
+      "parent": "admin_unit",
+      "child": "area_admin_membership",
+      "fk": "admin_unit_id",
+      "optional": false,
+      "label": "admin_unit_id"
+    },
+    {
+      "parent": "admin_boundary",
+      "child": "area_admin_membership",
+      "fk": "boundary_id",
+      "optional": false,
+      "label": "boundary_id"
+    },
+    {
+      "parent": "customer_outlet",
+      "child": "customer_admin_location",
+      "fk": "outlet_id",
+      "optional": false,
+      "label": "outlet_id"
+    },
+    {
+      "parent": "admin_unit",
+      "child": "customer_admin_location",
+      "fk": "admin_unit_id",
+      "optional": true,
+      "label": "admin_unit_id"
+    },
+    {
+      "parent": "admin_boundary",
+      "child": "customer_admin_location",
+      "fk": "boundary_id",
+      "optional": true,
+      "label": "boundary_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "customer_admin_location",
+      "fk": "reviewed_by",
+      "optional": true,
+      "label": "reviewed_by"
+    },
+    {
+      "parent": "organization",
+      "child": "admin_boundary_dataset",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "admin_unit",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "admin_boundary",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "area_admin_membership",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "customer_admin_location",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "admin_boundary_dataset",
+      "child": "admin_boundary_chunk",
+      "fk": "dataset_id",
+      "optional": false,
+      "label": "dataset_id"
+    },
+    {
+      "parent": "organization",
+      "child": "admin_boundary_chunk",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "admin_boundary_dataset",
+      "fk": "created_by",
+      "optional": false,
+      "label": "created_by"
+    },
+    {
+      "parent": "app_user",
+      "child": "admin_boundary_dataset",
+      "fk": "reviewed_by",
+      "optional": true,
+      "label": "reviewed_by"
+    },
+    {
+      "parent": "organization",
+      "child": "geo_distribution_epoch",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "organization",
+      "child": "geo_distribution_run",
+      "fk": "organization_id",
+      "optional": false,
+      "label": "organization_id"
+    },
+    {
+      "parent": "admin_boundary_dataset",
+      "child": "geo_distribution_run",
+      "fk": "dataset_id",
+      "optional": false,
+      "label": "dataset_id"
+    },
+    {
+      "parent": "area",
+      "child": "geo_distribution_run",
+      "fk": "area_id",
+      "optional": false,
+      "label": "area_id"
+    },
+    {
+      "parent": "app_user",
+      "child": "geo_distribution_run",
+      "fk": "created_by",
+      "optional": false,
+      "label": "created_by"
+    }
+  ],
+  "version": "1.2",
+  "baseline": "PRD v1.10",
+  "common_fields": [
+    "created_at",
+    "updated_at",
+    "created_by",
+    "version"
+  ],
+  "constraints": [
+    "All FK composite organization_id+id; cross-tenant rejected.",
+    "Unique source invoice+source_version, credit+source_version.",
+    "Immutable revision and final snapshots; temporal overlap and cycle checks on mutations.",
+    "target_version matches target_item; contribution realization latest selects one revision per source.",
+    "User scope enforced by backend, not only ERD.",
+    "Target date interval and product/group dimensions validated, no overlapping rollup.",
+    "GEO-01–08: kelurahan/desa basis pembagian awal; satu unit administrasi memiliki maksimal satu area aktif per organisasi/tanggal, tanpa overlap [from,to).",
+    "GEO-02: dataset/rilis dan checksum geometry immutable setelah aktif; code namespace eksplisit dan nama wilayah bukan identitas.",
+    "GEO-03/07: maksimal satu customer_admin_location confirmed aktif per outlet/tanggal; ambiguity/outside/missing tidak otomatis confirmed; admin_unit_id/boundary_id nullable untuk unresolved/manual.",
+    "GEO-04/05: pemetaan geografi tidak mengubah scope/owner; assignment massal memakai preview, commit terotorisasi Management/NSM, validasi role/area/SPV, ETag/idempotency dan histori invoice tetap."
+  ],
+  "architecture_decision": "Keputusan 18 Oktober 2026: pelanggan/toko adalah entitas utama, satu pelanggan = satu lokasi. Lapisan Account bisnis/legal dihapus dari schema aktif, UI, API dan import. Kontak, assignment kanal, transaksi, target dan histori mengacu langsung ke pelanggan. Kode ERP opsional pada input manual, wajib dan unik dalam organisasi untuk import pelanggan. Pengaturan tetap hanya Management/NSM. Istilah account untuk identitas login, kuota provider atau Android developer tidak berarti entitas pelanggan.\n\nMigrasi lokal 0017 menyimpan master dan relasi Account lama sebagai snapshot audit, menghapus tabel account/kolom account_id, dan mewajibkan validasi ulang batch import pelanggan lama. Dokumen ini menggantikan baseline sebelumnya untuk arsitektur pelanggan; status produksi tetap terpisah.\n",
+  "administrative_boundary_addendum": {
+    "date": "2026-10-22",
+    "specification": "GIS_Admin_Kelurahan_v1.md",
+    "decision": "Kelurahan/desa sebagai dasar pembagian awal area dan sales",
+    "implementation_status": "WEB-063/064/065 implemented local; source activation pending",
+    "backlog": [
+      "WEB-063",
+      "WEB-064",
+      "WEB-065"
+    ],
+    "selected_source": {
+      "name": "Batas wilayah administrasi desa/kelurahan Indonesia",
+      "layer": "ADMINISTRASI_DESAKELURAHAN_AR",
+      "publisher": "Geoportal Kementerian Pertanian",
+      "data_origin": "BIG menurut metadata layer",
+      "reference_release": "Semester 1 Tahun 2025, sesuai metadata yang diperiksa 22 Oktober 2026",
+      "url": "https://geoportal.pertanian.go.id/arcgis/rest/services/Hosted/Batas_Administrasi_Desa/FeatureServer/0",
+      "planned_format": "GeoJSON Polygon/MultiPolygon WGS84",
+      "planned_filename": "batas-desa-kelurahan-indonesia-big-2025-s1.geojson",
+      "selection_status": "Six-village bounded extract imported as local draft; national file not downloaded",
+      "license_status": "Verify usage terms and attribution before activation",
+      "acquired_at": null,
+      "sha256": null
+    }
+  },
+  "gis_analytics_followup": {
+    "date": "2026-10-22",
+    "specification": "GIS_UX_dan_Analitik_v1.md",
+    "backlog": [
+      "WEB-066",
+      "WEB-067",
+      "WEB-068"
+    ],
+    "status": "WEB-066 implemented local; WEB-067/068 Planned",
+    "model_design_required": [
+      "WEB-066: geography/target allocation basis, definition version and reconciliation",
+      "WEB-067: versioned risk policies and evidence/snapshot model",
+      "WEB-068: scenario input versions, assumptions/cutoff and reviewable before/after results"
+    ],
+    "note": "Data model and API design are deliverables before implementation; existing segmentation/target tables must not be reused with incompatible semantics."
+  },
+  "web063_implementation": {
+    "date": "2026-10-23",
+    "migration": "0035_administrative_boundaries.sql",
+    "implementation_schema": "docs/specifications/ERD_WEB063_Implementation.json",
+    "contract": "docs/specifications/admin-boundaries-api.m4.openapi.json",
+    "implemented_local_tables": [
+      "admin_boundary_dataset",
+      "admin_boundary_chunk",
+      "admin_unit",
+      "admin_boundary",
+      "area_admin_membership",
+      "customer_admin_location"
+    ],
+    "runtime_writes": "dataset/chunk/boundary/unit only; mapping and area membership API deferred to WEB-064/065",
+    "source_activation": "pending usage-rights/namespace/metadata review; technical extract remains draft",
+    "production_accepted": false
+  },
+  "web064_implementation": {
+    "date": "2026-10-24",
+    "migration": "0036_customer_geography_review.sql",
+    "implementation_schema": "docs/specifications/ERD_WEB064_Implementation.json",
+    "contract": "docs/specifications/geography-api.m4.openapi.json",
+    "runtime_writes": "Management/NSM reviewed customer mapping revisions only; current effective date, ETag/hash/idempotency/audit; area membership still WEB-065",
+    "source_activation": "Real-source six-village extract remains draft",
+    "production_accepted": false
+  },
+  "web065_implementation": {
+    "date": "2026-10-24",
+    "migrations": [
+      "0037_geography_distribution.sql",
+      "0038_distribution_org_clock.sql"
+    ],
+    "implementation_schema": "docs/specifications/ERD_WEB065_Implementation.json",
+    "contract": "docs/specifications/distribution-api.m4.openapi.json",
+    "runtime_writes": "Management/NSM dated membership plus explicitly reviewed customer assignments; epoch/hash/ETag/idempotency/audit; no historic fact rewrite",
+    "production_accepted": false
+  },
+  "web066_implementation": {
+    "date": "2026-10-24",
+    "migration": "0039_geography_analytics_revision.sql",
+    "new_tables": [],
+    "implementation_schema": "docs/specifications/ERD_WEB066_Implementation.json",
+    "contract": "docs/specifications/regional-analytics-api.m4.openapi.json",
+    "definition_version": "nyales-geo-kpi-1",
+    "geography_basis": "current_confirmed_mapping_at_read_cutoff",
+    "runtime_writes": "Analytics read-only; 15 input revision triggers; logical backup schema 0039. No historic fact rewrite or persisted regional report.",
+    "production_accepted": false
+  },
+  "web067_implementation": {
+    "migration": "0040_customer_risk_policy_runs.sql",
+    "physical_model": "docs/specifications/ERD_WEB067_Implementation.json",
+    "tables": [
+      "customer_risk_policy_version",
+      "customer_risk_run"
+    ],
+    "payload": "private R2 nyales-customer-risk-v1",
+    "status": "Implemented local; no implicit business policy; production acceptance pending"
+  },
+  "web068_implementation": {
+    "status": "Implemented and verified local; real-source/provider/human acceptance pending",
+    "migration": "0041_workload_scenarios.sql",
+    "physical_model": "docs/specifications/ERD_WEB068_Implementation.json",
+    "tables": [
+      "workload_policy_version",
+      "territory_scenario",
+      "territory_scenario_revision",
+      "territory_scenario_application"
+    ],
+    "snapshot_storage": "private R2 nyales-territory-scenario-v1; metadata/checksum/relations in D1",
+    "contract": "docs/specifications/workload-scenarios-api.m4.openapi.json",
+    "application": "one reviewed atomic WEB-065 batch then explicit revalidation/revision of remaining batches",
+    "production_accepted": false
+  },
+  "web069_design": {
+    "status": "Historical 14-table design baseline; not applied wholesale. Identity subset superseded by runtime migration 0042; job/graph/solver/publish remain design.",
+    "physical_design": "docs/specifications/ERD_WEB069_Design.json",
+    "draft_sql": "docs/specifications/sql/WEB069_Visit_Generator_DRAFT.sql",
+    "design_tables": 14,
+    "design_api": "docs/specifications/visit-generator.design.openapi.json",
+    "registered_operations": 0,
+    "production_accepted": false,
+    "current_identity_contract": "visit-agent-identity.m4.openapi.json"
+  },
+  "web070_implementation": {
+    "date": "2026-10-25",
+    "status": "In progress - identity registry/pairing/Windows vault/heartbeat/revoke implemented and locally verified; queue and OSRM runtime pending",
+    "migration": "0042_visit_agent_identity.sql",
+    "physical_model": "docs/specifications/ERD_WEB070_Implementation.json",
+    "runbook": "docs/WEB070_AGENT_IDENTITY.md",
+    "evidence": "docs/WEB070_PROGRESS.json",
+    "contract": "docs/specifications/visit-agent-identity.m4.openapi.json",
+    "tables": [
+      "visit_generator_agent",
+      "visit_generator_agent_event",
+      "visit_generator_agent_nonce",
+      "visit_generator_agent_operation",
+      "visit_generator_agent_rate",
+      "visit_generator_credential",
+      "visit_generator_pairing"
+    ],
+    "runtime_operations": 285,
+    "new_operations": 9,
+    "production_accepted": false,
+    "cloud_deployed": false
+  },
+  "web070_queue_implementation": {
+    "date": "2026-10-25",
+    "migration": "0043_visit_agent_queue.sql",
+    "physical_model": "docs/specifications/ERD_WEB070_Queue_Implementation.json",
+    "tables": [
+      "visit_agent_queue_attempt",
+      "visit_agent_queue_event",
+      "visit_agent_queue_job"
+    ],
+    "contract": "docs/specifications/visit-agent-queue.m4.openapi.json",
+    "kind": "connection_probe_only",
+    "planning_job_runtime": false,
+    "cloud_deployed": false,
+    "production_accepted": false
+  },
+  "web070_readiness_implementation": {
+    "migration": "0044_visit_planning_readiness.sql",
+    "physical_model": "docs/specifications/ERD_WEB070_Readiness_Implementation.json",
+    "contract": "docs/specifications/visit-planning-readiness.m4.openapi.json",
+    "tables": [
+      "visit_generator_policy_version",
+      "visit_generator_graph_release",
+      "visit_planning_revision",
+      "visit_planning_preflight"
+    ],
+    "snapshot_format": "nyales-visit-readiness-1",
+    "planning_job_runtime": false
+  }
+}

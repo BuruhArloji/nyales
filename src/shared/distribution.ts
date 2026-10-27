@@ -1,0 +1,7 @@
+import {z} from 'zod';
+const id=z.string().min(1).max(128),ids=(n:number)=>z.array(id).min(1).max(n).refine(a=>new Set(a).size===a.length,'Duplicate IDs');
+const fields={dataset_id:id,boundary_ids:ids(50),area_id:id,effective_from_date:z.iso.date(),reason:z.string().trim().min(8).max(500),assignment_mode:z.enum(['none','field','telesales','both']),field_rep_id:id.nullable(),telesales_rep_id:id.nullable(),customer_ids:z.array(id).max(25).refine(a=>new Set(a).size===a.length,'Duplicate IDs').optional(),exception_customer_ids:z.array(id).max(25).refine(a=>new Set(a).size===a.length,'Duplicate IDs').optional(),exception_reason:z.string().trim().min(8).max(500).optional()};
+const rules=(v:any)=>{if(v.assignment_mode==='none'&&(v.field_rep_id||v.telesales_rep_id||v.customer_ids||v.exception_customer_ids))return false;if(v.assignment_mode==='field'&&v.telesales_rep_id||v.assignment_mode==='telesales'&&v.field_rep_id)return false;return Boolean(v.exception_customer_ids)===Boolean(v.exception_reason)};
+export const distributionInput=z.object(fields).strict().refine(rules,'Review assignment channel and exception inputs.');
+export const distributionCommit=z.object({...fields,preview_hash:z.string().regex(/^[a-f0-9]{64}$/),basis_epoch:z.number().int().nonnegative(),confirmed:z.literal(true)}).strict().refine(rules,'Review assignment channel and exception inputs.');
+export type DistributionInput=z.infer<typeof distributionInput>;

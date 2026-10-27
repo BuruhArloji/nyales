@@ -1,0 +1,508 @@
+{
+  "synthetic": true,
+  "cutoff": "2026-10-31",
+  "historical_period": "July-September 2026",
+  "customers": [
+    {
+      "id": "C01",
+      "location": "LOC01",
+      "area": "A",
+      "owner": "SR01",
+      "channel": "lapangan"
+    },
+    {
+      "id": "C02",
+      "location": "LOC02",
+      "area": "A",
+      "owner": "SR01",
+      "channel": "lapangan"
+    },
+    {
+      "id": "C03",
+      "location": "LOC03",
+      "area": "A",
+      "owner": "SR02",
+      "channel": "lapangan"
+    },
+    {
+      "id": "C04",
+      "location": "LOC04",
+      "area": "A",
+      "owner": "SR03",
+      "channel": "lapangan"
+    },
+    {
+      "id": "C05",
+      "location": "LOC05",
+      "area": "A",
+      "owner": "SR03",
+      "channel": "lapangan"
+    },
+    {
+      "id": "C06",
+      "location": "LOC06",
+      "area": "A",
+      "owner": "SR04",
+      "channel": "lapangan"
+    },
+    {
+      "id": "C07",
+      "location": "LOC07",
+      "area": "A",
+      "owner": "TL01",
+      "channel": "telesales"
+    },
+    {
+      "id": "C08",
+      "location": "LOC08",
+      "area": "A",
+      "owner": "TL01",
+      "channel": "telesales"
+    },
+    {
+      "id": "C09",
+      "location": "LOC09",
+      "area": "A",
+      "owner": "SR05",
+      "channel": "lapangan"
+    },
+    {
+      "id": "C10",
+      "location": "LOC10",
+      "area": "A",
+      "owner": "TL02",
+      "channel": "telesales"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "H-C01-7",
+      "customer": "C01",
+      "date": "2026-07-15",
+      "net": 20000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C01-8",
+      "customer": "C01",
+      "date": "2026-08-15",
+      "net": 20000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C01-9",
+      "customer": "C01",
+      "date": "2026-09-15",
+      "net": 20000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "O-C01",
+      "customer": "C01",
+      "date": "2026-10-15",
+      "net": 30000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C02-7",
+      "customer": "C02",
+      "date": "2026-07-15",
+      "net": 10000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C02-8",
+      "customer": "C02",
+      "date": "2026-08-15",
+      "net": 10000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C02-9",
+      "customer": "C02",
+      "date": "2026-09-15",
+      "net": 10000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "O-C02-10",
+      "customer": "C02",
+      "date": "2026-10-10",
+      "net": 10000000,
+      "rep": "SR01",
+      "status": "validated"
+    },
+    {
+      "id": "O-C02-20",
+      "customer": "C02",
+      "date": "2026-10-20",
+      "net": 10000000,
+      "rep": "SR02",
+      "status": "validated"
+    },
+    {
+      "id": "H-C03-7",
+      "customer": "C03",
+      "date": "2026-07-15",
+      "net": 30000000,
+      "rep": "SR02",
+      "status": "validated"
+    },
+    {
+      "id": "H-C03-8",
+      "customer": "C03",
+      "date": "2026-08-15",
+      "net": 30000000,
+      "rep": "SR02",
+      "status": "validated"
+    },
+    {
+      "id": "H-C03-9",
+      "customer": "C03",
+      "date": "2026-09-15",
+      "net": 30000000,
+      "rep": "SR02",
+      "status": "validated"
+    },
+    {
+      "id": "O-C03",
+      "customer": "C03",
+      "date": "2026-10-15",
+      "net": 40000000,
+      "rep": "SR02",
+      "status": "validated"
+    },
+    {
+      "id": "H-C04-7",
+      "customer": "C04",
+      "date": "2026-07-15",
+      "net": 10000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "H-C04-8",
+      "customer": "C04",
+      "date": "2026-08-15",
+      "net": 10000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "H-C04-9",
+      "customer": "C04",
+      "date": "2026-09-15",
+      "net": 10000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "O-C04",
+      "customer": "C04",
+      "date": "2026-10-15",
+      "net": 10000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "H-C05-7",
+      "customer": "C05",
+      "date": "2026-07-15",
+      "net": 15000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "H-C05-8",
+      "customer": "C05",
+      "date": "2026-08-15",
+      "net": 15000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "H-C05-9",
+      "customer": "C05",
+      "date": "2026-09-15",
+      "net": 15000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "O-C05",
+      "customer": "C05",
+      "date": "2026-10-15",
+      "net": 25000000,
+      "rep": "SR03",
+      "status": "validated"
+    },
+    {
+      "id": "H-C06-7",
+      "customer": "C06",
+      "date": "2026-07-15",
+      "net": 15000000,
+      "rep": "SR04",
+      "status": "validated"
+    },
+    {
+      "id": "H-C06-8",
+      "customer": "C06",
+      "date": "2026-08-15",
+      "net": 15000000,
+      "rep": "SR04",
+      "status": "validated"
+    },
+    {
+      "id": "H-C06-9",
+      "customer": "C06",
+      "date": "2026-09-15",
+      "net": 15000000,
+      "rep": "SR04",
+      "status": "validated"
+    },
+    {
+      "id": "O-C06",
+      "customer": "C06",
+      "date": "2026-10-15",
+      "net": 15000000,
+      "rep": "SR04",
+      "status": "validated"
+    },
+    {
+      "id": "H-C07-7",
+      "customer": "C07",
+      "date": "2026-07-15",
+      "net": 8000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C07-8",
+      "customer": "C07",
+      "date": "2026-08-15",
+      "net": 8000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C07-9",
+      "customer": "C07",
+      "date": "2026-09-15",
+      "net": 8000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "O-C07",
+      "customer": "C07",
+      "date": "2026-10-15",
+      "net": 12000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C08-7",
+      "customer": "C08",
+      "date": "2026-07-15",
+      "net": 12000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C08-8",
+      "customer": "C08",
+      "date": "2026-08-15",
+      "net": 12000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "H-C08-9",
+      "customer": "C08",
+      "date": "2026-09-15",
+      "net": 12000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "O-C08",
+      "customer": "C08",
+      "date": "2026-10-15",
+      "net": 8000000,
+      "rep": "TL01",
+      "status": "validated"
+    },
+    {
+      "id": "OLD-C09",
+      "customer": "C09",
+      "date": "2026-06-01",
+      "net": 5000000,
+      "rep": "SR05",
+      "status": "validated"
+    },
+    {
+      "id": "O-C10",
+      "customer": "C10",
+      "date": "2026-10-15",
+      "net": 5000000,
+      "rep": "TL02",
+      "status": "validated"
+    },
+    {
+      "id": "O-C10",
+      "customer": "C10",
+      "date": "2026-10-15",
+      "net": 5000000,
+      "rep": "TL02",
+      "status": "validated"
+    },
+    {
+      "id": "CANCELLED",
+      "customer": "C01",
+      "date": "2026-10-16",
+      "net": 99000000,
+      "rep": "SR01",
+      "status": "cancelled"
+    }
+  ],
+  "credit_notes": [
+    {
+      "id": "CN-C03",
+      "invoice": "O-C03",
+      "net": 5000000,
+      "date": "2026-10-22"
+    }
+  ],
+  "top_down_customer_target": {
+    "C01": 31666667,
+    "C02": 15833333,
+    "C03": 47500000,
+    "C04": 15833333,
+    "C05": 23750000,
+    "C06": 23750000,
+    "C07": 12666667,
+    "C08": 19000000,
+    "C09": 0,
+    "C10": 10000000
+  },
+  "bottom_up_rep_target": {
+    "SR01": 50000000,
+    "SR02": 50000000,
+    "SR03": 30000000,
+    "SR04": 20000000,
+    "SR05": 10000000,
+    "TL01": 20000000,
+    "TL02": 10000000,
+    "NEW_RESERVE": 10000000
+  },
+  "actual": {
+    "SR01": 40000000,
+    "SR02": 45000000,
+    "SR03": 35000000,
+    "SR04": 15000000,
+    "TL01": 20000000,
+    "TL02": 5000000
+  },
+  "status": {
+    "C01": "Active",
+    "C02": "Active",
+    "C03": "Active",
+    "C04": "Active",
+    "C05": "Active",
+    "C06": "Active",
+    "C07": "Active",
+    "C08": "Active",
+    "C09": "Churn",
+    "C10": "Active"
+  },
+  "example_tier": {
+    "C01": "High",
+    "C02": "Mid",
+    "C03": "High",
+    "C04": "Mid",
+    "C05": "High",
+    "C06": "Mid",
+    "C07": "Mid",
+    "C08": "Mid",
+    "C09": "Low",
+    "C10": "Low"
+  },
+  "example_payout": {
+    "SR01": 500000,
+    "SR02": 550000,
+    "SR03": 660000,
+    "SR04": 0,
+    "SR05": 0,
+    "TL01": 320000,
+    "TL02": 0
+  },
+  "checks": [
+    {
+      "name": "Invoice net October = 160 million",
+      "status": "passed"
+    },
+    {
+      "name": "Field actual = 135 million",
+      "status": "passed"
+    },
+    {
+      "name": "Telesales actual = 25 million",
+      "status": "passed"
+    },
+    {
+      "name": "Old/new owner October attribution preserved",
+      "status": "passed"
+    },
+    {
+      "name": "New and existing customers active, old customer churn",
+      "status": "passed"
+    },
+    {
+      "name": "90 day inclusive boundary",
+      "status": "passed"
+    },
+    {
+      "name": "Top down conserves parent target",
+      "status": "passed"
+    },
+    {
+      "name": "Bottom up plus unallocated reserve conserves parent",
+      "status": "passed"
+    },
+    {
+      "name": "80 percent boundary",
+      "status": "passed"
+    },
+    {
+      "name": "Below threshold no bonus",
+      "status": "passed"
+    },
+    {
+      "name": "81 percent illustration",
+      "status": "passed"
+    },
+    {
+      "name": "102 percent illustration",
+      "status": "passed"
+    },
+    {
+      "name": "Role specific payout",
+      "status": "passed"
+    },
+    {
+      "name": "Rupiah half up rounding",
+      "status": "passed"
+    },
+    {
+      "name": "Forecast conservation after invoice",
+      "status": "passed"
+    }
+  ]
+}

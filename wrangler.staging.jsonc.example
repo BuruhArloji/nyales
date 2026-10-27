@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nyales-staging",
+  "main": "src/server/index.ts",
+  "compatibility_date": "2026-10-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {"directory": "./dist/client", "not_found_handling": "single-page-application", "run_worker_first": ["/api/*"]},
+  "vars": {"APP_ENV": "staging", "LOCAL_AUTH": "false", "FIREBASE_PROJECT_ID": ""},
+  "r2_buckets": [{"binding": "IMPORT_FILES", "bucket_name": "REPLACE_WITH_STAGING_BUCKET"}],
+  "d1_databases": [{"binding": "DB", "database_name": "nyales-staging", "database_id": "REPLACE_WITH_D1_DATABASE_ID", "migrations_dir": "migrations"}]
+}

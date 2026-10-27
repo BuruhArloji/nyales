@@ -1,0 +1,2859 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-070 implemented agent delivery queue",
+    "version": "0.1.0",
+    "description": "Transport queue supports server-authored connection_probe only. This is not the planning job/graph/solver API from WEB-069. One pending probe per target agent, generation bound, 120-second lease, 3 attempts, 15-minute deadline; no road matrix or schedule publication."
+  },
+  "paths": {
+    "/api/visit-generator/agents/{id}/diagnostics": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_generator_agents__id__diagnostics",
+        "summary": "POST /api/visit-generator/agents/{id}/diagnostics",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted current agent configuration version."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_decision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_summary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-generator/queue-jobs": {
+      "get": {
+        "operationId": "agent_queue_get__api_visit_generator_queue_jobs",
+        "summary": "GET /api/visit-generator/queue-jobs",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-generator/queue-jobs/{id}": {
+      "get": {
+        "operationId": "agent_queue_get__api_visit_generator_queue_jobs__id_",
+        "summary": "GET /api/visit-generator/queue-jobs/{id}",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_detail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-generator/queue-jobs/{id}/cancel": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_generator_queue_jobs__id__cancel",
+        "summary": "POST /api/visit-generator/queue-jobs/{id}/cancel",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted current queue job version."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_decision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_summary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-agent/queue/claim": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_agent_queue_claim",
+        "summary": "POST /api/visit-agent/queue/claim",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Proof",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_claim"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_claim_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-agent/queue/jobs/{id}": {
+      "get": {
+        "operationId": "agent_queue_get__api_visit_agent_queue_jobs__id_",
+        "summary": "GET /api/visit-agent/queue/jobs/{id}",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Proof",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_job_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-agent/queue/jobs/{id}/renew": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_agent_queue_jobs__id__renew",
+        "summary": "POST /api/visit-agent/queue/jobs/{id}/renew",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Proof",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_lease"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_job_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-agent/queue/jobs/{id}/checkpoint": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_agent_queue_jobs__id__checkpoint",
+        "summary": "POST /api/visit-agent/queue/jobs/{id}/checkpoint",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Proof",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_checkpoint"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_job_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-agent/queue/jobs/{id}/complete": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_agent_queue_jobs__id__complete",
+        "summary": "POST /api/visit-agent/queue/jobs/{id}/complete",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Proof",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_complete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_job_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-agent/queue/jobs/{id}/fail": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_agent_queue_jobs__id__fail",
+        "summary": "POST /api/visit-agent/queue/jobs/{id}/fail",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Proof",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_failure"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_job_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-agent/queue/jobs/{id}/cancel-ack": {
+      "post": {
+        "operationId": "agent_queue_post__api_visit_agent_queue_jobs__id__cancel_ack",
+        "summary": "POST /api/visit-agent/queue/jobs/{id}/cancel-ack",
+        "x-implementation-state": "implemented-local-connection-probe-only",
+        "security": [
+          {
+            "AgentCredential": [],
+            "AgentProof": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Proof",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue_lease"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection probe metadata only; no agenda/customer mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queue_job_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code. Expired/fenced/cancelled attempts cannot commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "queue_claim": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "nyales-agent-queue-1"
+          }
+        },
+        "required": [
+          "contract_version"
+        ],
+        "additionalProperties": false
+      },
+      "queue_lease": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "nyales-agent-queue-1"
+          },
+          "expected_version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "attempt_no": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "fence": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "payload_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "contract_version",
+          "expected_version",
+          "attempt_no",
+          "fence",
+          "payload_sha256"
+        ],
+        "additionalProperties": false
+      },
+      "queue_checkpoint": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "nyales-agent-queue-1"
+          },
+          "expected_version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "attempt_no": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "fence": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "payload_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "checkpoint": {
+            "type": "string",
+            "enum": [
+              "probe_received",
+              "probe_verified"
+            ]
+          }
+        },
+        "required": [
+          "contract_version",
+          "expected_version",
+          "attempt_no",
+          "fence",
+          "payload_sha256",
+          "checkpoint"
+        ],
+        "additionalProperties": false
+      },
+      "queue_complete": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "nyales-agent-queue-1"
+          },
+          "expected_version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "attempt_no": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "fence": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "payload_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "probe_nonce": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "agent_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "contract_version",
+          "expected_version",
+          "attempt_no",
+          "fence",
+          "payload_sha256",
+          "probe_nonce",
+          "agent_version"
+        ],
+        "additionalProperties": false
+      },
+      "queue_failure": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "nyales-agent-queue-1"
+          },
+          "expected_version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "attempt_no": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "fence": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "payload_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "machine_interrupted",
+              "input_invalid",
+              "probe_failed"
+            ]
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "contract_version",
+          "expected_version",
+          "attempt_no",
+          "fence",
+          "payload_sha256",
+          "code",
+          "retryable"
+        ],
+        "additionalProperties": false
+      },
+      "queue_decision": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "job_summary": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "agent_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "generation": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "kind": {
+            "type": "string",
+            "const": "connection_probe"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "cancel_requested",
+              "completed",
+              "failed",
+              "cancelled",
+              "expired"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "attempt_no": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "fence": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "checkpoint": {
+            "type": "string",
+            "enum": [
+              "waiting",
+              "claimed",
+              "probe_received",
+              "probe_verified"
+            ]
+          },
+          "lease_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failure_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "result_sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "agent_id",
+          "generation",
+          "kind",
+          "state",
+          "version",
+          "attempt_no",
+          "fence",
+          "checkpoint",
+          "lease_until",
+          "failure_code",
+          "result_sha256",
+          "created_at",
+          "expires_at",
+          "ended_at"
+        ],
+        "additionalProperties": false
+      },
+      "queue_summary": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/job_summary"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "queue_claim_response": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "job": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "agent_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "generation": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "kind": {
+                        "type": "string",
+                        "const": "connection_probe"
+                      },
+                      "state": {
+                        "type": "string",
+                        "enum": [
+                          "queued",
+                          "running",
+                          "cancel_requested",
+                          "completed",
+                          "failed",
+                          "cancelled",
+                          "expired"
+                        ]
+                      },
+                      "version": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "attempt_no": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3
+                      },
+                      "fence": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "checkpoint": {
+                        "type": "string",
+                        "enum": [
+                          "waiting",
+                          "claimed",
+                          "probe_received",
+                          "probe_verified"
+                        ]
+                      },
+                      "lease_until": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "failure_code": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "result_sha256": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      "ended_at": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "payload_sha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "payload": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "contract_version": {
+                                "type": "string",
+                                "const": "nyales-agent-queue-1"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "const": "connection_probe"
+                              },
+                              "job_id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "organization_id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "environment": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "agent_id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                              },
+                              "generation": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "rep_ids": {
+                                "minItems": 1,
+                                "maxItems": 10,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                }
+                              },
+                              "probe_nonce": {
+                                "type": "string",
+                                "format": "uuid",
+                                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                              }
+                            },
+                            "required": [
+                              "contract_version",
+                              "kind",
+                              "job_id",
+                              "organization_id",
+                              "environment",
+                              "agent_id",
+                              "generation",
+                              "rep_ids",
+                              "probe_nonce",
+                              "created_at"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "agent_id",
+                      "generation",
+                      "kind",
+                      "state",
+                      "version",
+                      "attempt_no",
+                      "fence",
+                      "checkpoint",
+                      "lease_until",
+                      "failure_code",
+                      "result_sha256",
+                      "created_at",
+                      "expires_at",
+                      "ended_at",
+                      "payload_sha256",
+                      "payload"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "retry_after_seconds": {
+                "type": "number",
+                "const": 60
+              }
+            },
+            "required": [
+              "job",
+              "retry_after_seconds"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "queue_job_response": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "job": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "generation": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "connection_probe"
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "queued",
+                      "running",
+                      "cancel_requested",
+                      "completed",
+                      "failed",
+                      "cancelled",
+                      "expired"
+                    ]
+                  },
+                  "version": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "attempt_no": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 3
+                  },
+                  "fence": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "checkpoint": {
+                    "type": "string",
+                    "enum": [
+                      "waiting",
+                      "claimed",
+                      "probe_received",
+                      "probe_verified"
+                    ]
+                  },
+                  "lease_until": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "failure_code": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "result_sha256": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                  },
+                  "expires_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                  },
+                  "ended_at": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "payload_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "payload": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "contract_version": {
+                            "type": "string",
+                            "const": "nyales-agent-queue-1"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "const": "connection_probe"
+                          },
+                          "job_id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                          },
+                          "organization_id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                          },
+                          "environment": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                          },
+                          "agent_id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                          },
+                          "generation": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "rep_ids": {
+                            "minItems": 1,
+                            "maxItems": 10,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128
+                            }
+                          },
+                          "probe_nonce": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          }
+                        },
+                        "required": [
+                          "contract_version",
+                          "kind",
+                          "job_id",
+                          "organization_id",
+                          "environment",
+                          "agent_id",
+                          "generation",
+                          "rep_ids",
+                          "probe_nonce",
+                          "created_at"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "agent_id",
+                  "generation",
+                  "kind",
+                  "state",
+                  "version",
+                  "attempt_no",
+                  "fence",
+                  "checkpoint",
+                  "lease_until",
+                  "failure_code",
+                  "result_sha256",
+                  "created_at",
+                  "expires_at",
+                  "ended_at",
+                  "payload_sha256",
+                  "payload"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "job"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "queue_list": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "contract_version": {
+                "const": "nyales-agent-queue-1"
+              },
+              "jobs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/job_summary"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "purpose": {
+                "const": "connection_probe_only_no_customer_or_agenda_data"
+              }
+            },
+            "required": [
+              "contract_version",
+              "jobs",
+              "has_more",
+              "purpose"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "queue_detail": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "job": {
+                "$ref": "#/components/schemas/job_summary"
+              },
+              "attempts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "attempt_no": {
+                      "type": "integer"
+                    },
+                    "fence": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "claimed_at": {
+                      "type": "string"
+                    },
+                    "heartbeat_at": {
+                      "type": "string"
+                    },
+                    "ended_at": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "failure_code": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "attempt_no",
+                    "fence",
+                    "status",
+                    "claimed_at",
+                    "heartbeat_at",
+                    "ended_at",
+                    "failure_code"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more_events": {
+                "type": "boolean"
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "job_version": {
+                      "type": "integer"
+                    },
+                    "event_code": {
+                      "type": "string"
+                    },
+                    "actor_kind": {
+                      "enum": [
+                        "user",
+                        "machine",
+                        "scheduler"
+                      ]
+                    },
+                    "details_json": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "job_version",
+                    "event_code",
+                    "actor_kind",
+                    "details_json",
+                    "created_at"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "job",
+              "attempts",
+              "has_more_events",
+              "events"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      },
+      "AgentCredential": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      },
+      "AgentProof": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Agent-Proof"
+      }
+    }
+  },
+  "x-runtime-migration": "0043_visit_agent_queue.sql"
+}

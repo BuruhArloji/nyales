@@ -1,0 +1,1938 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES M1 catalog, invoice and map implemented slice",
+    "version": "0.1.0",
+    "description": "Local implementation 18 October 2026; baseline full API remains separate. Firebase/provider/MFA/ERP production and map quota gates remain open. currency IDR exponent0; all money fields full rupiah integers max1e12 per record; no float currency conversion. JSON source versions monotonic positive integer strings. CSV UTF8 max512KiB/200data rows. No stock or credit eligibility fabricated."
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "operationId": "get_products",
+        "summary": "List catalog",
+        "description": "",
+        "x-access-policy": "scoped_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_products",
+        "summary": "Create catalog",
+        "description": "",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductWrite"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "operationId": "get_products_id",
+        "summary": "Catalog detail with ETag",
+        "description": "",
+        "x-access-policy": "scoped_read",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      },
+      "put": {
+        "operationId": "put_products_id",
+        "summary": "Update catalog",
+        "description": "",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"2\""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductWrite"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}/archive": {
+      "post": {
+        "operationId": "post_products_id_archive",
+        "summary": "Archive catalog with reason",
+        "description": "Body {reason:string}; no hard delete; products become inactive and groups archived.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"2\""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/product-groups": {
+      "get": {
+        "operationId": "get_product-groups",
+        "summary": "List catalog",
+        "description": "",
+        "x-access-policy": "scoped_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_product-groups",
+        "summary": "Create catalog",
+        "description": "",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductGroupWrite"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product-groups/{id}": {
+      "get": {
+        "operationId": "get_product-groups_id",
+        "summary": "Catalog detail with ETag",
+        "description": "",
+        "x-access-policy": "scoped_read",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      },
+      "put": {
+        "operationId": "put_product-groups_id",
+        "summary": "Update catalog",
+        "description": "",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"2\""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductGroupWrite"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product-groups/{id}/archive": {
+      "post": {
+        "operationId": "post_product-groups_id_archive",
+        "summary": "Archive catalog with reason",
+        "description": "Body {reason:string}; no hard delete; products become inactive and groups archived.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"2\""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/products/{id}/prices": {
+      "post": {
+        "operationId": "post_products_id_prices",
+        "summary": "Set dated price",
+        "description": "Price in full IDR/base-unit. Date end exclusive; closes prior interval; no backdate/same-date/future-schedule overwrite.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"2\""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceWrite"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice-imports/template": {
+      "get": {
+        "operationId": "get_invoice-imports_template",
+        "summary": "Download CSV template",
+        "description": "",
+        "x-access-policy": "management_nsm",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/invoice-imports": {
+      "get": {
+        "operationId": "get_invoice-imports",
+        "summary": "Latest100 invoice jobs",
+        "description": "",
+        "x-access-policy": "management_nsm",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_invoice-imports",
+        "summary": "Dry-run or commit invoice/credit source",
+        "description": "Private source SHA256 is verified. Validation hash + organization finance/reference epoch guard atomic commit. If-Match job ETag required for commit, optional for dry-run.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required in commit mode; job version."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{id}": {
+      "get": {
+        "operationId": "get_jobs_id",
+        "summary": "Job detail / error CSV / validation JSON",
+        "description": "Org-scoped admin only; detail returns request, summary, changes, errors, version and source manifest reference.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/jobs/{id}/errors": {
+      "get": {
+        "operationId": "get_jobs_id_errors",
+        "summary": "Job detail / error CSV / validation JSON",
+        "description": "Org-scoped admin only; detail returns request, summary, changes, errors, version and source manifest reference.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/jobs/{id}/download": {
+      "get": {
+        "operationId": "get_jobs_id_download",
+        "summary": "Job detail / error CSV / validation JSON",
+        "description": "Org-scoped admin only; detail returns request, summary, changes, errors, version and source manifest reference.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "get": {
+        "operationId": "get_invoices",
+        "summary": "Current invoices and reconciled totals",
+        "description": "period_start/end inclusive ISO dates; channel,area_id,rep_id,status,source_system,customer_id narrow authorized scope. Latest200rows + has_more, totals include all matches. format=csv admin-only export max5000matches; exports metadata/filter/timezone/cutoff. Draft/cancelled/needs_review excluded from eligible totals. One current revision per org/source/external-ID.",
+        "x-access-policy": "scoped_read",
+        "parameters": [
+          {
+            "name": "period_start",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period_end",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "area_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rep_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source_system",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/invoices/{id}": {
+      "get": {
+        "operationId": "get_invoices_id",
+        "summary": "Current invoice detail, lines and credit snapshot",
+        "description": "ETag is revision_no. Only current revision ID is a detail/action root; get history through revisions. Full-unit IDR exponent0; source net and eligible net separate.",
+        "x-access-policy": "scoped_read",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/invoices/{id}/revisions": {
+      "get": {
+        "operationId": "get_invoices_id_revisions",
+        "summary": "Scoped immutable revision history",
+        "description": "200latest + has_more; historical row visibility uses its own rep/area/channel scope.",
+        "x-access-policy": "scoped_read",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_invoices_id_revisions",
+        "summary": "Create controlled revision",
+        "description": "Current invoice ETag required. Source version increases. Revalidates dated mapping. Restates invoice origin period; finalized reference creates finance_adjustment pending_review and never rewrites finalized statement. Later finalization module must populate finance_period_lock and consume adjustment.",
+        "x-access-policy": "management_nsm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "\"2\""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvoiceRevisionRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sales/last-positions": {
+      "get": {
+        "operationId": "get_sales_last-positions",
+        "summary": "Last received positions with age, source and accuracy",
+        "description": "area_id,rep_id,channel only narrow scope. Invalid/future timestamps return age_seconds=null and explicit clock_status. No tracking ingestion/routing.",
+        "x-access-policy": "scoped_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    },
+    "/map": {
+      "get": {
+        "operationId": "get_map",
+        "summary": "Scoped customer pins, all-customer table and last positions",
+        "description": "area_id,rep_id,channel,customer_status filters. Missing coordinates remain in all_customers and counts; inactive outlets not pinned. Basemap config from environment; fallback OSM is local pilot only.",
+        "x-access-policy": "scoped_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Created when applicable"
+          },
+          "400": {
+            "description": "Malformed header"
+          },
+          "401": {
+            "description": "Identity/session missing or expired"
+          },
+          "403": {
+            "description": "Role/export denied"
+          },
+          "404": {
+            "description": "Absent or outside scope"
+          },
+          "409": {
+            "description": "Business, snapshot or idempotency conflict"
+          },
+          "412": {
+            "description": "Version changed"
+          },
+          "422": {
+            "description": "Validation error"
+          },
+          "428": {
+            "description": "If-Match required"
+          },
+          "503": {
+            "description": "Data/source unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InvoiceInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_invoice_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "source_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,14}$",
+            "description": "Pilot adapter requires monotonic positive integer source versions."
+          },
+          "customer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "invoice_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "IDR"
+            ]
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "source_rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "validated",
+              "cancelled",
+              "draft"
+            ]
+          },
+          "net_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "net_includes_credit": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLineInput"
+            },
+            "maxItems": 100
+          },
+          "source_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_customer_code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "source_invoice_id",
+          "source_version",
+          "invoice_date",
+          "currency",
+          "channel",
+          "status",
+          "net_minor",
+          "net_includes_credit"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "customer_id"
+            ]
+          },
+          {
+            "required": [
+              "source_customer_code"
+            ]
+          }
+        ]
+      },
+      "InvoiceLineInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_line_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "product_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "quantity_scaled": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "net_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "quantity_scale": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          },
+          "unit_code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sku": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "source_line_id",
+          "quantity_scaled",
+          "net_minor",
+          "quantity_scale",
+          "unit_code"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "product_id"
+            ]
+          },
+          {
+            "required": [
+              "sku"
+            ]
+          }
+        ]
+      },
+      "CreditInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_credit_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "source_invoice_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "credit_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "source_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,14}$",
+            "description": "Pilot adapter requires monotonic positive integer source versions."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "validated",
+              "cancelled"
+            ]
+          }
+        },
+        "required": [
+          "source_credit_id",
+          "source_invoice_id",
+          "credit_date",
+          "amount_minor",
+          "source_version",
+          "status"
+        ]
+      },
+      "InvoiceRevisionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,14}$",
+            "description": "Pilot adapter requires monotonic positive integer source versions."
+          },
+          "net_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "net_includes_credit": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "customer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "invoice_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "validated",
+              "cancelled",
+              "draft"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLineInput"
+            },
+            "minItems": 0,
+            "maxItems": 100
+          }
+        },
+        "required": [
+          "source_version",
+          "reason"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "net_minor"
+            ]
+          },
+          {
+            "required": [
+              "customer_id"
+            ]
+          },
+          {
+            "required": [
+              "rep_id"
+            ]
+          },
+          {
+            "required": [
+              "area_id"
+            ]
+          },
+          {
+            "required": [
+              "channel"
+            ]
+          },
+          {
+            "required": [
+              "invoice_date"
+            ]
+          },
+          {
+            "required": [
+              "status"
+            ]
+          },
+          {
+            "required": [
+              "lines"
+            ]
+          }
+        ],
+        "dependentRequired": {
+          "net_minor": [
+            "net_includes_credit"
+          ]
+        }
+      },
+      "ProductWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sku": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "base_unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quantity_scale": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          },
+          "product_group_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "sku",
+          "name",
+          "base_unit",
+          "quantity_scale",
+          "product_group_id"
+        ]
+      },
+      "ProductGroupWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "ImportRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_system",
+          "source_cutoff",
+          "mode"
+        ],
+        "properties": {
+          "source_system": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "source_cutoff": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "dry_run",
+              "commit"
+            ]
+          },
+          "validation_batch_id": {
+            "type": "string"
+          },
+          "attachment_id": {
+            "type": "string"
+          },
+          "mapping": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "invoices": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/InvoiceInput"
+            }
+          },
+          "credit_notes": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/CreditInput"
+            }
+          }
+        },
+        "description": "Either uploaded CSV attachment+mapping or JSON invoice/credit arrays. Total invoice+line+credit records max200. Strict atomic batch; commit repeats identical payload with validation_batch_id and job If-Match. Per-row validation errors produce needs_review dry-run, not a partial commit."
+      },
+      "PriceWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "amount_minor",
+          "currency",
+          "unit_code",
+          "effective_from_date",
+          "effective_to_date",
+          "source"
+        ],
+        "properties": {
+          "amount_minor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          },
+          "currency": {
+            "const": "IDR"
+          },
+          "unit_code": {
+            "type": "string"
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "effective_to_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "date": "2026-10-24",
+  "item": "WEB-067",
+  "status": "Implemented and verified local; real-source/provider/human acceptance pending",
+  "classification": "isolated synthetic QA and main synthetic pilot; real-source draft retained",
+  "preview_url": "http://127.0.0.1:5193/#page=map&mode=risk&period=2026-10&risk_run_id=5bf1a7d7-7e19-475f-8e83-9477cdc922b8",
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "migration": "0040_customer_risk_policy_runs.sql",
+  "definition_version": "nyales-risk-1",
+  "tests": {
+    "unit_integration": {
+      "passed": 183,
+      "failed": 0,
+      "log": "test-results/web067-full-tests.log",
+      "risk_engine": 9,
+      "policy": 3,
+      "evaluation_contract_recovery": 7
+    },
+    "typecheck": "passed",
+    "build": "passed; client chunk warning remains at approximately 1.97 MB",
+    "browser": {
+      "passed": 3,
+      "regression_passed": 6,
+      "proof": {
+        "classification": "synthetic",
+        "policy_name": "Risiko latihan 1792813933620",
+        "first_run_id": "f47ff531-4587-4881-91ea-8a3f64ed4d69",
+        "latest_run_id": "5bf1a7d7-7e19-475f-8e83-9477cdc922b8",
+        "customer_count": 10,
+        "attention_customer_count": 2,
+        "unknown_customer_count": 10,
+        "invoice_history_unchanged": true,
+        "explicit_configuration": true,
+        "immutable_history": true,
+        "current_invalidation": true,
+        "customer_drill": true,
+        "keyboard": true,
+        "viewports": [
+          390,
+          768,
+          1440
+        ],
+        "axe_violations": 0,
+        "page_errors": [],
+        "cloud_deployed": false,
+        "production_accepted": false
+      },
+      "logs": [
+        "test-results/web067-browser.log",
+        "test-results/web067-regional-regression.log",
+        "test-results/web067-geography-regression.log",
+        "test-results/web067-distribution-regression.log"
+      ],
+      "screenshots_visually_reviewed": true,
+      "settings_dynamic_mobile_axe": true
+    },
+    "baseline_uat_scenarios": 82
+  },
+  "api": {
+    "operations": 262,
+    "linked": 262,
+    "unauthenticated_checked": 260,
+    "new_operations": 10,
+    "contract": "docs/specifications/customer-risk-api.m4.openapi.json"
+  },
+  "commercial_preservation": {
+    "tables_compared": 13,
+    "all_equal": true,
+    "tables": {
+      "customer_outlet": {
+        "before": {
+          "rows": 20,
+          "sha256": "56a58bdbde5587912185aead81647afb21cfbbf882883fbd0d2ad34feb1e0b57"
+        },
+        "after": {
+          "rows": 20,
+          "sha256": "56a58bdbde5587912185aead81647afb21cfbbf882883fbd0d2ad34feb1e0b57"
+        },
+        "equal": true
+      },
+      "customer_assignment": {
+        "before": {
+          "rows": 20,
+          "sha256": "c83d9e4ed948024d61f91b09d7008a419f59f9492427b8940e0e314bfecd1df7"
+        },
+        "after": {
+          "rows": 20,
+          "sha256": "c83d9e4ed948024d61f91b09d7008a419f59f9492427b8940e0e314bfecd1df7"
+        },
+        "equal": true
+      },
+      "invoice": {
+        "before": {
+          "rows": 80,
+          "sha256": "685901306c8903b9f455db8fc5eb7bf2ed5bd4d2b0380b3003d28e5aa4187e8e"
+        },
+        "after": {
+          "rows": 80,
+          "sha256": "685901306c8903b9f455db8fc5eb7bf2ed5bd4d2b0380b3003d28e5aa4187e8e"
+        },
+        "equal": true
+      },
+      "invoice_line": {
+        "before": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "after": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "equal": true
+      },
+      "activity": {
+        "before": {
+          "rows": 12,
+          "sha256": "0af434028e350c0262396e3d6884b89eb15278ebc910dfc6d39c88bc1907f190"
+        },
+        "after": {
+          "rows": 12,
+          "sha256": "0af434028e350c0262396e3d6884b89eb15278ebc910dfc6d39c88bc1907f190"
+        },
+        "equal": true
+      },
+      "target_plan": {
+        "before": {
+          "rows": 2,
+          "sha256": "8c060fa0198eabd73bf01dee37acdebee68cc6a8e98109a7cb73066075d8469f"
+        },
+        "after": {
+          "rows": 2,
+          "sha256": "8c060fa0198eabd73bf01dee37acdebee68cc6a8e98109a7cb73066075d8469f"
+        },
+        "equal": true
+      },
+      "target_version": {
+        "before": {
+          "rows": 2,
+          "sha256": "0d25e06233426437f89e8ea3f581d562f3f8e574ff67e8e22e7fd0028d1114a0"
+        },
+        "after": {
+          "rows": 2,
+          "sha256": "0d25e06233426437f89e8ea3f581d562f3f8e574ff67e8e22e7fd0028d1114a0"
+        },
+        "equal": true
+      },
+      "target_item": {
+        "before": {
+          "rows": 10,
+          "sha256": "362b5ae49ecd5f6d8b9c2831f8a0e488f508b419464c9e78bcc8b914b4007aa9"
+        },
+        "after": {
+          "rows": 10,
+          "sha256": "362b5ae49ecd5f6d8b9c2831f8a0e488f508b419464c9e78bcc8b914b4007aa9"
+        },
+        "equal": true
+      },
+      "sales_order": {
+        "before": {
+          "rows": 1,
+          "sha256": "9a768ea920084f3eccc68c9296e031a9a4fd058ef5aa7e28214fcec40f3c405d"
+        },
+        "after": {
+          "rows": 1,
+          "sha256": "9a768ea920084f3eccc68c9296e031a9a4fd058ef5aa7e28214fcec40f3c405d"
+        },
+        "equal": true
+      },
+      "credit_note": {
+        "before": {
+          "rows": 4,
+          "sha256": "98fe56fecc65599e721585ea6131eed3c999cc419baf2de328c1f26f74a4082d"
+        },
+        "after": {
+          "rows": 4,
+          "sha256": "98fe56fecc65599e721585ea6131eed3c999cc419baf2de328c1f26f74a4082d"
+        },
+        "equal": true
+      },
+      "area_admin_membership": {
+        "before": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "after": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "equal": true
+      },
+      "customer_admin_location": {
+        "before": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "after": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "equal": true
+      },
+      "geo_distribution_run": {
+        "before": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "after": {
+          "rows": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "equal": true
+      }
+    },
+    "customers": 20,
+    "invoices": 80,
+    "activities": 12,
+    "october_net": 36520000,
+    "main_risk_policies": 0,
+    "main_risk_runs": 0,
+    "main_real_boundary_status": "draft"
+  },
+  "storage": {
+    "new_tables": 2,
+    "logical_backup_schema": "0040",
+    "risk_snapshots": "private R2 with immutable D1 reference/checksum/bytes",
+    "main_restore": "test-results/web067-main-restore/SUMMARY.json",
+    "main_restore_counts": {
+      "tables": 96,
+      "pdf": 1,
+      "boundary_chunks": 1,
+      "risk_snapshots": 0
+    },
+    "qa_nonempty_risk_restore": "test-results/web067-risk-restore/SUMMARY.json",
+    "qa_risk_snapshot_count": 2,
+    "qa_restored_risk_api_reads": 2,
+    "qa_other_private_artifacts_restored": false,
+    "source_databases_modified_by_restore": false
+  },
+  "limits": {
+    "customers": 200,
+    "invoices": 50000,
+    "snapshot_bytes": 4194304
+  },
+  "business_defaults_installed_on_main": false,
+  "next": "WEB-068",
+  "pending": [
+    "Real-source rights/namespace/metadata review and authorized activation",
+    "Business policy review by Management/NSM",
+    "Human role/device/Firebase acceptance",
+    "Cloud Free CPU/concurrency/quota/deployment/provider restore acceptance",
+    "WEB-068 simulation and WEB-069–074 visit generator"
+  ],
+  "source_sha256": {
+    "src/shared/customer-risk.ts": "7d80081fa704cead5a078f77e67696a1067e794b9302eacd7bd0ceab9162afb1",
+    "src/server/risk-engine.ts": "07f7675b422883d94b5f0cf1ff33f84b963e82d53b2903d8c0a6b56fa142fe4a",
+    "src/server/customer-risk.ts": "d51d7778685fbcf26e911ea94486650c4bdd3a8776e293ff8cbef77c89b98b83",
+    "src/server/risk-evaluations.ts": "f5879c77b8f2a418de2ba0534496c7d81964062473d97e2a9f76f445713c497f",
+    "src/server/index.ts": "4457233ebe808f97c3b6d6e11577150bb59715341879ab7efa5c1ca084235ef3",
+    "src/server/operations.ts": "163f767e06cfe076ac40c00fa6d841e4bfbf4639960142f48610b33e59b907c8",
+    "src/server/recovery.ts": "14e730e22d3c42cf44a2a986fc52e50d7923ac22831ad101b9e9dc4958ff8d2e",
+    "src/server/geography-analytics.ts": "42b727a7618f1d14bffa8953ed1761487c7c7ed7c4b2e08318fedd60e4e0fada",
+    "src/client/RiskSettings.tsx": "e3c657f7396fc7b564fc37475796d8ff9ba6d12e98d2c3c1b00f9cf1da581b8d",
+    "src/client/CustomerRisk.tsx": "633b386a173c8ab3d515aa1f48cb1d8e5f1992aa091b4ed7a7d3b35c02a10737",
+    "src/client/risk-ui.ts": "3c51f4bc8982513356555e6a09cb12a93b8c661739e647cf0fc6f58e675c1e85",
+    "src/client/Settings.tsx": "fe416ec60461913ed3c669031b72ebaefe851ae42d9bd72602618621a5b46f46",
+    "src/client/GeographyPage.tsx": "ba8b80d5f1895a5771d8ff933e286adf9274cc5a7890362268bb9e79837f7091",
+    "src/client/Customers.tsx": "72a4cdf5a3d2508fd45e60062f73b07365b9556976bf85c4c2514961abca4982",
+    "src/client/geo-navigation.ts": "079ebeb03e0f0862fe867c2d549211ec3bba09357285eca9004145988b971d23",
+    "migrations/0040_customer_risk_policy_runs.sql": "5f66ebad9a0f25f0d49d93e722d0b9acdf99d249cd1fadd96706fa1e91dde226",
+    "scripts/generate-risk-contract.ts": "9c8e5105cbc85891d28ea76a7a7dacbc601a0b81af9dee89eb2e20298491498b",
+    "scripts/risk-local-restore.ts": "513ed0f78f6bb72f658fcf69e707d8251da048528e45c5fcea78e51c3773335c",
+    "scripts/pilot-local-restore.cjs": "8e5b65fd370dae08cea91c0d582343d89d96f53e13d2de12a54bbbd2e5869a2e",
+    "tests/risk-engine.test.ts": "5ed42e6532d408e00746b8189665549edd5f24aa54ce8ef6048f8c11d5dca2d4",
+    "tests/customer-risk-policy.test.ts": "bde581f81a64b938db66e41b6c86b170acd99244c7cbe164d564403ff914b3f8",
+    "tests/risk-evaluations.test.ts": "1c248dcf5bdfef76ade345538defe14e98f297de96d26cb8ef07275406a7edeb",
+    "tests/browser/customer-risk.spec.cjs": "a7e91d0c3c8ba73f3ba53eb98c4b8776f0011d62a44586f47e94cfa7d2d6fb84"
+  }
+}

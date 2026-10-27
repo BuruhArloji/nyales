@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-24",
+  "item": "WEB-065",
+  "status": "Implemented and verified local; real-source/provider/human gates pending",
+  "preview_url": "http://127.0.0.1:5183/#page=assignments",
+  "classification": "synthetic pilot and isolated synthetic QA; real-source draft retained",
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "migrations": [
+    "migrations/0037_geography_distribution.sql",
+    "migrations/0038_distribution_org_clock.sql"
+  ],
+  "tests": {
+    "unit_integration": {
+      "passed": 156,
+      "failed": 0,
+      "log": "test-results/web065-full-tests.log"
+    },
+    "browser": {
+      "distribution_passed": 2,
+      "geography_regression_passed": 2,
+      "log": "test-results/web065-browser-run.log",
+      "regression": "test-results/web065-geography-regression.log",
+      "viewports": [
+        390,
+        768,
+        1440
+      ],
+      "axe_violations": 0,
+      "screenshots_visually_reviewed": true,
+      "proof": "test-results/web065-browser/synthetic-verified.json"
+    },
+    "typecheck": "passed",
+    "build": "passed; existing large client chunk warning",
+    "baseline_uat_scenarios": 82
+  },
+  "api": {
+    "operations": 249,
+    "linked": 249,
+    "unauthenticated_checked": 247,
+    "new_operations": 4,
+    "contract": "docs/specifications/distribution-api.m4.openapi.json"
+  },
+  "commercial_preservation": {
+    "tables_compared": 18,
+    "all_equal": true,
+    "record_comparison": "test-results/web065-commercial-reconciliation.json",
+    "customers": 20,
+    "invoices": 80,
+    "activities": 12,
+    "october_net": 36520000,
+    "real_distribution_runs": 0
+  },
+  "restore": {
+    "status": "local_full_database_and_attachment_restore_passed",
+    "tables": 94,
+    "attachments": 1,
+    "boundary_chunks": 1,
+    "proof": "test-results/web065-full-restore/SUMMARY.json",
+    "cloud_verified": false
+  },
+  "limits": {
+    "assignment_customers": 25,
+    "villages": 50,
+    "geometry_chunks": 16,
+    "total_transaction_statements": 600,
+    "canonical_customer_snapshot": 2000,
+    "membership_history_response": 200,
+    "run_history_response": 50
+  },
+  "rpc_profile": {
+    "classification": "synthetic scoped-route fixture",
+    "customers": 25,
+    "preview_binding_calls": 17,
+    "preview_r2_calls": 1,
+    "commit_binding_calls": 19,
+    "commit_r2_calls": 1,
+    "commit_sql_statements": 255,
+    "scope": "Binding invocation profile only; excludes full-app bearer/device/telemetry overhead and does not establish cloud quota or CPU acceptance",
+    "provider_verified": false
+  },
+  "source": {
+    "features": 6,
+    "status": "draft",
+    "usage_rights_reviewed": false,
+    "namespace_review_pending": true,
+    "national_complete": false
+  },
+  "next": "WEB-066",
+  "pending": [
+    "Real-source usage-rights/namespace/metadata review and authorized activation",
+    "Human role/device/Firebase acceptance",
+    "Cloud Free CPU/concurrency/quota, deployment and restore acceptance"
+  ],
+  "source_sha256": {
+    "src/server/distribution.ts": "bbffbfafe45a26dbccb8bdea03a4d19f155794ba079002868c0a0a7f933ad9d6",
+    "src/shared/distribution.ts": "40b5328d80fbdf020bc1f4de41111d1455883e3c47893e960ddf19c1caff75f2",
+    "src/server/assignments.ts": "6e767870182e5600af47151f3b59cce5005f89eb03fe74637d19137451ffb7ac",
+    "src/client/TerritoryDistribution.tsx": "39a10c9dd465d5442308dac9bd6ad4d22cbd0f8f7fab551e7c6f9b51dba0ef10",
+    "src/client/GeographyPage.tsx": "f4c2283efe1447eb4b430347692580007d3cc389921ba2ca1abe8a8da82eef3a",
+    "src/server/recovery.ts": "0513467a11a3ae699db01ea5adb10ef9d1c6891fd9e94cfc4cb0744517f2b487",
+    "scripts/pilot-local-prepare.ts": "ac07dd5268dae93c7005c28558d4c460368df9a74d4fd430772d59d68c6527fb",
+    "migrations/0037_geography_distribution.sql": "435f59a0a5e626dfac771a8728b7fe03d0f311971c14b149bcb58e7843057242",
+    "migrations/0038_distribution_org_clock.sql": "5a72e7e0f674748a99071ab74a95af892f2af28593fc90b482138a5c0869a77a",
+    "tests/distribution.test.ts": "abce309557b2508f78499269cf035e40cb5ee9ef939e1f835be1e0a9525bd15f",
+    "tests/browser/distribution.spec.cjs": "f10f99a68f560516520613b668c43323df313b876ffbbbc82f41af070fd61fb2",
+    "scripts/generate-distribution-contract.ts": "4ecf199a907e0f31088410c5caa3be901cce0cdda22a63f805328a370af8417d"
+  }
+}

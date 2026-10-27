@@ -1,0 +1,4 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {classifyVisitMachine} from '../scripts/visit-agent-doctor';
+test('WEB-070 doctor separates installed tooling from observed hardware and never infers routing capacity or a zero-cost guarantee',()=>{const available={found:true,status:'available' as const,output:'test',exit_code:0},missing={...available,found:false,status:'unavailable' as const},full=classifyVisitMachine({docker:available,wsl:available,ortools:true,free_disk_bytes:1e12,free_ram_bytes:64*1024**3});assert.deepEqual(full.observations,[]);assert.equal(full.can_claim_osrm_capacity,false);assert.equal(full.readiness,'operator_and_graph_benchmark_required');const partial=classifyVisitMachine({docker:missing,wsl:missing,ortools:false,free_disk_bytes:20*1024**3,free_ram_bytes:6*1024**3});assert.equal(partial.observations.length,5);assert.equal(partial.can_claim_cost_zero,false)});

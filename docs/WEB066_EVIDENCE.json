@@ -1,0 +1,137 @@
+{
+  "date": "2026-10-24",
+  "item": "WEB-066",
+  "status": "Implemented and verified local; real-source/provider/human gates pending",
+  "preview_url": "http://127.0.0.1:5183/#page=map&mode=performance",
+  "synthetic_qa_url": "http://127.0.0.1:5193/#page=map&mode=coverage",
+  "classification": "isolated synthetic QA, main synthetic pilot and separately retained real-source draft",
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "migration": "0039_geography_analytics_revision.sql",
+  "definition_version": "nyales-geo-kpi-1",
+  "mapping_basis": "current_confirmed_mapping_at_read_cutoff; identical mapping applied to both financial periods",
+  "tests": {
+    "unit_integration": {
+      "passed": 164,
+      "failed": 0,
+      "log": "test-results/web066-full-tests.log",
+      "new_analytics_tests": 8,
+      "response_contract_and_csv_alignment_tested": true
+    },
+    "browser": {
+      "passed": 2,
+      "failed": 0,
+      "proof": {
+        "classification": "synthetic",
+        "dataset_id": "e716b4e2-101e-4984-80b9-3644fc8b0e36",
+        "observed_total": 275000000,
+        "mapped": 180000000,
+        "unmapped": 95000000,
+        "invoice_history_unchanged": true,
+        "source_drill": true,
+        "snapshot_csv_export": true,
+        "keyboard": true,
+        "viewports": [
+          390,
+          768,
+          1440
+        ],
+        "axe_violations": 0,
+        "page_errors": [],
+        "cloud_deployed": false,
+        "production_accepted": false
+      },
+      "report": "test-results/web066-browser/results.json",
+      "log": "test-results/web066-browser-run.log",
+      "map_distribution_regression_passed": 4,
+      "regression_logs": [
+        "test-results/web066-geography-regression.log",
+        "test-results/web066-distribution-browser.log"
+      ],
+      "screenshots_visually_reviewed": true
+    },
+    "typecheck": "passed",
+    "build": "passed; existing approximately 1.94 MB client chunk warning remains",
+    "baseline_uat_scenarios": 82
+  },
+  "api": {
+    "operations": 252,
+    "linked": 252,
+    "unauthenticated_checked": 250,
+    "new_operations": 3,
+    "source_kinds": [
+      "customers",
+      "invoices",
+      "activities",
+      "targets",
+      "sales"
+    ],
+    "contract": "docs/specifications/regional-analytics-api.m4.openapi.json"
+  },
+  "commercial_preservation": {
+    "tables_compared": 18,
+    "all_equal": true,
+    "record_comparison": "test-results/web066-commercial-reconciliation.json",
+    "customers": 20,
+    "invoices": 80,
+    "activities": 12,
+    "october_net": 36520000,
+    "real_distribution_runs": 0
+  },
+  "restore": {
+    "status": "local_full_database_and_attachment_restore_passed",
+    "tables": 94,
+    "attachments": 1,
+    "boundary_chunks": 1,
+    "proof": "test-results/web066-full-restore/SUMMARY.json",
+    "cloud_verified": false,
+    "logical_backup_nonempty_distribution_and_epoch_tested": true
+  },
+  "limits": {
+    "cohort_customers": 2000,
+    "two_period_invoices": 50000,
+    "period_activities": 10000,
+    "target_leaves": 2000,
+    "display_polygons": 50,
+    "source_page_size": 100,
+    "provider_at_maximum_verified": false
+  },
+  "source": {
+    "features": 6,
+    "status": "draft",
+    "national_complete": false,
+    "usage_rights_reviewed": false,
+    "namespace_review_pending": true
+  },
+  "storage": {
+    "new_tables": 0,
+    "new_input_revision_triggers": 15,
+    "logical_backup_schema": "0039",
+    "regional_report_persisted": false
+  },
+  "next": "WEB-067",
+  "pending": [
+    "Real-source documented rights/namespace/metadata review and authorized activation",
+    "Human role/device/Firebase acceptance",
+    "Cloud Free CPU/concurrency/quota, deployment and restore acceptance",
+    "WEB-067 risk and WEB-068 workload simulation; WEB-069–074 visit generator"
+  ],
+  "source_sha256": {
+    "src/server/geography-analytics.ts": "575f1957955ca6a501fcc565448d3a3e453c5abf8b5d0d581db8076185605039",
+    "src/server/calendar.ts": "f33adf968827b20ae99561a851ece25175924671b487006782e37d99a9492887",
+    "src/server/monitoring-report.ts": "77c79fbb27f678c4ed6eb33d7d28ffb5a34e0d1b4f7d038a4065c207394ea41c",
+    "src/server/geography.ts": "1284ff50863f569cdcd73fb354aa9f074969bee88273731e9c5a963407c18f0e",
+    "src/client/RegionalAnalytics.tsx": "2f2becfa2e1b976cda1662eb1848fe1614ab894b379e7afb8a968ee80c6743d5",
+    "src/client/GeographyPage.tsx": "7c60b1fd6f099e3c73a983c4c7b571a4d5757df3c789523dc7a86fe79dbc4ebf",
+    "src/client/MapView.tsx": "4c4a9b0d0ef65b6bd5837ea1ce3b81e65c7c4e3cefd1e44d0151e3f3b452908a",
+    "src/client/Monitoring.tsx": "99c3c6ddfa869cde86bc8195310920d93c723a669f320041f36747ef62f1015f",
+    "src/client/main.tsx": "4a4183cf52aa41bd7f1fb7abe88d0262e3bf4e25ff7f19a2f4fafcfcf302b8c9",
+    "src/client/geo-navigation.ts": "92817f60640f6df194499eb74675fd29cbe163ac73f9c97f4fa945094d62c22f",
+    "src/shared/geography.ts": "bcb85c52ff1b383d6057bebf5a812ff3cbf3bc8e34beeff427320246049cdcac",
+    "migrations/0039_geography_analytics_revision.sql": "db67556671fda3a9ea3f4e9ed0f0540592f76bc6e22004037f360bdd624519de",
+    "scripts/generate-regional-contract.ts": "70052d33995d8d90bd64931a6aafb8f3c997b915c88099d07a08e65cbf54e9d1",
+    "tests/geography-analytics.test.ts": "a60b855f6441a6d5e6ee2adae69dd6872f2c677260a752d7dc9ca51b1fe7749c",
+    "tests/browser/regional-analytics.spec.cjs": "ab3104ebee19ce021f148feb0ffdd3f8cd6f023a3a7f63281c5e587b65cf4e27",
+    "src/server/recovery.ts": "0ff1ee5c8d03db9f37ce39c41773efcf8fd5f28d5d6055c69c884d6f8bc1bc25"
+  }
+}

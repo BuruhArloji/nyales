@@ -1,0 +1,49 @@
+{
+  "baseline": "ERD v1.2",
+  "as_of": "2026-10-18",
+  "migrations": [
+    "0015_finance_foundation.sql",
+    "0016_invoice_product_snapshots.sql",
+    "0017_remove_customer_accounts.sql"
+  ],
+  "current_invoice_identity": [
+    "organization_id",
+    "source_system",
+    "external_invoice_id"
+  ],
+  "tables": {
+    "product_group": "versioned catalog group",
+    "product_price": "effective date intervals per product, IDR exponent0",
+    "invoice": "immutable snapshots, current projection flag; source and eligible net distinct",
+    "invoice_line": "revision-specific SKU/unit/quantity and classification snapshots",
+    "invoice_source_event": "source/version/hash idempotency ledger",
+    "credit_note": "immutable credit versions with one current per source credit",
+    "invoice_revision_credit": "revision credit snapshot links",
+    "invoice_import_job": "validated request/source/hash/plan/epoch and commit state",
+    "finance_epoch": "org reference-change guard",
+    "finance_period_lock": "later finalization writes statement references",
+    "finance_adjustment": "pending review deltas; later module consumes"
+  },
+  "links": [
+    "invoice_line.invoice_id -> invoice.id",
+    "invoice_revision_credit.invoice_id -> invoice.id",
+    "invoice_revision_credit.credit_id -> credit_note.id",
+    "invoice.previous_revision_id -> invoice.id (logical same-org chain)",
+    "invoice_import_job.attachment_id -> import_file.id",
+    "product_price.(organization_id,product_id) -> product.(organization_id,id)"
+  ],
+  "limitations": [
+    "No production ERP adapter",
+    "No finalized statement workflow yet",
+    "Pilot versions numeric positive strings",
+    "Integer money, max1e12 each, IDR only"
+  ],
+  "customer_architecture": {
+    "primary_entity": "customer_outlet",
+    "cardinality": "one customer = one physical location",
+    "removed_table": "account",
+    "removed_column": "customer_outlet.account_id",
+    "preservation": "master_audit immutable before_json snapshots; raw physical fact IDs unchanged",
+    "import_schema_version": 2
+  }
+}

@@ -1,0 +1,918 @@
+{
+  "date": "2026-10-25",
+  "migration": "0044_visit_planning_readiness.sql",
+  "application_tables": 112,
+  "tables_including_local_d1_metadata": 114,
+  "tables": {
+    "visit_generator_policy_version": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "revision_no",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "config_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "config_sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "updated_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "activated_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "activated_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "activated_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "app_user",
+          "from": "created_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "visit_policy_one_active",
+          "unique": 1,
+          "origin": "c",
+          "partial": 1
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_visit_generator_policy_version_3",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 2,
+          "name": "sqlite_autoindex_visit_generator_policy_version_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_visit_generator_policy_version_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": [
+        {
+          "name": "visit_policy_guard",
+          "sql": "CREATE TRIGGER visit_policy_guard BEFORE UPDATE ON visit_generator_policy_version BEGIN\n SELECT CASE WHEN NEW.id<>OLD.id OR NEW.organization_id<>OLD.organization_id OR NEW.revision_no<>OLD.revision_no OR NEW.created_by<>OLD.created_by OR NEW.created_at<>OLD.created_at OR NEW.version<>OLD.version+1 OR OLD.status='retired' OR (OLD.status<>'draft' AND (NEW.config_json<>OLD.config_json OR NEW.config_sha256<>OLD.config_sha256 OR NEW.name<>OLD.name)) OR (OLD.status='active' AND NEW.status<>'retired') THEN RAISE(ABORT,'VISIT_POLICY_IMMUTABLE_OR_VERSION') END;\nEND"
+        },
+        {
+          "name": "visit_policy_no_delete",
+          "sql": "CREATE TRIGGER visit_policy_no_delete BEFORE DELETE ON visit_generator_policy_version BEGIN SELECT RAISE(ABORT,'VISIT_POLICY_HISTORY_IMMUTABLE');END"
+        },
+        {
+          "name": "visit_input_visit_generator_policy_version_insert",
+          "sql": "CREATE TRIGGER visit_input_visit_generator_policy_version_insert AFTER INSERT ON visit_generator_policy_version BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+        },
+        {
+          "name": "visit_input_visit_generator_policy_version_update",
+          "sql": "CREATE TRIGGER visit_input_visit_generator_policy_version_update AFTER UPDATE ON visit_generator_policy_version BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+        },
+        {
+          "name": "visit_input_visit_generator_policy_version_delete",
+          "sql": "CREATE TRIGGER visit_input_visit_generator_policy_version_delete AFTER DELETE ON visit_generator_policy_version BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+        }
+      ]
+    },
+    "visit_generator_graph_release": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "manifest_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "manifest_sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'draft'",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "updated_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "created_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_visit_generator_graph_release_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_visit_generator_graph_release_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": [
+        {
+          "name": "visit_graph_guard",
+          "sql": "CREATE TRIGGER visit_graph_guard BEFORE UPDATE ON visit_generator_graph_release BEGIN\n SELECT CASE WHEN NEW.id<>OLD.id OR NEW.organization_id<>OLD.organization_id OR NEW.created_by<>OLD.created_by OR NEW.created_at<>OLD.created_at OR NEW.version<>OLD.version+1 OR OLD.status<>'draft' THEN RAISE(ABORT,'VISIT_GRAPH_IMMUTABLE_OR_VERSION') END;\nEND"
+        },
+        {
+          "name": "visit_graph_no_delete",
+          "sql": "CREATE TRIGGER visit_graph_no_delete BEFORE DELETE ON visit_generator_graph_release BEGIN SELECT RAISE(ABORT,'VISIT_GRAPH_HISTORY_IMMUTABLE');END"
+        },
+        {
+          "name": "visit_input_visit_generator_graph_release_insert",
+          "sql": "CREATE TRIGGER visit_input_visit_generator_graph_release_insert AFTER INSERT ON visit_generator_graph_release BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+        },
+        {
+          "name": "visit_input_visit_generator_graph_release_update",
+          "sql": "CREATE TRIGGER visit_input_visit_generator_graph_release_update AFTER UPDATE ON visit_generator_graph_release BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+        },
+        {
+          "name": "visit_input_visit_generator_graph_release_delete",
+          "sql": "CREATE TRIGGER visit_input_visit_generator_graph_release_delete AFTER DELETE ON visit_generator_graph_release BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+        }
+      ]
+    },
+    "visit_planning_revision": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "source_epoch",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "agenda_epoch",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "sqlite_autoindex_visit_planning_revision_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": []
+    },
+    "visit_planning_preflight": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "policy_version_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "graph_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "input_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "source_epoch",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "agenda_epoch",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "business_date",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "storage_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "snapshot_sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "byte_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "customer_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "blocking_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "actor_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "visit_generator_graph_release",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "visit_generator_graph_release",
+          "from": "graph_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "visit_generator_policy_version",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "visit_generator_policy_version",
+          "from": "policy_version_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "organization",
+          "from": "organization_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "seq": 0,
+          "name": "visit_planning_history",
+          "unique": 0,
+          "origin": "c",
+          "partial": 0
+        },
+        {
+          "seq": 1,
+          "name": "sqlite_autoindex_visit_planning_preflight_3",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 2,
+          "name": "sqlite_autoindex_visit_planning_preflight_2",
+          "unique": 1,
+          "origin": "u",
+          "partial": 0
+        },
+        {
+          "seq": 3,
+          "name": "sqlite_autoindex_visit_planning_preflight_1",
+          "unique": 1,
+          "origin": "pk",
+          "partial": 0
+        }
+      ],
+      "triggers": [
+        {
+          "name": "visit_preflight_no_update",
+          "sql": "CREATE TRIGGER visit_preflight_no_update BEFORE UPDATE ON visit_planning_preflight BEGIN SELECT RAISE(ABORT,'VISIT_PREFLIGHT_IMMUTABLE');END"
+        },
+        {
+          "name": "visit_preflight_no_delete",
+          "sql": "CREATE TRIGGER visit_preflight_no_delete BEFORE DELETE ON visit_planning_preflight BEGIN SELECT RAISE(ABORT,'VISIT_PREFLIGHT_IMMUTABLE');END"
+        }
+      ]
+    }
+  },
+  "revision_triggers": [
+    {
+      "name": "visit_planning_new_org",
+      "tbl_name": "organization",
+      "sql": "CREATE TRIGGER visit_planning_new_org AFTER INSERT ON organization BEGIN INSERT INTO visit_planning_revision VALUES(NEW.id,0,0);END"
+    },
+    {
+      "name": "visit_input_organization_update",
+      "tbl_name": "organization",
+      "sql": "CREATE TRIGGER visit_input_organization_update AFTER UPDATE ON organization BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.id;END"
+    },
+    {
+      "name": "visit_input_branch_insert",
+      "tbl_name": "branch",
+      "sql": "CREATE TRIGGER visit_input_branch_insert AFTER INSERT ON branch BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_branch_update",
+      "tbl_name": "branch",
+      "sql": "CREATE TRIGGER visit_input_branch_update AFTER UPDATE ON branch BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_branch_delete",
+      "tbl_name": "branch",
+      "sql": "CREATE TRIGGER visit_input_branch_delete AFTER DELETE ON branch BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_area_insert",
+      "tbl_name": "area",
+      "sql": "CREATE TRIGGER visit_input_area_insert AFTER INSERT ON area BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_area_update",
+      "tbl_name": "area",
+      "sql": "CREATE TRIGGER visit_input_area_update AFTER UPDATE ON area BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_area_delete",
+      "tbl_name": "area",
+      "sql": "CREATE TRIGGER visit_input_area_delete AFTER DELETE ON area BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_app_user_insert",
+      "tbl_name": "app_user",
+      "sql": "CREATE TRIGGER visit_input_app_user_insert AFTER INSERT ON app_user BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_app_user_update",
+      "tbl_name": "app_user",
+      "sql": "CREATE TRIGGER visit_input_app_user_update AFTER UPDATE ON app_user BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_app_user_delete",
+      "tbl_name": "app_user",
+      "sql": "CREATE TRIGGER visit_input_app_user_delete AFTER DELETE ON app_user BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_auth_role_assignment_insert",
+      "tbl_name": "auth_role_assignment",
+      "sql": "CREATE TRIGGER visit_input_auth_role_assignment_insert AFTER INSERT ON auth_role_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_auth_role_assignment_update",
+      "tbl_name": "auth_role_assignment",
+      "sql": "CREATE TRIGGER visit_input_auth_role_assignment_update AFTER UPDATE ON auth_role_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_auth_role_assignment_delete",
+      "tbl_name": "auth_role_assignment",
+      "sql": "CREATE TRIGGER visit_input_auth_role_assignment_delete AFTER DELETE ON auth_role_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_user_area_scope_insert",
+      "tbl_name": "user_area_scope",
+      "sql": "CREATE TRIGGER visit_input_user_area_scope_insert AFTER INSERT ON user_area_scope BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_user_area_scope_update",
+      "tbl_name": "user_area_scope",
+      "sql": "CREATE TRIGGER visit_input_user_area_scope_update AFTER UPDATE ON user_area_scope BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_user_area_scope_delete",
+      "tbl_name": "user_area_scope",
+      "sql": "CREATE TRIGGER visit_input_user_area_scope_delete AFTER DELETE ON user_area_scope BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_reporting_assignment_insert",
+      "tbl_name": "reporting_assignment",
+      "sql": "CREATE TRIGGER visit_input_reporting_assignment_insert AFTER INSERT ON reporting_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_reporting_assignment_update",
+      "tbl_name": "reporting_assignment",
+      "sql": "CREATE TRIGGER visit_input_reporting_assignment_update AFTER UPDATE ON reporting_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_reporting_assignment_delete",
+      "tbl_name": "reporting_assignment",
+      "sql": "CREATE TRIGGER visit_input_reporting_assignment_delete AFTER DELETE ON reporting_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_work_calendar_insert",
+      "tbl_name": "work_calendar",
+      "sql": "CREATE TRIGGER visit_input_work_calendar_insert AFTER INSERT ON work_calendar BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_work_calendar_update",
+      "tbl_name": "work_calendar",
+      "sql": "CREATE TRIGGER visit_input_work_calendar_update AFTER UPDATE ON work_calendar BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_work_calendar_delete",
+      "tbl_name": "work_calendar",
+      "sql": "CREATE TRIGGER visit_input_work_calendar_delete AFTER DELETE ON work_calendar BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_outlet_insert",
+      "tbl_name": "customer_outlet",
+      "sql": "CREATE TRIGGER visit_input_customer_outlet_insert AFTER INSERT ON customer_outlet BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_outlet_update",
+      "tbl_name": "customer_outlet",
+      "sql": "CREATE TRIGGER visit_input_customer_outlet_update AFTER UPDATE ON customer_outlet BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_outlet_delete",
+      "tbl_name": "customer_outlet",
+      "sql": "CREATE TRIGGER visit_input_customer_outlet_delete AFTER DELETE ON customer_outlet BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_assignment_insert",
+      "tbl_name": "customer_assignment",
+      "sql": "CREATE TRIGGER visit_input_customer_assignment_insert AFTER INSERT ON customer_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_assignment_update",
+      "tbl_name": "customer_assignment",
+      "sql": "CREATE TRIGGER visit_input_customer_assignment_update AFTER UPDATE ON customer_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_assignment_delete",
+      "tbl_name": "customer_assignment",
+      "sql": "CREATE TRIGGER visit_input_customer_assignment_delete AFTER DELETE ON customer_assignment BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_invoice_insert",
+      "tbl_name": "invoice",
+      "sql": "CREATE TRIGGER visit_input_invoice_insert AFTER INSERT ON invoice BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_invoice_update",
+      "tbl_name": "invoice",
+      "sql": "CREATE TRIGGER visit_input_invoice_update AFTER UPDATE ON invoice BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_invoice_delete",
+      "tbl_name": "invoice",
+      "sql": "CREATE TRIGGER visit_input_invoice_delete AFTER DELETE ON invoice BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_source_coverage_insert",
+      "tbl_name": "customer_source_coverage",
+      "sql": "CREATE TRIGGER visit_input_customer_source_coverage_insert AFTER INSERT ON customer_source_coverage BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_source_coverage_update",
+      "tbl_name": "customer_source_coverage",
+      "sql": "CREATE TRIGGER visit_input_customer_source_coverage_update AFTER UPDATE ON customer_source_coverage BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_customer_source_coverage_delete",
+      "tbl_name": "customer_source_coverage",
+      "sql": "CREATE TRIGGER visit_input_customer_source_coverage_delete AFTER DELETE ON customer_source_coverage BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_activity_insert",
+      "tbl_name": "activity",
+      "sql": "CREATE TRIGGER visit_input_activity_insert AFTER INSERT ON activity BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_activity_update",
+      "tbl_name": "activity",
+      "sql": "CREATE TRIGGER visit_input_activity_update AFTER UPDATE ON activity BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_activity_delete",
+      "tbl_name": "activity",
+      "sql": "CREATE TRIGGER visit_input_activity_delete AFTER DELETE ON activity BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_work_plan_insert",
+      "tbl_name": "work_plan",
+      "sql": "CREATE TRIGGER visit_input_work_plan_insert AFTER INSERT ON work_plan BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1,agenda_epoch=agenda_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_work_plan_update",
+      "tbl_name": "work_plan",
+      "sql": "CREATE TRIGGER visit_input_work_plan_update AFTER UPDATE ON work_plan BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1,agenda_epoch=agenda_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_work_plan_delete",
+      "tbl_name": "work_plan",
+      "sql": "CREATE TRIGGER visit_input_work_plan_delete AFTER DELETE ON work_plan BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1,agenda_epoch=agenda_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_visit_generator_policy_version_insert",
+      "tbl_name": "visit_generator_policy_version",
+      "sql": "CREATE TRIGGER visit_input_visit_generator_policy_version_insert AFTER INSERT ON visit_generator_policy_version BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_visit_generator_policy_version_update",
+      "tbl_name": "visit_generator_policy_version",
+      "sql": "CREATE TRIGGER visit_input_visit_generator_policy_version_update AFTER UPDATE ON visit_generator_policy_version BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_visit_generator_policy_version_delete",
+      "tbl_name": "visit_generator_policy_version",
+      "sql": "CREATE TRIGGER visit_input_visit_generator_policy_version_delete AFTER DELETE ON visit_generator_policy_version BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    },
+    {
+      "name": "visit_input_visit_generator_graph_release_insert",
+      "tbl_name": "visit_generator_graph_release",
+      "sql": "CREATE TRIGGER visit_input_visit_generator_graph_release_insert AFTER INSERT ON visit_generator_graph_release BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_visit_generator_graph_release_update",
+      "tbl_name": "visit_generator_graph_release",
+      "sql": "CREATE TRIGGER visit_input_visit_generator_graph_release_update AFTER UPDATE ON visit_generator_graph_release BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=NEW.organization_id;END"
+    },
+    {
+      "name": "visit_input_visit_generator_graph_release_delete",
+      "tbl_name": "visit_generator_graph_release",
+      "sql": "CREATE TRIGGER visit_input_visit_generator_graph_release_delete AFTER DELETE ON visit_generator_graph_release BEGIN UPDATE visit_planning_revision SET source_epoch=source_epoch+1 WHERE organization_id=OLD.organization_id;END"
+    }
+  ],
+  "snapshot_format": "nyales-visit-readiness-1",
+  "snapshot_storage": "private R2; D1 stores reference/checksum/size/revisions",
+  "not_solver_snapshot": true,
+  "can_generate": false,
+  "publishable": false
+}

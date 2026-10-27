@@ -1,0 +1,2614 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-070 dated visit operational profiles",
+    "version": "0.1.0",
+    "description": "Immutable dated manual profiles, inclusive 1-366 days. Exact-range superseding revisions with ETag; overlapping current periods rejected. Empty breaks/absence/reception require explicit reviewed confirmations. No solver job/agenda mutation."
+  },
+  "paths": {
+    "/api/visit-generator/rep-profiles": {
+      "get": {
+        "operationId": "visit_operational_rep_get__api_visit_generator_rep_profiles",
+        "summary": "GET /api/visit-generator/rep-profiles",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "rep_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rep_list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      },
+      "post": {
+        "operationId": "visit_operational_rep_post__api_visit_generator_rep_profiles",
+        "summary": "POST /api/visit-generator/rep-profiles",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required for retire or when previous_id is present; quoted current profile version. New independent period requires no If-Match."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/rep_profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rep_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      }
+    },
+    "/api/visit-generator/rep-profiles/{id}": {
+      "get": {
+        "operationId": "visit_operational_rep_get__api_visit_generator_rep_profiles__id_",
+        "summary": "GET /api/visit-generator/rep-profiles/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rep_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      }
+    },
+    "/api/visit-generator/rep-profiles/{id}/retire": {
+      "post": {
+        "operationId": "visit_operational_rep_post__api_visit_generator_rep_profiles__id__retire",
+        "summary": "POST /api/visit-generator/rep-profiles/{id}/retire",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required for retire or when previous_id is present; quoted current profile version. New independent period requires no If-Match."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retire_profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rep_retired_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      }
+    },
+    "/api/visit-generator/customer-profiles": {
+      "get": {
+        "operationId": "visit_operational_customer_get__api_visit_generator_customer_profiles",
+        "summary": "GET /api/visit-generator/customer-profiles",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "customer_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer_list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      },
+      "post": {
+        "operationId": "visit_operational_customer_post__api_visit_generator_customer_profiles",
+        "summary": "POST /api/visit-generator/customer-profiles",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required for retire or when previous_id is present; quoted current profile version. New independent period requires no If-Match."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/customer_profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      }
+    },
+    "/api/visit-generator/customer-profiles/{id}": {
+      "get": {
+        "operationId": "visit_operational_customer_get__api_visit_generator_customer_profiles__id_",
+        "summary": "GET /api/visit-generator/customer-profiles/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      }
+    },
+    "/api/visit-generator/customer-profiles/{id}/retire": {
+      "post": {
+        "operationId": "visit_operational_customer_post__api_visit_generator_customer_profiles__id__retire",
+        "summary": "POST /api/visit-generator/customer-profiles/{id}/retire",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required for retire or when previous_id is present; quoted current profile version. New independent period requires no If-Match."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retire_profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Current organization Management/NSM only; manual reviewed source, not GPS or agenda mutation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer_retired_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable code; overlap/resource/concurrency guards roll back whole change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-implementation-state": "implemented-local-operational-source-profiles"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "rep_profile": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "valid_from": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "valid_until": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "previous_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "branch_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "start": {
+                "type": "object",
+                "properties": {
+                  "longitude_e7": {
+                    "type": "integer",
+                    "minimum": -1800000000,
+                    "maximum": 1800000000
+                  },
+                  "latitude_e7": {
+                    "type": "integer",
+                    "minimum": -900000000,
+                    "maximum": 900000000
+                  }
+                },
+                "required": [
+                  "longitude_e7",
+                  "latitude_e7"
+                ],
+                "additionalProperties": false
+              },
+              "end": {
+                "type": "object",
+                "properties": {
+                  "longitude_e7": {
+                    "type": "integer",
+                    "minimum": -1800000000,
+                    "maximum": 1800000000
+                  },
+                  "latitude_e7": {
+                    "type": "integer",
+                    "minimum": -900000000,
+                    "maximum": 900000000
+                  }
+                },
+                "required": [
+                  "longitude_e7",
+                  "latitude_e7"
+                ],
+                "additionalProperties": false
+              },
+              "breaks": {
+                "maxItems": 8,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "end": {
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    }
+                  },
+                  "required": [
+                    "start",
+                    "end"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "breaks_reviewed": {
+                "type": "boolean",
+                "const": true
+              },
+              "absent_dates": {
+                "maxItems": 366,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                }
+              },
+              "absences_reviewed": {
+                "type": "boolean",
+                "const": true
+              },
+              "source_note": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "branch_id",
+              "start",
+              "end",
+              "breaks",
+              "breaks_reviewed",
+              "absent_dates",
+              "absences_reviewed",
+              "source_note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "valid_from",
+          "valid_until",
+          "previous_id",
+          "reason",
+          "rep_id",
+          "config"
+        ],
+        "additionalProperties": false
+      },
+      "customer_profile": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "valid_from": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "valid_until": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "previous_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "customer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "service_seconds": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 60,
+                    "maximum": 86400
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reception_windows": {
+                "maxItems": 21,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "weekday": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 7
+                    },
+                    "start": {
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "end": {
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    }
+                  },
+                  "required": [
+                    "weekday",
+                    "start",
+                    "end"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "reception_reviewed": {
+                "type": "boolean",
+                "const": true
+              },
+              "source_note": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "service_seconds",
+              "reception_windows",
+              "reception_reviewed",
+              "source_note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "valid_from",
+          "valid_until",
+          "previous_id",
+          "reason",
+          "customer_id",
+          "config"
+        ],
+        "additionalProperties": false
+      },
+      "retire_profile": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "reason",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "rep_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "organization_id": {
+                "type": "string"
+              },
+              "rep_id": {
+                "type": "string"
+              },
+              "valid_from": {
+                "type": "string"
+              },
+              "valid_until": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "current",
+                  "superseded",
+                  "retired"
+                ]
+              },
+              "previous_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "config": {
+                "type": "object",
+                "properties": {
+                  "branch_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "start": {
+                    "type": "object",
+                    "properties": {
+                      "longitude_e7": {
+                        "type": "integer",
+                        "minimum": -1800000000,
+                        "maximum": 1800000000
+                      },
+                      "latitude_e7": {
+                        "type": "integer",
+                        "minimum": -900000000,
+                        "maximum": 900000000
+                      }
+                    },
+                    "required": [
+                      "longitude_e7",
+                      "latitude_e7"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "end": {
+                    "type": "object",
+                    "properties": {
+                      "longitude_e7": {
+                        "type": "integer",
+                        "minimum": -1800000000,
+                        "maximum": 1800000000
+                      },
+                      "latitude_e7": {
+                        "type": "integer",
+                        "minimum": -900000000,
+                        "maximum": 900000000
+                      }
+                    },
+                    "required": [
+                      "longitude_e7",
+                      "latitude_e7"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "breaks": {
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "end": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        }
+                      },
+                      "required": [
+                        "start",
+                        "end"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "breaks_reviewed": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "absent_dates": {
+                    "maxItems": 366,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                    }
+                  },
+                  "absences_reviewed": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "source_note": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "branch_id",
+                  "start",
+                  "end",
+                  "breaks",
+                  "breaks_reviewed",
+                  "absent_dates",
+                  "absences_reviewed",
+                  "source_note"
+                ],
+                "additionalProperties": false
+              },
+              "config_sha256": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "ended_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "organization_id",
+              "rep_id",
+              "valid_from",
+              "valid_until",
+              "revision_no",
+              "version",
+              "status",
+              "previous_id",
+              "config",
+              "config_sha256",
+              "reason",
+              "created_by",
+              "created_at",
+              "ended_at"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "rep_retired_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "organization_id": {
+                "type": "string"
+              },
+              "rep_id": {
+                "type": "string"
+              },
+              "valid_from": {
+                "type": "string"
+              },
+              "valid_until": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "current",
+                  "superseded",
+                  "retired"
+                ]
+              },
+              "previous_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "config": {
+                "type": "object",
+                "properties": {
+                  "branch_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "start": {
+                    "type": "object",
+                    "properties": {
+                      "longitude_e7": {
+                        "type": "integer",
+                        "minimum": -1800000000,
+                        "maximum": 1800000000
+                      },
+                      "latitude_e7": {
+                        "type": "integer",
+                        "minimum": -900000000,
+                        "maximum": 900000000
+                      }
+                    },
+                    "required": [
+                      "longitude_e7",
+                      "latitude_e7"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "end": {
+                    "type": "object",
+                    "properties": {
+                      "longitude_e7": {
+                        "type": "integer",
+                        "minimum": -1800000000,
+                        "maximum": 1800000000
+                      },
+                      "latitude_e7": {
+                        "type": "integer",
+                        "minimum": -900000000,
+                        "maximum": 900000000
+                      }
+                    },
+                    "required": [
+                      "longitude_e7",
+                      "latitude_e7"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "breaks": {
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "end": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        }
+                      },
+                      "required": [
+                        "start",
+                        "end"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "breaks_reviewed": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "absent_dates": {
+                    "maxItems": 366,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                    }
+                  },
+                  "absences_reviewed": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "source_note": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "branch_id",
+                  "start",
+                  "end",
+                  "breaks",
+                  "breaks_reviewed",
+                  "absent_dates",
+                  "absences_reviewed",
+                  "source_note"
+                ],
+                "additionalProperties": false
+              },
+              "config_sha256": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "ended_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "retirement_reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "organization_id",
+              "rep_id",
+              "valid_from",
+              "valid_until",
+              "revision_no",
+              "version",
+              "status",
+              "previous_id",
+              "config",
+              "config_sha256",
+              "reason",
+              "created_by",
+              "created_at",
+              "ended_at",
+              "retirement_reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "rep_list": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "profiles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "type": "string"
+                    },
+                    "rep_id": {
+                      "type": "string"
+                    },
+                    "valid_from": {
+                      "type": "string"
+                    },
+                    "valid_until": {
+                      "type": "string"
+                    },
+                    "revision_no": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "current",
+                        "superseded",
+                        "retired"
+                      ]
+                    },
+                    "previous_id": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "branch_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        "start": {
+                          "type": "object",
+                          "properties": {
+                            "longitude_e7": {
+                              "type": "integer",
+                              "minimum": -1800000000,
+                              "maximum": 1800000000
+                            },
+                            "latitude_e7": {
+                              "type": "integer",
+                              "minimum": -900000000,
+                              "maximum": 900000000
+                            }
+                          },
+                          "required": [
+                            "longitude_e7",
+                            "latitude_e7"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "end": {
+                          "type": "object",
+                          "properties": {
+                            "longitude_e7": {
+                              "type": "integer",
+                              "minimum": -1800000000,
+                              "maximum": 1800000000
+                            },
+                            "latitude_e7": {
+                              "type": "integer",
+                              "minimum": -900000000,
+                              "maximum": 900000000
+                            }
+                          },
+                          "required": [
+                            "longitude_e7",
+                            "latitude_e7"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "breaks": {
+                          "maxItems": 8,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "start": {
+                                "type": "string",
+                                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                              },
+                              "end": {
+                                "type": "string",
+                                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                              }
+                            },
+                            "required": [
+                              "start",
+                              "end"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "breaks_reviewed": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "absent_dates": {
+                          "maxItems": 366,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "format": "date",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                          }
+                        },
+                        "absences_reviewed": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "source_note": {
+                          "type": "string",
+                          "minLength": 8,
+                          "maxLength": 500
+                        }
+                      },
+                      "required": [
+                        "branch_id",
+                        "start",
+                        "end",
+                        "breaks",
+                        "breaks_reviewed",
+                        "absent_dates",
+                        "absences_reviewed",
+                        "source_note"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "config_sha256": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "created_by": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "ended_at": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "organization_id",
+                    "rep_id",
+                    "valid_from",
+                    "valid_until",
+                    "revision_no",
+                    "version",
+                    "status",
+                    "previous_id",
+                    "config",
+                    "config_sha256",
+                    "reason",
+                    "created_by",
+                    "created_at",
+                    "ended_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "kind": {
+                "const": "rep"
+              },
+              "dates": {
+                "const": "inclusive"
+              },
+              "source_type": {
+                "const": "management_reviewed_manual"
+              }
+            },
+            "required": [
+              "profiles",
+              "has_more",
+              "kind",
+              "dates",
+              "source_type"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "customer_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "organization_id": {
+                "type": "string"
+              },
+              "customer_id": {
+                "type": "string"
+              },
+              "valid_from": {
+                "type": "string"
+              },
+              "valid_until": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "current",
+                  "superseded",
+                  "retired"
+                ]
+              },
+              "previous_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "config": {
+                "type": "object",
+                "properties": {
+                  "service_seconds": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 60,
+                        "maximum": 86400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reception_windows": {
+                    "maxItems": 21,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "weekday": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 7
+                        },
+                        "start": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "end": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        }
+                      },
+                      "required": [
+                        "weekday",
+                        "start",
+                        "end"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "reception_reviewed": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "source_note": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "service_seconds",
+                  "reception_windows",
+                  "reception_reviewed",
+                  "source_note"
+                ],
+                "additionalProperties": false
+              },
+              "config_sha256": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "ended_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "organization_id",
+              "customer_id",
+              "valid_from",
+              "valid_until",
+              "revision_no",
+              "version",
+              "status",
+              "previous_id",
+              "config",
+              "config_sha256",
+              "reason",
+              "created_by",
+              "created_at",
+              "ended_at"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "customer_retired_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "organization_id": {
+                "type": "string"
+              },
+              "customer_id": {
+                "type": "string"
+              },
+              "valid_from": {
+                "type": "string"
+              },
+              "valid_until": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "current",
+                  "superseded",
+                  "retired"
+                ]
+              },
+              "previous_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "config": {
+                "type": "object",
+                "properties": {
+                  "service_seconds": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 60,
+                        "maximum": 86400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reception_windows": {
+                    "maxItems": 21,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "weekday": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 7
+                        },
+                        "start": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "end": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        }
+                      },
+                      "required": [
+                        "weekday",
+                        "start",
+                        "end"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "reception_reviewed": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "source_note": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "service_seconds",
+                  "reception_windows",
+                  "reception_reviewed",
+                  "source_note"
+                ],
+                "additionalProperties": false
+              },
+              "config_sha256": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "ended_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "retirement_reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "organization_id",
+              "customer_id",
+              "valid_from",
+              "valid_until",
+              "revision_no",
+              "version",
+              "status",
+              "previous_id",
+              "config",
+              "config_sha256",
+              "reason",
+              "created_by",
+              "created_at",
+              "ended_at",
+              "retirement_reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "customer_list": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "profiles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "type": "string"
+                    },
+                    "customer_id": {
+                      "type": "string"
+                    },
+                    "valid_from": {
+                      "type": "string"
+                    },
+                    "valid_until": {
+                      "type": "string"
+                    },
+                    "revision_no": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "current",
+                        "superseded",
+                        "retired"
+                      ]
+                    },
+                    "previous_id": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "service_seconds": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 60,
+                              "maximum": 86400
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reception_windows": {
+                          "maxItems": 21,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "weekday": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 7
+                              },
+                              "start": {
+                                "type": "string",
+                                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                              },
+                              "end": {
+                                "type": "string",
+                                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                              }
+                            },
+                            "required": [
+                              "weekday",
+                              "start",
+                              "end"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "reception_reviewed": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "source_note": {
+                          "type": "string",
+                          "minLength": 8,
+                          "maxLength": 500
+                        }
+                      },
+                      "required": [
+                        "service_seconds",
+                        "reception_windows",
+                        "reception_reviewed",
+                        "source_note"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "config_sha256": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "created_by": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "ended_at": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "organization_id",
+                    "customer_id",
+                    "valid_from",
+                    "valid_until",
+                    "revision_no",
+                    "version",
+                    "status",
+                    "previous_id",
+                    "config",
+                    "config_sha256",
+                    "reason",
+                    "created_by",
+                    "created_at",
+                    "ended_at"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "kind": {
+                "const": "customer"
+              },
+              "dates": {
+                "const": "inclusive"
+              },
+              "source_type": {
+                "const": "management_reviewed_manual"
+              }
+            },
+            "required": [
+              "profiles",
+              "has_more",
+              "kind",
+              "dates",
+              "source_type"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "x-migration": "0045_visit_operational_profiles.sql"
+}

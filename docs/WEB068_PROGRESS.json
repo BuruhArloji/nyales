@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-24",
+  "item": "WEB-068",
+  "status": "Implemented and verified local; real-source/provider/human acceptance pending",
+  "definition_version": "nyales-workload-1",
+  "tests": {
+    "engine": 13,
+    "workload": 27,
+    "suite_including_prior_features": 211,
+    "browser": 2,
+    "regression_browser": 9,
+    "typecheck": "passed",
+    "build": "passed"
+  },
+  "new_runtime_operations": 14,
+  "new_migrations": 1,
+  "runtime_operations_total": 276,
+  "baseline_uat_scenarios": 82,
+  "next": [
+    "WEB-069 detailed Plan Visit Generator contracts and data model"
+  ],
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "evidence": "docs/WEB068_EVIDENCE.json"
+}

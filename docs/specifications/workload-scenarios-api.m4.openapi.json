@@ -1,0 +1,5165 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES WEB-068 workload and territory scenario API",
+    "version": "0.1.0",
+    "description": "Explicit monthly service policy, server-derived entire scoped portfolios and immutable scenario revisions. No travel/routing or optimization. No business defaults or invisible assignments. R2 stores private evidence; D1 stores versioned references. Local implementation; not production acceptance."
+  },
+  "paths": {
+    "/api/workload-policies": {
+      "get": {
+        "operationId": "workload_get__api_workload_policies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_list_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      },
+      "post": {
+        "operationId": "workload_post__api_workload_policies",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/policy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/workload-policies/{id}": {
+      "put": {
+        "operationId": "workload_put__api_workload_policies__id_",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version, or scenario root version for revisions/applications."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/policy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/workload-policies/{id}/activate": {
+      "post": {
+        "operationId": "workload_post__api_workload_policies__id__activate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version, or scenario root version for revisions/applications."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/activate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/workload-policies/{id}/retire": {
+      "post": {
+        "operationId": "workload_post__api_workload_policies__id__retire",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version, or scenario root version for revisions/applications."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/retire"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/policy_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/workload/policy": {
+      "get": {
+        "operationId": "workload_get__api_workload_policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/active_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current scope; partial cohort never claims portfolio spare capacity."
+      }
+    },
+    "/api/workload/summary": {
+      "get": {
+        "operationId": "workload_get__api_workload_summary",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "sales_period",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "effective_date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            }
+          },
+          {
+            "name": "dataset_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/summary_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Current scope; partial cohort never claims portfolio spare capacity."
+      }
+    },
+    "/api/territory-scenarios/preview": {
+      "post": {
+        "operationId": "workload_post__api_territory_scenarios_preview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/preview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/preview_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/territory-scenarios": {
+      "post": {
+        "operationId": "workload_post__api_territory_scenarios",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/save"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/save_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/save_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      },
+      "get": {
+        "operationId": "workload_get__api_territory_scenarios",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/scenarios_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/territory-scenarios/{id}": {
+      "get": {
+        "operationId": "workload_get__api_territory_scenarios__id_",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/saved_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/territory-scenarios/{id}/revisions/{revisionId}": {
+      "get": {
+        "operationId": "workload_get__api_territory_scenarios__id__revisions__revisionId_",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "revisionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/saved_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/territory-scenarios/{id}/revisions": {
+      "post": {
+        "operationId": "workload_post__api_territory_scenarios__id__revisions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version, or scenario root version for revisions/applications."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/save"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/save_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/save_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    },
+    "/api/territory-scenarios/{id}/applications": {
+      "post": {
+        "operationId": "workload_post__api_territory_scenarios__id__applications",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version, or scenario root version for revisions/applications."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apply"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application_response"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scoped JSON data; financial amounts are whole IDR rupiah.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application_response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; no partial business commit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM current organization only."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "policy": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema_version": {
+                "type": "number",
+                "const": 1
+              },
+              "period_basis": {
+                "type": "string",
+                "const": "calendar_month"
+              },
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "schema_version": {
+                    "type": "number",
+                    "const": 1
+                  },
+                  "demand_basis": {
+                    "type": "string",
+                    "const": "explicit_contacts_per_period"
+                  },
+                  "capacity_basis": {
+                    "type": "string",
+                    "const": "service_minutes_excluding_travel_and_overhead"
+                  },
+                  "weights": {
+                    "type": "object",
+                    "properties": {
+                      "customers": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                      },
+                      "service_minutes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                      },
+                      "observed_sales": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": [
+                      "customers",
+                      "service_minutes",
+                      "observed_sales"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "schema_version",
+                  "demand_basis",
+                  "capacity_basis",
+                  "weights"
+                ],
+                "additionalProperties": false
+              },
+              "channels": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "object",
+                    "properties": {
+                      "cohort": {
+                        "type": "string",
+                        "enum": [
+                          "all_active_customers",
+                          "assigned_or_proposed"
+                        ]
+                      },
+                      "contacts_per_period": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 366
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "duration_minutes": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1440
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "capacity": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "unknown"
+                              }
+                            },
+                            "required": [
+                              "mode"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "fixed_service_minutes"
+                              },
+                              "minutes": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 44640
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "minutes"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "calendar_share"
+                              },
+                              "service_share_basis_points": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 10000
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "service_share_basis_points"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "cohort",
+                      "contacts_per_period",
+                      "duration_minutes",
+                      "capacity"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "telesales": {
+                    "type": "object",
+                    "properties": {
+                      "cohort": {
+                        "type": "string",
+                        "enum": [
+                          "all_active_customers",
+                          "assigned_or_proposed"
+                        ]
+                      },
+                      "contacts_per_period": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 366
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "duration_minutes": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1440
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "capacity": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "unknown"
+                              }
+                            },
+                            "required": [
+                              "mode"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "fixed_service_minutes"
+                              },
+                              "minutes": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 44640
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "minutes"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "const": "calendar_share"
+                              },
+                              "service_share_basis_points": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 10000
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "service_share_basis_points"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "cohort",
+                      "contacts_per_period",
+                      "duration_minutes",
+                      "capacity"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "field",
+                  "telesales"
+                ],
+                "additionalProperties": false
+              },
+              "customer_overrides": {
+                "maxItems": 2000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "customer_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "channel": {
+                      "type": "string",
+                      "enum": [
+                        "field",
+                        "telesales"
+                      ]
+                    },
+                    "contacts_per_period": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 366
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "duration_minutes": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1440
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "customer_id",
+                    "channel",
+                    "contacts_per_period",
+                    "duration_minutes",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "rep_overrides": {
+                "maxItems": 200,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rep_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "channel": {
+                      "type": "string",
+                      "enum": [
+                        "field",
+                        "telesales"
+                      ]
+                    },
+                    "capacity_service_minutes": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 44640
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "rep_id",
+                    "channel",
+                    "capacity_service_minutes",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "schema_version",
+              "period_basis",
+              "parameters",
+              "channels",
+              "customer_overrides",
+              "rep_overrides"
+            ],
+            "additionalProperties": false
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "config",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "activate": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "config_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expected_active_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "reason",
+          "config_sha256",
+          "expected_active_id",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "retire": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "query": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "sales_period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "effective_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "period",
+          "sales_period",
+          "effective_date"
+        ],
+        "additionalProperties": false
+      },
+      "preview": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "basis": {
+            "type": "object",
+            "properties": {
+              "period": {
+                "type": "string",
+                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+              },
+              "sales_period": {
+                "type": "string",
+                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+              },
+              "effective_date": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "dataset_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "period",
+              "sales_period",
+              "effective_date"
+            ],
+            "additionalProperties": false
+          },
+          "batches": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "input": {
+                  "type": "object",
+                  "properties": {
+                    "dataset_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "boundary_ids": {
+                      "minItems": 1,
+                      "maxItems": 50,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      }
+                    },
+                    "area_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "effective_from_date": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 500
+                    },
+                    "assignment_mode": {
+                      "type": "string",
+                      "enum": [
+                        "none",
+                        "field",
+                        "telesales",
+                        "both"
+                      ]
+                    },
+                    "field_rep_id": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "telesales_rep_id": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "customer_ids": {
+                      "maxItems": 25,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      }
+                    },
+                    "exception_customer_ids": {
+                      "maxItems": 25,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      }
+                    },
+                    "exception_reason": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "dataset_id",
+                    "boundary_ids",
+                    "area_id",
+                    "effective_from_date",
+                    "reason",
+                    "assignment_mode",
+                    "field_rep_id",
+                    "telesales_rep_id"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "key",
+                "input"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "basis",
+          "batches"
+        ],
+        "additionalProperties": false
+      },
+      "save": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "basis": {
+            "type": "object",
+            "properties": {
+              "period": {
+                "type": "string",
+                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+              },
+              "sales_period": {
+                "type": "string",
+                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+              },
+              "effective_date": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "dataset_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "period",
+              "sales_period",
+              "effective_date"
+            ],
+            "additionalProperties": false
+          },
+          "batches": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "input": {
+                  "type": "object",
+                  "properties": {
+                    "dataset_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "boundary_ids": {
+                      "minItems": 1,
+                      "maxItems": 50,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      }
+                    },
+                    "area_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "effective_from_date": {
+                      "type": "string",
+                      "format": "date",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 500
+                    },
+                    "assignment_mode": {
+                      "type": "string",
+                      "enum": [
+                        "none",
+                        "field",
+                        "telesales",
+                        "both"
+                      ]
+                    },
+                    "field_rep_id": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "telesales_rep_id": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "customer_ids": {
+                      "maxItems": 25,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      }
+                    },
+                    "exception_customer_ids": {
+                      "maxItems": 25,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      }
+                    },
+                    "exception_reason": {
+                      "type": "string",
+                      "minLength": 8,
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "dataset_id",
+                    "boundary_ids",
+                    "area_id",
+                    "effective_from_date",
+                    "reason",
+                    "assignment_mode",
+                    "field_rep_id",
+                    "telesales_rep_id"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "key",
+                "input"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "preview_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "basis_epoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "basis",
+          "batches",
+          "name",
+          "reason",
+          "preview_hash",
+          "basis_epoch"
+        ],
+        "additionalProperties": false
+      },
+      "apply": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "revision_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "batch_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "preview_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "basis_epoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "revision_id",
+          "batch_key",
+          "preview_hash",
+          "basis_epoch",
+          "reason",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "config": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "number",
+            "const": 1
+          },
+          "period_basis": {
+            "type": "string",
+            "const": "calendar_month"
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "schema_version": {
+                "type": "number",
+                "const": 1
+              },
+              "demand_basis": {
+                "type": "string",
+                "const": "explicit_contacts_per_period"
+              },
+              "capacity_basis": {
+                "type": "string",
+                "const": "service_minutes_excluding_travel_and_overhead"
+              },
+              "weights": {
+                "type": "object",
+                "properties": {
+                  "customers": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "service_minutes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "observed_sales": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                },
+                "required": [
+                  "customers",
+                  "service_minutes",
+                  "observed_sales"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "schema_version",
+              "demand_basis",
+              "capacity_basis",
+              "weights"
+            ],
+            "additionalProperties": false
+          },
+          "channels": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "object",
+                "properties": {
+                  "cohort": {
+                    "type": "string",
+                    "enum": [
+                      "all_active_customers",
+                      "assigned_or_proposed"
+                    ]
+                  },
+                  "contacts_per_period": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 366
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "duration_minutes": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1440
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "capacity": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "unknown"
+                          }
+                        },
+                        "required": [
+                          "mode"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "fixed_service_minutes"
+                          },
+                          "minutes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 44640
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "minutes"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "calendar_share"
+                          },
+                          "service_share_basis_points": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 10000
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "service_share_basis_points"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "cohort",
+                  "contacts_per_period",
+                  "duration_minutes",
+                  "capacity"
+                ],
+                "additionalProperties": false
+              },
+              "telesales": {
+                "type": "object",
+                "properties": {
+                  "cohort": {
+                    "type": "string",
+                    "enum": [
+                      "all_active_customers",
+                      "assigned_or_proposed"
+                    ]
+                  },
+                  "contacts_per_period": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 366
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "duration_minutes": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1440
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "capacity": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "unknown"
+                          }
+                        },
+                        "required": [
+                          "mode"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "fixed_service_minutes"
+                          },
+                          "minutes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 44640
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "minutes"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "type": "string",
+                            "const": "calendar_share"
+                          },
+                          "service_share_basis_points": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 10000
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "service_share_basis_points"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "cohort",
+                  "contacts_per_period",
+                  "duration_minutes",
+                  "capacity"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "field",
+              "telesales"
+            ],
+            "additionalProperties": false
+          },
+          "customer_overrides": {
+            "maxItems": 2000,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "field",
+                    "telesales"
+                  ]
+                },
+                "contacts_per_period": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 366
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "duration_minutes": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1440
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 8,
+                  "maxLength": 500
+                }
+              },
+              "required": [
+                "customer_id",
+                "channel",
+                "contacts_per_period",
+                "duration_minutes",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "rep_overrides": {
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rep_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "field",
+                    "telesales"
+                  ]
+                },
+                "capacity_service_minutes": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 44640
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 8,
+                  "maxLength": 500
+                }
+              },
+              "required": [
+                "rep_id",
+                "channel",
+                "capacity_service_minutes",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "schema_version",
+          "period_basis",
+          "parameters",
+          "channels",
+          "customer_overrides",
+          "rep_overrides"
+        ],
+        "additionalProperties": false
+      },
+      "result": {
+        "type": "object",
+        "properties": {
+          "definition_version": {
+            "const": "nyales-workload-1"
+          },
+          "basis": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "period": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string"
+              },
+              "end": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ],
+            "additionalProperties": false
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "before": {
+            "type": "object",
+            "properties": {
+              "unique_customer_count": {
+                "type": "integer"
+              },
+              "customer_channel_relationships": {
+                "type": "integer"
+              },
+              "channels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "channel": {
+                      "enum": [
+                        "field",
+                        "telesales"
+                      ]
+                    },
+                    "customer_count": {
+                      "type": "integer"
+                    },
+                    "known_contacts_per_period": {
+                      "type": "integer"
+                    },
+                    "contacts_per_period": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "known_service_minutes": {
+                      "type": "integer"
+                    },
+                    "service_minutes": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "unknown_frequency_customers": {
+                      "type": "integer"
+                    },
+                    "unknown_duration_customers": {
+                      "type": "integer"
+                    },
+                    "demand_complete": {
+                      "type": "boolean"
+                    },
+                    "cohort_complete": {
+                      "type": "boolean"
+                    },
+                    "assigned_customer_count": {
+                      "type": "integer"
+                    },
+                    "unassigned": {
+                      "type": "object",
+                      "properties": {
+                        "customer_count": {
+                          "type": "integer"
+                        },
+                        "known_contacts_per_period": {
+                          "type": "integer"
+                        },
+                        "contacts_per_period": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "known_service_minutes": {
+                          "type": "integer"
+                        },
+                        "service_minutes": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "unknown_frequency_customers": {
+                          "type": "integer"
+                        },
+                        "unknown_duration_customers": {
+                          "type": "integer"
+                        },
+                        "demand_complete": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "customer_count",
+                        "known_contacts_per_period",
+                        "contacts_per_period",
+                        "known_service_minutes",
+                        "service_minutes",
+                        "unknown_frequency_customers",
+                        "unknown_duration_customers",
+                        "demand_complete"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "boundaries": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "boundary_id": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "customer_count": {
+                            "type": "integer"
+                          },
+                          "known_contacts_per_period": {
+                            "type": "integer"
+                          },
+                          "contacts_per_period": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "known_service_minutes": {
+                            "type": "integer"
+                          },
+                          "service_minutes": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "unknown_frequency_customers": {
+                            "type": "integer"
+                          },
+                          "unknown_duration_customers": {
+                            "type": "integer"
+                          },
+                          "demand_complete": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "boundary_id",
+                          "customer_count",
+                          "known_contacts_per_period",
+                          "contacts_per_period",
+                          "known_service_minutes",
+                          "service_minutes",
+                          "unknown_frequency_customers",
+                          "unknown_duration_customers",
+                          "demand_complete"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "known_observed_historical_sales_minor": {
+                      "type": "integer"
+                    },
+                    "observed_historical_sales_minor": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "historical_sales_source_complete": {
+                      "type": "boolean"
+                    },
+                    "reps": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "rep_id": {
+                            "type": "string"
+                          },
+                          "channel": {
+                            "enum": [
+                              "field",
+                              "telesales"
+                            ]
+                          },
+                          "customer_count": {
+                            "type": "integer"
+                          },
+                          "known_contacts_per_period": {
+                            "type": "integer"
+                          },
+                          "contacts_per_period": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "known_service_minutes": {
+                            "type": "integer"
+                          },
+                          "service_minutes": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "unknown_frequency_customers": {
+                            "type": "integer"
+                          },
+                          "unknown_duration_customers": {
+                            "type": "integer"
+                          },
+                          "demand_complete": {
+                            "type": "boolean"
+                          },
+                          "capacity_service_minutes": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "utilization_percent": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "utilization_state": {
+                            "type": "string"
+                          },
+                          "known_demand_exceeds_capacity": {
+                            "type": "boolean"
+                          },
+                          "observed_historical_sales_minor": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "historical_sales_source_complete": {
+                            "type": "boolean"
+                          },
+                          "weighted_share_basis_points": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "weighted_share_status": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "rep_id",
+                          "channel",
+                          "customer_count",
+                          "known_contacts_per_period",
+                          "contacts_per_period",
+                          "known_service_minutes",
+                          "service_minutes",
+                          "unknown_frequency_customers",
+                          "unknown_duration_customers",
+                          "demand_complete",
+                          "capacity_service_minutes",
+                          "utilization_percent",
+                          "utilization_state",
+                          "known_demand_exceeds_capacity",
+                          "observed_historical_sales_minor",
+                          "historical_sales_source_complete",
+                          "weighted_share_basis_points",
+                          "weighted_share_status"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "weighting": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "channel",
+                    "customer_count",
+                    "known_contacts_per_period",
+                    "contacts_per_period",
+                    "known_service_minutes",
+                    "service_minutes",
+                    "unknown_frequency_customers",
+                    "unknown_duration_customers",
+                    "demand_complete",
+                    "cohort_complete",
+                    "assigned_customer_count",
+                    "unassigned",
+                    "boundaries",
+                    "known_observed_historical_sales_minor",
+                    "observed_historical_sales_minor",
+                    "historical_sales_source_complete",
+                    "reps",
+                    "weighting"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "unique_customer_count",
+              "customer_channel_relationships",
+              "channels"
+            ],
+            "additionalProperties": false
+          },
+          "after": {
+            "type": "object",
+            "properties": {
+              "unique_customer_count": {
+                "type": "integer"
+              },
+              "customer_channel_relationships": {
+                "type": "integer"
+              },
+              "channels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "channel": {
+                      "enum": [
+                        "field",
+                        "telesales"
+                      ]
+                    },
+                    "customer_count": {
+                      "type": "integer"
+                    },
+                    "known_contacts_per_period": {
+                      "type": "integer"
+                    },
+                    "contacts_per_period": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "known_service_minutes": {
+                      "type": "integer"
+                    },
+                    "service_minutes": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "unknown_frequency_customers": {
+                      "type": "integer"
+                    },
+                    "unknown_duration_customers": {
+                      "type": "integer"
+                    },
+                    "demand_complete": {
+                      "type": "boolean"
+                    },
+                    "cohort_complete": {
+                      "type": "boolean"
+                    },
+                    "assigned_customer_count": {
+                      "type": "integer"
+                    },
+                    "unassigned": {
+                      "type": "object",
+                      "properties": {
+                        "customer_count": {
+                          "type": "integer"
+                        },
+                        "known_contacts_per_period": {
+                          "type": "integer"
+                        },
+                        "contacts_per_period": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "known_service_minutes": {
+                          "type": "integer"
+                        },
+                        "service_minutes": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "unknown_frequency_customers": {
+                          "type": "integer"
+                        },
+                        "unknown_duration_customers": {
+                          "type": "integer"
+                        },
+                        "demand_complete": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "customer_count",
+                        "known_contacts_per_period",
+                        "contacts_per_period",
+                        "known_service_minutes",
+                        "service_minutes",
+                        "unknown_frequency_customers",
+                        "unknown_duration_customers",
+                        "demand_complete"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "boundaries": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "boundary_id": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "customer_count": {
+                            "type": "integer"
+                          },
+                          "known_contacts_per_period": {
+                            "type": "integer"
+                          },
+                          "contacts_per_period": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "known_service_minutes": {
+                            "type": "integer"
+                          },
+                          "service_minutes": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "unknown_frequency_customers": {
+                            "type": "integer"
+                          },
+                          "unknown_duration_customers": {
+                            "type": "integer"
+                          },
+                          "demand_complete": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "boundary_id",
+                          "customer_count",
+                          "known_contacts_per_period",
+                          "contacts_per_period",
+                          "known_service_minutes",
+                          "service_minutes",
+                          "unknown_frequency_customers",
+                          "unknown_duration_customers",
+                          "demand_complete"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "known_observed_historical_sales_minor": {
+                      "type": "integer"
+                    },
+                    "observed_historical_sales_minor": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "historical_sales_source_complete": {
+                      "type": "boolean"
+                    },
+                    "reps": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "rep_id": {
+                            "type": "string"
+                          },
+                          "channel": {
+                            "enum": [
+                              "field",
+                              "telesales"
+                            ]
+                          },
+                          "customer_count": {
+                            "type": "integer"
+                          },
+                          "known_contacts_per_period": {
+                            "type": "integer"
+                          },
+                          "contacts_per_period": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "known_service_minutes": {
+                            "type": "integer"
+                          },
+                          "service_minutes": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "unknown_frequency_customers": {
+                            "type": "integer"
+                          },
+                          "unknown_duration_customers": {
+                            "type": "integer"
+                          },
+                          "demand_complete": {
+                            "type": "boolean"
+                          },
+                          "capacity_service_minutes": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "utilization_percent": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "utilization_state": {
+                            "type": "string"
+                          },
+                          "known_demand_exceeds_capacity": {
+                            "type": "boolean"
+                          },
+                          "observed_historical_sales_minor": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "historical_sales_source_complete": {
+                            "type": "boolean"
+                          },
+                          "weighted_share_basis_points": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "weighted_share_status": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "rep_id",
+                          "channel",
+                          "customer_count",
+                          "known_contacts_per_period",
+                          "contacts_per_period",
+                          "known_service_minutes",
+                          "service_minutes",
+                          "unknown_frequency_customers",
+                          "unknown_duration_customers",
+                          "demand_complete",
+                          "capacity_service_minutes",
+                          "utilization_percent",
+                          "utilization_state",
+                          "known_demand_exceeds_capacity",
+                          "observed_historical_sales_minor",
+                          "historical_sales_source_complete",
+                          "weighted_share_basis_points",
+                          "weighted_share_status"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "weighting": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "channel",
+                    "customer_count",
+                    "known_contacts_per_period",
+                    "contacts_per_period",
+                    "known_service_minutes",
+                    "service_minutes",
+                    "unknown_frequency_customers",
+                    "unknown_duration_customers",
+                    "demand_complete",
+                    "cohort_complete",
+                    "assigned_customer_count",
+                    "unassigned",
+                    "boundaries",
+                    "known_observed_historical_sales_minor",
+                    "observed_historical_sales_minor",
+                    "historical_sales_source_complete",
+                    "reps",
+                    "weighting"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "unique_customer_count",
+              "customer_channel_relationships",
+              "channels"
+            ],
+            "additionalProperties": false
+          },
+          "transfers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "customer_id": {
+                  "type": "string"
+                },
+                "channel": {
+                  "type": "string"
+                },
+                "to_rep_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "from_rep_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "changed": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "customer_id",
+                "channel",
+                "to_rep_id",
+                "from_rep_id",
+                "changed"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "changed_customer_channels": {
+            "type": "integer"
+          },
+          "unknown_capacity_rep_channels": {
+            "type": "integer"
+          },
+          "historical_attribution_unchanged": {
+            "const": true
+          },
+          "preview_writes_business_data": {
+            "const": false
+          },
+          "includes_travel_time": {
+            "const": false
+          },
+          "routing_used": {
+            "const": false
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "definition_version",
+          "basis",
+          "period",
+          "parameters",
+          "before",
+          "after",
+          "transfers",
+          "changed_customer_channels",
+          "unknown_capacity_rep_channels",
+          "historical_attribution_unchanged",
+          "preview_writes_business_data",
+          "includes_travel_time",
+          "routing_used",
+          "notes"
+        ],
+        "additionalProperties": false
+      },
+      "summary": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/result"
+          },
+          "basis": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "policy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "config_sha256": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "revision_no",
+              "config_sha256"
+            ],
+            "additionalProperties": false
+          },
+          "customers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "boundary_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "boundary_id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "reps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "channel": {
+                  "type": "string"
+                },
+                "eligible_recipient": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "channel",
+                "eligible_recipient"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "capacity_evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "freshness": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "limits": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "result",
+          "basis",
+          "policy",
+          "customers",
+          "reps",
+          "capacity_evidence",
+          "freshness",
+          "limits"
+        ],
+        "additionalProperties": false
+      },
+      "preview_data": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/result"
+          },
+          "basis": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "policy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "config_sha256": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "revision_no",
+              "config_sha256"
+            ],
+            "additionalProperties": false
+          },
+          "customers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "boundary_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "boundary_id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "reps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "channel": {
+                  "type": "string"
+                },
+                "eligible_recipient": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "channel",
+                "eligible_recipient"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "capacity_evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "freshness": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "limits": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "batches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "input": {
+                  "$ref": "#/components/schemas/preview_batch_input"
+                },
+                "data": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "required": [
+                "key",
+                "input",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "batch_key": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "batch_key",
+                "code",
+                "id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "can_save": {
+            "type": "boolean"
+          },
+          "can_apply_any": {
+            "type": "boolean"
+          },
+          "basis_epoch": {
+            "type": "integer"
+          },
+          "preview_hash": {
+            "type": "string"
+          },
+          "application_mode": {
+            "const": "reviewed_atomic_batch_then_revalidate_remaining"
+          }
+        },
+        "required": [
+          "result",
+          "basis",
+          "policy",
+          "customers",
+          "reps",
+          "capacity_evidence",
+          "freshness",
+          "limits",
+          "batches",
+          "conflicts",
+          "can_save",
+          "can_apply_any",
+          "basis_epoch",
+          "preview_hash",
+          "application_mode"
+        ],
+        "additionalProperties": false
+      },
+      "preview_batch_input": {
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_ids": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "assignment_mode": {
+            "type": "string",
+            "enum": [
+              "none",
+              "field",
+              "telesales",
+              "both"
+            ]
+          },
+          "field_rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "telesales_rep_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "customer_ids": {
+            "maxItems": 25,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "exception_customer_ids": {
+            "maxItems": 25,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "exception_reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "dataset_id",
+          "boundary_ids",
+          "area_id",
+          "effective_from_date",
+          "reason",
+          "assignment_mode",
+          "field_rep_id",
+          "telesales_rep_id"
+        ],
+        "additionalProperties": false
+      },
+      "policy_list_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "revision_no": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "draft",
+                        "active",
+                        "retired"
+                      ]
+                    },
+                    "config": {
+                      "$ref": "#/components/schemas/config"
+                    },
+                    "config_sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "version",
+                    "revision_no",
+                    "status",
+                    "config",
+                    "config_sha256"
+                  ],
+                  "additionalProperties": true
+                }
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer"
+                      },
+                      "revision_no": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "enum": [
+                          "draft",
+                          "active",
+                          "retired"
+                        ]
+                      },
+                      "config": {
+                        "$ref": "#/components/schemas/config"
+                      },
+                      "config_sha256": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "version",
+                      "revision_no",
+                      "status",
+                      "config",
+                      "config_sha256"
+                    ],
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "versions",
+              "active",
+              "has_more"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "policy_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "status": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "status"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "active_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "configured",
+                  "not_configured"
+                ]
+              },
+              "policy": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "revision_no": {
+                        "type": "integer"
+                      },
+                      "config_sha256": {
+                        "type": "string"
+                      },
+                      "activated_at": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "revision_no",
+                      "config_sha256",
+                      "activated_at"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "can_manage": {
+                "type": "boolean"
+              },
+              "definition_version": {
+                "const": "nyales-workload-1"
+              }
+            },
+            "required": [
+              "state",
+              "policy",
+              "can_manage",
+              "definition_version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "summary_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "const": "not_configured"
+                  },
+                  "summary": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "state",
+                  "summary"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "const": "ready"
+                  },
+                  "summary": {
+                    "$ref": "#/components/schemas/summary"
+                  }
+                },
+                "required": [
+                  "state",
+                  "summary"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "preview_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/preview_data"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "saved_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "scenario": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "version",
+                  "status"
+                ],
+                "additionalProperties": true
+              },
+              "is_latest": {
+                "type": "boolean"
+              },
+              "revision": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "revision_no": {
+                    "type": "integer"
+                  },
+                  "supersedes_id": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "snapshot_sha256": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "revision_no",
+                  "supersedes_id",
+                  "created_at",
+                  "reason",
+                  "snapshot_sha256"
+                ],
+                "additionalProperties": false
+              },
+              "data": {
+                "$ref": "#/components/schemas/preview_data"
+              },
+              "request": {
+                "$ref": "#/components/schemas/preview"
+              },
+              "applications": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "current": {
+                "type": "boolean"
+              },
+              "history_notice": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "revisions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "has_more_revisions": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "scenario",
+              "is_latest",
+              "revision",
+              "data",
+              "request",
+              "applications",
+              "current",
+              "history_notice"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "scenarios_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "scenarios": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "latest_revision": {
+                      "type": "integer"
+                    },
+                    "applied_batches": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "version",
+                    "status",
+                    "latest_revision",
+                    "applied_batches"
+                  ],
+                  "additionalProperties": true
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "scenarios",
+              "has_more"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "save_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "revision_id": {
+                "type": "string"
+              },
+              "revision_no": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "status": {
+                "const": "draft"
+              },
+              "snapshot_sha256": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "revision_id",
+              "revision_no",
+              "name",
+              "status",
+              "snapshot_sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "application_response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "const": 1
+              },
+              "scenario_id": {
+                "type": "string"
+              },
+              "scenario_version": {
+                "type": "integer"
+              },
+              "revision_id": {
+                "type": "string"
+              },
+              "batch_key": {
+                "type": "string"
+              },
+              "distribution_run_id": {
+                "type": "string"
+              },
+              "effective_date": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "scheduled",
+                  "effective"
+                ]
+              },
+              "remaining_require_revalidation": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "scenario_id",
+              "scenario_version",
+              "revision_id",
+              "batch_key",
+              "distribution_run_id",
+              "effective_date",
+              "status",
+              "remaining_require_revalidation"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "additionalProperties": false
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "x-bounds": {
+    "customers": 2000,
+    "rep_channels": 200,
+    "batches": 10,
+    "customers_per_apply_batch": 25,
+    "boundaries_per_batch": 50,
+    "source_chunks": 16,
+    "snapshot_bytes": 4194304,
+    "statements_per_apply": 600
+  },
+  "x-cross-field-rules": [
+    "Weights explicitly total 10000 basis points. Blank demand/capacity stays null. At most one known capacity per person across current/historical channels.",
+    "A customer belongs to one batch; both channels must be reviewed together for a customer area transfer. Assignment cohorts must use explicit customer_ids. Batch and basis effective dates match; no past business dates.",
+    "Preview derives source once and verifies geometry once across bounded batches. Final epoch recheck prevents mixed input.",
+    "Save validates the exact preview hash, epoch and active policy again. Revisions append; If-Match binds scenario root version.",
+    "Application uses one immutable latest current revision and one atomic WEB-065 batch. Changes epoch; remaining batches require a new preview and revision. Applied batch keys cannot be reused.",
+    "Snapshot checksums, tenant, scope, dates and reference identity are verified before reads/applications. Source rights/coverage and complete positive baselines remain required.",
+    "Historical invoice, target, activity and incentive attribution remains unchanged. Monthly calendar capacity is planned service allocation; individual absence and travel remain outside this feature."
+  ]
+}

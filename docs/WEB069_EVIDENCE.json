@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-24",
+  "item": "WEB-069",
+  "status": "Design baseline and executable contracts verified; runtime implementation WEB-070–074 pending",
+  "classification": "design and in-memory synthetic specification tests",
+  "protocol": "nyales-visit-generator-1",
+  "design_operations": 37,
+  "registered_generator_operations": 0,
+  "runtime_operations": 276,
+  "design_tables": 14,
+  "runtime_generator_tables": 0,
+  "runtime_tables": 100,
+  "runtime_migration_applied": false,
+  "tests": {
+    "contract_and_model": 21,
+    "full_suite_latest": 255,
+    "failed": 0,
+    "typecheck": "passed",
+    "full_log": "test-results/web070-full-tests.log",
+    "baseline_uat_scenarios": 82,
+    "build": "passed; existing client bundle warning remains"
+  },
+  "artifacts": {
+    "specification": "docs/WEB069_PLAN_VISIT_CONTRACT.md",
+    "api_design": "docs/specifications/visit-generator.design.openapi.json",
+    "physical_design": "docs/specifications/ERD_WEB069_Design.json",
+    "sql_design": "docs/specifications/sql/WEB069_Visit_Generator_DRAFT.sql"
+  },
+  "acceptance_boundary": [
+    "PVG-A01/A03 contract/model checks only, not runtime/end-to-end acceptance.",
+    "Response resource DTOs remain provisional until their runtime endpoints are typed and verified.",
+    "No pairing, agent registration, OSRM/OR-Tools, graph download, solver or agenda publish runtime installed.",
+    "Native work_plan bridge and atomic staging/activation are designed; no schedule written."
+  ],
+  "runtime_integrity_evidence": "test-results/web070-runtime-preservation.json",
+  "cloud_deployed": false,
+  "production_accepted": false,
+  "source_sha256": {
+    "src/shared/visit-generator.ts": "de773aed22edac6717a0030f615e929bdb9411986de4d82b3ed46e864d6bf903",
+    "src/server/visit-generator-protocol.ts": "27f6febe7e2d38b60befb047550e457dc7fbb8067c87dbcea41e8fdadd653436",
+    "docs/specifications/sql/WEB069_Visit_Generator_DRAFT.sql": "eebd5dcbde6689cb54434eff92e88f42cdbc08f98ce05d25ed3467f42380355b",
+    "scripts/generate-visit-generator-design.ts": "d0695542096bc534c6e902bdb1eb62308534b83c72659091eec6a9697a8774f7",
+    "scripts/generate-visit-generator-model.ts": "64e1714fd93fe52a7df17bfa84cc9636b2dcf29777377fbc0a601a1f7b193132",
+    "tests/visit-generator-contract.test.ts": "d33a33845efb0250e954b1747a9785107eadd51b295cedad355d2e4c905bfd43",
+    "tests/visit-generator-model.test.ts": "b96510428db68dc25f3f75260cd5c882b00befda9c6bac7cdf93ba9c129689c3"
+  }
+}

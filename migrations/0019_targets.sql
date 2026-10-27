@@ -1,0 +1,18 @@
+ALTER TABLE target_plan ADD COLUMN channel TEXT NOT NULL DEFAULT 'field' CHECK(channel IN('field','telesales'));
+ALTER TABLE target_plan ADD COLUMN basis TEXT NOT NULL DEFAULT 'invoice_net_idr';
+ALTER TABLE target_plan ADD COLUMN created_by TEXT;
+ALTER TABLE target_plan ADD COLUMN created_at TEXT;
+CREATE TABLE target_version(id TEXT PRIMARY KEY,organization_id TEXT NOT NULL,target_plan_id TEXT NOT NULL REFERENCES target_plan(id),revision_no INTEGER NOT NULL,status TEXT NOT NULL DEFAULT 'draft' CHECK(status IN('draft','submitted','approved','superseded')),version INTEGER NOT NULL DEFAULT 1,parent_minor INTEGER NOT NULL CHECK(parent_minor>=0),reserve_minor INTEGER NOT NULL DEFAULT 0 CHECK(reserve_minor>=0),created_by TEXT NOT NULL,created_at TEXT NOT NULL,submitted_by TEXT,approved_by TEXT,approved_at TEXT,reason TEXT NOT NULL,baseline_json TEXT,UNIQUE(target_plan_id,revision_no));
+CREATE UNIQUE INDEX target_current_approved ON target_version(target_plan_id) WHERE status='approved';
+ALTER TABLE target_item ADD COLUMN target_version_id TEXT REFERENCES target_version(id);
+ALTER TABLE target_item ADD COLUMN area_id_snapshot TEXT;
+ALTER TABLE target_item ADD COLUMN rep_id_snapshot TEXT;
+ALTER TABLE target_item ADD COLUMN channel_snapshot TEXT;
+ALTER TABLE target_item ADD COLUMN product_id TEXT;
+ALTER TABLE target_item ADD COLUMN product_group_id TEXT;
+ALTER TABLE target_item ADD COLUMN input_reason TEXT;
+CREATE INDEX target_version_items ON target_item(organization_id,target_version_id);
+CREATE TRIGGER approved_target_item_insert BEFORE INSERT ON target_item WHEN NEW.target_version_id IS NOT NULL BEGIN SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM target_version v WHERE v.id=NEW.target_version_id AND v.organization_id=NEW.organization_id AND v.status='draft') THEN RAISE(ABORT,'TARGET_LOCKED') END;END;
+CREATE TRIGGER approved_target_item_update BEFORE UPDATE ON target_item WHEN OLD.target_version_id IS NOT NULL BEGIN SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM target_version v WHERE v.id=OLD.target_version_id AND v.organization_id=OLD.organization_id AND v.status='draft') THEN RAISE(ABORT,'TARGET_LOCKED') END;END;
+CREATE TRIGGER approved_target_item_delete BEFORE DELETE ON target_item WHEN OLD.target_version_id IS NOT NULL BEGIN SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM target_version v WHERE v.id=OLD.target_version_id AND v.organization_id=OLD.organization_id AND v.status='draft') THEN RAISE(ABORT,'TARGET_LOCKED') END;END;
+CREATE TABLE target_allocation(id TEXT PRIMARY KEY,organization_id TEXT NOT NULL,target_version_id TEXT NOT NULL,created_at TEXT NOT NULL,created_by TEXT NOT NULL,input_json TEXT NOT NULL,result_json TEXT NOT NULL);
