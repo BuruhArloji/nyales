@@ -13,13 +13,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: 24, cache: npm}
-      - run: npm ci --ignore-scripts
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: npm ci
+      - name: Install bounded solver dependencies
+        run: python scripts/visit-solver-setup.py
       - run: mkdir -p test-results
       - run: npm test
       - run: npm run check
       - run: npm run build
       - run: npm run pilot:release-gate -- docs/release-gate-ci.json
-      - name: Upload release gate evidence
+      - name: Upload release readiness report (not production approval)
         uses: actions/upload-artifact@v4
         with:
           name: nyales-release-gate

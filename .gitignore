@@ -25,3 +25,13 @@ pilot/local-*/migration.log
 pilot/local-*/seed.log
 pilot/local-*/source-data.json
 pilot/local-*/rehearsal/
+
+# User-local cache and generated staging bindings
+__pycache__/
+*.pyc
+wrangler.staging.generated.json
+.env
+.env.*
+!.env.example
+.dev.vars.*
+!.dev.vars.example
