@@ -2,7 +2,7 @@
   "date": "2026-10-28",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "b9720da6bd78946c0c3dc894797d1b23f5f2b40d",
+  "verified_remote_commit": "86b1bb9cc44002ffe107917ea3faece90dbb1c92",
   "github_ci": {
     "run_id": 40690260796,
     "url": "https://github.com/BuruhArloji/nyales/actions/runs/40690260796",
@@ -42,8 +42,8 @@
     "d1_database_name": "nyales-staging",
     "d1_database_id": "6fc9dcea-c6a9-446c-a2f4-44ec3a12bdfe",
     "d1_region": "APAC",
-    "migrations_applied": 45,
-    "application_tables": 114,
+    "migrations_applied": 46,
+    "application_tables": 115,
     "quick_check": "ok",
     "foreign_key_violations": 0,
     "bootstrap_entity_rows": {
@@ -112,9 +112,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40700461142,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40700461142",
-    "head_sha": "b9720da6bd78946c0c3dc894797d1b23f5f2b40d",
+    "run_id": 40709426967,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40709426967",
+    "head_sha": "86b1bb9cc44002ffe107917ea3faece90dbb1c92",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -127,9 +127,9 @@
   "runtime_smoke_scope": "Public HTML/API and unauthenticated access boundaries only; no D1/R2 data path or real Firebase/MFA/user-role verification",
   "staging_limitations": [
     "Only the first real Management identity has completed Firebase/MFA activation; 16 synthetic staff records have no Firebase subject",
-    "Customer coordinates, sales history and target approvals are synthetic training data; not real operational assignments or finance approval",
     "Training coverage is reviewed through 2026-10-28; subsequent periods need new reviewed input rather than inferred completeness",
-    "Additional real-role/area UAT, private R2 file flows, cloud recovery/RPO/RTO and production acceptance remain unverified"
+    "Additional real-role/area UAT, private R2 file flows, cloud recovery/RPO/RTO and production acceptance remain unverified",
+    "External directory customers have unverified coordinates/history and no sales assignment; original training finance and staff remain synthetic"
   ],
   "first_admin_activation": {
     "implemented": true,
@@ -221,5 +221,71 @@
     "firebase_staff_accounts_created": false,
     "authenticated_browser_visual_confirmation": false,
     "banner_detection_marker": "training_dataset/staging-pilot-10-sales"
+  },
+  "directory_dataset": {
+    "dataset_id": "maps-warung-20261028",
+    "source_rows": 16387,
+    "duplicates_removed": 313,
+    "unique_points": 16074,
+    "customer_expected_count": 12624,
+    "reference_point_count": 2638,
+    "held_for_review": 812,
+    "source_originals_preserved": true,
+    "prepared_locally": true,
+    "r2_upload_and_hash_readback": "passed",
+    "customer_import_status": "partial_daily_budget_reserved",
+    "full_restore_existing_business_and_sessions_preserved": true,
+    "full_restore_foreign_key_violations": 0,
+    "local_regression_passed": 327,
+    "local_regression_skipped": 8,
+    "local_regression_failed": 0,
+    "large_map_browser_fixture": "passed",
+    "authenticated_staging_visual_confirmation": false,
+    "customers_imported": 7400,
+    "customers_remaining": 5224,
+    "completed_batches": 37,
+    "total_batches": 64,
+    "next_batch": 38,
+    "next_free_quota_reset_utc": "2026-10-29T00:00:00Z",
+    "next_free_quota_reset_jakarta": "2026-10-29T07:00:00+07:00",
+    "daily_write_budget_reserved": 80000,
+    "account_write_usage_baseline_plus_import": 77977,
+    "cloud_previous_data_preserved": {
+      "organization": true,
+      "app_user": true,
+      "auth_role_assignment": true,
+      "invoice": true,
+      "credit_note": true,
+      "target_item": true,
+      "customer_assignment": true,
+      "device_session": true,
+      "original_customers": true
+    },
+    "cloud_foreign_key_violations": 0,
+    "cloud_unique_customer_codes": 7400,
+    "cloud_customers_without_sales_assignment": 7400,
+    "cloud_imported_by_area": [
+      {
+        "area_id": "maps-area-bekasi-kab",
+        "count": 2147
+      },
+      {
+        "area_id": "maps-area-bekasi-kota",
+        "count": 3659
+      },
+      {
+        "area_id": "maps-area-jakpus",
+        "count": 1594
+      }
+    ],
+    "live_asset_check": {
+      "first_admin_closed_http": 404,
+      "served_directory_reference_toggle": true,
+      "served_webgl_clusters": true,
+      "served_directory_banner": true,
+      "authenticated_staging_visual_confirmation": false
+    },
+    "automatic_resume_scheduled": false,
+    "checked_at": "2026-10-28T15:00:18.163523+00:00"
   }
 }

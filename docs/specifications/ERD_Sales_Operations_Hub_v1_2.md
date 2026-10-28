@@ -1231,3 +1231,7 @@ Total runtime296 operasi, 108 tabel aplikasi/110 termasuk metadata D1. WEB-070 t
 Kesiapan bukan VisitSnapshot solver dan tidak masuk antrean agent. Nilai yang tidak diketahui tetapnull; tidak mengasumsikan histori visit lengkap atau mengonversi frekuensi lama/jam teks menjadi aturan baru. Engine/solver belum aktif, sehingga can_generate=false dan publishable=false. Kebijakan frekuensi/bobot/asumsi/runtime/retensi tidak dipasang default pada pilot utama. Form override khusus hanya menampilkan/mempertahankan/menghapus nilai yang sudah ada; API mendukung penambahan dengan validasi customer. UI pembuatan override customer terstruktur menjadi tindak lanjut.
 
 Total310 operasi runtime semuanya terhubung kontrak, 112 tabel aplikasi/114 termasuk metadata D1. Business planning job/artifact/solver/publish, source operasional yang kurang, engine/graph OSRM nyata dan benchmark tetap pending. Aturan retensi belum menjadi job pembersihan snapshot readiness otomatis. Bagian bertanggal sebelumnya adalah histori slice terdahulu; WEB-070 tetap In progress.
+
+## Addendum implementasi direktori — migration0046
+
+point_directory_dataset menyimpan metadata organisasi, provenance/hash dan objek R2 privat untuk referensi non-customer. customer_outlet menambah directory_dataset_id (relasi dijaga trigger lintas organisasi) serta transaction_history_unverified. Data referensi tidak menjadi assignment, transaksi atau coverage. [Detail implementasi dan batas data](../POINT_DIRECTORY_IMPORT.md).

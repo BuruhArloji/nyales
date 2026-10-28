@@ -3412,5 +3412,27 @@
     "unit_integration_tests": 25,
     "browser_tests": 3,
     "source_preservation": "Main and QA preexisting business rows unchanged; QA fixture rows remain synthetic and isolated"
+  },
+  "external_directory_addendum": {
+    "date": "2026-10-28",
+    "status": "Staging deployed; 7400 customers imported, 5224 waiting for free quota reset",
+    "evidence": "docs/POINT_DIRECTORY_IMPORT.md",
+    "source_rows": 16387,
+    "duplicates_removed": 313,
+    "customer_expected_count": 12624,
+    "reference_points": 2638,
+    "held_for_review": 812,
+    "does_not_close_real_transaction_or_production_gate": true,
+    "remaining_work": [
+      "Resume remaining immutable batches after quota reset",
+      "Review held records and source administrative placement",
+      "Verify authenticated staging UI with directory data",
+      "Replace synthetic assignments/finance only with reviewed operational data",
+      "Add server pagination if scoped customer payload grows"
+    ],
+    "customers_imported": 7400,
+    "customers_remaining": 5224,
+    "reference_points_cloud_verified": 2638,
+    "cloud_previous_business_and_sessions_preserved": true
   }
 }
