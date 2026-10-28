@@ -4,15 +4,15 @@ Login email/password dan Google memakai Firebase client SDK, persistence per ses
 
 ## Konfigurasi Firebase
 
-1. Sediakan Firebase project NYALES dan web app; aktifkan Email/Password dan Google pada Authentication.
-2. Tambahkan domain web/development yang diizinkan di Firebase Authentication.
-3. Salin `.env.example` ke `.env.local` dan isi konfigurasi public Firebase web app.
-4. Isi FIREBASE_PROJECT_ID di environment Worker dengan project yang sama. Production: APP_ENV=production dan LOCAL_AUTH=false. Jangan memakai credential ERP SUKE tanpa keputusan integrasi.
+1. Untuk staging pilot, Firebase belum diperlukan: gunakan `APP_ENV=staging` dan `LOCAL_AUTH=true`.
+2. Untuk production atau rollout admin penuh, sediakan Firebase project NYALES dan web app; aktifkan Email/Password dan Google pada Authentication.
+3. Tambahkan domain web/development yang diizinkan di Firebase Authentication bila jalur Firebase digunakan.
+4. Isi FIREBASE_PROJECT_ID dengan project yang sama untuk jalur Firebase. Production: `APP_ENV=production` dan `LOCAL_AUTH=false`. Jangan memakai credential ERP SUKE tanpa keputusan integrasi.
 5. Setelah migrations, provision app_user.auth_subject memakai Firebase UID dan auth_role_assignment dengan role, organisasi dan tanggal efektif yang sah. Provisioning tersedia melalui User & Hirarki untuk Management/NSM; user baru dibuat nonaktif dan perlu role/hirarki yang sah sebelum aktivasi. Jangan memasukkan UID/password ke kode seed umum.
 
-## Lokal
+## Lokal dan staging pilot
 
-Demo memerlukan APP_ENV=local dan LOCAL_AUTH=true sekaligus. Klik “Masuk demo lokal”; token fixture hanya diterima dalam mode tersebut. Demo tidak menggunakan Firebase atau akun sungguhan. Mode lokal tetap mengharuskan login eksplisit; membuka endpoint tanpa token menghasilkan 401.
+Demo memerlukan `LOCAL_AUTH=true` dan hanya diterima pada `APP_ENV=local` atau staging pilot. Klik “Masuk sebagai Management”; staging memilih Management aktif pertama dari D1 NYALES Pilot, lalu tetap membuat device session dan menjalankan scope server-side. Jalur ini tidak menggunakan Firebase, tetapi hanya untuk staging/pilot dan tidak boleh diaktifkan pada production. Membuka endpoint tanpa token atau tanpa device session menghasilkan 401.
 
 ## Verifikasi dan batas
 
@@ -33,7 +33,7 @@ Pencabutan menolak sesi lama pada request berikutnya tanpa menunggu Firebase JWT
 
 Halaman dan state domain dibongkar saat logout/pergantian identitas, provider React dikunci oleh organisasi/user/role/scope/sesi, dan respons akun lama ditolak bila identitas telah berubah. Draft dan outbox IndexedDB WEB-035 sudah tersedia dengan namespace org:user. Role/device UAT, shared-browser privacy dan retensi lokal tetap gate WEB-059; data tersimpan lokal tidak dianggap dienkripsi oleh aplikasi. Device ID bukan bukti kepemilikan perangkat keras; binding menggunakan secret sesi dan identitas Firebase.
 
-**Gate produksi admin:** Management/NSM memerlukan klaim second factor Firebase yang telah diverifikasi pada JWT, bukan flag client. Tanpa klaim tersebut backend mengembalikan MFA_REQUIRED untuk seluruh domain API termasuk bootstrap. Local demo melewati gate hanya bila APP_ENV=local dan LOCAL_AUTH=true. Role approver tambahan harus masuk policy ini saat modul approval dibangun; saat ini belum ada role approver terpisah. Pencabutan sesi user lain juga memerlukan auth_time maksimum lima menit; bila kedaluwarsa, keluar dan masuk kembali.
+**Gate produksi admin:** Management/NSM memerlukan klaim second factor Firebase yang telah diverifikasi pada JWT, bukan flag client. Tanpa klaim tersebut backend mengembalikan MFA_REQUIRED untuk seluruh domain API termasuk bootstrap. Staging pilot dapat memakai login lokal hanya ketika `APP_ENV=staging` dan `LOCAL_AUTH=true`; production tetap `LOCAL_AUTH=false` dan memakai Firebase/MFA. Role approver tambahan harus masuk policy ini saat modul approval dibangun; saat ini belum ada role approver terpisah. Pencabutan sesi user lain juga memerlukan auth_time maksimum lima menit; bila kedaluwarsa, keluar dan masuk kembali.
 
 **Provider dan prioritas gratis, diverifikasi 17 Oktober 2026:** dokumentasi [Firebase TOTP](https://firebase.google.com/docs/auth/web/totp-mfa) mensyaratkan upgrade Firebase Authentication with Identity Platform. [Firebase pricing](https://firebase.google.com/pricing) dan [Identity Platform pricing](https://cloud.google.com/identity-platform/pricing) membedakan plan/kuota dan biaya SMS; TOTP tidak mengirim SMS, tetapi kelayakan Spark, kuota MAU/DAU, entitlement dan billing proyek harus dicek pada proyek yang dipilih. [Authentication limits](https://firebase.google.com/docs/auth/limits) memuat batas Spark Identity Platform. Tidak ada upgrade/billing/provider/SMS yang diaktifkan pada pekerjaan ini. Status gate: **pending_project_verification**, bukan MFA aktif. Jalur enrollment/challenge/recovery MFA UI dan uji Firebase proyek nyata masih menjadi gate sebelum rollout admin penuh. Jangan menghapus gate backend untuk melewati konfigurasi tersebut.
 

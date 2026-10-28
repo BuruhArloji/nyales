@@ -2,7 +2,7 @@ import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey } from 'jose';
 export type Identity={id:string;name:string;organization_id:string;role:string;channel?:'field'|'telesales'|null};
 export type AuthBindings={DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string};
 const keys=createRemoteJWKSet(new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com'));
-export function localAuthEnabled(env:Pick<AuthBindings,'APP_ENV'|'LOCAL_AUTH'>){return env.APP_ENV==='local'&&env.LOCAL_AUTH==='true'}
+export function localAuthEnabled(env:Pick<AuthBindings,'APP_ENV'|'LOCAL_AUTH'>){return (env.APP_ENV==='local'||env.APP_ENV==='staging')&&env.LOCAL_AUTH==='true'}
 export async function verifyFirebaseClaims(token:string,project:string,key:JWTVerifyGetKey=keys){
  const {payload}=await jwtVerify(token,key,{algorithms:['RS256'],issuer:`https://securetoken.google.com/${project}`,audience:project,requiredClaims:['exp','iat','sub','auth_time']});
  const now=Math.floor(Date.now()/1000);

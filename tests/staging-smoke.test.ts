@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 const load=()=>import('../scripts/staging-smoke.mjs' as string);
 function fixture(){const calls:any[]=[];const fetcher=async(url:string,init:any)=>{calls.push({url,init});const path=new URL(url).pathname,auth=init.headers.Authorization;
- const body=path==='/'?'<html><div id="root"></div><script src="/assets/app.js"></script></html>':path==='/api/health'?{name:'NYALES',status:'ok',environment:'staging'}:path==='/api/auth/config'?{mode:'firebase',configured:true}:{code:auth?'INVALID_ID_TOKEN':'UNAUTHENTICATED'};
+ const body=path==='/'?'<html><div id="root"></div><script src="/assets/app.js"></script></html>':path==='/api/health'?{name:'NYALES',status:'ok',environment:'staging'}:path==='/api/auth/config'?{mode:'local',configured:true}:{code:auth?'DEVICE_SESSION_REQUIRED':'UNAUTHENTICATED'};
  return new Response(typeof body==='string'?body:JSON.stringify(body),{status:['/','/api/health','/api/auth/config'].includes(path)?200:401,headers:{'Content-Type':path==='/'?'text/html':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}})};return{fetcher,calls}}
 test('Staging smoke exercises served app/auth boundaries without credentials or business writes',async()=>{
  const {inspectStaging}=await load(),f=fixture(),r=await inspectStaging('https://nyales-staging.authored.workers.dev',{fetcher:f.fetcher});
@@ -16,10 +16,10 @@ test('Staging smoke refuses arbitrary destinations before network and cannot fol
 });
 test('Staging smoke detects local mode, public customer leakage, incorrect headers and wrong backend environment',async()=>{
  const {inspectStaging}=await load();
- for(const broken of ['local_auth','customer_leak','cached_auth','production']){
+ for(const broken of ['firebase_auth','customer_leak','cached_auth','production']){
   const f=fixture(),r=await inspectStaging('https://nyales-staging.authored.workers.dev',{fetcher:async(url:string,init:any)=>{
    const path=new URL(url).pathname,base=await f.fetcher(url,init);
-   if(broken==='local_auth'&&path==='/api/auth/config')return new Response(JSON.stringify({mode:'local',configured:true}),{headers:{'content-type':'application/json'}});
+   if(broken==='firebase_auth'&&path==='/api/auth/config')return new Response(JSON.stringify({mode:'firebase',configured:true}),{headers:{'content-type':'application/json'}});
    if(broken==='customer_leak'&&path==='/api/customers')return new Response(JSON.stringify({data:[{id:'authored'}]}),{headers:{'content-type':'application/json'}});
    if(broken==='cached_auth'&&path==='/api/me'&&!init.headers.Authorization)base.headers.set('cache-control','public');
    if(broken==='production'&&path==='/api/health')return new Response(JSON.stringify({name:'NYALES',status:'ok',environment:'production'}),{headers:{'content-type':'application/json'}});

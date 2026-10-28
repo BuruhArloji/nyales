@@ -6,7 +6,7 @@
 
 `ci.yml`: pushmain/PR → Node24 + Python3.13 → npmci → venv solver terisolasi → regresi/typecheck/build → artifact laporan kesiapan. Rencana kunjungan masih ditunda; instalasi solver hanya untuk menjalankan tes kernel yang sudah ada di CI, bukan provisioning OSRM. Tes DPAPI hanya berlaku Windows. `blocked` pada release-gate adalah laporan blocker produksi dan bukan kegagalan build staging.
 
-`deploy-staging.yml`: dijalankan melalui Run workflow dari main, GitHub Environment `staging`. Validasi binding/Firebase dahulu, regresi dan build, dry-run bundle, migrasi D1 staging tanpa seed, deploy Worker/assets. Tidak otomatis memigrasi database saat push awal. Cron staging dimatikan selama bootstrap; akun tidak diberi default Management, dan LOCAL_AUTH tetapfalse.
+`deploy-staging.yml`: dijalankan melalui Run workflow dari main, GitHub Environment `staging`. Validasi binding, regresi dan build, dry-run bundle, migrasi D1 staging tanpa seed, deploy Worker/assets. Tidak otomatis memigrasi database saat push awal. Cron staging dimatikan selama bootstrap. Staging pilot memakai login lokal berbasis D1 (`LOCAL_AUTH=true`) agar Firebase belum diperlukan; production tetap `LOCAL_AUTH=false` dan memakai Firebase/MFA.
 
 Config root `wrangler.staging.generated.json` mengarah ke hasil Vite `dist/nyales/index.js`, aset `dist/client` dan folder `migrations`. Config generated diabaikan Git dan tidak diunggah sebagai artifact. IDplaceholder/D1zero, bucket selain namespace nyales-staging, Firebase frontend/backend tidak sama dan domain invalid ditolak sebelum migrasi.
 
@@ -86,7 +86,7 @@ Subdomain Workers akun terpilih dibaca lewat API: `azaracourse`. Origin yang dis
 
 ## Validasi konfigurasi aktual — 28 Oktober 2026
 
-Generator staging config, 5 tes staging, typecheck/build dengan public Firebase config NYALES dan `wrangler deploy --dry-run` lulus. Simulasi bundle membaca 22 aset dan melaporkan binding D1 `nyales-staging`, R2 `nyales-staging-files`, `APP_ENV=staging`, `LOCAL_AUTH=false`, `FIREBASE_PROJECT_ID=nyales-staging`. Tidak mempublikasikan Worker dan tidak membuktikan login nyata.
+Generator staging config, tes staging, typecheck/build dan `wrangler deploy --dry-run` lulus. Simulasi bundle membaca binding D1 `nyales-staging`, R2 `nyales-staging-files`, `APP_ENV=staging`, `LOCAL_AUTH=true`, `FIREBASE_PROJECT_ID=nyales-staging` yang tidak dipakai jalur login pilot. Tidak mempublikasikan Worker dan tidak membuktikan login nyata.
 
 GitHub secret `CF_ACCOUNT_ID` dan `CF_D1_DATABASE_ID` sudah diisi melalui public-key/sealed-box encryption resmi API GitHub. Read-back hanya memverifikasi metadata nama secret (GitHub tidak mengembalikan plaintext). OAuth Wrangler lokal tidak disalin ke GitHub. Secret `CF_API_TOKEN` masih belum tersedia.
 

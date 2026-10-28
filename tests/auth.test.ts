@@ -3,10 +3,12 @@ import assert from 'node:assert/strict';
 import {generateKeyPair,SignJWT} from 'jose';
 import {localAuthEnabled,verifyFirebaseToken,verifyFirebaseClaims,mappedIdentity} from '../src/server/auth';
 import app from '../src/server/index';
+import {database} from './sqlite-helper';
 test('demo identity requires both local environment and explicit flag',()=>{
  assert.equal(localAuthEnabled({APP_ENV:'production',LOCAL_AUTH:'true'}),false);
  assert.equal(localAuthEnabled({APP_ENV:'local',LOCAL_AUTH:'false'}),false);
  assert.equal(localAuthEnabled({APP_ENV:'local',LOCAL_AUTH:'true'}),true);
+ assert.equal(localAuthEnabled({APP_ENV:'staging',LOCAL_AUTH:'true'}),true);
 });
 test('JWT verifies signature, issuer, audience, expiry and auth time',async()=>{
  const keys=await generateKeyPair('RS256');const other=await generateKeyPair('RS256');
@@ -27,6 +29,12 @@ test('all domain APIs require identity; production rejects local token',async()=
  assert.equal((await app.request('/api/me',{headers:{Authorization:'Bearer nyales-local-demo'}},local)).status,401);
  assert.equal((await app.request('/api/me',{headers:{Authorization:'Bearer nyales-local-demo'}},{...local,APP_ENV:'production'})).status,503);
  assert.equal((await app.request('/api/me',{headers:{Authorization:'Bearer malformed'}},{...local,APP_ENV:'production',FIREBASE_PROJECT_ID:'test'})).status,401);
+});
+test('staging local pilot selects the active Management identity and still requires a device session',async()=>{
+ const f=database();f.sqlite.exec("INSERT INTO organization(id,name,timezone) VALUES('pilot','NYALES Pilot','Asia/Jakarta');INSERT INTO app_user(id,organization_id,name,status) VALUES('owner','pilot','Didik','active');INSERT INTO auth_role_assignment(id,organization_id,user_id,role_code,effective_from_date) VALUES('owner-role','pilot','owner','MANAGEMENT','2026-01-01');");
+ const env={DB:f.adapter,APP_ENV:'staging',LOCAL_AUTH:'true',FIREBASE_PROJECT_ID:''};
+ const created=await app.request('/api/device-sessions',{method:'POST',headers:{Authorization:'Bearer nyales-local-demo','Content-Type':'application/json'},body:JSON.stringify({device_id:'pilot-device'})},env as any);assert.equal(created.status,201,await created.clone().text());const session=(await created.json()as any).data;
+ const me=await app.request('/api/me',{headers:{Authorization:'Bearer nyales-local-demo','X-Device-Session':session.session_token}},env as any);assert.equal(me.status,200,await me.clone().text());assert.equal((await me.json()as any).data.organization_id,'pilot');
 });
 test('unmapped and ambiguous identities do not receive access',async()=>{
  const db=(results:unknown[])=>({prepare:()=>({bind:()=>({all:async()=>({results})})})}) as unknown as D1Database;

@@ -75,8 +75,9 @@ app.use('/api/*',async(c,next)=>{
  if(!token)return c.json({code:'UNAUTHENTICATED',detail:'Login diperlukan.'},401);
 
  if(localAuthEnabled(c.env)&&token==='nyales-local-demo'){
-
-  c.set('identity',{id:'demo-management',name:'Dina Pratiwi',organization_id:'demo-org',role:'MANAGEMENT'});c.set('auth',{subject:'local:demo-management',authTime:Math.floor(Date.now()/1000),mfa:false});await next();return;
+  const identity=c.env.APP_ENV==='staging'?await c.env.DB.prepare("SELECT u.id,u.name,u.organization_id,r.role_code AS role,r.channel FROM app_user u JOIN auth_role_assignment r ON r.organization_id=u.organization_id AND r.user_id=u.id WHERE u.status='active' AND r.role_code='MANAGEMENT' AND r.effective_from_date<=date('now','+7 hours') AND (r.effective_to_date IS NULL OR r.effective_to_date>date('now','+7 hours')) ORDER BY u.created_at,u.id LIMIT 1").first<Identity>():{id:'demo-management',name:'Dina Pratiwi',organization_id:'demo-org',role:'MANAGEMENT'};
+  if(!identity)return c.json({code:'LOCAL_AUTH_OPERATOR_UNAVAILABLE'},503);
+  c.set('identity',identity);c.set('auth',{subject:'local:demo-management',authTime:Math.floor(Date.now()/1000),mfa:false});await next();return;
 
  }
 
