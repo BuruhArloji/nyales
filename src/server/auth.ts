@@ -15,7 +15,7 @@ export async function verifyFirebaseClaims(token:string,project:string,key:JWTVe
 }
 export async function verifyFirebaseToken(token:string,project:string,key:JWTVerifyGetKey=keys){return (await verifyFirebaseClaims(token,project,key)).subject}
 export async function mappedIdentity(db:D1Database,subject:string):Promise<Identity|null>{
- const rows=await db.prepare(`SELECT u.id,u.name,u.organization_id,r.role_code AS role,r.channel FROM app_user u JOIN auth_role_assignment r ON r.user_id=u.id AND r.organization_id=u.organization_id WHERE u.auth_subject=? AND u.status='active' AND r.effective_from_date<=date('now') AND (r.effective_to_date IS NULL OR r.effective_to_date>date('now'))`).bind(subject).all<Identity>();
+ const rows=await db.prepare(`SELECT u.id,u.name,u.organization_id,r.role_code AS role,r.channel FROM app_user u JOIN auth_role_assignment r ON r.user_id=u.id AND r.organization_id=u.organization_id WHERE u.auth_subject=? AND u.status='active' AND r.effective_from_date<=date('now','+7 hours') AND (r.effective_to_date IS NULL OR r.effective_to_date>date('now','+7 hours'))`).bind(subject).all<Identity>();
  // Ambiguous identities require explicit administrative resolution, never first-row selection.
  return rows.results.length===1?rows.results[0]:null;
 }

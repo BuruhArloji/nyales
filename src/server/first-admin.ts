@@ -23,7 +23,7 @@ export function createFirstAdminRoutes(verify:(token:string,project:string)=>Pro
   try{
    const existing=await db.prepare(`SELECT u.id,u.organization_id FROM app_user u JOIN auth_role_assignment r ON r.organization_id=u.organization_id AND r.user_id=u.id
     JOIN master_audit a ON a.organization_id=u.organization_id AND a.actor_id=u.id AND a.action='bootstrap_first_admin'
-    WHERE u.auth_subject=? AND u.status='active' AND r.role_code='MANAGEMENT' AND r.effective_from_date<=date('now') AND (r.effective_to_date IS NULL OR r.effective_to_date>date('now')) LIMIT 1`).bind(claims.subject).first<{id:string;organization_id:string}>();
+    WHERE u.auth_subject=? AND u.status='active' AND r.role_code='MANAGEMENT' AND r.effective_from_date<=date('now','+7 hours') AND (r.effective_to_date IS NULL OR r.effective_to_date>date('now','+7 hours')) LIMIT 1`).bind(claims.subject).first<{id:string;organization_id:string}>();
    if(existing)return c.json({data:{...existing,role:'MANAGEMENT',already_initialized:true}});
    const org=crypto.randomUUID(),user=crypto.randomUUID(),now=new Date().toISOString();
    const date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
