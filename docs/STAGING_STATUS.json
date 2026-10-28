@@ -2,7 +2,7 @@
   "date": "2026-10-28",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "574d9579881f82553c83d12d0dc8d12738b7e5fb",
+  "verified_remote_commit": "b9720da6bd78946c0c3dc894797d1b23f5f2b40d",
   "github_ci": {
     "run_id": 40690260796,
     "url": "https://github.com/BuruhArloji/nyales/actions/runs/40690260796",
@@ -52,7 +52,7 @@
       "customer_outlet": 0,
       "invoice": 0
     },
-    "dummy_seed_applied": false,
+    "dummy_seed_applied": true,
     "r2_bucket": "nyales-staging-files",
     "r2_dev_public_access": false,
     "worker_deployed": true,
@@ -112,9 +112,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40697201262,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40697201262",
-    "head_sha": "ba3464c18a846a7024ce23ec75cba9e8e8c66bcf",
+    "run_id": 40700461142,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40700461142",
+    "head_sha": "b9720da6bd78946c0c3dc894797d1b23f5f2b40d",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -126,9 +126,10 @@
   },
   "runtime_smoke_scope": "Public HTML/API and unauthenticated access boundaries only; no D1/R2 data path or real Firebase/MFA/user-role verification",
   "staging_limitations": [
-    "Management sign-in/TOTP and first-account activation verified; additional real user roles/area scoping still require UAT",
-    "No cloud dummy seed or production transaction migration performed",
-    "Private R2 file flows, cloud recovery/RPO/RTO and production acceptance remain unverified"
+    "Only the first real Management identity has completed Firebase/MFA activation; 16 synthetic staff records have no Firebase subject",
+    "Customer coordinates, sales history and target approvals are synthetic training data; not real operational assignments or finance approval",
+    "Training coverage is reviewed through 2026-10-28; subsequent periods need new reviewed input rather than inferred completeness",
+    "Additional real-role/area UAT, private R2 file flows, cloud recovery/RPO/RTO and production acceptance remain unverified"
   ],
   "first_admin_activation": {
     "implemented": true,
@@ -172,8 +173,8 @@
     "classification": "synthetic",
     "source": "pilot/demo-10-sales/source-data.json",
     "prepared": true,
-    "cloud_applied": false,
-    "banner_deployment": "pending",
+    "cloud_applied": true,
+    "banner_deployment": "success; entry asset contains simulation banner",
     "sales_field": 8,
     "sales_telesales": 2,
     "customers": 20,
@@ -190,6 +191,35 @@
     "typecheck": "passed",
     "build": "passed",
     "backup_export_and_local_restore": "passed",
-    "production_accepted": false
+    "production_accepted": false,
+    "cloud_reconciliation": "passed",
+    "counts": {
+      "organizations": 1,
+      "branches": 1,
+      "areas": 1,
+      "calendars": 1,
+      "users": 17,
+      "synthetic_staff": 16,
+      "field_reps": 8,
+      "telesales": 2,
+      "customers": 20,
+      "assignments": 20,
+      "invoices": 80,
+      "credits": 4,
+      "approved_targets": 2
+    },
+    "preserved": {
+      "organization": true,
+      "operator": true,
+      "operator_roles": true,
+      "device_session": true,
+      "bootstrap_audit": true
+    },
+    "foreign_key_violations": 0,
+    "quick_check": "ok",
+    "synthetic_coordinates": 20,
+    "firebase_staff_accounts_created": false,
+    "authenticated_browser_visual_confirmation": false,
+    "banner_detection_marker": "training_dataset/staging-pilot-10-sales"
   }
 }
