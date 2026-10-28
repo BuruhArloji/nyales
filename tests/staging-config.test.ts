@@ -7,6 +7,10 @@ test('Staging deploy binds built Worker, root paths, matching Firebase and isola
  const {stagingConfig}=await load(),config=stagingConfig(values);
  assert.equal(config.main,'dist/nyales/index.js');assert.equal(config.no_bundle,true);assert.equal(config.assets.directory,'./dist/client');assert.equal(config.vars.APP_ENV,'staging');assert.equal(config.vars.LOCAL_AUTH,'false');assert.equal(config.d1_databases[0].migrations_dir,'migrations');assert.equal(config.d1_databases[0].database_name,'nyales-staging');assert.deepEqual(config.triggers.crons,[]);
  assert.equal(JSON.stringify(config).includes(values.VITE_FIREBASE_API_KEY),false);
+ const selected=stagingConfig({...values,FIRST_ADMIN_EMAIL:'owner@example.test',FIRST_ADMIN_ORGANIZATION_NAME:'NYALES Pilot'});
+ assert.equal(selected.vars.FIRST_ADMIN_EMAIL,'owner@example.test');assert.equal(selected.vars.FIRST_ADMIN_ORGANIZATION_NAME,'NYALES Pilot');
+ assert.ok(!('FIRST_ADMIN_EMAIL'in config.vars));
+ for(const overrides of [{FIRST_ADMIN_EMAIL:'owner@example.test'},{FIRST_ADMIN_ORGANIZATION_NAME:'NYALES Pilot'},{FIRST_ADMIN_EMAIL:'invalid',FIRST_ADMIN_ORGANIZATION_NAME:'Org'}])assert.throws(()=>stagingConfig({...values,...overrides}));
  for(const overrides of [{CF_D1_DATABASE_ID:'00000000-0000-0000-0000-000000000000'},{CF_R2_BUCKET:'nyales-import-sources'},{CF_ACCOUNT_ID:'invalid'},{FIREBASE_PROJECT_ID:''},{VITE_FIREBASE_PROJECT_ID:'another-project'},{VITE_FIREBASE_AUTH_DOMAIN:'https://invalid/path'}])assert.throws(()=>stagingConfig({...values,...overrides}));
 });
 test('Staging mutation is dispatched explicitly; Firebase is available before build and no generated bindings are uploaded',async()=>{

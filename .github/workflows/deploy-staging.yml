@@ -27,6 +27,8 @@ jobs:
       VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}
       VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.VITE_FIREBASE_AUTH_DOMAIN }}
       NYALES_STAGING_URL: ${{ inputs.staging_url }}
+      FIRST_ADMIN_EMAIL: ${{ vars.FIRST_ADMIN_EMAIL }}
+      FIRST_ADMIN_ORGANIZATION_NAME: ${{ vars.FIRST_ADMIN_ORGANIZATION_NAME }}
     steps:
       - uses: actions/checkout@v4
       - name: Deploy main only

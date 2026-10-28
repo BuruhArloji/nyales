@@ -2007,6 +2007,46 @@
         },
         "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
+    },
+    "/api/auth/first-admin": {
+      "post": {
+        "operationId": "core_post_first_admin",
+        "summary": "Activate explicitly selected first Management identity in an empty staging database",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Same active initial administrator; existing mapping returned, no writes"
+          },
+          "201": {
+            "description": "Organization, active user, Management assignment and audit created in one D1 batch"
+          },
+          "400": {
+            "description": "Invalid request stream"
+          },
+          "401": {
+            "description": "Missing/invalid Firebase bearer or recent sign-in required"
+          },
+          "403": {
+            "description": "Google provider, verified email allowlist or signed MFA claim not satisfied"
+          },
+          "404": {
+            "description": "Disabled unless staging and both operator bootstrap variables are configured"
+          },
+          "409": {
+            "description": "Existing tenant, conflicting identity, failed atomic guard or unavailable database"
+          },
+          "422": {
+            "description": "Request body is forbidden"
+          }
+        },
+        "x-access-policy": "Staging only; exact operator-selected verified Google email, signed second-factor claim, auth_time at most five minutes; no role/UID/email supplied by client",
+        "x-constraints": "No general signup. Database must have zero organizations, users and roles. A failed D1 batch rolls back every new record. Same original active administrator can replay without duplicate audit. Remove bootstrap variables after activation."
+      }
     }
   },
   "components": {

@@ -43,6 +43,10 @@ test('WEB-058 implementation OpenAPI references resolve and operation IDs and pa
 
 test('WEB-058 every registered nonpublic API rejects missing user or machine credentials before a database access',async()=>{
  const inventory=generateInventory();let dbAccess=0;const env={APP_ENV:'local',LOCAL_AUTH:'true',FIREBASE_PROJECT_ID:'',DB:{prepare:()=>{dbAccess++;throw new Error('Must not touch DB')}}};
- for(const r of inventory.operations){if(r.authentication==='public')continue;const path=r.path.replace(/:[\w]+/g,'synthetic-id');const response=await app.request('https://nyales.example'+path,{method:r.method,...(r.method==='GET'?{}:{body:'{}',headers:{'Content-Type':'application/json'}})},env as any);assert.equal(response.status,401,r.method+' '+path);assert.equal((await response.json() as any).code,'UNAUTHENTICATED');}
+ for(const r of inventory.operations){if(r.authentication==='public')continue;if(r.path==='/api/auth/first-admin'){
+  assert.equal((await app.request('https://nyales.example'+r.path,{method:'POST'},env as any)).status,404);
+  const enabled={...env,APP_ENV:'staging',FIRST_ADMIN_EMAIL:'owner@example.test',FIRST_ADMIN_ORGANIZATION_NAME:'Org'};
+  const denied=await app.request('https://nyales.example'+r.path,{method:'POST'},enabled as any);assert.equal(denied.status,401);assert.equal((await denied.json()as any).code,'UNAUTHENTICATED');continue;
+ }const path=r.path.replace(/:[\w]+/g,'synthetic-id');const response=await app.request('https://nyales.example'+path,{method:r.method,...(r.method==='GET'?{}:{body:'{}',headers:{'Content-Type':'application/json'}})},env as any);assert.equal(response.status,401,r.method+' '+path);assert.equal((await response.json() as any).code,'UNAUTHENTICATED');}
  assert.equal(dbAccess,0);
 });

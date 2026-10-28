@@ -7,7 +7,11 @@ export async function verifyFirebaseClaims(token:string,project:string,key:JWTVe
  const {payload}=await jwtVerify(token,key,{algorithms:['RS256'],issuer:`https://securetoken.google.com/${project}`,audience:project,requiredClaims:['exp','iat','sub','auth_time']});
  const now=Math.floor(Date.now()/1000);
  if(!payload.sub||payload.sub.length>128||typeof payload.iat!=='number'||payload.iat>now||typeof payload.auth_time!=='number'||payload.auth_time>now)throw new Error('Invalid identity claims');
- return {subject:payload.sub,authTime:payload.auth_time,mfa:typeof payload.firebase==='object'&&payload.firebase!==null&&['totp','phone'].includes((payload.firebase as {sign_in_second_factor?:string}).sign_in_second_factor||'')};
+ const firebase=typeof payload.firebase==='object'&&payload.firebase!==null?payload.firebase as Record<string,unknown>:{};
+ return {subject:payload.sub,authTime:payload.auth_time,mfa:['totp','phone'].includes(String(firebase.sign_in_second_factor||'')),
+  email:typeof payload.email==='string'?payload.email:null,emailVerified:payload.email_verified===true,
+  provider:typeof firebase.sign_in_provider==='string'?firebase.sign_in_provider:null,
+  displayName:typeof payload.name==='string'?payload.name.slice(0,120):null};
 }
 export async function verifyFirebaseToken(token:string,project:string,key:JWTVerifyGetKey=keys){return (await verifyFirebaseClaims(token,project,key)).subject}
 export async function mappedIdentity(db:D1Database,subject:string):Promise<Identity|null>{

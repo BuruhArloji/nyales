@@ -23,7 +23,9 @@
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": true,
   "staging_blockers": [
-    "Bootstrap authorized Firebase UID/organization/roles; complete privileged MFA implementation and enrollment"
+    "Deploy updated first-admin/MFA code, complete real Google sign-in and TOTP enrollment/challenge",
+    "Confirm atomic first-admin activation and role/device-session access, then remove bootstrap variables and redeploy",
+    "Complete remaining real-role UAT and production acceptance gates"
   ],
   "production_accepted": false,
   "routing_deferred_by_user": true,
@@ -79,7 +81,15 @@
       ]
     },
     "provider_enablement_user_confirmed": true,
-    "staging_authorized_domain_verified": true
+    "staging_authorized_domain_verified": true,
+    "totp_provider_configuration_readback": "ENABLED",
+    "totp_adjacent_intervals": 1,
+    "project_subtype": "FIREBASE_AUTH",
+    "global_mfa_state": "DISABLED",
+    "sms_provider_enabled": false,
+    "billing_change_performed": false,
+    "billing_state_verified": false,
+    "mfa_ui_enrollment_challenge_implemented": true
   },
   "github_staging_configuration": {
     "environment_name": "staging",
@@ -88,7 +98,9 @@
       "FIREBASE_PROJECT_ID": "nyales-staging",
       "CF_R2_BUCKET": "nyales-staging-files",
       "VITE_FIREBASE_AUTH_DOMAIN": "nyales-staging.firebaseapp.com",
-      "VITE_FIREBASE_API_KEY": "configured; value omitted from status document"
+      "VITE_FIREBASE_API_KEY": "configured; value omitted from status document",
+      "FIRST_ADMIN_EMAIL": "configured from user selection; value omitted",
+      "FIRST_ADMIN_ORGANIZATION_NAME": "NYALES Pilot"
     },
     "credentials_complete": true,
     "deploy_dispatched": true,
@@ -116,5 +128,27 @@
     "Public runtime and unauthenticated boundaries verified; real Firebase account login, UID/role mapping and MFA not yet verified",
     "No cloud dummy seed or production transaction migration performed",
     "D1/R2 binding availability inside authenticated business workflows and production acceptance remain unverified"
-  ]
+  ],
+  "first_admin_activation": {
+    "implemented": true,
+    "environment": "staging",
+    "selection_source": "User-selected Google email stored in GitHub environment, not hardcoded in source",
+    "organization_name": "NYALES Pilot",
+    "role": "MANAGEMENT",
+    "requires_verified_google_email": true,
+    "requires_signed_mfa_claim": true,
+    "requires_empty_database": true,
+    "actual_activation_verified": false,
+    "code_deployment_status": "pending"
+  },
+  "auth_setup_validation": {
+    "unit_regression_passed": 321,
+    "skipped": 8,
+    "failed": 0,
+    "local_browser_fixture_tests_passed": 3,
+    "typecheck": "passed",
+    "actual_config_build": "passed",
+    "actual_config_deploy_dry_run": "passed",
+    "real_firebase_enrollment_verified": false
+  }
 }

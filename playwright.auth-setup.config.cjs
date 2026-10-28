@@ -1,0 +1,2 @@
+const {defineConfig}=require('@playwright/test');
+module.exports=defineConfig({testDir:'./tests/browser',testMatch:'auth-setup.spec.cjs',workers:1,timeout:60000,reporter:[['list'],['json',{outputFile:'test-results/auth-setup/results.json'}]],outputDir:'test-results/auth-setup/artifacts',use:{browserName:'chromium',channel:'chrome',viewport:{width:390,height:844},reducedMotion:'reduce',screenshot:'only-on-failure'}});

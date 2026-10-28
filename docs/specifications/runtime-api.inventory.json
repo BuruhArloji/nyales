@@ -1,6 +1,6 @@
 {
   "format": "nyales-runtime-inventory-1",
-  "auth_mode": "user bearer plus device session; separate machine credential/pairing proof gateway; cookie authentication disabled",
+  "auth_mode": "user bearer plus device session; separate machine credential/pairing proof gateway; explicit staging first-admin activation requires verified allowlisted Google identity plus MFA; cookie authentication disabled",
   "public_operations": [
     "GET /api/health",
     "GET /api/auth/config"
@@ -326,6 +326,18 @@
         {
           "file": "core-api.openapi.json",
           "path": "/api/auth/config"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/first-admin",
+      "authentication": "staging-only configured first admin; recent verified allowlisted Google bearer plus MFA; no device session",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/auth/first-admin"
         }
       ],
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
