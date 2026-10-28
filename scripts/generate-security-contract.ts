@@ -33,7 +33,7 @@ export function generateInventory(){
 export function generateCoreContract(){
  const schemas:Record<string,any>={};for(const [prefix,set] of Object.entries({master:masterRequestSchemas,people:peopleRequestSchemas,session:sessionRequestSchemas}))for(const [name,schema] of Object.entries(set))schemas[prefix+'_'+name]=z.toJSONSchema(schema,{io:'input',unrepresentable:'any'});
  const paths:Record<string,any>={};
- for(const r of runtimeOperations().filter(r=>(/^\/api\/(areas|branches|calendars|organization|users|hierarchy-assignments|device-sessions|health|auth\/config|me|dashboard|telesales\/queue)(\/|$)/.test(r.path)||/^\/api\/customers\/[^/]+\/street-view$/.test(r.path))&&!r.path.startsWith('/api/dashboard/')&&!/\/telesales\/queue\//.test(r.path))){
+ for(const r of runtimeOperations().filter(r=>(/^\/api\/(areas|branches|calendars|organization|users|hierarchy-assignments|device-sessions|health|auth\/config|me|dashboard|telesales\/queue)(\/|$)/.test(r.path)||/^\/api\/customers\/[^/]+\/(street-view|directory-details)$/.test(r.path)||/^\/api\/point-directory\/[^/]+\/details\/[^/]+$/.test(r.path))&&!r.path.startsWith('/api/dashboard/')&&!/\/telesales\/queue\//.test(r.path))){
   const path=r.path.replace(/:([\w]+)/g,'{$1}'),method=r.method.toLowerCase(),mutation=method!=='get',session=path.startsWith('/api/device-sessions'),parameters:any[]=[];
   for(const m of path.matchAll(/\{(\w+)\}/g))parameters.push({in:'path',name:m[1],required:true,schema:{type:'string'}});
   if(mutation&&!session)parameters.push({in:'header',name:'Idempotency-Key',required:true,schema:{type:'string',minLength:8,maxLength:128}});

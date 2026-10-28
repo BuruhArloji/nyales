@@ -848,6 +848,18 @@
     },
     {
       "method": "GET",
+      "path": "/api/customers/:id/directory-details",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/customers/{id}/directory-details"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
       "path": "/api/customers/:id/merge-preview",
       "authentication": "bearer plus device session; scope checked server-side",
       "contracts": [
@@ -2290,6 +2302,18 @@
         {
           "file": "core-api.openapi.json",
           "path": "/api/organization"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/point-directory/:dataset/details/:external_code",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "core-api.openapi.json",
+          "path": "/api/point-directory/{dataset}/details/{external_code}"
         }
       ],
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."

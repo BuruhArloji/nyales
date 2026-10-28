@@ -47,10 +47,29 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   markers.current.forEach(m=>m.remove());popups.current.forEach(p=>p.remove());markers.current=[];popups.current=[];
   const valid=(p:any)=>Number.isFinite(p.lat)&&Number.isFinite(p.lng)&&Math.abs(p.lat)<=90&&Math.abs(p.lng)<=180;
   const customers=(mapData.customers||[]).filter(valid),references=showReferences?(mapData.reference_points||[]).filter(valid):[];
+  const appendDetail=(content:HTMLElement,detail:any,kind:'customer'|'reference')=>{
+   const card=document.createElement('div');card.className='map-popup-detail';
+   if(typeof detail.photo_url==='string'&&/^https?:\/\//i.test(detail.photo_url)){const image=document.createElement('img');image.className='map-popup-image';image.alt='Foto '+detail.name;image.loading='lazy';image.referrerPolicy='no-referrer';image.src=detail.photo_url;image.addEventListener('error',()=>image.remove());card.appendChild(image)}
+   const facts=document.createElement('div');facts.className='map-popup-facts';
+   const addFact=(label:string,value:any)=>{if(value===undefined||value===null||value==='')return;const row=document.createElement('span');row.className='map-popup-fact';const key=document.createElement('b');key.textContent=label;const textNode=document.createElement('span');textNode.textContent=String(value);row.appendChild(key);row.appendChild(textNode);facts.appendChild(row)};
+   addFact('Kategori',detail.category);addFact('Rating',detail.rating?(detail.rating+' · '+(detail.reviews||'0')+' ulasan'):undefined);addFact('Status',detail.status);addFact('Alamat',detail.address);addFact('Jam buka',detail.hours);addFact('Wilayah',[detail.area_kelurahan,detail.area_kecamatan,detail.area_kota].filter(Boolean).join(' · '));
+   if(detail.phone){const row=document.createElement('span');row.className='map-popup-fact';const key=document.createElement('b');key.textContent='Telepon';const link=document.createElement('a');link.href='tel:'+detail.phone;link.textContent=detail.phone;row.appendChild(key);row.appendChild(link);facts.appendChild(row)}
+   if(facts.childElementCount)card.appendChild(facts);
+   const links=document.createElement('div');links.className='map-popup-links';
+   if(typeof detail.maps_url==='string'&&/^https?:\/\//i.test(detail.maps_url)){const link=document.createElement('a');link.href=detail.maps_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Buka di Google Maps ↗';links.appendChild(link)}
+   if(links.childElementCount)card.appendChild(links);content.appendChild(card);
+  };
+  const loadDetail=(content:HTMLElement,item:any,kind:'customer'|'reference')=>{
+   if(kind==='customer'&&!item.directory_dataset_id)return;
+   const path=kind==='customer'?'/api/customers/'+encodeURIComponent(item.id)+'/directory-details':'/api/point-directory/'+encodeURIComponent(item.dataset_id)+'/details/'+encodeURIComponent(item.external_code||item.id);
+   const loading=document.createElement('small');loading.className='map-popup-loading';loading.textContent='Memuat detail sumber…';content.appendChild(loading);
+   void apiFetch(path).then(async response=>{const json=await response.json()as any;if(!response.ok)throw Error('DIRECTORY_DETAIL_UNAVAILABLE');loading.remove();if(json.data)appendDetail(content,json.data,kind)}).catch(()=>{loading.textContent='Detail sumber belum tersedia.'});
+  };
   const popup=(item:any,kind:'customer'|'sales'|'reference')=>{
-   const content=document.createElement('div'),title=document.createElement('strong'),note=document.createElement('small');title.textContent=item.name;content.appendChild(title);content.appendChild(document.createElement('br'));
+   const content=document.createElement('div');content.className='map-popup-card';const title=document.createElement('strong'),note=document.createElement('small');title.textContent=item.name;content.appendChild(title);content.appendChild(document.createElement('br'));
    note.textContent=kind==='reference'?'Referensi peta · '+(item.category||'Kategori belum tersedia')+' · bukan master customer':kind==='sales'?'Lokasi terakhir: '+item.last_seen+' · '+item.source:'Status: '+item.status+' · PIC: '+item.owner;content.appendChild(note);
    if(kind==='customer'){const button=document.createElement('button');button.type='button';button.className='text-button';button.textContent='Lihat Street View';button.addEventListener('click',()=>onStreetView(item));content.appendChild(button)}
+   if(kind!=='sales')loadDetail(content,item,kind);
    return content;
   };
   // Large customer collections use WebGL clusters, avoiding thousands of DOM buttons.

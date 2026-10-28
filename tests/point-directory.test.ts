@@ -1,7 +1,7 @@
 import {test}from'node:test';
 import assert from'node:assert/strict';
 import {database}from'./sqlite-helper';
-import {referencePoints}from'../src/server/point-directory';
+import {directoryDetails,referencePoints}from'../src/server/point-directory';
 import {digest}from'../src/server/operations';
 import {segmentationSnapshot}from'../src/server/segmentation';
 import {Hono}from'hono';
@@ -11,13 +11,14 @@ function setup(){
  return f;
 }
 test('Reference layer verifies private bytes/tenant manifest and never leaks to scoped reps or filtered area views',async()=>{
- const f=setup(),key='o/point-directories/d/reference-points.json',bytes=new TextEncoder().encode(JSON.stringify({format:'nyales-reference-points-1',organization_id:'o',dataset_id:'d',points:[{id:'p',name:'Reference only',lat:-6.2,lng:107,category:'Restaurant',city:'Kota Bekasi'}]})),hash=await digest(bytes.buffer);
+ const f=setup(),key='o/point-directories/d/reference-points.json',bytes=new TextEncoder().encode(JSON.stringify({format:'nyales-reference-points-1',organization_id:'o',dataset_id:'d',points:[{id:'p',name:'Reference only',lat:-6.2,lng:107,category:'Restaurant',city:'Kota Bekasi'}],details:[{external_code:'p',name:'Reference only',category:'Restaurant',photo_url:'https://example.test/photo.jpg',maps_url:'https://maps.example.test/p'}]})),hash=await digest(bytes.buffer);
  f.sqlite.prepare("INSERT INTO point_directory_dataset VALUES('d','o','Directory','Drive',?,?,?,?,1,1,0,'mg','2026-10-28','ready')").run('a'.repeat(64),key,hash,bytes.length);
  let reads=0;const bucket={get:async()=>{reads++;return{size:bytes.length,arrayBuffer:async()=>bytes.buffer}}};
  const c=(scope:any,q:Record<string,string>={})=>({get:()=>scope,env:{DB:f.adapter,IMPORT_FILES:bucket},req:{query:(k:string)=>q[k]}});
  const org={orgWide:true,identity:{organization_id:'o'}};
  const result=await referencePoints(c(org));assert.equal(result.points.length,1);assert.equal(result.points[0].reference_only,true);assert.equal((await referencePoints(c({orgWide:false,identity:{organization_id:'o'}}))).points.length,0);
- assert.equal((await referencePoints(c(org,{area_id:'a'}))).points.length,0);assert.equal(reads,1);assert.equal((await referencePoints(c({orgWide:true,identity:{organization_id:'x'}}))).points.length,0);
+ const detail=await directoryDetails(c(org),'d','p');assert.equal(detail?.photo_url,'https://example.test/photo.jpg');assert.equal(detail?.maps_url,'https://maps.example.test/p');
+ assert.equal((await referencePoints(c(org,{area_id:'a'}))).points.length,0);assert.equal(reads,2);assert.equal((await referencePoints(c({orgWide:true,identity:{organization_id:'x'}}))).points.length,0);
  assert.equal((f.sqlite.prepare('SELECT COUNT(*) n FROM customer_outlet').get()as any).n,0);
  f.sqlite.exec("UPDATE point_directory_dataset SET storage_sha256='"+'b'.repeat(64)+"'");await assert.rejects(()=>referencePoints(c(org)),/REFERENCE_SOURCE_CHANGED/);
  f.sqlite.exec("UPDATE point_directory_dataset SET storage_key='x/point-directories/d/reference-points.json'");await assert.rejects(()=>referencePoints(c(org)),/REFERENCE_NAMESPACE_INVALID/);

@@ -1,4 +1,4 @@
-import {referencePoints} from './point-directory';
+import {directoryDetails,referencePoints} from './point-directory';
 import {visitOperationalProfiles} from './visit-operational-profiles';
 import {createFirstAdminRoutes} from './first-admin';
 import {hasTrainingData} from './training-marker';
@@ -135,7 +135,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
 
  if(isOperation){if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
 
- const isCustomerMaster=/^\/api\/(contacts)(\/|$)/.test(c.req.path)||(/^\/api\/customers(\/[^/]+)?$/.test(c.req.path)&&c.req.method!=='GET')||/^\/api\/customers\/[^/]+\/(timeline|street-view)$/.test(c.req.path);
+ const isCustomerMaster=/^\/api\/(contacts)(\/|$)/.test(c.req.path)||(/^\/api\/customers(\/[^/]+)?$/.test(c.req.path)&&c.req.method!=='GET')||/^\/api\/customers\/[^/]+\/(timeline|street-view|directory-details)$/.test(c.req.path);
 
  if(isCustomerMaster){if(c.req.method!=='GET'&&!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
 
@@ -157,7 +157,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
  if(c.req.path==='/api/telesales/workbench'&&c.req.method==='GET'){await next();return}
  if(c.req.method!=='GET')return c.json({code:'ACTION_NOT_IMPLEMENTED'},403);
 
- if(!paths.includes(c.req.path)&&!/^\/api\/customers\/[^/]+$/.test(c.req.path))return c.json({code:'NOT_FOUND'},404);
+ if(!paths.includes(c.req.path)&&!/^\/api\/customers\/[^/]+(?:\/directory-details)?$/.test(c.req.path)&&!/^\/api\/point-directory\/[^/]+\/details\/[^/]+$/.test(c.req.path))return c.json({code:'NOT_FOUND'},404);
 
  if(c.req.path==='/api/telesales/queue'&&!c.get('scope').capabilities.includes('telesales:read'))return c.json({code:'SCOPE_DENIED'},403);
 
@@ -189,19 +189,19 @@ async function readCustomers(db:D1Database,s:Scope){
  FROM customer_assignment ca JOIN customer_outlet child ON child.organization_id=ca.organization_id AND child.id=ca.outlet_id
  JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id
  WHERE ca.organization_id=? AND ca.channel='field' AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)
- ) SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,
+ ) SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified,
  owner.name owner,facts.last,COALESCE(facts.actual,0) actual FROM customer_outlet co
  JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id
  LEFT JOIN invoice_facts facts ON facts.customer_id=co.id
  LEFT JOIN field_owners owner ON owner.customer_id=co.id AND owner.rank=1
- WHERE ${filter.sql} AND co.merged_into_id IS NULL ORDER BY co.name`).bind(s.date.slice(0,7)+'-01',s.date,...inv.params,s.identity.organization_id,s.date,s.identity.organization_id,s.date,s.date,...filter.params).all<{id:string;name:string;area:string;latitude_e7:number|null;longitude_e7:number|null;owner:string|null;last:string|null;actual:number;area_id:string;address:string|null;external_code:string|null;external_code_review:number;version:number;record_status:string;coordinate_status:string;location_note:string;outlet_type:string;service_frequency_days:number|null;visit_window:string}>();
+ WHERE ${filter.sql} AND co.merged_into_id IS NULL ORDER BY co.name`).bind(s.date.slice(0,7)+'-01',s.date,...inv.params,s.identity.organization_id,s.date,s.identity.organization_id,s.date,s.date,...filter.params).all<{id:string;name:string;area:string;latitude_e7:number|null;longitude_e7:number|null;owner:string|null;last:string|null;actual:number;area_id:string;address:string|null;external_code:string|null;external_code_review:number;version:number;record_status:string;coordinate_status:string;location_note:string;outlet_type:string;service_frequency_days:number|null;visit_window:string;directory_dataset_id:string|null;transaction_history_unverified:number}>();
 
  const segmentRun=await segmentationSnapshot(db,s.identity.organization_id,s.date);const segmentRows=(await db.prepare('SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=?').bind(segmentRun.id).all<any>()).results;
  const segmentsByCustomer=new Map(segmentRows.map(r=>[r.customer_id,r]));
  const current=(await db.prepare(`SELECT COALESCE(al.canonical_id,ca.outlet_id) customer_id,ca.rep_id,ca.channel,u.name FROM customer_assignment ca LEFT JOIN customer_alias al ON al.organization_id=ca.organization_id AND al.source_id=ca.outlet_id JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id WHERE ca.organization_id=? AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)`).bind(s.identity.organization_id,s.date,s.date).all<any>()).results;
 
  const ownersByCustomer=new Map<string,any[]>();for(const assignment of current){const list=ownersByCustomer.get(assignment.customer_id)||[];list.push(assignment);ownersByCustomer.set(assignment.customer_id,list)}
- return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,area:r.area.replace(/^Area /,''),field_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='field')?.rep_id||null,telesales_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.rep_id||null,telesales_owner:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.name||'Belum assigned',owner:r.owner||'Belum assigned',status:segmentsByCustomer.get(r.id)?.status||'Unknown',tier:segmentsByCustomer.get(r.id)?.tier||'Belum tersedia',segmentation:segmentsByCustomer.get(r.id)||null,actual:r.actual/1000000,actual_minor:r.actual,last:r.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
+ return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,directory_dataset_id:r.directory_dataset_id,transaction_history_unverified:Boolean(r.transaction_history_unverified),area:r.area.replace(/^Area /,''),field_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='field')?.rep_id||null,telesales_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.rep_id||null,telesales_owner:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.name||'Belum assigned',owner:r.owner||'Belum assigned',status:segmentsByCustomer.get(r.id)?.status||'Unknown',tier:segmentsByCustomer.get(r.id)?.tier||'Belum tersedia',segmentation:segmentsByCustomer.get(r.id)||null,actual:r.actual/1000000,actual_minor:r.actual,last:r.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
 
 }
 
@@ -308,6 +308,20 @@ scopedRoutes.get('/api/customers/:id/street-view',async c=>{
  const url=new URL('https://www.google.com/maps/embed/v1/streetview');
  url.search=new URLSearchParams({key,location:customer.latitude_e7/1e7+','+customer.longitude_e7/1e7,language:'id',radius:'50',fov:'90'}).toString();
  return c.json({data:{customer_id:customer.id,customer_name:customer.name,embed_url:url.toString()}});
+});
+
+scopedRoutes.get('/api/customers/:id/directory-details',async c=>{
+ const predicate=customerPredicate(c.get('scope'));
+ const customer=await c.env.DB.prepare('SELECT co.id,co.external_code,co.directory_dataset_id FROM customer_outlet co WHERE co.id=? AND co.merged_into_id IS NULL AND '+predicate.sql).bind(c.req.param('id'),...predicate.params).first<any>();
+ if(!customer?.directory_dataset_id||!customer.external_code)return c.json({code:'DIRECTORY_DETAILS_UNAVAILABLE'},404);
+ const detail=await directoryDetails(c,customer.directory_dataset_id,customer.external_code);
+ return detail?c.json({data:{...detail,reference_only:false}}):c.json({code:'DIRECTORY_DETAIL_NOT_FOUND'},404);
+});
+
+scopedRoutes.get('/api/point-directory/:dataset/details/:external_code',async c=>{
+ if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);
+ const detail=await directoryDetails(c,c.req.param('dataset'),c.req.param('external_code'));
+ return detail?c.json({data:{...detail,reference_only:true}}):c.json({code:'DIRECTORY_DETAIL_NOT_FOUND'},404);
 });
 
 scopedRoutes.get('/api/map',async c=>c.json(await mapPayload(c)));

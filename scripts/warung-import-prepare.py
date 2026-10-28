@@ -29,13 +29,20 @@ def main():
     org, operator = ctx["organization_id"], ctx["operator_id"]
     masters = json.loads((root / "customer-master-ready.json").read_text(encoding="utf-8"))
     refs = json.loads((root / "reference-layer-ready.json").read_text(encoding="utf-8"))
+    all_points = json.loads((root / "all-clean.json").read_text(encoding="utf-8"))
     summary = json.loads((root / "SUMMARY.json").read_text(encoding="utf-8"))
-    if len(masters) != summary["customer_master_ready"] or len(refs) != summary["reference_map_ready"]:
+    if len(masters) != summary["customer_master_ready"] or len(refs) != summary["reference_map_ready"] or len(all_points) != summary["unique_google_place_ids"]:
         raise ValueError("CLEAN_COUNTS_CHANGED")
     out.mkdir(parents=True, exist_ok=False)
+    detail_fields = ["external_code", "name", "category", "address", "phone", "phone_valid", "website",
+                     "rating", "reviews", "status", "hours", "maps_url", "photo_url", "area_kelurahan",
+                     "area_kecamatan", "area_kota", "import_city", "is_closed", "is_target", "needs_review",
+                     "administrative_boundary_verified", "coordinate_verified"]
+    details = [{k: r[k] for k in detail_fields if r.get(k) not in (None, "", [], {})} for r in all_points]
     layer = {"format": "nyales-reference-points-1", "organization_id": org, "dataset_id": DATASET,
              "points": [{"id": r["external_code"], "name": r["name"], "lat": r["lat"], "lng": r["lng"],
-                         "category": r["category"], "city": r["import_city"]} for r in refs]}
+                         "category": r["category"], "city": r["import_city"]} for r in refs],
+             "details": details}
     layer_bytes = (json.dumps(layer, ensure_ascii=False, separators=(",", ":")) + "\n").encode()
     (out / "reference-points.json").write_bytes(layer_bytes)
     layer_key = f"{org}/point-directories/{DATASET}/reference-points.json"

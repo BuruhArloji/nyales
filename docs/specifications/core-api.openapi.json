@@ -933,6 +933,49 @@
         "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
+    "/api/customers/{id}/directory-details": {
+      "get": {
+        "operationId": "core_get__api_customers__id__directory_details",
+        "summary": "GET /api/customers/{id}/directory-details",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role-scoped JSON data; auth_subject only for org-wide Management/NSM"
+          },
+          "401": {
+            "description": "Bearer/session/reauth required"
+          },
+          "403": {
+            "description": "Role/scope/MFA denied"
+          },
+          "404": {
+            "description": "Missing/outside scope"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "422": {
+            "description": "Invalid payload"
+          },
+          "428": {
+            "description": "If-Match required"
+          }
+        },
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+      }
+    },
     "/api/customers/{id}/street-view": {
       "get": {
         "operationId": "core_get__api_customers__id__street_view",
@@ -1592,6 +1635,57 @@
           },
           "201": {
             "description": "Created; operation dependent"
+          },
+          "401": {
+            "description": "Bearer/session/reauth required"
+          },
+          "403": {
+            "description": "Role/scope/MFA denied"
+          },
+          "404": {
+            "description": "Missing/outside scope"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "412": {
+            "description": "Stale ETag"
+          },
+          "422": {
+            "description": "Invalid payload"
+          },
+          "428": {
+            "description": "If-Match required"
+          }
+        },
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+      }
+    },
+    "/api/point-directory/{dataset}/details/{external_code}": {
+      "get": {
+        "operationId": "core_get__api_point_directory__dataset__details__external_code_",
+        "summary": "GET /api/point-directory/{dataset}/details/{external_code}",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dataset",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "external_code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role-scoped JSON data; auth_subject only for org-wide Management/NSM"
           },
           "401": {
             "description": "Bearer/session/reauth required"
