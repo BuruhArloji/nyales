@@ -22,7 +22,6 @@
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": false,
   "staging_blockers": [
-    "Initialize Firebase Authentication and enable Email/Password and Google providers",
     "Authorize nyales-staging.azaracourse.workers.dev in Firebase Authentication",
     "Supply scoped Cloudflare deployment token securely in GitHub staging secret CF_API_TOKEN",
     "Deploy Worker/assets through GitHub and verify real staging smoke",
@@ -63,7 +62,7 @@
   },
   "firebase": {
     "project_exists": true,
-    "source": "User supplied full public Firebase web config on 2026-10-28; read-only provider API returned CONFIGURATION_NOT_FOUND",
+    "source": "User supplied web config and confirmed Authentication configured on 2026-10-28; public Identity Toolkit config now responds successfully",
     "project_id": "nyales-staging",
     "web_app_registered": true,
     "real_login_verified": false,
@@ -71,10 +70,17 @@
     "provider_configuration_verified": false,
     "web_app_id": "1:82528400427:web:40a5b9e672270687eca66e",
     "public_auth_config_check": {
-      "success": false,
-      "http_status": 400,
-      "message": "CONFIGURATION_NOT_FOUND"
-    }
+      "success": true,
+      "returned_project_identifier": "82528400427",
+      "matches_web_app_project_number": true,
+      "authorized_domains": [
+        "localhost",
+        "nyales-staging.firebaseapp.com",
+        "nyales-staging.web.app"
+      ]
+    },
+    "provider_enablement_user_confirmed": true,
+    "staging_authorized_domain_verified": false
   },
   "github_staging_configuration": {
     "environment_name": "staging",
