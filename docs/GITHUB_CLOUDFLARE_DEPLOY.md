@@ -96,3 +96,14 @@ Untuk CI/CD, pemilik akun Cloudflare NYALES perlu membuat token deployment khusu
 ### Authentication merespons setelah konfigurasi pengguna
 
 Pengguna mengonfirmasi Email/Password dan Google telah dikonfigurasi. Pemeriksaan ulang public Identity Toolkit config kini berhasil, mengembalikan identifier project number `82528400427` yang cocok dengan web app ID. Authorized domains: `localhost`, `nyales-staging.firebaseapp.com`, `nyales-staging.web.app`. Host `nyales-staging.azaracourse.workers.dev` belum tercantum, dan pengguna diminta menambahkannya. Public endpoint tidak membuka status enablement provider; keberhasilan respons tidak dianggap bukti login Google/email, UID provisioning, atau MFA. Kondisi `CONFIGURATION_NOT_FOUND` di atas adalah temuan sebelum aktivasi yang sudah tidak muncul pada pemeriksaan ulang.
+
+
+## Deployment staging nyata berhasil — 28 Oktober 2026
+
+GitHub Actions run [40691165577](https://github.com/BuruhArloji/nyales/actions/runs/40691165577) selesai success untuk commit `574d9579881f82553c83d12d0dc8d12738b7e5fb`. Tahap validasi config, instalasi runtime tes, typecheck, seluruh regresi, build, dry-run bundle, migrasi tanpa seed, upload Worker/assets dan smoke setelah deploy lulus. Secret `CF_API_TOKEN` disediakan pengguna melalui GitHub; nilainya tidak dibaca atau disalin ke workspace.
+
+Origin staging terverifikasi aktif: **https://nyales-staging.azaracourse.workers.dev**. Pemeriksaan independen dari workstation juga lulus 6 pemeriksaan: HTML 200, health `environment=staging`, auth config mode Firebase, API tanpa bearer 401, bearer demo lokal 401, dan customers tanpa login 401. Entry JS yang disajikan memuat project ID/auth domain/public web API key yang cocok dengan konfigurasi pengguna, tanpa mencetak nilainya. Python urllib dengan user agent bawaan sempat mendapat 403; pemeriksaan Node fetch yang sama dengan runner smoke berhasil. Ini belum verifikasi visual browser.
+
+Firebase authorized domains sudah diperiksa ulang dan memuat `nyales-staging.azaracourse.workers.dev`. Evidence JSON runtime tersimpan secara lokal pada `.nyales-agent/staging/`. Tidak ada seed dummy cloud. Database bootstrap awal organization/app_user/customer/invoice masih kosong pada pemeriksaan sebelum deploy. Health publik tidak dianggap verifikasi akses data D1/R2 melalui workflow user yang terautentikasi.
+
+Langkah selanjutnya adalah bootstrap organisasi dan Firebase UID untuk akun pertama dengan role yang disepakati, lalu pengujian login nyata, scope dan MFA admin. Akun Firebase tidak otomatis mendapat role. UI enrollment/challenge/recovery MFA dan entitlement proyek masih gate; tidak menghapus `MFA_REQUIRED` atau mengaktifkan LOCAL_AUTH untuk mempermudah rollout. Staging berhasil dipasang, tetapi ini belum production acceptance.

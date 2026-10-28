@@ -2,11 +2,12 @@
   "date": "2026-10-28",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "172ab2618181363a6d9173a0e1db2842f8151923",
+  "verified_remote_commit": "574d9579881f82553c83d12d0dc8d12738b7e5fb",
   "github_ci": {
-    "run_id": 40667351473,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40667351473",
-    "conclusion": "success"
+    "run_id": 40690260796,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40690260796",
+    "conclusion": "success",
+    "head_sha": "574d9579881f82553c83d12d0dc8d12738b7e5fb"
   },
   "current_local_checks": {
     "staging_config_and_smoke_tests": 5,
@@ -15,15 +16,13 @@
     "dry_run_binding_source": "actual NYALES staging D1/R2 and user-provided Firebase web config; dry-run does not publish",
     "cloud_resources_created": true,
     "cloud_resources_migrated": true,
-    "cloud_deployed": false,
+    "cloud_deployed": true,
     "typecheck": "passed",
     "build_with_actual_firebase_web_config": "passed"
   },
   "runtime_smoke_implemented": true,
-  "runtime_smoke_executed_against_real_deployment": false,
+  "runtime_smoke_executed_against_real_deployment": true,
   "staging_blockers": [
-    "Supply scoped Cloudflare deployment token securely in GitHub staging secret CF_API_TOKEN",
-    "Deploy Worker/assets through GitHub and verify real staging smoke",
     "Bootstrap authorized Firebase UID/organization/roles; complete privileged MFA implementation and enrollment"
   ],
   "production_accepted": false,
@@ -56,7 +55,7 @@
     "dummy_seed_applied": false,
     "r2_bucket": "nyales-staging-files",
     "r2_dev_public_access": false,
-    "worker_deployed": false,
+    "worker_deployed": true,
     "prepared_worker_url": "https://nyales-staging.azaracourse.workers.dev"
   },
   "firebase": {
@@ -91,14 +90,31 @@
       "VITE_FIREBASE_AUTH_DOMAIN": "nyales-staging.firebaseapp.com",
       "VITE_FIREBASE_API_KEY": "configured; value omitted from status document"
     },
-    "credentials_complete": false,
-    "deploy_dispatched": false,
+    "credentials_complete": true,
+    "deploy_dispatched": true,
     "verified_secret_metadata": [
       "CF_ACCOUNT_ID",
+      "CF_API_TOKEN",
       "CF_D1_DATABASE_ID"
     ],
-    "missing_secrets": [
-      "CF_API_TOKEN"
-    ]
-  }
+    "missing_secrets": []
+  },
+  "staging_deployment": {
+    "run_id": 40691165577,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40691165577",
+    "head_sha": "574d9579881f82553c83d12d0dc8d12738b7e5fb",
+    "status": "completed",
+    "conclusion": "success",
+    "origin": "https://nyales-staging.azaracourse.workers.dev",
+    "github_post_deploy_smoke": "passed",
+    "independent_live_smoke": "passed",
+    "independent_live_smoke_checks": 6,
+    "served_assets_matching_firebase_web_config": true
+  },
+  "runtime_smoke_scope": "Public HTML/API and unauthenticated access boundaries only; no D1/R2 data path or real Firebase/MFA/user-role verification",
+  "staging_limitations": [
+    "Public runtime and unauthenticated boundaries verified; real Firebase account login, UID/role mapping and MFA not yet verified",
+    "No cloud dummy seed or production transaction migration performed",
+    "D1/R2 binding availability inside authenticated business workflows and production acceptance remain unverified"
+  ]
 }
