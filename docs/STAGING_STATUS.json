@@ -23,7 +23,7 @@
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": true,
   "staging_blockers": [
-    "Deploy updated first-admin/MFA code, complete real Google sign-in and TOTP enrollment/challenge",
+    "User must complete real Google sign-in and TOTP enrollment/challenge on staging",
     "Confirm atomic first-admin activation and role/device-session access, then remove bootstrap variables and redeploy",
     "Complete remaining real-role UAT and production acceptance gates"
   ],
@@ -112,16 +112,17 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40691165577,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40691165577",
-    "head_sha": "574d9579881f82553c83d12d0dc8d12738b7e5fb",
+    "run_id": 40695915785,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40695915785",
+    "head_sha": "bfd8068ff51b753ade65ebf781fcc3325f95b4ed",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
     "github_post_deploy_smoke": "passed",
     "independent_live_smoke": "passed",
     "independent_live_smoke_checks": 6,
-    "served_assets_matching_firebase_web_config": true
+    "served_assets_matching_firebase_web_config": true,
+    "first_admin_live_boundary_checks": 4
   },
   "runtime_smoke_scope": "Public HTML/API and unauthenticated access boundaries only; no D1/R2 data path or real Firebase/MFA/user-role verification",
   "staging_limitations": [
@@ -139,7 +140,13 @@
     "requires_signed_mfa_claim": true,
     "requires_empty_database": true,
     "actual_activation_verified": false,
-    "code_deployment_status": "pending"
+    "code_deployment_status": "deployed; GitHub and independent checks passed",
+    "verified_database_counts_before_signin": {
+      "organization": 0,
+      "app_user": 0,
+      "auth_role_assignment": 0,
+      "bootstrap_audit": 0
+    }
   },
   "auth_setup_validation": {
     "unit_regression_passed": 321,
