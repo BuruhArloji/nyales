@@ -1,6 +1,11 @@
 name: NYALES staging deploy
 on:
   workflow_dispatch:
+    inputs:
+      staging_url:
+        description: 'Exact https://nyales-staging.<account-subdomain>.workers.dev origin'
+        required: true
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -21,6 +26,7 @@ jobs:
       VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
       VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}
       VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.VITE_FIREBASE_AUTH_DOMAIN }}
+      NYALES_STAGING_URL: ${{ inputs.staging_url }}
     steps:
       - uses: actions/checkout@v4
       - name: Deploy main only
@@ -46,3 +52,5 @@ jobs:
         run: npx wrangler d1 migrations apply nyales-staging --remote --config wrangler.staging.generated.json
       - name: Deploy staging Worker and assets
         run: npx wrangler deploy --config wrangler.staging.generated.json
+      - name: Verify served staging and auth boundaries
+        run: node scripts/staging-smoke.mjs "$NYALES_STAGING_URL" test-results/staging-smoke.json

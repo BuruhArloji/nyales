@@ -36,3 +36,12 @@ Setelah deploy, verifikasi health APP_ENVstaging, loginconfig Firebase benar, ta
 Tidak ada seed dummy otomatis, sumbertransaksi produksi atau graph routing dalam deployment. Empat fixture training sintetis yang dipakai regresi disertakan di repository; hasiltes/localDB/.env/.dev.vars/privatevault/build diabaikan Git.
 
 Referensi konfigurasi relatif path/binding: https://developers.cloudflare.com/workers/wrangler/configuration/ . Deployment Firebase/Cloudflare belum boleh dilaporkan berhasil sebelum workflow dan smoke cloud nyata selesai.
+
+
+## Pemeriksaan setelah deploy
+
+Run workflow meminta origin Workers staging yang tepat, misalnya `https://nyales-staging.<subdomain-akun>.workers.dev`. Script `staging-smoke.mjs` hanya menerima origin HTTPS tersebut, menolak redirect dan membatasi ukuran/responsetime. Pemeriksaan baca-saja meliputi HTML/assetsentry, healthenvironmentstaging, authmodeFirebase, API tanpa login401 dan tokenlocaldemo401. Status sukses belum membuktikan loginUID/MFA/role, koneksi D1/R2 beserta isinya atau production acceptance.
+
+Perintah: `npm run staging:smoke -- https://nyales-staging.<subdomain-akun>.workers.dev test-results/staging-smoke-new.json`. File tujuan wajib baru. Workflow menjalankan pemeriksaan setelah deploy; kegagalan smoke membuat runfailed tanpa menghapus data atau melakukan rollback otomatis.
+
+28 Oktober2026: CI remote untuk commitfa61862 sukses. Dryrun lokal bundle22aset berhasil dengan binding fixture; tidak menghubungi/memigrasi/mendeploy resource fixture tersebut. Akun Cloudflare terhubung hanya memiliki D1ERP; R2APIcode10042 meminta enable melalui dashboard. Konfirmasi akun CloudflareNYALES dan FirebaseProjectID masih ditunggu. Tidak memakai D1ERP untuk staging, tidak mengaktifkan billing/R2 atau melemahkan MFAdemi deployment.

@@ -2,7 +2,11 @@
 
 NYALES adalah Sales Operations Hub untuk mengelola sales lapangan dan telesales. Implementasi mengikuti PRD v1.10, ERD v1.2, API v1.2, backlog web v1.2, dan Design System v1.1.
 
-## Progres terbaru — 25 Oktober 2026
+## GitHub dan staging — 28 Oktober 2026
+
+Source mandiri ada pada repository Private `BuruhArloji/nyales`. CI GitHub menjalankan regresi, typecheck dan build; deployment staging terpisah melalui Run workflow setelah D1/R2/Firebase dikonfigurasi. [Runbook](docs/GITHUB_CLOUDFLARE_DEPLOY.md). Push source dan keberhasilan CI belum berarti hosting sudah aktif. Routing dan pengembangan generator bergantung komputer lain masih ditunda pengguna.
+
+## Histori progres — 25 Oktober 2026
 
 WEB-070 mencakup identitas komputer, antrean uji koneksi serta kebijakan dan pemeriksaan kesiapan kunjungan. [Runbook kesiapan](docs/WEB070_PLANNING_READINESS.md), [bukti/status](docs/WEB070_PROGRESS.json). [Buka perencanaan kunjungan](http://127.0.0.1:5183/#page=settings&settings_section=planning). Snapshot kesiapan menjelaskan data kurang dan perubahan sumber; belum menjadi input solver, rute atau jadwal. Runtime310operasi dan112tabel aplikasi(114dengan metadata D1). Catatan sebelumnya di bawah adalah histori.
 

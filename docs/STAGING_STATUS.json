@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-28",
+  "repository": "BuruhArloji/nyales",
+  "repository_visibility": "private",
+  "verified_remote_commit": "fa618627a95bbb2b941b2c36713d3d92f2256b8f",
+  "github_ci": {
+    "run_id": 40653150220,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40653150220",
+    "conclusion": "success"
+  },
+  "current_local_checks": {
+    "staging_config_and_smoke_tests": 5,
+    "failed": 0,
+    "wrangler_dry_run": "passed",
+    "dry_run_binding_source": "synthetic fixture only; not real cloud resources",
+    "cloud_resources_created": false,
+    "cloud_resources_migrated": false,
+    "cloud_deployed": false
+  },
+  "runtime_smoke_implemented": true,
+  "runtime_smoke_executed_against_real_deployment": false,
+  "staging_blockers": [
+    "Confirm Cloudflare account for NYALES",
+    "R2 enablement in selected account; current session API reports code10042",
+    "Dedicated staging D1 and private R2 resources",
+    "NYALES Firebase Project ID and matching frontend config",
+    "GitHub staging environment credentials supplied securely",
+    "Bootstrap authorized users with valid Firebase identity/MFA"
+  ],
+  "production_accepted": false,
+  "routing_deferred_by_user": true
+}
