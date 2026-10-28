@@ -61,7 +61,7 @@ function Shell({page,setPage,children}:{page:Page;setPage:(p:Page)=>void;childre
    <div className="top-actions"><div className="profile"><span className="avatar" aria-hidden="true">{initials}</span><div><strong>{identity.name}</strong><small>{identity.role}</small></div></div><button className="button secondary logout-button" disabled={loggingOut} onClick={()=>void logout()}>{loggingOut?'Keluar…':'Keluar'}</button></div>
   </header>
   <div className="workspace-context"><span>Workspace <span aria-hidden="true">/</span> {current?.label}</span><span className="scope-chip">Scope · {identity.scope==='organization'?'Organisasi':identity.area_ids.length?identity.area_ids.join(', '):'Assigned'}</span></div>
-  {identity.demo_data&&<details className="demo-data-banner"><summary>Mode demo · data simulasi</summary><p>Angka, lokasi, transaksi dan approval contoh untuk mencoba tampilan. Bukan data bisnis nyata. Nomor kontak dummy tidak untuk dihubungi.</p></details>}
+  {(identity.demo_data||identity.training_data)&&<details className="demo-data-banner"><summary>{identity.training_data?'Pilot staging · data simulasi':'Mode demo · data simulasi'}</summary><p>Angka, lokasi, transaksi, role tambahan dan approval adalah contoh untuk latihan, bukan data bisnis nyata. Akun Google Anda tetap memakai login dan Authenticator yang sesungguhnya. Akun staf simulasi belum dihubungkan ke Firebase.</p></details>}
   <div className="page-scene" key={page} data-page={page}>{children}</div><footer className="footer">NYALES · Data D1 · Sumber transaksi belum tersinkron otomatis</footer>
  </main></div>
 }

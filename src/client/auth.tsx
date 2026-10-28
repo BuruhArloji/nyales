@@ -4,7 +4,7 @@ import {initializeApp,getApps} from 'firebase/app';
 import {getAuth,onIdTokenChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut,browserSessionPersistence,setPersistence,getMultiFactorResolver,type MultiFactorError,type MultiFactorResolver,type User,type Auth} from 'firebase/auth';
 import {AuthApiError,loginProblem,shouldExpireSession}from'./auth-errors';
 import {TotpChallenge,TotpEnrollment}from'./auth-mfa';
-type Identity={demo_data?:boolean;id:string;name:string;organization_id:string;role:string;capabilities:string[];area_ids:string[];scope:string};
+type Identity={demo_data?:boolean;training_data?:boolean;id:string;name:string;organization_id:string;role:string;capabilities:string[];area_ids:string[];scope:string};
 type Config={mode:'local'|'firebase';configured:boolean};
 let firebaseAuth:Auth|undefined;
 let demo=false;

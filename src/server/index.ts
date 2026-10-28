@@ -1,5 +1,6 @@
 import {visitOperationalProfiles} from './visit-operational-profiles';
 import {createFirstAdminRoutes} from './first-admin';
+import {hasTrainingData} from './training-marker';
 import {visitPlanning} from './visit-planning';
 import {agentQueueAdmin} from './visit-agent-queue';
 import {visitAgentGateway,visitAgentMaintenance} from './visit-agent-gateway';
@@ -167,7 +168,7 @@ scopedRoutes.onError((err,c)=>{console.error('NYALES request failed',err.name);r
 
 function meta(){return {request_id:crypto.randomUUID(),server_time:new Date().toISOString(),source:'d1',validation_state:'provisional',freshness_state:'manual'}}
 
-scopedRoutes.get('/api/me',async c=>{const s=c.get('scope');const demoData=localAuthEnabled(c.env)&&Boolean(await c.env.DB.prepare("SELECT id FROM master_audit WHERE organization_id=? AND resource_type='demo_fixture' AND resource_id='showcase-v1-' LIMIT 1").bind(s.identity.organization_id).first());return c.json({data:{...c.get('identity'),demo_data:demoData,capabilities:s.capabilities,area_ids:s.areaIds,scope:s.orgWide?'organization':s.allRepsInArea?'area':'assigned'},meta:meta()})});
+scopedRoutes.get('/api/me',async c=>{const s=c.get('scope');const demoData=localAuthEnabled(c.env)&&Boolean(await c.env.DB.prepare("SELECT id FROM master_audit WHERE organization_id=? AND resource_type='demo_fixture' AND resource_id='showcase-v1-' LIMIT 1").bind(s.identity.organization_id).first());const trainingData=c.env.APP_ENV==='staging'&&await hasTrainingData(c.env.DB,s.identity.organization_id);return c.json({data:{...c.get('identity'),demo_data:demoData,training_data:trainingData,capabilities:s.capabilities,area_ids:s.areaIds,scope:s.orgWide?'organization':s.allRepsInArea?'area':'assigned'},meta:meta()})});
 
 async function readCustomers(db:D1Database,s:Scope){
 

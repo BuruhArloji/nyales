@@ -167,5 +167,29 @@
     "actual_config_build": "passed",
     "actual_config_deploy_dry_run": "passed",
     "real_firebase_enrollment_verified": false
+  },
+  "training_dataset": {
+    "classification": "synthetic",
+    "source": "pilot/demo-10-sales/source-data.json",
+    "prepared": true,
+    "cloud_applied": false,
+    "banner_deployment": "pending",
+    "sales_field": 8,
+    "sales_telesales": 2,
+    "customers": 20,
+    "invoices": 80,
+    "credits": 4,
+    "approved_target_plans": 2,
+    "actual_october_minor": 36520000,
+    "target_leaf_minor": 80000000,
+    "target_reserve_minor": 200000,
+    "existing_operator_and_session_preserved_in_exact_backup_restore": true,
+    "source_reconciliation": "passed",
+    "full_regression_passed": 323,
+    "skipped": 8,
+    "typecheck": "passed",
+    "build": "passed",
+    "backup_export_and_local_restore": "passed",
+    "production_accepted": false
   }
 }
