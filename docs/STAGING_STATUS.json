@@ -23,9 +23,7 @@
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": true,
   "staging_blockers": [
-    "User must complete real Google sign-in and TOTP enrollment/challenge on staging",
-    "Confirm atomic first-admin activation and role/device-session access, then remove bootstrap variables and redeploy",
-    "Complete remaining real-role UAT and production acceptance gates"
+    "Complete remaining real-role/area UAT, real migration, recovery/handover and production acceptance gates"
   ],
   "production_accepted": false,
   "routing_deferred_by_user": true,
@@ -65,8 +63,8 @@
     "source": "User supplied web config and confirmed Authentication configured on 2026-10-28; public Identity Toolkit config now responds successfully",
     "project_id": "nyales-staging",
     "web_app_registered": true,
-    "real_login_verified": false,
-    "privileged_mfa_verified": false,
+    "real_login_verified": true,
+    "privileged_mfa_verified": true,
     "provider_configuration_verified": false,
     "web_app_id": "1:82528400427:web:40a5b9e672270687eca66e",
     "public_auth_config_check": {
@@ -89,7 +87,11 @@
     "sms_provider_enabled": false,
     "billing_change_performed": false,
     "billing_state_verified": false,
-    "mfa_ui_enrollment_challenge_implemented": true
+    "mfa_ui_enrollment_challenge_implemented": true,
+    "email_verified": true,
+    "owner_google_provider_verified": true,
+    "owner_totp_factor_count": 1,
+    "runtime_totp_enrollment_and_challenge_verified": true
   },
   "github_staging_configuration": {
     "environment_name": "staging",
@@ -98,9 +100,7 @@
       "FIREBASE_PROJECT_ID": "nyales-staging",
       "CF_R2_BUCKET": "nyales-staging-files",
       "VITE_FIREBASE_AUTH_DOMAIN": "nyales-staging.firebaseapp.com",
-      "VITE_FIREBASE_API_KEY": "configured; value omitted from status document",
-      "FIRST_ADMIN_EMAIL": "configured from user selection; value omitted",
-      "FIRST_ADMIN_ORGANIZATION_NAME": "NYALES Pilot"
+      "VITE_FIREBASE_API_KEY": "configured; value omitted from status document"
     },
     "credentials_complete": true,
     "deploy_dispatched": true,
@@ -112,9 +112,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40695915785,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40695915785",
-    "head_sha": "bfd8068ff51b753ade65ebf781fcc3325f95b4ed",
+    "run_id": 40697201262,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40697201262",
+    "head_sha": "ba3464c18a846a7024ce23ec75cba9e8e8c66bcf",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -122,13 +122,13 @@
     "independent_live_smoke": "passed",
     "independent_live_smoke_checks": 6,
     "served_assets_matching_firebase_web_config": true,
-    "first_admin_live_boundary_checks": 4
+    "first_admin_disabled_checks": 2
   },
   "runtime_smoke_scope": "Public HTML/API and unauthenticated access boundaries only; no D1/R2 data path or real Firebase/MFA/user-role verification",
   "staging_limitations": [
-    "Public runtime and unauthenticated boundaries verified; real Firebase account login, UID/role mapping and MFA not yet verified",
+    "Management sign-in/TOTP and first-account activation verified; additional real user roles/area scoping still require UAT",
     "No cloud dummy seed or production transaction migration performed",
-    "D1/R2 binding availability inside authenticated business workflows and production acceptance remain unverified"
+    "Private R2 file flows, cloud recovery/RPO/RTO and production acceptance remain unverified"
   ],
   "first_admin_activation": {
     "implemented": true,
@@ -139,14 +139,24 @@
     "requires_verified_google_email": true,
     "requires_signed_mfa_claim": true,
     "requires_empty_database": true,
-    "actual_activation_verified": false,
+    "actual_activation_verified": true,
     "code_deployment_status": "deployed; GitHub and independent checks passed",
     "verified_database_counts_before_signin": {
       "organization": 0,
       "app_user": 0,
       "auth_role_assignment": 0,
       "bootstrap_audit": 0
-    }
+    },
+    "organization_count": 1,
+    "active_management_count": 1,
+    "bootstrap_audit_count": 1,
+    "active_device_session_count": 1,
+    "user_confirmed_dashboard_open": true,
+    "bootstrap_github_variables_removed": true,
+    "bootstrap_worker_endpoint_closed": true,
+    "closure_deployment_status": "success",
+    "closure_endpoint_http_status": 404,
+    "closeout_complete": true
   },
   "auth_setup_validation": {
     "unit_regression_passed": 321,

@@ -61,3 +61,13 @@ Validasi implementasi: 321 regresi lulus, 8 platform/dependency skip, typecheck/
 
 
 Deployment alur aktivasi/MFA berhasil pada GitHub Actions run [40695915785](https://github.com/BuruhArloji/nyales/actions/runs/40695915785), commit `bfd8068ff51b753ade65ebf781fcc3325f95b4ed`. Enam smoke runtime dan empat pemeriksaan first-admin (no bearer, demo token, client-supplied claims/body, cross-origin) lulus pada origin staging nyata. Read-only D1 setelah deploy masih menunjukkan organization=0, app_user=0, roles=0 dan bootstrap audit=0. Aktivasi akun nyata tetap menunggu Google sign-in dan enrollment/challenge yang dilakukan pemilik akun pada perangkatnya. Jangan menandai `privileged_mfa_verified` atau production acceptance sebelum ada bukti tersebut.
+
+
+## Aktivasi pertama terverifikasi — 28 Oktober 2026
+
+Pemilik akun mengonfirmasi dashboard terbuka setelah Google sign-in dan flow Authenticator. Read-only D1 memverifikasi satu organisasi `NYALES Pilot`, satu user aktif dengan assignment `MANAGEMENT` kanal NULL, satu audit `bootstrap_first_admin`, dan satu sesi perangkat aktif. Firebase Admin read-only lookup pada akun yang dipilih memverifikasi email verified, provider Google, tidak disabled, serta satu faktor TOTP. Ini merupakan bukti runtime enrollment/login, bukan hanya receipt konfigurasi provider. Status subtype/global mfa state yang dicatat sebelumnya tidak mencegah enrollment/challenge akun ini.
+
+Dua variable bootstrap `FIRST_ADMIN_EMAIL` dan `FIRST_ADMIN_ORGANIZATION_NAME` dihapus dari GitHub Environment staging dan diverifikasi read-back. Deployment penutupan endpoint dijalankan setelahnya; sebelum deployment itu selesai endpoint masih mengacu konfigurasi Worker sebelumnya. Pengguna dan assignment yang sudah dibuat dipertahankan. Tidak mencabut sesi atau mengubah MFA pengguna. Aktivasi ini hanya membuktikan Management awal; role/area UAT lainnya, recovery MFA/provider dan production acceptance tetap terpisah.
+
+
+Penutupan bootstrap selesai melalui GitHub Actions run [40697201262](https://github.com/BuruhArloji/nyales/actions/runs/40697201262), deployed commit `ba3464c18a846a7024ce23ec75cba9e8e8c66bcf`. Setelah kedua variable bootstrap dihapus, build/deploy/smoke success. Pemeriksaan live tanpa bearer maupun dengan token demo mengembalikan 404 `NOT_FOUND` untuk `POST /api/auth/first-admin`, dan keenam smoke aplikasi tetap lulus. Akun/role/MFA pengguna yang sudah terdaftar tidak dicabut. Aktivasi Management pertama selesai; endpoint tetap terdapat dalam source tetapi nonaktif tanpa konfigurasi operator, bukan dihapus dengan migrasi data.
