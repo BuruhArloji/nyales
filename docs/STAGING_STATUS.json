@@ -20,7 +20,7 @@
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": false,
   "staging_blockers": [
-    "Create dedicated NYALES Firebase project and register matching web app",
+    "Register Firebase web app in user-specified nyales-staging project; obtain matching public Firebase config",
     "Configure Firebase providers and staging authorized domain",
     "GitHub staging environment credentials supplied securely",
     "Deploy Worker/assets through GitHub and verify real staging smoke",
@@ -59,11 +59,22 @@
     "worker_deployed": false
   },
   "firebase": {
-    "project_exists": false,
-    "source": "User confirmed belum ada on 2026-10-28",
-    "project_id": null,
+    "project_exists": true,
+    "source": "User supplied Project ID nyales-staging on 2026-10-28; project/provider configuration not yet independently verified",
+    "project_id": "nyales-staging",
     "web_app_registered": false,
     "real_login_verified": false,
-    "privileged_mfa_verified": false
+    "privileged_mfa_verified": false,
+    "provider_configuration_verified": false
+  },
+  "github_staging_configuration": {
+    "environment_name": "staging",
+    "environment_id": 25571255770,
+    "verified_variables": {
+      "FIREBASE_PROJECT_ID": "nyales-staging",
+      "CF_R2_BUCKET": "nyales-staging-files"
+    },
+    "credentials_complete": false,
+    "deploy_dispatched": false
   }
 }
