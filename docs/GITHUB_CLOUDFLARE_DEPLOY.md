@@ -73,3 +73,21 @@ Akses otomatis browser dinonaktifkan di pengaturan Work saat langkah ini dijalan
 Akun Management/NSM tetap memerlukan klaim MFA Firebase. UI login saat ini belum menangani enrollment/challenge MFA; public web config saja belum menyelesaikan login admin. TOTP memerlukan Firebase Authentication with Identity Platform; verifikasi konfigurasi/ketersediaan paket dan implementasikan flow sebelum rollout akun privileged. Tidak melemahkan `MFA_REQUIRED` untuk meloloskan staging. Referensi: [TOTP MFA web](https://firebase.google.com/docs/auth/web/totp-mfa), [batas Authentication](https://firebase.google.com/docs/auth/limits).
 
 GitHub Environment `staging` ID `25571255770` sudah tersedia. Variable `FIREBASE_PROJECT_ID=nyales-staging` dan `CF_R2_BUCKET=nyales-staging-files` diverifikasi melalui read-back API. Secret deployment dan variable Firebase web app lainnya masih belum lengkap; workflow deploy belum dijalankan.
+
+
+## Firebase web config diterima — 28 Oktober 2026
+
+Public web config dari pengguna sudah diterima untuk project `nyales-staging`, app ID `1:82528400427:web:40a5b9e672270687eca66e`. `VITE_FIREBASE_API_KEY` dan `VITE_FIREBASE_AUTH_DOMAIN=nyales-staging.firebaseapp.com` sudah disimpan ke GitHub Environment `staging` dan diverifikasi read-back. Nilai API key tidak dicetak dalam status atau dicommit ke source. Worker tetap menggunakan Firebase SDK yang sudah terpasang; tidak menambahkan Firebase Hosting/Firestore/Storage.
+
+Pemeriksaan baca-saja public Identity Toolkit config (dengan app ID) merespons HTTP 400 `CONFIGURATION_NOT_FOUND`. Ini belum membuktikan provider login siap; pengguna diminta membuka Authentication > Get started, lalu mengaktifkan Email/Password dan Google. Tidak melakukan signup atau membuat akun pengguna melalui pemeriksaan ini.
+
+Subdomain Workers akun terpilih dibaca lewat API: `azaracourse`. Origin yang disiapkan untuk workflow adalah `https://nyales-staging.azaracourse.workers.dev`, belum URL deployment yang sudah hidup. Nama subdomain adalah pengaturan tingkat akun yang sudah ada; tidak diubah demi NYALES. Tambahkan host `nyales-staging.azaracourse.workers.dev` pada Firebase authorized domains sebelum UAT login.
+
+
+## Validasi konfigurasi aktual — 28 Oktober 2026
+
+Generator staging config, 5 tes staging, typecheck/build dengan public Firebase config NYALES dan `wrangler deploy --dry-run` lulus. Simulasi bundle membaca 22 aset dan melaporkan binding D1 `nyales-staging`, R2 `nyales-staging-files`, `APP_ENV=staging`, `LOCAL_AUTH=false`, `FIREBASE_PROJECT_ID=nyales-staging`. Tidak mempublikasikan Worker dan tidak membuktikan login nyata.
+
+GitHub secret `CF_ACCOUNT_ID` dan `CF_D1_DATABASE_ID` sudah diisi melalui public-key/sealed-box encryption resmi API GitHub. Read-back hanya memverifikasi metadata nama secret (GitHub tidak mengembalikan plaintext). OAuth Wrangler lokal tidak disalin ke GitHub. Secret `CF_API_TOKEN` masih belum tersedia.
+
+Untuk CI/CD, pemilik akun Cloudflare NYALES perlu membuat token deployment khusus lewat [API Tokens](https://dash.cloudflare.com/profile/api-tokens), lalu menyimpannya langsung pada GitHub Environment `staging` sebagai `CF_API_TOKEN` melalui [pengaturan environments](https://github.com/BuruhArloji/nyales/settings/environments). Gunakan scope akun `54386b392928d9dcd226ad9e7fff5d79` dengan Account Settings Read, Workers Scripts Edit, D1 Edit, dan Workers R2 Storage Edit yang diperlukan workflow. Batasi resource sesuai granularitas yang tersedia; jangan menganggap permission account-wide otomatis terbatas hanya ke resource NYALES. Jangan memakai global API key atau mengirim token ke chat. Referensi: [GitHub Actions Cloudflare](https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/).

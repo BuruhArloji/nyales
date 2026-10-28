@@ -12,17 +12,19 @@
     "staging_config_and_smoke_tests": 5,
     "failed": 0,
     "wrangler_dry_run": "passed",
-    "dry_run_binding_source": "synthetic fixture only; not real cloud resources",
+    "dry_run_binding_source": "actual NYALES staging D1/R2 and user-provided Firebase web config; dry-run does not publish",
     "cloud_resources_created": true,
     "cloud_resources_migrated": true,
-    "cloud_deployed": false
+    "cloud_deployed": false,
+    "typecheck": "passed",
+    "build_with_actual_firebase_web_config": "passed"
   },
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": false,
   "staging_blockers": [
-    "Register Firebase web app in user-specified nyales-staging project; obtain matching public Firebase config",
-    "Configure Firebase providers and staging authorized domain",
-    "GitHub staging environment credentials supplied securely",
+    "Initialize Firebase Authentication and enable Email/Password and Google providers",
+    "Authorize nyales-staging.azaracourse.workers.dev in Firebase Authentication",
+    "Supply scoped Cloudflare deployment token securely in GitHub staging secret CF_API_TOKEN",
     "Deploy Worker/assets through GitHub and verify real staging smoke",
     "Bootstrap authorized Firebase UID/organization/roles; complete privileged MFA implementation and enrollment"
   ],
@@ -56,25 +58,41 @@
     "dummy_seed_applied": false,
     "r2_bucket": "nyales-staging-files",
     "r2_dev_public_access": false,
-    "worker_deployed": false
+    "worker_deployed": false,
+    "prepared_worker_url": "https://nyales-staging.azaracourse.workers.dev"
   },
   "firebase": {
     "project_exists": true,
-    "source": "User supplied Project ID nyales-staging on 2026-10-28; project/provider configuration not yet independently verified",
+    "source": "User supplied full public Firebase web config on 2026-10-28; read-only provider API returned CONFIGURATION_NOT_FOUND",
     "project_id": "nyales-staging",
-    "web_app_registered": false,
+    "web_app_registered": true,
     "real_login_verified": false,
     "privileged_mfa_verified": false,
-    "provider_configuration_verified": false
+    "provider_configuration_verified": false,
+    "web_app_id": "1:82528400427:web:40a5b9e672270687eca66e",
+    "public_auth_config_check": {
+      "success": false,
+      "http_status": 400,
+      "message": "CONFIGURATION_NOT_FOUND"
+    }
   },
   "github_staging_configuration": {
     "environment_name": "staging",
     "environment_id": 25571255770,
     "verified_variables": {
       "FIREBASE_PROJECT_ID": "nyales-staging",
-      "CF_R2_BUCKET": "nyales-staging-files"
+      "CF_R2_BUCKET": "nyales-staging-files",
+      "VITE_FIREBASE_AUTH_DOMAIN": "nyales-staging.firebaseapp.com",
+      "VITE_FIREBASE_API_KEY": "configured; value omitted from status document"
     },
     "credentials_complete": false,
-    "deploy_dispatched": false
+    "deploy_dispatched": false,
+    "verified_secret_metadata": [
+      "CF_ACCOUNT_ID",
+      "CF_D1_DATABASE_ID"
+    ],
+    "missing_secrets": [
+      "CF_API_TOKEN"
+    ]
   }
 }
