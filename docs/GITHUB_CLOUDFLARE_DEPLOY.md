@@ -45,3 +45,8 @@ Run workflow meminta origin Workers staging yang tepat, misalnya `https://nyales
 Perintah: `npm run staging:smoke -- https://nyales-staging.<subdomain-akun>.workers.dev test-results/staging-smoke-new.json`. File tujuan wajib baru. Workflow menjalankan pemeriksaan setelah deploy; kegagalan smoke membuat runfailed tanpa menghapus data atau melakukan rollback otomatis.
 
 28 Oktober2026: CI remote untuk commitfa61862 sukses. Dryrun lokal bundle22aset berhasil dengan binding fixture; tidak menghubungi/memigrasi/mendeploy resource fixture tersebut. Akun Cloudflare terhubung hanya memiliki D1ERP; R2APIcode10042 meminta enable melalui dashboard. Konfirmasi akun CloudflareNYALES dan FirebaseProjectID masih ditunggu. Tidak memakai D1ERP untuk staging, tidak mengaktifkan billing/R2 atau melemahkan MFAdemi deployment.
+
+
+## Koreksi akun Cloudflare dari pengguna
+
+Akun NYALES yang dipilih adalah **didikpriyoutomo05@gmail.com**. SesiCloudflareindonesiasuke@gmail.com adalah akun lain dan tidak dipakai untuk provisioning NYALES. DaftarD1ERP dan errorR2 pada pemeriksaan sebelumnya hanya berlaku akunlama; belum menjelaskan kondisi akunterpilih. Login baru memakai XDG_CONFIG_HOME task-local `.nyales-agent/cloudflare-auth` (diabaikanGit) agar credential konfigERP global tidak diganti. `whoami` harus cocok dengan email terpilih sebelum memakai accountID atau membuat resource. Tidak menyalin credential ERP ke GitHub.

@@ -39,6 +39,7 @@ jobs:
       - name: Validate staging configuration
         run: |
           test -n "$CLOUDFLARE_API_TOKEN"
+          node --input-type=module -e "import {stagingOrigin} from './scripts/staging-smoke.mjs'; stagingOrigin(process.env.NYALES_STAGING_URL);"
           node scripts/prepare-staging-wrangler.mjs
       - run: python scripts/visit-solver-setup.py
       - run: npm run check

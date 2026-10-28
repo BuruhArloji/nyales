@@ -20,13 +20,17 @@
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": false,
   "staging_blockers": [
-    "Confirm Cloudflare account for NYALES",
-    "R2 enablement in selected account; current session API reports code10042",
+    "Complete isolated Cloudflare login as didikpriyoutomo05@gmail.com",
+    "Inspect D1/R2 availability on the verified target account; previous R2 error belongs to another account",
+    "Provide NYALES Firebase Project ID and matching frontend config",
     "Dedicated staging D1 and private R2 resources",
-    "NYALES Firebase Project ID and matching frontend config",
     "GitHub staging environment credentials supplied securely",
     "Bootstrap authorized users with valid Firebase identity/MFA"
   ],
   "production_accepted": false,
-  "routing_deferred_by_user": true
+  "routing_deferred_by_user": true,
+  "requested_cloudflare_identity": "didikpriyoutomo05@gmail.com",
+  "requested_identity_authenticated": false,
+  "isolated_auth_directory": ".nyales-agent/cloudflare-auth",
+  "previous_cloudflare_session_reused": false
 }
