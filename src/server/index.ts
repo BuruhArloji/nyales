@@ -1,3 +1,4 @@
+import {referencePoints} from './point-directory';
 import {visitOperationalProfiles} from './visit-operational-profiles';
 import {createFirstAdminRoutes} from './first-admin';
 import {hasTrainingData} from './training-marker';
@@ -168,7 +169,7 @@ scopedRoutes.onError((err,c)=>{console.error('NYALES request failed',err.name);r
 
 function meta(){return {request_id:crypto.randomUUID(),server_time:new Date().toISOString(),source:'d1',validation_state:'provisional',freshness_state:'manual'}}
 
-scopedRoutes.get('/api/me',async c=>{const s=c.get('scope');const demoData=localAuthEnabled(c.env)&&Boolean(await c.env.DB.prepare("SELECT id FROM master_audit WHERE organization_id=? AND resource_type='demo_fixture' AND resource_id='showcase-v1-' LIMIT 1").bind(s.identity.organization_id).first());const trainingData=c.env.APP_ENV==='staging'&&await hasTrainingData(c.env.DB,s.identity.organization_id);return c.json({data:{...c.get('identity'),demo_data:demoData,training_data:trainingData,capabilities:s.capabilities,area_ids:s.areaIds,scope:s.orgWide?'organization':s.allRepsInArea?'area':'assigned'},meta:meta()})});
+scopedRoutes.get('/api/me',async c=>{const s=c.get('scope');const demoData=localAuthEnabled(c.env)&&Boolean(await c.env.DB.prepare("SELECT id FROM master_audit WHERE organization_id=? AND resource_type='demo_fixture' AND resource_id='showcase-v1-' LIMIT 1").bind(s.identity.organization_id).first());const trainingData=c.env.APP_ENV==='staging'&&await hasTrainingData(c.env.DB,s.identity.organization_id);const directoryData=Boolean(await c.env.DB.prepare("SELECT id FROM point_directory_dataset WHERE organization_id=? AND status='ready' LIMIT 1").bind(s.identity.organization_id).first());return c.json({data:{...c.get('identity'),demo_data:demoData,training_data:trainingData,directory_data:directoryData,capabilities:s.capabilities,area_ids:s.areaIds,scope:s.orgWide?'organization':s.allRepsInArea?'area':'assigned'},meta:meta()})});
 
 async function readCustomers(db:D1Database,s:Scope){
 
@@ -176,20 +177,31 @@ async function readCustomers(db:D1Database,s:Scope){
 
  // Invoice aggregates use invoice ownership, not present-day customer owner; no duplicate join on assignments.
 
- const rows=await db.prepare(`SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,
-
- (SELECT u.name FROM customer_assignment ca JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id WHERE ca.organization_id=co.organization_id AND ca.outlet_id IN(SELECT f.id FROM customer_outlet f WHERE f.organization_id=co.organization_id AND (f.id=co.id OR f.merged_into_id=co.id)) AND ca.channel='field' AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?) ORDER BY ca.effective_from_date DESC LIMIT 1) owner,
-
- (SELECT MAX(i.invoice_date) FROM invoice i WHERE i.outlet_id IN(SELECT f.id FROM customer_outlet f WHERE f.organization_id=co.organization_id AND (f.id=co.id OR f.merged_into_id=co.id)) AND i.organization_id=co.organization_id AND i.is_current=1 AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date<=?) last,
-
- (SELECT COALESCE(SUM(i.net_minor),0) FROM invoice i WHERE i.outlet_id IN(SELECT f.id FROM customer_outlet f WHERE f.organization_id=co.organization_id AND (f.id=co.id OR f.merged_into_id=co.id)) AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=? AND ${inv.sql}) actual
-
- FROM customer_outlet co JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id WHERE ${filter.sql} AND co.merged_into_id IS NULL ORDER BY co.name`).bind(s.date,s.date,s.date,s.date.slice(0,7)+'-01',s.date,...inv.params,...filter.params).all<{id:string;name:string;area:string;latitude_e7:number|null;longitude_e7:number|null;owner:string|null;last:string|null;actual:number;area_id:string;address:string|null;external_code:string|null;external_code_review:number;version:number;record_status:string;coordinate_status:string;location_note:string;outlet_type:string;service_frequency_days:number|null;visit_window:string}>();
+ const rows=await db.prepare(`WITH invoice_facts AS (
+ SELECT COALESCE(child.merged_into_id,child.id) customer_id,MAX(i.invoice_date) last,
+ SUM(CASE WHEN i.invoice_date>=? AND i.invoice_date<=? AND ${inv.sql} THEN i.net_minor ELSE 0 END) actual
+ FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id
+ WHERE i.organization_id=? AND i.is_current=1 AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date<=?
+ GROUP BY COALESCE(child.merged_into_id,child.id)
+ ), field_owners AS (
+ SELECT COALESCE(child.merged_into_id,child.id) customer_id,u.name,
+ ROW_NUMBER() OVER(PARTITION BY COALESCE(child.merged_into_id,child.id) ORDER BY ca.effective_from_date DESC,ca.id) rank
+ FROM customer_assignment ca JOIN customer_outlet child ON child.organization_id=ca.organization_id AND child.id=ca.outlet_id
+ JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id
+ WHERE ca.organization_id=? AND ca.channel='field' AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)
+ ) SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,
+ owner.name owner,facts.last,COALESCE(facts.actual,0) actual FROM customer_outlet co
+ JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id
+ LEFT JOIN invoice_facts facts ON facts.customer_id=co.id
+ LEFT JOIN field_owners owner ON owner.customer_id=co.id AND owner.rank=1
+ WHERE ${filter.sql} AND co.merged_into_id IS NULL ORDER BY co.name`).bind(s.date.slice(0,7)+'-01',s.date,...inv.params,s.identity.organization_id,s.date,s.identity.organization_id,s.date,s.date,...filter.params).all<{id:string;name:string;area:string;latitude_e7:number|null;longitude_e7:number|null;owner:string|null;last:string|null;actual:number;area_id:string;address:string|null;external_code:string|null;external_code_review:number;version:number;record_status:string;coordinate_status:string;location_note:string;outlet_type:string;service_frequency_days:number|null;visit_window:string}>();
 
  const segmentRun=await segmentationSnapshot(db,s.identity.organization_id,s.date);const segmentRows=(await db.prepare('SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=?').bind(segmentRun.id).all<any>()).results;
+ const segmentsByCustomer=new Map(segmentRows.map(r=>[r.customer_id,r]));
  const current=(await db.prepare(`SELECT COALESCE(al.canonical_id,ca.outlet_id) customer_id,ca.rep_id,ca.channel,u.name FROM customer_assignment ca LEFT JOIN customer_alias al ON al.organization_id=ca.organization_id AND al.source_id=ca.outlet_id JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id WHERE ca.organization_id=? AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)`).bind(s.identity.organization_id,s.date,s.date).all<any>()).results;
 
- return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,area:r.area.replace(/^Area /,''),field_rep_id:current.find(a=>a.customer_id===r.id&&a.channel==='field')?.rep_id||null,telesales_rep_id:current.find(a=>a.customer_id===r.id&&a.channel==='telesales')?.rep_id||null,telesales_owner:current.find(a=>a.customer_id===r.id&&a.channel==='telesales')?.name||'Belum assigned',owner:r.owner||'Belum assigned',status:segmentRows.find(x=>x.customer_id===r.id)?.status||'Unknown',tier:segmentRows.find(x=>x.customer_id===r.id)?.tier||'Belum tersedia',segmentation:segmentRows.find(x=>x.customer_id===r.id)||null,actual:r.actual/1000000,actual_minor:r.actual,last:r.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
+ const ownersByCustomer=new Map<string,any[]>();for(const assignment of current){const list=ownersByCustomer.get(assignment.customer_id)||[];list.push(assignment);ownersByCustomer.set(assignment.customer_id,list)}
+ return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,area:r.area.replace(/^Area /,''),field_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='field')?.rep_id||null,telesales_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.rep_id||null,telesales_owner:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.name||'Belum assigned',owner:r.owner||'Belum assigned',status:segmentsByCustomer.get(r.id)?.status||'Unknown',tier:segmentsByCustomer.get(r.id)?.tier||'Belum tersedia',segmentation:segmentsByCustomer.get(r.id)||null,actual:r.actual/1000000,actual_minor:r.actual,last:r.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
 
 }
 
@@ -278,9 +290,10 @@ async function mapPayload(c:any){
 
  if(c.req.query('channel')){sql+=' AND EXISTS(SELECT 1 FROM auth_role_assignment r WHERE r.organization_id=p.organization_id AND r.user_id=p.user_id AND r.channel=? AND r.effective_from_date<=? AND (r.effective_to_date IS NULL OR r.effective_to_date>?))';args.push(channel,s.date,s.date)}
 
+ const reference=await referencePoints(c);
  const positions=await (c.env.DB as D1Database).prepare(`SELECT p.user_id id,u.name,p.latitude_e7,p.longitude_e7,p.captured_at last_seen,p.source,p.accuracy_m FROM sales_last_position p JOIN app_user u ON u.id=p.user_id AND u.organization_id=p.organization_id WHERE ${sql} AND u.status='active'`).bind(...args).all<{id:string;name:string;latitude_e7:number;longitude_e7:number;last_seen:string;source:string;accuracy_m:number|null}>();
 
- return {data:{total_customer_count:customers.length,missing_coordinates_count:customers.filter(x=>x.record_status!=='inactive'&&(x.lat===null||x.lng===null)).length,inactive_customer_count:customers.filter(x=>x.record_status==='inactive').length,all_customers:customers,customers:customers.filter(x=>x.record_status!=='inactive'&&x.lat!==null&&x.lng!==null),sales:positions.results.map((r:any)=>{const seconds=Math.floor((Date.now()-Date.parse(r.last_seen))/1000);return {id:r.id,name:r.name,lat:r.latitude_e7/1e7,lng:r.longitude_e7/1e7,last_seen:r.last_seen,source:r.source,accuracy_m:r.accuracy_m,age_seconds:Number.isFinite(seconds)&&seconds>=0?seconds:null,clock_status:!Number.isFinite(seconds)?'invalid':seconds<0?'future':'valid',position_state:'last_received'}}),basemap:{provider:c.env.MAP_TILE_URL?'custom_raster':'openfreemap',style_url:c.env.MAP_TILE_URL?null:'https://tiles.openfreemap.org/styles/positron',tile_url:c.env.MAP_TILE_URL||'https://tile.openstreetmap.org/{z}/{x}/{y}.png',attribution:c.env.MAP_ATTRIBUTION||'© OpenStreetMap contributors',configured:Boolean(c.env.MAP_TILE_URL)}},meta:{...meta(),routing:false}};
+ return {data:{reference_points:reference.points,reference_point_count:reference.total,reference_scope_note:reference.scope_note,total_customer_count:customers.length,missing_coordinates_count:customers.filter(x=>x.record_status!=='inactive'&&(x.lat===null||x.lng===null)).length,inactive_customer_count:customers.filter(x=>x.record_status==='inactive').length,all_customers:customers,customers:customers.filter(x=>x.record_status!=='inactive'&&x.lat!==null&&x.lng!==null),sales:positions.results.map((r:any)=>{const seconds=Math.floor((Date.now()-Date.parse(r.last_seen))/1000);return {id:r.id,name:r.name,lat:r.latitude_e7/1e7,lng:r.longitude_e7/1e7,last_seen:r.last_seen,source:r.source,accuracy_m:r.accuracy_m,age_seconds:Number.isFinite(seconds)&&seconds>=0?seconds:null,clock_status:!Number.isFinite(seconds)?'invalid':seconds<0?'future':'valid',position_state:'last_received'}}),basemap:{provider:c.env.MAP_TILE_URL?'custom_raster':'openfreemap',style_url:c.env.MAP_TILE_URL?null:'https://tiles.openfreemap.org/styles/positron',tile_url:c.env.MAP_TILE_URL||'https://tile.openstreetmap.org/{z}/{x}/{y}.png',attribution:c.env.MAP_ATTRIBUTION||'© OpenStreetMap contributors',configured:Boolean(c.env.MAP_TILE_URL)}},meta:{...meta(),routing:false}};
 
 }
 
