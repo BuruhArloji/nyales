@@ -22,7 +22,6 @@
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": false,
   "staging_blockers": [
-    "Authorize nyales-staging.azaracourse.workers.dev in Firebase Authentication",
     "Supply scoped Cloudflare deployment token securely in GitHub staging secret CF_API_TOKEN",
     "Deploy Worker/assets through GitHub and verify real staging smoke",
     "Bootstrap authorized Firebase UID/organization/roles; complete privileged MFA implementation and enrollment"
@@ -76,11 +75,12 @@
       "authorized_domains": [
         "localhost",
         "nyales-staging.firebaseapp.com",
-        "nyales-staging.web.app"
+        "nyales-staging.web.app",
+        "nyales-staging.azaracourse.workers.dev"
       ]
     },
     "provider_enablement_user_confirmed": true,
-    "staging_authorized_domain_verified": false
+    "staging_authorized_domain_verified": true
   },
   "github_staging_configuration": {
     "environment_name": "staging",
