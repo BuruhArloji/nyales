@@ -2,10 +2,10 @@
   "date": "2026-10-28",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "fa618627a95bbb2b941b2c36713d3d92f2256b8f",
+  "verified_remote_commit": "172ab2618181363a6d9173a0e1db2842f8151923",
   "github_ci": {
-    "run_id": 40653150220,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40653150220",
+    "run_id": 40667351473,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40667351473",
     "conclusion": "success"
   },
   "current_local_checks": {
@@ -13,24 +13,57 @@
     "failed": 0,
     "wrangler_dry_run": "passed",
     "dry_run_binding_source": "synthetic fixture only; not real cloud resources",
-    "cloud_resources_created": false,
-    "cloud_resources_migrated": false,
+    "cloud_resources_created": true,
+    "cloud_resources_migrated": true,
     "cloud_deployed": false
   },
   "runtime_smoke_implemented": true,
   "runtime_smoke_executed_against_real_deployment": false,
   "staging_blockers": [
-    "Complete isolated Cloudflare login as didikpriyoutomo05@gmail.com",
-    "Inspect D1/R2 availability on the verified target account; previous R2 error belongs to another account",
-    "Provide NYALES Firebase Project ID and matching frontend config",
-    "Dedicated staging D1 and private R2 resources",
+    "Create dedicated NYALES Firebase project and register matching web app",
+    "Configure Firebase providers and staging authorized domain",
     "GitHub staging environment credentials supplied securely",
-    "Bootstrap authorized users with valid Firebase identity/MFA"
+    "Deploy Worker/assets through GitHub and verify real staging smoke",
+    "Bootstrap authorized Firebase UID/organization/roles; complete privileged MFA implementation and enrollment"
   ],
   "production_accepted": false,
   "routing_deferred_by_user": true,
   "requested_cloudflare_identity": "didikpriyoutomo05@gmail.com",
-  "requested_identity_authenticated": false,
+  "requested_identity_authenticated": true,
   "isolated_auth_directory": ".nyales-agent/cloudflare-auth",
-  "previous_cloudflare_session_reused": false
+  "previous_cloudflare_session_reused": false,
+  "authentication_attempt": {
+    "method": "isolated-device-flow",
+    "previous_callback_attempt": "expired_without_credential_saved",
+    "requested_identity_authenticated": true
+  },
+  "cloudflare_staging": {
+    "account_id": "54386b392928d9dcd226ad9e7fff5d79",
+    "authenticated_email": "didikpriyoutomo05@gmail.com",
+    "d1_database_name": "nyales-staging",
+    "d1_database_id": "6fc9dcea-c6a9-446c-a2f4-44ec3a12bdfe",
+    "d1_region": "APAC",
+    "migrations_applied": 45,
+    "application_tables": 114,
+    "quick_check": "ok",
+    "foreign_key_violations": 0,
+    "bootstrap_entity_rows": {
+      "organization": 0,
+      "app_user": 0,
+      "customer_outlet": 0,
+      "invoice": 0
+    },
+    "dummy_seed_applied": false,
+    "r2_bucket": "nyales-staging-files",
+    "r2_dev_public_access": false,
+    "worker_deployed": false
+  },
+  "firebase": {
+    "project_exists": false,
+    "source": "User confirmed belum ada on 2026-10-28",
+    "project_id": null,
+    "web_app_registered": false,
+    "real_login_verified": false,
+    "privileged_mfa_verified": false
+  }
 }

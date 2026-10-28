@@ -44,9 +44,30 @@ Run workflow meminta origin Workers staging yang tepat, misalnya `https://nyales
 
 Perintah: `npm run staging:smoke -- https://nyales-staging.<subdomain-akun>.workers.dev test-results/staging-smoke-new.json`. File tujuan wajib baru. Workflow menjalankan pemeriksaan setelah deploy; kegagalan smoke membuat runfailed tanpa menghapus data atau melakukan rollback otomatis.
 
-28 Oktober2026: CI remote untuk commitfa61862 sukses. Dryrun lokal bundle22aset berhasil dengan binding fixture; tidak menghubungi/memigrasi/mendeploy resource fixture tersebut. Akun Cloudflare terhubung hanya memiliki D1ERP; R2APIcode10042 meminta enable melalui dashboard. Konfirmasi akun CloudflareNYALES dan FirebaseProjectID masih ditunggu. Tidak memakai D1ERP untuk staging, tidak mengaktifkan billing/R2 atau melemahkan MFAdemi deployment.
-
+28 Oktober 2026: CI remote commit `172ab26` sukses (run 40667351473). Dry-run lokal bundle 22 aset sebelumnya memakai binding fixture. Pemeriksaan akun lama dan error R2 sebelumnya tidak berlaku untuk akun NYALES yang dipilih di bawah ini. Worker staging belum dideploy.
 
 ## Koreksi akun Cloudflare dari pengguna
 
 Akun NYALES yang dipilih adalah **didikpriyoutomo05@gmail.com**. SesiCloudflareindonesiasuke@gmail.com adalah akun lain dan tidak dipakai untuk provisioning NYALES. DaftarD1ERP dan errorR2 pada pemeriksaan sebelumnya hanya berlaku akunlama; belum menjelaskan kondisi akunterpilih. Login baru memakai XDG_CONFIG_HOME task-local `.nyales-agent/cloudflare-auth` (diabaikanGit) agar credential konfigERP global tidak diganti. `whoami` harus cocok dengan email terpilih sebelum memakai accountID atau membuat resource. Tidak menyalin credential ERP ke GitHub.
+
+
+## Resource staging terverifikasi — 28 Oktober 2026
+
+Login OAuth terisolasi berhasil dan `whoami` cocok dengan didikpriyoutomo05@gmail.com, account ID `54386b392928d9dcd226ad9e7fff5d79`.
+
+- D1 `nyales-staging`: `6fc9dcea-c6a9-446c-a2f4-44ec3a12bdfe`, APAC. Seluruh 45 migrasi diterapkan lewat konfigurasi resource-only pada `.nyales-agent/staging/wrangler-resources.json`, tanpa placeholder Firebase dan tanpa deploy Worker.
+- Verifikasi remote: 114 tabel aplikasi, `PRAGMA quick_check=ok`, `foreign_key_check` kosong. Organization, app_user, customer_outlet, invoice masing-masing 0 baris; tidak menjalankan seed dummy.
+- R2 `nyales-staging-files` dibuat; akses publik r2.dev terverifikasi disabled.
+- Resource Azara yang sudah ada tidak digunakan atau dimodifikasi. Credential OAuth tidak disalin ke GitHub.
+
+Bukti lokal provider dan log migrasi tersimpan di `.nyales-agent/staging/` yang diabaikan Git. `docs/STAGING_STATUS.json` menyimpan ringkasan tanpa credential. Ini membuktikan provisioning/schema, belum membuktikan koneksi Worker ke binding atau login end-to-end.
+
+## Bootstrap Firebase yang masih diperlukan
+
+Pengguna mengonfirmasi belum memiliki proyek Firebase NYALES. Pembuatan proyek dilakukan melalui [Firebase Console](https://console.firebase.google.com/): nama `NYALES Staging`, paket Spark, Analytics opsional boleh dimatikan. Catat Project ID final yang dihasilkan; jangan mengasumsikan ID sama dengan nama proyek. Panduan resmi: [setup web](https://firebase.google.com/docs/web/setup), [paket biaya](https://firebase.google.com/docs/projects/billing/firebase-pricing-plans).
+
+Setelah proyek ada: daftarkan web app `NYALES Staging Web`, ambil public web config untuk environment variables workflow, aktifkan provider Email/Password dan Google yang dipakai UI, lalu tambahkan host staging yang benar ke Authentication authorized domains. Tidak perlu Firebase Hosting/Firestore/Storage untuk stack saat ini; data aplikasi tetap pada D1/R2. API token Cloudflare dan private service-account key tidak boleh dimasukkan ke konfigurasi frontend.
+
+Akses otomatis browser dinonaktifkan di pengaturan Work saat langkah ini dijalankan, sehingga pembuatan proyek belum dapat diverifikasi otomatis. Pengguna diminta membuat proyek dan memberikan Project ID, bukan token/password.
+
+Akun Management/NSM tetap memerlukan klaim MFA Firebase. UI login saat ini belum menangani enrollment/challenge MFA; public web config saja belum menyelesaikan login admin. TOTP memerlukan Firebase Authentication with Identity Platform; verifikasi konfigurasi/ketersediaan paket dan implementasikan flow sebelum rollout akun privileged. Tidak melemahkan `MFA_REQUIRED` untuk meloloskan staging. Referensi: [TOTP MFA web](https://firebase.google.com/docs/auth/web/totp-mfa), [batas Authentication](https://firebase.google.com/docs/auth/limits).
