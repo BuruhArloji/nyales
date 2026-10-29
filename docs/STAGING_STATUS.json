@@ -1,13 +1,13 @@
 {
-  "date": "2026-10-28",
+  "date": "2026-10-29",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "86b1bb9cc44002ffe107917ea3faece90dbb1c92",
+  "verified_remote_commit": "d3ae7fe1e15327932163dbd4462f7a0d4f10ed18",
   "github_ci": {
-    "run_id": 40690260796,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40690260796",
+    "run_id": 40786325935,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40786325935",
     "conclusion": "success",
-    "head_sha": "574d9579881f82553c83d12d0dc8d12738b7e5fb"
+    "head_sha": "d3ae7fe1e15327932163dbd4462f7a0d4f10ed18"
   },
   "current_local_checks": {
     "staging_config_and_smoke_tests": 5,
@@ -91,7 +91,9 @@
     "email_verified": true,
     "owner_google_provider_verified": true,
     "owner_totp_factor_count": 1,
-    "runtime_totp_enrollment_and_challenge_verified": true
+    "runtime_totp_enrollment_and_challenge_verified": true,
+    "currently_used_for_staging_login": false,
+    "verification_note": "Historical Firebase enrollment evidence retained; current staging uses one-click local Management pilot, not credential authentication."
   },
   "github_staging_configuration": {
     "environment_name": "staging",
@@ -112,21 +114,22 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40709426967,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40709426967",
-    "head_sha": "86b1bb9cc44002ffe107917ea3faece90dbb1c92",
+    "run_id": 40791963644,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40791963644",
+    "head_sha": "d3ae7fe1e15327932163dbd4462f7a0d4f10ed18",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
     "github_post_deploy_smoke": "passed",
     "independent_live_smoke": "passed",
     "independent_live_smoke_checks": 6,
-    "served_assets_matching_firebase_web_config": true,
-    "first_admin_disabled_checks": 2
+    "served_assets_matching_firebase_web_config": false,
+    "first_admin_disabled_checks": 2,
+    "current_auth_mode": "local staging pilot; no Firebase/MFA sign-in required"
   },
   "runtime_smoke_scope": "Public HTML/API and unauthenticated access boundaries only; no D1/R2 data path or real Firebase/MFA/user-role verification",
   "staging_limitations": [
-    "Only the first real Management identity has completed Firebase/MFA activation; 16 synthetic staff records have no Firebase subject",
+    "Staging uses a public one-click Management pilot identity; device sessions are not proof of a user password/MFA. Production acceptance remains false.",
     "Training coverage is reviewed through 2026-10-28; subsequent periods need new reviewed input rather than inferred completeness",
     "Additional real-role/area UAT, private R2 file flows, cloud recovery/RPO/RTO and production acceptance remain unverified",
     "External directory customers have unverified coordinates/history and no sales assignment; original training finance and staff remain synthetic"
@@ -233,7 +236,7 @@
     "source_originals_preserved": true,
     "prepared_locally": true,
     "r2_upload_and_hash_readback": "passed",
-    "customer_import_status": "partial_daily_budget_reserved",
+    "customer_import_status": "partial_d1_read_quota_blocked",
     "full_restore_existing_business_and_sessions_preserved": true,
     "full_restore_foreign_key_violations": 0,
     "local_regression_passed": 327,
@@ -246,8 +249,8 @@
     "completed_batches": 37,
     "total_batches": 64,
     "next_batch": 38,
-    "next_free_quota_reset_utc": "2026-10-29T00:00:00Z",
-    "next_free_quota_reset_jakarta": "2026-10-29T07:00:00+07:00",
+    "next_free_quota_reset_utc": "2026-10-30T00:00:00Z",
+    "next_free_quota_reset_jakarta": "2026-10-30T07:00:00+07:00",
     "daily_write_budget_reserved": 80000,
     "account_write_usage_baseline_plus_import": 77977,
     "cloud_previous_data_preserved": {
@@ -286,6 +289,29 @@
       "authenticated_staging_visual_confirmation": false
     },
     "automatic_resume_scheduled": false,
-    "checked_at": "2026-10-28T15:00:18.163523+00:00"
+    "checked_at": "2026-10-29T12:09:15.953851+00:00",
+    "storage_sha256": "cb05078ad7724970839dcf9789b35acaf73b98147656600dec32cdb3ae18cc5d",
+    "storage_byte_count": 15220158,
+    "current_attempt_new_batches": 0,
+    "current_attempt_blocker": "D1 daily row read limit, provider code 7500; analytics earlier rate limited"
+  },
+  "pending_directory_followup": {
+    "status": "local checks passed; ready to push, not deployed",
+    "migration": "0047_duplicate_lookup_indexes.sql",
+    "browser_fixture_tests_passed": 5,
+    "duplicate_query_profile": {
+      "synthetic_customers": 7400,
+      "old_vm_steps_safety_stop": 5001000,
+      "new_vm_steps_approx": 525000,
+      "cloud_rows_read_not_measured": true
+    },
+    "cloud_deploy_blocked_by_d1_quota": true,
+    "new_customer_batches_applied": 0,
+    "production_accepted": false,
+    "unit_integration_passed": 331,
+    "unit_integration_skipped": 8,
+    "unit_integration_failed": 0,
+    "typecheck": "passed",
+    "build": "passed"
   }
 }

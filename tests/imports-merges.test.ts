@@ -2,6 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {Hono} from 'hono';
 import {database} from './sqlite-helper';
+import {duplicateCandidateSql} from '../src/server/duplicates';
 import {scopedRoutes} from '../src/server/index';
 import {parseCsv,csvFile} from '../src/server/csv';
 import {digest} from '../src/server/operations';
@@ -81,4 +82,22 @@ test('customer import needs no account mapping and legacy dry-runs must be reval
  const {sqlite,upload,dry,commit,data,req}=fixture();const file=await upload('code,name,area,address\nC1,Toko Harapan,a,Jakarta');const mapping={external_code:'code',name:'name',area_id:'area',address:'address'};const batch=await dry('customer',file,mapping);assert.equal(batch.valid_count,1);
  sqlite.prepare('UPDATE master_import_batch SET schema_version=1 WHERE id=?').run(batch.id);const denied=await commit('customer',file,mapping,batch);assert.equal(denied.status,409);assert.ok((await denied.text()).includes('LEGACY_CUSTOMER_BATCH_VALIDATE_AGAIN'));assert.equal((sqlite.prepare('SELECT COUNT(*) n FROM customer_outlet').get() as any).n,0);
  const fresh=await dry('customer',file,mapping);await data(await commit('customer',file,mapping,fresh));const customers=await data(await req('GET','/api/customers'));assert.equal(customers[0].name,'Toko Harapan');assert.ok(!('account_id' in customers[0]));
+});
+
+test('duplicate review uses bounded normalized index probes at directory scale and preserves matching rules',async()=>{
+ const {sqlite,req,data}=fixture();const insert=sqlite.prepare("INSERT INTO customer_outlet(id,organization_id,area_id,name,address,external_code,latitude_e7,longitude_e7) VALUES(?,'o','a',?,?,?,?,?)");
+ sqlite.exec('BEGIN');for(let i=0;i<7400;i++)insert.run('scale-'+String(i).padStart(5,'0'),'Warung '+i,'Alamat '+i,'CODE-'+i,-62000000+i*10,1070000000+i*10);sqlite.exec('COMMIT');
+ // Mixed case/spacing and geographic bounds must still match after index optimization.
+ insert.run('address-match',' WARUNG 3 ',' ALAMAT 3 ','OTHER',null,null);
+ insert.run('near-match',' warung 4 ','Alamat lain','NEAR',-62000000+40+13500,1070000000+40+13500);
+ insert.run('far-away','Warung 4','Alamat berbeda','FAR',-62000000+40+13501,1070000000+40);
+ sqlite.exec("INSERT INTO contact(id,organization_id,customer_id,name,phone,preferred_channel) VALUES('p1','o','scale-00001','PIC','081234567890','field'),('p2','o','scale-00002','PIC','081234567890','field')");
+ const plan=(sqlite.prepare('EXPLAIN QUERY PLAN '+duplicateCandidateSql).all('o','o','o','o')as any[]).map(r=>r.detail);
+ for(const index of ['customer_duplicate_code','customer_duplicate_address','customer_duplicate_location'])assert.ok(plan.some(p=>p.includes('SEARCH b USING INDEX '+index)&&p.includes('<expr>=?')),JSON.stringify(plan));
+ assert.ok(plan.some(p=>p.includes('contact_duplicate_phone')&&p.includes('phone=?')),JSON.stringify(plan));
+ const result=await data(await req('GET','/api/customer-duplicates'));const candidate=(a:string,b:string)=>result.find((r:any)=>[r.source_id,r.target_id].includes(a)&&[r.source_id,r.target_id].includes(b));
+ assert.match(candidate('scale-00003','address-match')?.reasons||'',/Nama dan alamat sama/);
+ assert.match(candidate('scale-00004','near-match')?.reasons||'',/koordinat berdekatan/);assert.equal(candidate('scale-00004','far-away'),undefined);
+ assert.match(candidate('scale-00001','scale-00002')?.reasons||'',/Nomor kontak sama/);
+ assert.equal((sqlite.prepare('SELECT COUNT(*) n FROM customer_alias').get()as any).n,0);
 });

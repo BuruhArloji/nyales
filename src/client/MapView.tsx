@@ -47,12 +47,13 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   markers.current.forEach(m=>m.remove());popups.current.forEach(p=>p.remove());markers.current=[];popups.current=[];
   const valid=(p:any)=>Number.isFinite(p.lat)&&Number.isFinite(p.lng)&&Math.abs(p.lat)<=90&&Math.abs(p.lng)<=180;
   const customers=(mapData.customers||[]).filter(valid),references=showReferences?(mapData.reference_points||[]).filter(valid):[];
-  const appendDetail=(content:HTMLElement,detail:any,kind:'customer'|'reference')=>{
+  const appendDetail=(content:HTMLElement,detail:any)=>{
    const card=document.createElement('div');card.className='map-popup-detail';
-   if(typeof detail.photo_url==='string'&&/^https?:\/\//i.test(detail.photo_url)){const image=document.createElement('img');image.className='map-popup-image';image.alt='Foto '+detail.name;image.loading='lazy';image.referrerPolicy='no-referrer';image.src=detail.photo_url;image.addEventListener('error',()=>image.remove());card.appendChild(image)}
+   const photoNote=document.createElement('small');photoNote.className='map-popup-photo-note';photoNote.textContent='Foto sumber belum tersedia.';card.appendChild(photoNote);
+   if(typeof detail.photo_url==='string'&&/^https?:\/\//i.test(detail.photo_url)){const image=document.createElement('img');image.className='map-popup-image';image.alt='Foto '+detail.name;image.loading='lazy';image.referrerPolicy='no-referrer';image.src=detail.photo_url;photoNote.hidden=true;image.addEventListener('error',()=>{image.remove();photoNote.hidden=false});card.insertBefore(image,photoNote)}
    const facts=document.createElement('div');facts.className='map-popup-facts';
    const addFact=(label:string,value:any)=>{if(value===undefined||value===null||value==='')return;const row=document.createElement('span');row.className='map-popup-fact';const key=document.createElement('b');key.textContent=label;const textNode=document.createElement('span');textNode.textContent=String(value);row.appendChild(key);row.appendChild(textNode);facts.appendChild(row)};
-   addFact('Kategori',detail.category);addFact('Rating',detail.rating?(detail.rating+' · '+(detail.reviews||'0')+' ulasan'):undefined);addFact('Status',detail.status);addFact('Alamat',detail.address);addFact('Jam buka',detail.hours);addFact('Wilayah',[detail.area_kelurahan,detail.area_kecamatan,detail.area_kota].filter(Boolean).join(' · '));
+   addFact('Kategori',detail.category);addFact('Rating',detail.rating?(detail.rating+' · '+(detail.reviews?detail.reviews+' ulasan':'jumlah ulasan belum tersedia')):undefined);addFact('Status sumber',detail.status);addFact('Alamat',detail.address);addFact('Jam buka',detail.hours);addFact('Wilayah',[detail.area_kelurahan,detail.area_kecamatan,detail.area_kota].filter(Boolean).join(' · '));
    if(detail.phone){const row=document.createElement('span');row.className='map-popup-fact';const key=document.createElement('b');key.textContent='Telepon';const link=document.createElement('a');link.href='tel:'+detail.phone;link.textContent=detail.phone;row.appendChild(key);row.appendChild(link);facts.appendChild(row)}
    if(facts.childElementCount)card.appendChild(facts);
    const links=document.createElement('div');links.className='map-popup-links';
@@ -63,14 +64,24 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
    if(kind==='customer'&&!item.directory_dataset_id)return;
    const path=kind==='customer'?'/api/customers/'+encodeURIComponent(item.id)+'/directory-details':'/api/point-directory/'+encodeURIComponent(item.dataset_id)+'/details/'+encodeURIComponent(item.external_code||item.id);
    const loading=document.createElement('small');loading.className='map-popup-loading';loading.textContent='Memuat detail sumber…';content.appendChild(loading);
-   void apiFetch(path).then(async response=>{const json=await response.json()as any;if(!response.ok)throw Error('DIRECTORY_DETAIL_UNAVAILABLE');loading.remove();if(json.data)appendDetail(content,json.data,kind)}).catch(()=>{loading.textContent='Detail sumber belum tersedia.'});
+   void apiFetch(path).then(async response=>{const json=await response.json()as any;if(!response.ok)throw Error('DIRECTORY_DETAIL_UNAVAILABLE');loading.remove();if(json.data)appendDetail(content,json.data)}).catch(()=>{loading.textContent='Detail sumber belum tersedia.'});
   };
   const popup=(item:any,kind:'customer'|'sales'|'reference')=>{
-   const content=document.createElement('div');content.className='map-popup-card';const title=document.createElement('strong'),note=document.createElement('small');title.textContent=item.name;content.appendChild(title);content.appendChild(document.createElement('br'));
+   const content=document.createElement('div');content.className='map-popup-card';content.tabIndex=0;content.setAttribute('aria-label','Detail '+item.name);const title=document.createElement('strong'),note=document.createElement('small');title.textContent=item.name;content.appendChild(title);
    note.textContent=kind==='reference'?'Referensi peta · '+(item.category||'Kategori belum tersedia')+' · bukan master customer':kind==='sales'?'Lokasi terakhir: '+item.last_seen+' · '+item.source:'Status: '+item.status+' · PIC: '+item.owner;content.appendChild(note);
    if(kind==='customer'){const button=document.createElement('button');button.type='button';button.className='text-button';button.textContent='Lihat Street View';button.addEventListener('click',()=>onStreetView(item));content.appendChild(button)}
-   if(kind!=='sales')loadDetail(content,item,kind);
    return content;
+  };
+  const makePopup=(item:any,kind:'customer'|'sales'|'reference',offset:number)=>{
+   const content=popup(item,kind),tip=new maplibregl.Popup({offset,maxWidth:'280px',className:'map-source-popup'}).setDOMContent(content);let requested=false;
+   const fit=()=>{if(!tip.isOpen())return;const height=map.getContainer().clientHeight,y=map.project([item.lng,item.lat]).y,compact=map.getContainer().clientWidth<480;
+    if(compact)tip.addClassName('map-source-popup-compact');else tip.removeClassName('map-source-popup-compact');
+    content.style.maxHeight='min('+Math.max(80,Math.min(420,compact?height-60:Math.max(y,height-y)-64))+'px,60vh)';tip.setMaxWidth('280px');
+   };
+   const observer=new ResizeObserver(fit);
+   tip.on('open',()=>{fit();observer.observe(content);map.on('resize',fit);map.on('move',fit);if(!requested&&kind!=='sales'){requested=true;loadDetail(content,item,kind)}});
+   tip.on('close',()=>{observer.disconnect();map.off('resize',fit);map.off('move',fit)});
+   return tip;
   };
   // Large customer collections use WebGL clusters, avoiding thousands of DOM buttons.
   const clustered=customers.length>300;
@@ -84,11 +95,11 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
    map.addLayer({id:sourceId+'-points',type:'circle',source:sourceId,filter:['!', ['has','point_count']],paint:{'circle-radius':6,'circle-color':['case',['==',['get','kind'],'reference'],'#777c80',['==',['get','churn'],true],'#b8793f','#168e85'],'circle-stroke-width':1.5,'circle-stroke-color':'#fff'}});
   }
   const items=new Map([...customers,...references].map((p:any)=>[p.id,p]));
-  const clickPoint=(event:any)=>{const feature=event.features?.[0],item=items.get(feature?.properties?.id);if(!item)return;const tip=new maplibregl.Popup({offset:12,maxWidth:'280px'}).setLngLat([item.lng,item.lat]).setDOMContent(popup(item,feature.properties.kind)).addTo(map);popups.current.push(tip)};
+  const clickPoint=(event:any)=>{const feature=event.features?.[0],item=items.get(feature?.properties?.id);if(!item)return;const tip=makePopup(item,feature.properties.kind,12).setLngLat([item.lng,item.lat]).addTo(map);popups.current.push(tip)};
   const clickCluster=async(event:any)=>{const feature=event.features?.[0];if(!feature)return;const src=map.getSource(sourceId)as maplibregl.GeoJSONSource;try{const zoom=await src.getClusterExpansionZoom(feature.properties.cluster_id);if(instance.current===map)map.easeTo({center:feature.geometry.coordinates,zoom})}catch{/* Source may be replaced while a view changes. */}};
   const enter=()=>{map.getCanvas().style.cursor='pointer'},leave=()=>{map.getCanvas().style.cursor=''};
   map.on('click',sourceId+'-points',clickPoint);map.on('click',sourceId+'-clusters',clickCluster);map.on('mouseenter',sourceId+'-points',enter);map.on('mouseleave',sourceId+'-points',leave);
-  const add=(item:any,kind:'customer'|'sales')=>{if(!valid(item))return;const el=document.createElement('button');el.type='button';el.className='maplibre-marker '+kind+(item.status==='Churn'?' churn':'')+(item.geo_status&&item.geo_status!=='confirmed'?' geo-unmapped':'');el.setAttribute('aria-label',kind==='sales'?item.name+', posisi terakhir':item.name+', '+item.status);const tip=new maplibregl.Popup({offset:18,maxWidth:'280px'}).setDOMContent(popup(item,kind));markers.current.push(new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat([item.lng,item.lat]).setPopup(tip).addTo(map));popups.current.push(tip)};
+  const add=(item:any,kind:'customer'|'sales')=>{if(!valid(item))return;const el=document.createElement('button');el.type='button';el.className='maplibre-marker '+kind+(item.status==='Churn'?' churn':'')+(item.geo_status&&item.geo_status!=='confirmed'?' geo-unmapped':'');el.setAttribute('aria-label',kind==='sales'?item.name+', posisi terakhir':item.name+', '+item.status);const tip=makePopup(item,kind,18);markers.current.push(new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat([item.lng,item.lat]).setPopup(tip).addTo(map));popups.current.push(tip)};
   if(!clustered)customers.forEach((p:any)=>add(p,'customer'));(mapData.sales||[]).forEach((p:any)=>add(p,'sales'));
   const points=[...customers,...(mapData.sales||[]).filter(valid),...references];if(points.length&&!initialCamera){const bounds=new maplibregl.LngLatBounds();points.forEach((p:any)=>bounds.extend([p.lng,p.lat]));map.fitBounds(bounds,{padding:50,maxZoom:14,duration:0})}
   return()=>{map.off('click',sourceId+'-points',clickPoint);map.off('click',sourceId+'-clusters',clickCluster);map.off('mouseenter',sourceId+'-points',enter);map.off('mouseleave',sourceId+'-points',leave)};

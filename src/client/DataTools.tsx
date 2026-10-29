@@ -15,8 +15,13 @@ export function DataTools(){
  const selectionVersion=useRef(0);
  const retry=useRef<{fingerprint:string;key:string}|null>(null);
  async function get(path:string):Promise<any>{return (await apiFetch(path)).json()}
- async function load(){setLoading(true);try{const [b,d,a,p,c,ar]=await Promise.all(['/api/master-imports','/api/customer-duplicates','/api/customer-aliases','/api/products','/api/customers','/api/areas'].map(get));setData({batches:b.data,candidates:d.data,more:d.meta.has_more,aliases:a.data,products:p.data,customers:c.data,areas:ar.data});setError('')}catch(e){setError((e as Error).message)}finally{setLoading(false)}}
- useEffect(()=>{void load()},[]);
+ const loadVersion=useRef(0),activeTab=useRef(tab);activeTab.current=tab;
+ async function load(){const requestedTab=activeTab.current,version=++loadVersion.current;setLoading(true);try{
+  const paths:Record<typeof tab,Record<string,string>>={imports:{batches:'/api/master-imports',areas:'/api/areas'},duplicates:{candidates:'/api/customer-duplicates',customers:'/api/customers',areas:'/api/areas'},aliases:{aliases:'/api/customer-aliases'},products:{products:'/api/products'}};
+  const entries=await Promise.all(Object.entries(paths[requestedTab]).map(async([key,path])=>[key,await get(path)]as const));if(version!==loadVersion.current)return;
+  setData((current:any)=>({...current,...Object.fromEntries(entries.map(([key,result])=>[key,result.data])),...(requestedTab==='duplicates'?{more:entries.find(([key])=>key==='candidates')?.[1].meta?.has_more||false}:{})}));setError('');
+ }catch(e){if(version===loadVersion.current)setError((e as Error).message)}finally{if(version===loadVersion.current)setLoading(false)}}
+ useEffect(()=>{void load();return()=>{loadVersion.current++}},[tab]);
  useEffect(()=>{if(modal!=='merge'||!source||!target){setPreview(null);return}let active=true;setPreview(null);setConfirmed(false);setReviewLoading(true);get('/api/customers/'+source+'/merge-preview?surviving_customer_id='+encodeURIComponent(target)).then(result=>{if(active)setPreview(result.data)}).catch(e=>{if(active)setError(e.message)}).finally(()=>{if(active)setReviewLoading(false)});return()=>{active=false}},[modal,source,target,reviewVersion]);
  function close(){if(!busy){setModal(null);setError('');setPreview(null);setConfirmed(false)}}
  async function run(work:()=>Promise<void>){if(busy)return;setBusy(true);setError('');try{await work()}catch(e){setError((e as Error).message)}finally{setBusy(false)}}

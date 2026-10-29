@@ -321,7 +321,7 @@ scopedRoutes.get('/api/customers/:id/directory-details',async c=>{
 
 scopedRoutes.get('/api/point-directory/:dataset/details/:external_code',async c=>{
  if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);
- const detail=await directoryDetails(c,c.req.param('dataset'),c.req.param('external_code'));
+ const detail=await directoryDetails(c,c.req.param('dataset'),c.req.param('external_code'),true);
  return detail?c.json({data:{...detail,reference_only:true}}):c.json({code:'DIRECTORY_DETAIL_NOT_FOUND'},404);
 });
 
