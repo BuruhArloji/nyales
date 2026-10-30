@@ -97,3 +97,21 @@ test('hierarchy opens in chart mode after leaving history',async({page})=>{
  await page.reload();await expect(picker).toHaveValue('chart');
  await expect(page.getByRole('heading',{name:'Histori pelaporan',exact:true})).toHaveCount(0);
 });
+
+test('mobile dock stays floating during scroll, reaches all groups and leaves content clear',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});await page.goto(origin);
+ const dock=page.locator('.sidebar'),nav=page.getByRole('navigation',{name:'Kelompok workspace'});
+ for(const width of [320,390,430,767]){
+  await page.setViewportSize({width,height:844});
+  await expect(dock).toHaveCSS('position','fixed');
+  const before=await dock.boundingBox();expect(before.x).toBeGreaterThanOrEqual(0);expect(before.x+before.width).toBeLessThanOrEqual(width);expect(before.y+before.height).toBeLessThan(844);
+  for(const button of await nav.getByRole('button').all()){const r=await button.boundingBox();expect(r.width).toBeGreaterThanOrEqual(44);expect(r.height).toBeGreaterThanOrEqual(44)}
+  await page.evaluate(()=>{const spacer=document.createElement('div');spacer.id='scroll-fixture';spacer.style.height='1800px';document.querySelector('.page-scene').append(spacer);window.scrollTo(0,800)});
+  const after=await dock.boundingBox();expect(after.y).toBeCloseTo(before.y,0);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.evaluate(()=>{document.querySelector('#scroll-fixture')?.remove();window.scrollTo(0,0)});
+ }
+ await page.setViewportSize({width:390,height:844});
+ for(const name of ['Pelanggan','Penjualan','Aktivitas','Kelola','Analitik']){await nav.getByRole('button',{name,exact:true}).click();await expect(nav.getByRole('button',{name,exact:true})).toHaveAttribute('aria-current','true')}
+ await page.setViewportSize({width:1280,height:900});await expect(dock).toHaveCSS('position','sticky');
+});

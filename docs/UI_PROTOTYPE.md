@@ -32,3 +32,5 @@ Verifikasi hirarki: 6 uji model (tanggal transfer, filter, collapse, relasi gand
 Pilihan Bagan/Histori kini berupa dropdown di toolbar dalam canvas yang sama, bukan tab di luar canvas. Halaman selalu dimulai pada Bagan saat dibuka ulang; pilihan tampilan tidak disimpan. Uji browser memeriksa dropdown di dalam canvas, pergantian histori, dan reset ke Bagan setelah reload.
 
 Pembaruan30 Oktober2026: polesan aplikasi yang dikembangkan pada prototipe sudah tersedia di staging melalui commitb8e99fd/workflow40989054380. Org chart/dropdown/detail dan mobile diverifikasi di browser staging nyata. Launcher, state lokal, serta toolbar studio tetap khusus prototipe.
+
+Mobile30 Oktober2026: sidebar menjadi dock floating bawah pada lebar<=767px; lima kelompok tetap tersedia dengan ikon/label, tombol>=44px, safe-area inset dan ruang konten bawah. Submenu tetap sticky di atas. Dock disembunyikan ketika dialog terbuka; tabel lebar bergulir di dalam panel. Enam uji browser dan build lulus; pemeriksaan enam halaman melalui API lokal pada320/390/430px tanpa page error/overflow. Toolbar studio lokal dipindahkan di atas dock dan disembunyikan saat modal. Desktop tidak diubah.

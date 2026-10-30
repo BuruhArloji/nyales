@@ -26,6 +26,7 @@ import '@fontsource/inter/latin-600.css';
 import './styles.css';
 import './theme.css';
 import './select.css';
+import './mobile.css';
 import {compactNumber} from './numbers';
 import {DataTools} from './DataTools';
 import {Customers} from './Customers';

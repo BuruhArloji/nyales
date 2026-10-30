@@ -1,0 +1,31 @@
+/* A persistent thumb-reachable dock replaces the desktop rail on phones. */
+@media(max-width:767px){
+ html{scroll-padding-top:88px;scroll-padding-bottom:108px}
+ .app-shell{display:block;min-width:0}
+ .app-shell>.sidebar{position:fixed;inset:auto auto calc(12px + env(safe-area-inset-bottom,0px)) 50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:row;align-items:center;justify-content:center;width:max-content;max-width:calc(100vw - 24px);height:auto;margin:0;padding:7px;gap:0;border:1px solid #ffffffb3;border-radius:30px;background:#f5faf4bd;backdrop-filter:blur(22px) saturate(1.35);-webkit-backdrop-filter:blur(22px) saturate(1.35);box-shadow:0 12px 36px #1d46312b,inset 0 1px 0 #ffffffe6;box-sizing:border-box}
+ .app-shell>.sidebar .brand,.app-shell>.sidebar .rail-brand{display:none}
+ .app-shell>.sidebar nav{display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;max-width:100%;padding:0;gap:3px;overflow:visible}
+ .app-shell>.sidebar nav .rail-item,.app-shell>.sidebar nav .rail-item.active{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;flex:0 0 51px;width:51px;height:54px;min-height:54px;padding:7px 2px;border-radius:23px;overflow:hidden;border:1px solid transparent;box-shadow:none;transition:background-color .25s,color .25s,box-shadow .25s}
+ .app-shell>.sidebar nav .rail-item{background:transparent;color:#51645a}
+ .app-shell>.sidebar nav .rail-item.active{background:#242625;color:#fff;box-shadow:0 3px 9px #1b332220}
+ .app-shell>.sidebar nav .rail-item svg{width:19px;height:19px;flex:0 0 19px}
+ .app-shell>.sidebar nav .rail-item .rail-text,.app-shell>.sidebar nav .rail-item.active .rail-text{display:block;max-width:100%;margin:0;opacity:1;transform:none;font-size:8px;line-height:11px;white-space:nowrap;transition:none}
+ .app-shell>.sidebar nav .rail-item::after{display:none}
+ .main-content{width:100%;min-width:0;max-width:100%;box-sizing:border-box;padding:14px 16px calc(112px + env(safe-area-inset-bottom,0px))}
+ .topbar{position:sticky;top:10px;z-index:35;display:flex;flex-direction:row;align-items:center;gap:8px;margin-bottom:24px;min-width:0}
+ .topbar .workspace-tabs{min-width:0;flex:1;max-width:100%;border-radius:999px;box-shadow:0 5px 20px #203d3012}
+ .topbar .workspace-tabs.workspace-compact button{min-height:44px}
+ .topbar .top-actions{flex:none;gap:0}
+ .topbar .logout-button{min-height:44px;padding:10px 12px;font-size:11px}
+ .page-heading{gap:14px;flex-wrap:wrap}.page-heading h1{font-size:clamp(25px,6.5vw,30px);line-height:1.2;overflow-wrap:anywhere}
+ .page-toolbar{gap:12px;flex-wrap:wrap;min-width:0}.page-toolbar>.settings-tabs{max-width:100%}
+ .page-toolbar .data-actions,.card-header .data-actions{flex-wrap:wrap;gap:8px}
+ .card-header{gap:12px;flex-wrap:wrap}.card{min-width:0;box-sizing:border-box}
+ .table-wrap{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+ .ops-section .table-wrap table{min-width:600px}
+ .settings-fields input,.settings-fields select,.settings-fields textarea{max-width:100%;box-sizing:border-box}
+ .app-dialog{max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px - env(safe-area-inset-bottom,0px));box-sizing:border-box}
+ .app-shell:has(dialog[open])>.sidebar{visibility:hidden;pointer-events:none}
+}
+@media(max-width:359px){.main-content{padding-left:12px;padding-right:12px}.topbar{gap:6px}.topbar .logout-button{padding:10px}.app-shell>.sidebar nav{gap:1px}.app-shell>.sidebar nav .rail-item,.app-shell>.sidebar nav .rail-item.active{width:49px;flex-basis:49px}}
+@media(max-width:767px) and (prefers-reduced-motion:reduce){.app-shell>.sidebar nav .rail-item,.app-shell>.sidebar nav .rail-item.active{transition:none}}

@@ -3,3 +3,5 @@
 .prototype-studio-collapsed{left:auto;right:14px;transform:none;padding:10px 14px}.prototype-studio-collapsed>:not(.prototype-studio-dot):not(strong):not(button){display:none}
 html[data-prototype-density=compact] .card{padding:18px;border-radius:21px}html[data-prototype-density=compact] .metric{min-height:132px}html[data-prototype-density=compact] td{padding-top:11px;padding-bottom:11px}
 @media(max-width:680px){.prototype-studio{bottom:10px;gap:8px;font-size:10px}.prototype-studio-note{display:none}.prototype-studio label{padding-left:8px}}
+
+@media(max-width:767px){.prototype-studio{bottom:calc(94px + env(safe-area-inset-bottom,0px))}body:has(dialog[open]) .prototype-studio{visibility:hidden}}
