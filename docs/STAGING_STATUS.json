@@ -437,5 +437,22 @@
     "reduced_transparency_fallback": true,
     "new_migrations": 0,
     "business_writes": false
+  },
+  "pending_location_popup_redesign": {
+    "date": "2026-10-30",
+    "commit": "1c99e04fc34a7bec85bf30375ab3cdf694121992",
+    "status": "implemented and verified locally; deployment blocked by D1 daily row read limit",
+    "deployment_run_id": 40995040761,
+    "failed_step": "Apply staging D1 migrations (no seed)",
+    "provider_code": 7500,
+    "deployed": false,
+    "existing_live_commit_unchanged": "168317dd6785ed1df3206881c964cb2d24ad01f6",
+    "local_browser_tests_passed": 6,
+    "typecheck": "passed",
+    "build": "passed",
+    "new_migrations": 0,
+    "cloud_business_writes": false,
+    "next_reset_jakarta": "2026-10-31T07:00:00+07:00",
+    "automatic_retry_scheduled": false
   }
 }

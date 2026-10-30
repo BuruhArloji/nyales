@@ -1,3 +1,9 @@
+## 30 Oktober2026 — redesign popup lokasi selesai lokal, deploy tertahan kuota
+
+Commit `1c99e04` menambah popup360px desktop, metadata status pelanggan/Sales-PIC menyatu dengan detail lokasi, foto, serta footer Street View/Google Maps yang tetap terlihat saat body digulir. Enam pengujian browser fixture, TypeScript dan build lulus. Provider data/endpoint/skema tidak diubah.
+
+Workflow40995040761 berhenti pada Apply staging D1 migrations dengan daily row read limit code7500. Versi baru belum dipublikasikan; live tetap168317d. Tidak ada retry otomatis atau bypass migration. Reset berikut31 Oktober2026 pukul07.00WIB. Tidak menjalankan pemeriksaan data staging/popup login setelah block; screenshot browser pada pekerjaan ini adalah fixture lokal, bukan bukti popup sumber nyata di staging. Rincian `docs/POINT_DIRECTORY_IMPORT.md` dan STAGING_STATUS.json.
+
 ## 30 Oktober 2026 — bottom dock transparan dengan lapisan optik
 
 Commit `168317d` dideploy melalui workflow40991945045; CI40991936102 lulus. Bottom dock memakai9% putih dan lapisan backdrop blur3px/saturate dengan SVG displacement halus pada Chromium; ikon/label tidak ikut terfilter. Highlight rim dan shadow memberi bentuk kaca. Safari memakai transparansi/blur4px tanpa SVG extension; reduced transparency/forced colors mempunyai fallback, tanpa klaim efek native iOS atau pengujian iPhone fisik. Pill Aktivitas Lapangan tidak diubah.
