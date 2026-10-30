@@ -29,3 +29,26 @@
 }
 @media(max-width:359px){.main-content{padding-left:12px;padding-right:12px}.topbar{gap:6px}.topbar .logout-button{padding:10px}.app-shell>.sidebar nav{gap:1px}.app-shell>.sidebar nav .rail-item,.app-shell>.sidebar nav .rail-item.active{width:49px;flex-basis:49px}}
 @media(max-width:767px) and (prefers-reduced-motion:reduce){.app-shell>.sidebar nav .rail-item,.app-shell>.sidebar nav .rail-item.active{transition:none}}
+
+.glass-filter-definitions{position:fixed;pointer-events:none;overflow:hidden;width:0;height:0}
+/* The optical layer filters the backdrop only; navigation labels stay sharp. */
+@media(max-width:767px){
+ .app-shell>.sidebar{background:rgba(255,255,255,.09);backdrop-filter:none;-webkit-backdrop-filter:none;border-color:rgba(255,255,255,.66);box-shadow:0 10px 28px #183a2826,0 2px 6px #183a2812,inset 0 1px 0 #ffffffe6,inset 0 -1px 0 #304e3d29}
+ .app-shell>.sidebar::before{content:'';position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;background:linear-gradient(125deg,#ffffff24,#ffffff08 45%,#e2f6ec12);backdrop-filter:blur(4px) saturate(1.4);-webkit-backdrop-filter:blur(4px) saturate(1.4)}
+ .app-shell>.sidebar::after{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;pointer-events:none;padding:1.2px;background:linear-gradient(140deg,#fffffff2 2%,#ffffff40 35%,#264d3829 58%,#ffffffc9 90%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor}
+ .app-shell>.sidebar nav{position:relative;z-index:2}
+ .app-shell>.sidebar nav .rail-item{color:#314b3e;text-shadow:0 1px 3px #ffffff9c}
+ .app-shell>.sidebar nav .rail-item.active{background:#242625ed;color:#fff;text-shadow:none;box-shadow:0 3px 8px #16322220,inset 0 1px 0 #ffffff26}
+}
+@supports(backdrop-filter:url("#nyales-dock-refraction")){
+ @media(max-width:767px){.app-shell>.sidebar::before{backdrop-filter:url("#nyales-dock-refraction") blur(3px) saturate(1.4)}}
+}
+/* Safari retains the transparent lens treatment without the SVG backdrop extension. */
+@supports(-webkit-touch-callout:none){
+ @media(max-width:767px){.app-shell>.sidebar::before{backdrop-filter:blur(4px) saturate(1.4);-webkit-backdrop-filter:blur(4px) saturate(1.4)}}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+ @media(max-width:767px){.app-shell>.sidebar{background:#eef5eff5}}
+}
+@media(max-width:767px) and (prefers-reduced-transparency:reduce){.app-shell>.sidebar{background:#eff6f0f5}.app-shell>.sidebar::before{backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media(max-width:767px) and (forced-colors:active){.app-shell>.sidebar{background:Canvas;border-color:CanvasText}.app-shell>.sidebar::before,.app-shell>.sidebar::after{display:none}}

@@ -55,7 +55,7 @@ function Shell({page,setPage,children}:{page:Page;setPage:(p:Page)=>void;childre
  const group=groups.find(g=>g.pages.includes(page))??groups[0];
 
  const initials=identity.name.split(/\s+/).slice(0,2).map(n=>n[0]).join('');
- return <div className="app-shell"><a className="skip-link" href="#workspace-main">Lewati navigasi ke konten</a><aside className="sidebar">
+ return <div className="app-shell"><svg className="glass-filter-definitions" width="0" height="0" aria-hidden="true" focusable="false"><defs><filter id="nyales-dock-refraction" x="-10%" y="-30%" width="120%" height="160%" colorInterpolationFilters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.014 0.045" numOctaves="1" seed="8" result="noise"/><feGaussianBlur in="noise" stdDeviation="2" result="smoothNoise"/><feDisplacementMap in="SourceGraphic" in2="smoothNoise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><a className="skip-link" href="#workspace-main">Lewati navigasi ke konten</a><aside className="sidebar">
   <button className="brand brand-home" onClick={()=>setPage('overview')} aria-label="NYALES · Overview"><img src="/brand/nyales-mark.svg" alt=""/></button>
   <nav aria-label="Kelompok workspace">{groups.map(g=><button key={g.id} className={'rail-item '+(group?.id===g.id?'active':'')} aria-label={g.label} data-label={g.label} aria-current={group?.id===g.id?'true':undefined} onClick={()=>{const first=navigation.find(n=>n.id===g.pages.find(id=>navigation.some(item=>item.id===id)));if(first)setPage(first.id)}}><g.icon size={20}/><span className="rail-text" aria-hidden="true">{g.label}</span></button>)}</nav>
   <div className="rail-brand">NYALES</div>
