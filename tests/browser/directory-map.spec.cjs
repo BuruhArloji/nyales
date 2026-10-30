@@ -47,8 +47,8 @@ test('small maps fetch details only on open, retain loaded popup and show source
  const pin=page.getByRole('button',{name:'Warung Foto, Unknown',exact:true});await pin.click();
  const card=page.locator('.map-popup-card');await expect(card.getByText('Jalan Contoh 12, Bekasi')).toBeVisible();await expect(card.getByText('4.8 · 25 ulasan')).toBeVisible();
  await expect.poll(()=>card.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
- await expect(card.getByRole('link',{name:'+6281234567890'})).toHaveAttribute('href','tel:+6281234567890');expect(calls).toEqual(['/api/customers/photo-customer/directory-details']);
- expect(await card.evaluate(el=>el.scrollHeight>el.clientHeight)).toBe(true);
+ await expect(card.getByRole('link',{name:'+6281234567890'})).toHaveAttribute('href','tel:+6281234567890');expect(calls).toEqual(['/api/customers/photo-customer/directory-details']);await expect(card.locator('.map-popup-heading')).not.toContainText('Unknown');await expect(card.locator('.map-popup-facts')).toContainText('Status pelangganUnknown');await expect(card.locator('.map-popup-facts')).toContainText('Sales / PICBelum ditugaskan');await expect(card.getByRole('button',{name:'Street View',exact:true})).toBeVisible();await card.getByRole('button',{name:'Street View',exact:true}).click();expect(await page.evaluate(()=>window.__streetViewItem)).toBe('photo-customer');
+ expect(await card.locator('.map-popup-body').evaluate(el=>el.scrollHeight>el.clientHeight)).toBe(true);
  await page.locator('.maplibregl-popup-close-button').click();await pin.click();await expect(card.locator('img')).toBeVisible();expect(calls).toHaveLength(1);
  await expect.poll(async()=>{const a=await card.boundingBox(),b=await page.locator('.maplibre-canvas').boundingBox();return a.y>=b.y&&a.y+a.height<=b.y+b.height}).toBe(true);
  await page.screenshot({path:'test-results/directory-map/source-details.png'});
@@ -57,8 +57,8 @@ test('failed photo has a visible fallback and mobile popup stays inside the view
  await page.setViewportSize({width:390,height:844});const calls=await detailFixture(page,{failedPhoto:true});expect(calls).toHaveLength(0);
  await page.evaluate(()=>window.__directoryFixtureMap.jumpTo({center:[106.82,-6.21],zoom:15}));
  await page.getByRole('button',{name:'Warung Foto, Unknown',exact:true}).click();const card=page.locator('.map-popup-card');await expect(card.getByText('Foto sumber belum tersedia.')).toBeVisible();await expect(card.locator('img')).toHaveCount(0);
- const box=await card.boundingBox(),mapBox=await page.locator('.maplibre-canvas').boundingBox();expect(box.width).toBeLessThanOrEqual(310);expect(box.y).toBeGreaterThanOrEqual(mapBox.y);expect(box.y+box.height).toBeLessThanOrEqual(mapBox.y+mapBox.height);
- await expect(card.getByRole('link',{name:'Buka di Google Maps ↗'})).toHaveAttribute('target','_blank');
+ const box=await card.boundingBox(),mapBox=await page.locator('.maplibre-canvas').boundingBox();expect(box.width).toBeLessThanOrEqual(366);expect(box.y).toBeGreaterThanOrEqual(mapBox.y);expect(box.y+box.height).toBeLessThanOrEqual(mapBox.y+mapBox.height);
+ await expect(card.getByRole('link',{name:'Buka di Google Maps'})).toHaveAttribute('target','_blank');
  await page.screenshot({path:'test-results/directory-map/mobile-source-details.png'});
 });
 test('reference points fetch the reference endpoint only after the canvas point is opened',async({page})=>{
@@ -73,4 +73,17 @@ test('master data requests duplicate analysis only on its review tab',async({pag
  await page.goto(origin+'/?data-tools=1');await expect(page.getByText('Belum ada batch import.',{exact:false})).toBeVisible();expect(paths.sort()).toEqual(['/api/areas','/api/master-imports']);
  await page.getByRole('tab',{name:'Review duplikat',exact:true}).click();await expect(page.getByText('Tidak ada kandidat yang terdeteksi.',{exact:false})).toBeVisible();expect(paths.filter(p=>p==='/api/customer-duplicates')).toHaveLength(1);
  await page.getByRole('tab',{name:'Produk',exact:true}).click();await expect(page.getByText('Belum ada produk.',{exact:false})).toBeVisible();expect(paths.filter(p=>p==='/api/customer-duplicates')).toHaveLength(1);
+});
+
+test('popup actions remain visible above long content on a short map',async({page})=>{
+ await page.setViewportSize({width:390,height:844});await detailFixture(page);
+ await page.addStyleTag({content:'.maplibre-canvas{height:300px!important}'});await page.evaluate(()=>window.__directoryFixtureMap.jumpTo({center:[106.82,-6.21],zoom:15}));
+ await page.getByRole('button',{name:'Warung Foto, Unknown',exact:true}).click();
+ const card=page.locator('.map-popup-card'),body=card.locator('.map-popup-body');await expect(card.locator('img')).toHaveCount(1);
+ await body.evaluate(el=>el.scrollTop=el.scrollHeight);
+ const bounds=await card.boundingBox();
+ for(const action of await card.locator('.map-popup-action').all()){
+  const r=await action.boundingBox();expect(r.height).toBeGreaterThanOrEqual(44);expect(r.y).toBeGreaterThanOrEqual(bounds.y);expect(r.y+r.height).toBeLessThanOrEqual(bounds.y+bounds.height);
+ }
+ await expect(card.getByRole('link',{name:'Buka di Google Maps'})).toHaveAttribute('rel','noopener noreferrer');
 });

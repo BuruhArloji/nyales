@@ -55,3 +55,10 @@ Impor cloud tetap 7.400 dari 12.624 customer, referensi 2.638, held 812. Upaya m
 Workflow resmi40987647438 men-deploycf61f49 dan migration0047; tes/build/deploy dan enam public smoke lulus. Backup cloud baru diuji restore lokal sebelum kelanjutan. Batch038-058 menambah4.200 customer: total11.600 dari12.624, tersisa1.024 pada batch059-064. Sebanyak2.638 referensi privat tetap cocok SHA-256 objek detail15.220.158byte;812 titik tetap ditahan.
 
 Impor berhenti pada anggaran tulis harian konservatif80.000. Akuntansi77.884 meliputi54.684 rows_written dari metadata batch serta reservasi23.200 untuk indeks migrasi saat analytics provider tertunda; ini bukan bukti kuota provider habis. Tidak menaikkan paket. Reset berikut31 Oktober2026 pukul07.00WIB, tanpa resume otomatis. Rekonsiliasi cloud memeriksa seluruh external code unik, riwayat/koordinat tetap unverified, assignment baru0, preservasi tabel bisnis/sesi serta7.400 customer terdahulu, dan foreign key0. UI terbaru/hirarki tetap lokal; deployment ini hanya memakai commitcf61f49 yang sudah ada di GitHub. WEB-060 integrasi invoice nyata dan acceptance produksi tetap terbuka.
+
+
+## Redesign popup lokasi30 Oktober2026
+
+Popup desktop diperlebar menjadi360px (container maksimum400px dan tetap dibatasi ruang peta); mobile mengikuti lebar peta. Header hanya jenis titik/nama; status pelanggan dan Sales/PIC menyatu dalam definition list informasi lokasi bersama kategori/rating/status tempat/alamat/jam buka/wilayah/telepon. Foto sumber berada di atas informasi; teks Salin jam buka dari hasil scrape tidak ditampilkan. Tombol Street View dan Google Maps berikon berada pada footer di luar scroll detail. Link Google Maps selalu tersedia memakai koordinat, lalu memakai URL sumber jika detail tersedia; tab eksternal memakai noopener noreferrer. Data sumber tidak diubah.
+
+Enam uji browser fixture lulus: cluster15k, fetch detail saat dibuka, foto berhasil/gagal, pemisahan metadata dan header, callback Street View, URL sumber, referensi, batas mobile serta footer tetap terlihat pada peta300px dengan detail panjang. Build lulus.

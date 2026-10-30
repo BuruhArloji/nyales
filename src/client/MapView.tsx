@@ -47,36 +47,41 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   markers.current.forEach(m=>m.remove());popups.current.forEach(p=>p.remove());markers.current=[];popups.current=[];
   const valid=(p:any)=>Number.isFinite(p.lat)&&Number.isFinite(p.lng)&&Math.abs(p.lat)<=90&&Math.abs(p.lng)<=180;
   const customers=(mapData.customers||[]).filter(valid),references=showReferences?(mapData.reference_points||[]).filter(valid):[];
+  const icon=(kind:'street'|'map')=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');for(const [key,value]of Object.entries({viewBox:'0 0 24 24',width:'17',height:'17',fill:'none',stroke:'currentColor','stroke-width':'1.7','stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true'}))svg.setAttribute(key,value);const path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',kind==='map'?'M14 3h7v7M21 3l-9 9M10 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5':'M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM3 12a9 9 0 0 1 18 0M3 12v6l5-2 4 3 4-3 5 2v-6');svg.appendChild(path);return svg};
+  const addFact=(facts:HTMLElement,label:string,value:any)=>{if(value===undefined||value===null||value==='')return;const existing=Array.from(facts.children).find(row=>row.firstElementChild?.textContent===label);if(existing){existing.lastElementChild!.textContent=String(value);return}const row=document.createElement('div');row.className='map-popup-fact';const key=document.createElement('dt');key.textContent=label;const text=document.createElement('dd');text.textContent=String(value);row.appendChild(key);row.appendChild(text);facts.appendChild(row)};
   const appendDetail=(content:HTMLElement,detail:any)=>{
-   const card=document.createElement('div');card.className='map-popup-detail';
-   const photoNote=document.createElement('small');photoNote.className='map-popup-photo-note';photoNote.textContent='Foto sumber belum tersedia.';card.appendChild(photoNote);
-   if(typeof detail.photo_url==='string'&&/^https?:\/\//i.test(detail.photo_url)){const image=document.createElement('img');image.className='map-popup-image';image.alt='Foto '+detail.name;image.loading='lazy';image.referrerPolicy='no-referrer';image.src=detail.photo_url;photoNote.hidden=true;image.addEventListener('error',()=>{image.remove();photoNote.hidden=false});card.insertBefore(image,photoNote)}
-   const facts=document.createElement('div');facts.className='map-popup-facts';
-   const addFact=(label:string,value:any)=>{if(value===undefined||value===null||value==='')return;const row=document.createElement('span');row.className='map-popup-fact';const key=document.createElement('b');key.textContent=label;const textNode=document.createElement('span');textNode.textContent=String(value);row.appendChild(key);row.appendChild(textNode);facts.appendChild(row)};
-   addFact('Kategori',detail.category);addFact('Rating',detail.rating?(detail.rating+' · '+(detail.reviews?detail.reviews+' ulasan':'jumlah ulasan belum tersedia')):undefined);addFact('Status sumber',detail.status);addFact('Alamat',detail.address);addFact('Jam buka',detail.hours);addFact('Wilayah',[detail.area_kelurahan,detail.area_kecamatan,detail.area_kota].filter(Boolean).join(' · '));
-   if(detail.phone){const row=document.createElement('span');row.className='map-popup-fact';const key=document.createElement('b');key.textContent='Telepon';const link=document.createElement('a');link.href='tel:'+detail.phone;link.textContent=detail.phone;row.appendChild(key);row.appendChild(link);facts.appendChild(row)}
-   if(facts.childElementCount)card.appendChild(facts);
-   const links=document.createElement('div');links.className='map-popup-links';
-   if(typeof detail.maps_url==='string'&&/^https?:\/\//i.test(detail.maps_url)){const link=document.createElement('a');link.href=detail.maps_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Buka di Google Maps ↗';links.appendChild(link)}
-   if(links.childElementCount)card.appendChild(links);content.appendChild(card);
+   const body=content.querySelector<HTMLElement>('.map-popup-body')!,facts=body.querySelector<HTMLElement>('.map-popup-facts')!;
+   const media=document.createElement('div');media.className='map-popup-media';const photoNote=document.createElement('small');photoNote.className='map-popup-photo-note';photoNote.textContent='Foto sumber belum tersedia.';media.appendChild(photoNote);
+   if(typeof detail.photo_url==='string'&&/^https?:\/\//i.test(detail.photo_url)){const image=document.createElement('img');image.className='map-popup-image';image.alt='Foto '+detail.name;image.loading='lazy';image.referrerPolicy='no-referrer';image.src=detail.photo_url;photoNote.hidden=true;image.addEventListener('error',()=>{image.remove();photoNote.hidden=false});media.insertBefore(image,media.firstChild)}body.insertBefore(media,body.firstChild);
+   addFact(facts,'Kategori',detail.category);addFact(facts,'Rating',detail.rating?(detail.rating+' · '+(detail.reviews?detail.reviews+' ulasan':'jumlah ulasan belum tersedia')):undefined);addFact(facts,'Status tempat',detail.status);addFact(facts,'Alamat',detail.address);addFact(facts,'Jam buka',typeof detail.hours==='string'?detail.hours.replace(/,?\s*Salin jam buka\s*/gi,'').trim():detail.hours);addFact(facts,'Wilayah',[detail.area_kelurahan,detail.area_kecamatan,detail.area_kota].filter(Boolean).join(' · '));
+   if(detail.phone){const row=document.createElement('div');row.className='map-popup-fact';const key=document.createElement('dt');key.textContent='Telepon';const value=document.createElement('dd'),link=document.createElement('a');link.href='tel:'+detail.phone;link.textContent=detail.phone;value.appendChild(link);row.appendChild(key);row.appendChild(value);facts.appendChild(row)}
+   if(typeof detail.maps_url==='string'&&/^https?:\/\//i.test(detail.maps_url)){const link=content.querySelector<HTMLAnchorElement>('.map-popup-google');if(link)link.href=detail.maps_url}
   };
   const loadDetail=(content:HTMLElement,item:any,kind:'customer'|'reference')=>{
    if(kind==='customer'&&!item.directory_dataset_id)return;
    const path=kind==='customer'?'/api/customers/'+encodeURIComponent(item.id)+'/directory-details':'/api/point-directory/'+encodeURIComponent(item.dataset_id)+'/details/'+encodeURIComponent(item.external_code||item.id);
-   const loading=document.createElement('small');loading.className='map-popup-loading';loading.textContent='Memuat detail sumber…';content.appendChild(loading);
+   const loading=document.createElement('small');loading.className='map-popup-loading';loading.textContent='Memuat detail sumber…';content.querySelector('.map-popup-body')!.appendChild(loading);
    void apiFetch(path).then(async response=>{const json=await response.json()as any;if(!response.ok)throw Error('DIRECTORY_DETAIL_UNAVAILABLE');loading.remove();if(json.data)appendDetail(content,json.data)}).catch(()=>{loading.textContent='Detail sumber belum tersedia.'});
   };
   const popup=(item:any,kind:'customer'|'sales'|'reference')=>{
-   const content=document.createElement('div');content.className='map-popup-card';content.tabIndex=0;content.setAttribute('aria-label','Detail '+item.name);const title=document.createElement('strong'),note=document.createElement('small');title.textContent=item.name;content.appendChild(title);
-   note.textContent=kind==='reference'?'Referensi peta · '+(item.category||'Kategori belum tersedia')+' · bukan master customer':kind==='sales'?'Lokasi terakhir: '+item.last_seen+' · '+item.source:'Status: '+item.status+' · PIC: '+item.owner;content.appendChild(note);
-   if(kind==='customer'){const button=document.createElement('button');button.type='button';button.className='text-button';button.textContent='Lihat Street View';button.addEventListener('click',()=>onStreetView(item));content.appendChild(button)}
+   const content=document.createElement('div');content.className='map-popup-card';content.setAttribute('aria-label','Detail '+item.name);
+   const header=document.createElement('header');header.className='map-popup-heading';const type=document.createElement('small');type.textContent=kind==='reference'?'Referensi peta':kind==='sales'?'Posisi sales':'Pelanggan';const title=document.createElement('strong');title.textContent=item.name;title.title=item.name;header.appendChild(type);header.appendChild(title);content.appendChild(header);
+   const body=document.createElement('div');body.className='map-popup-body';body.tabIndex=0;body.setAttribute('aria-label','Informasi lokasi');const facts=document.createElement('dl');facts.className='map-popup-facts';body.appendChild(facts);content.appendChild(body);
+   if(kind==='customer'){addFact(facts,'Status pelanggan',item.status);addFact(facts,'Sales / PIC',item.owner==='Belum assigned'?'Belum ditugaskan':item.owner||'Belum ditugaskan')}
+   if(kind==='reference'){addFact(facts,'Jenis titik','Referensi, bukan master customer');addFact(facts,'Kategori',item.category)}
+   if(kind==='sales'){addFact(facts,'Lokasi terakhir',item.last_seen);addFact(facts,'Sumber',item.source)}
+   if(kind!=='sales'){
+    const actions=document.createElement('footer');actions.className='map-popup-actions';
+    if(kind==='customer'){const button=document.createElement('button');button.type='button';button.className='map-popup-action map-popup-street';button.appendChild(icon('street'));button.appendChild(document.createTextNode('Street View'));button.addEventListener('click',()=>onStreetView(item));actions.appendChild(button)}
+    const link=document.createElement('a');link.className='map-popup-action map-popup-google';link.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(item.lat+','+item.lng);link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','Buka di Google Maps');link.appendChild(icon('map'));link.appendChild(document.createTextNode('Google Maps'));actions.appendChild(link);content.appendChild(actions);
+   }
    return content;
   };
   const makePopup=(item:any,kind:'customer'|'sales'|'reference',offset:number)=>{
-   const content=popup(item,kind),tip=new maplibregl.Popup({offset,maxWidth:'280px',className:'map-source-popup'}).setDOMContent(content);let requested=false;
-   const fit=()=>{if(!tip.isOpen())return;const height=map.getContainer().clientHeight,y=map.project([item.lng,item.lat]).y,compact=map.getContainer().clientWidth<480;
+   const content=popup(item,kind),tip=new maplibregl.Popup({offset,maxWidth:'400px',className:'map-source-popup'}).setDOMContent(content);let requested=false;
+   const fit=()=>{if(!tip.isOpen())return;const height=map.getContainer().clientHeight,y=map.project([item.lng,item.lat]).y,compact=map.getContainer().clientWidth<520;
     if(compact)tip.addClassName('map-source-popup-compact');else tip.removeClassName('map-source-popup-compact');
-    content.style.maxHeight='min('+Math.max(80,Math.min(420,compact?height-60:Math.max(y,height-y)-64))+'px,60vh)';tip.setMaxWidth('280px');
+    content.style.maxHeight='min('+Math.max(80,Math.min(560,compact?height-48:Math.max(y,height-y)-48))+'px,72dvh)';tip.setMaxWidth(Math.min(400,map.getContainer().clientWidth-24)+'px');
    };
    const observer=new ResizeObserver(fit);
    tip.on('open',()=>{fit();observer.observe(content);map.on('resize',fit);map.on('move',fit);if(!requested&&kind!=='sales'){requested=true;loadDetail(content,item,kind)}});
