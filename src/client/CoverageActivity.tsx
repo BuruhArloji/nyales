@@ -16,7 +16,7 @@ export function CoverageActivity({data:d,onDrill}:Props){
   const max=Math.max(1,...d.activity_channels.map(c=>c.activity_count));
   const customers=(state:boolean)=>onDrill(state?'Pelanggan tercakup':'Pelanggan belum tercakup',{kind:'customers',covered:state});
   return <section className="card coverage-card" aria-labelledby={gradient+'-title'}>
-    <header className="coverage-heading"><div><h2 id={gradient+'-title'}>Coverage dan aktivitas</h2><p>Jangkauan pelanggan pada periode terpilih</p></div><button className="text-button" onClick={()=>onDrill('Seluruh aktivitas',{kind:'activities'})}>Lihat {d.activity_count} aktivitas ↗</button></header>
+    <header className="coverage-heading"><div><h2 id={gradient+'-title'}>Coverage dan aktivitas</h2></div><button className="text-button" onClick={()=>onDrill('Seluruh aktivitas',{kind:'activities'})}>Lihat {d.activity_count} aktivitas ↗</button></header>
     <div className="coverage-body">
       <div className="coverage-customers">
         <div className="coverage-donut" role="img" aria-label={total?`${covered} dari ${total} pelanggan unik tercakup, ${percent!.toLocaleString('id-ID',{maximumFractionDigits:2})} persen`:'Belum ada pelanggan dalam scope'}>
@@ -25,7 +25,7 @@ export function CoverageActivity({data:d,onDrill}:Props){
         </div>
         <div className="coverage-keys"><button disabled={!covered} onClick={()=>customers(true)}><i className="coverage-swatch meaningful"/><span>Tercakup</span><strong>{covered}</strong></button><button disabled={!remaining} onClick={()=>customers(false)}><i className="coverage-swatch other"/><span>Belum tercakup</span><strong>{remaining}</strong></button></div>
       </div>
-      <div className="coverage-channels"><h3>Aktivitas per kanal</h3><p>Jumlah aktivitas, termasuk kunjungan berulang</p>
+      <div className="coverage-channels"><h3>Aktivitas per kanal</h3>
         {d.activity_channels.map(c=><div className="coverage-channel" key={c.channel}><div className="coverage-channel-label"><span>{c.channel==='field'?'Lapangan':'Telesales'}</span><strong>{c.activity_count} aktivitas</strong></div><div className="coverage-track">
           {[{count:c.meaningful_count,meaningful:true,label:'bermakna'},{count:c.other_count,meaningful:false,label:'lainnya'}].filter(s=>s.count>0).map(s=><button key={s.label} className={'coverage-segment '+(s.meaningful?'meaningful':'other')} style={{width:s.count/max*100+'%'}} aria-label={`${c.channel==='field'?'Lapangan':'Telesales'}: ${s.count} aktivitas ${s.label}`} onClick={()=>onDrill(`${c.channel==='field'?'Lapangan':'Telesales'} · aktivitas ${s.label}`,{kind:'activities',source_channel:c.channel,meaningful:s.meaningful})}><span className="coverage-tip" role="tooltip">{s.count} aktivitas {s.label}</span></button>)}
           {!c.activity_count&&<span className="coverage-no-activity">Belum ada aktivitas</span>}
@@ -33,7 +33,7 @@ export function CoverageActivity({data:d,onDrill}:Props){
         <div className="coverage-bar-legend"><span><i className="coverage-swatch meaningful"/>Bermakna</span><span><i className="coverage-swatch other"/>Lainnya</span></div>
       </div>
     </div>
-    <footer className="coverage-footer"><div><strong>{d.meaningful_count}</strong><span>Aktivitas bermakna</span></div><div><strong>{d.declared_connected_pic}</strong><span>Koneksi PIC · manual</span></div><div><strong>Belum tersedia</strong><span>Verifikasi provider</span></div></footer>
-    <p className="coverage-definition">Coverage menghitung pelanggan aktif dalam scope dengan aktivitas bermakna. Toko tutup atau tanpa PIC belum menambah coverage.</p>
+    <footer className="coverage-footer"><div><strong>{d.meaningful_count}</strong><span>Aktivitas bermakna</span></div><div><strong>{d.declared_connected_pic}</strong><span>Koneksi PIC · manual</span></div></footer>
+    <details className="calculation-note"><summary>Cara hitung coverage</summary><p>Pelanggan unik dengan aktivitas bermakna. Kunjungan ke toko tutup atau tanpa PIC tidak menambah coverage.</p></details>
   </section>;
 }

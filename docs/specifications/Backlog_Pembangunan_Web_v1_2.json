@@ -3414,8 +3414,8 @@
     "source_preservation": "Main and QA preexisting business rows unchanged; QA fixture rows remain synthetic and isolated"
   },
   "external_directory_addendum": {
-    "date": "2026-10-28",
-    "status": "Staging has 7400 customers; 5224 remain blocked by D1 daily read quota. Popup and duplicate-query fixes prepared locally.",
+    "date": "2026-10-30",
+    "status": "Staging fixes deployed; 11600 customers imported, 1024 remain at conservative daily write budget limit",
     "evidence": "docs/POINT_DIRECTORY_IMPORT.md",
     "source_rows": 16387,
     "duplicates_removed": 313,
@@ -3424,17 +3424,17 @@
     "held_for_review": 812,
     "does_not_close_real_transaction_or_production_gate": true,
     "remaining_work": [
-      "Deploy popup/cache/duplicate-index fixes with migration 0047 after read quota reset, before resuming bulk import",
       "Resume remaining immutable batches after quota reset",
       "Review held records and source administrative placement",
       "Verify authenticated staging UI with directory data",
       "Replace synthetic assignments/finance only with reviewed operational data",
       "Add server pagination if scoped customer payload grows"
     ],
-    "customers_imported": 7400,
-    "customers_remaining": 5224,
+    "customers_imported": 11600,
+    "customers_remaining": 1024,
     "reference_points_cloud_verified": 2638,
     "cloud_previous_business_and_sessions_preserved": true,
-    "pending_migration": "0047_duplicate_lookup_indexes.sql"
+    "pending_migration": null,
+    "migration_0047_applied": true
   }
 }

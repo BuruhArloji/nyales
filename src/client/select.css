@@ -1,0 +1,44 @@
+/* Native form values, validation, labels and keyboard navigation remain intact.
+   Customizable selects expose their popup in the browser's top layer. */
+@supports (appearance:base-select){
+ select:not([multiple]),select:not([multiple])::picker(select){appearance:base-select}
+ select:not([multiple]){align-items:center;gap:12px;min-inline-size:0;max-inline-size:100%;white-space:nowrap;text-overflow:ellipsis;cursor:pointer}
+ select:not([multiple]):disabled{cursor:not-allowed}
+ select:not([multiple])::picker-icon{content:'';inline-size:14px;block-size:14px;color:#52645e;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;transition:rotate .24s cubic-bezier(.22,.9,.25,1);flex-shrink:0}
+ select:not([multiple]):open::picker-icon{rotate:180deg}
+ select:not([multiple])::picker(select){
+  margin-block:7px;padding:6px;border:1px solid rgba(255,255,255,.86);border-radius:18px;
+  background:rgba(245,250,247,.91);color:#243c34;font:12px/1.45 Inter,system-ui,sans-serif;
+  backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);
+  box-shadow:0 12px 32px rgba(21,48,38,.14),inset 0 1px 0 rgba(255,255,255,.96);
+  min-inline-size:min(anchor-size(width),calc(100dvw - 24px));max-inline-size:min(440px,calc(100dvw - 24px));
+  position-try-order:normal;
+  max-block-size:min(360px,60dvh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#a8c6ba transparent;
+  opacity:0;translate:0 -5px;
+  transition:opacity .18s ease,translate .24s cubic-bezier(.22,.9,.25,1),display .24s allow-discrete,overlay .24s allow-discrete;
+ }
+ select:not([multiple])::picker(select):popover-open{opacity:1;translate:0 0}
+ @starting-style{select:not([multiple])::picker(select):popover-open{opacity:0;translate:0 -5px}}
+ select:not([multiple]) option{
+  display:flex;align-items:center;gap:12px;min-block-size:38px;padding:9px 12px;border:0;border-radius:12px;
+  color:#354e44;background:transparent;font:inherit;font-weight:400;white-space:normal;overflow-wrap:anywhere;cursor:pointer;
+ }
+ select:not([multiple]) option+option{margin-block-start:3px}
+ select:not([multiple]) option:checked{color:#165d50;background:#dcefe7;font-weight:500}
+ select:not([multiple]) option:not(:disabled):hover{color:#164f43;background:#d1e9df}
+ select:not([multiple]) option:focus-visible{outline:2px solid #168e85;outline-offset:-2px;background:#dcefe7}
+ select:not([multiple]) option:disabled{opacity:.45;cursor:not-allowed}
+ select:not([multiple]) option::checkmark{order:1;margin-inline-start:auto;color:#168e85;font-size:13px;flex-shrink:0}
+ select:not([multiple]) optgroup{padding:5px 0;color:#667e73;font-size:11px;font-weight:500}
+ select:not([multiple]) optgroup option{font-size:12px;font-weight:400}
+ @media(prefers-reduced-motion:reduce){select:not([multiple])::picker(select),select:not([multiple])::picker-icon{transition:none;translate:none}}
+}
+
+/* Multi-selection controls stay listboxes, with the same surfaces and selection color. */
+select[multiple]{border-radius:14px;background:#f5faf7;color:#354e44;scrollbar-width:thin;scrollbar-color:#a8c6ba transparent}
+select[multiple] option{padding:9px 12px;border-radius:9px;white-space:normal}
+select[multiple] option:checked{background:#dcefe7 linear-gradient(#dcefe7,#dcefe7);color:#165d50}
+
+@supports (appearance:base-select){
+ select:not([multiple]):not(:open) option:checked{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}

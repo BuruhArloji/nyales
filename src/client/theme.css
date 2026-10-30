@@ -235,3 +235,38 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 .recovery-drill-heading{flex-wrap:wrap;align-items:flex-start}.recovery-drill-heading label{min-width:0;max-width:100%;flex:0 1 320px}.recovery-drill-heading select{width:100%;min-width:0}.recovery-metrics .metric strong{overflow-wrap:anywhere}
 
 .recovery-section{margin:18px 0}.recovery-toolbar{justify-content:flex-end}.recovery-toolbar .button{flex:0 0 auto}.recovery-toolbar .page-add{margin-left:0}.recovery-drill-heading select{min-height:42px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.7);padding:8px 12px;color:var(--ink);font:inherit}
+
+/* A corner symbol describes the metric; only real detail actions are buttons. */
+.metric:after{content:none}
+.metric .metric-corner{position:absolute;right:17px;top:16px;display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:#e7ebe8;color:#505b55;line-height:1}
+.metric.featured .metric-corner{background:#f3f7f4;color:var(--ink)}
+.metric .metric-corner-action{cursor:pointer;transition:background-color .2s,box-shadow .2s,transform .25s cubic-bezier(.22,.9,.25,1)}
+.metric .metric-corner-action:hover{background:#d2e8e1;box-shadow:0 3px 10px #172d2914;transform:translateY(-1px)}
+.metric .metric-corner-action:active{transform:scale(.94)}
+.metric .metric-corner-action:focus-visible{outline:2px solid #087e73;outline-offset:3px}
+#monitoring-workforce{scroll-margin-top:24px}
+@media(max-width:767px){.metric .metric-corner{width:28px;height:28px;right:12px;top:12px}}
+@media(pointer:coarse){.metric-corner-action:before{content:'';position:absolute;inset:-8px}}
+@media(prefers-reduced-motion:reduce){.metric .metric-corner-action{transition:none}.metric .metric-corner-action:hover,.metric .metric-corner-action:active{transform:none}}
+
+/* Quiet supporting copy: retain dates and business exceptions, remove repeated chrome. */
+.overview-period{font-size:12px;color:var(--muted);align-self:center;white-space:nowrap;text-transform:capitalize}
+.calculation-note{margin-top:16px;font-size:11px;color:var(--muted);line-height:1.65}
+.calculation-note summary{cursor:pointer;width:fit-content}.calculation-note p{max-width:520px;margin:8px 0 0}
+.coverage-footer{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:600px){.page-heading:has(.overview-period){align-items:flex-start;flex-direction:column;gap:8px}.overview-period{align-self:flex-start}}
+
+/* Channel is a filter; distribution has one local tab row with its primary action. */
+.distribution-filters{grid-template-columns:minmax(0,1.4fr) repeat(5,minmax(0,1fr));align-items:start;gap:16px}
+.distribution-filters input,.distribution-filters select{height:44px;min-height:44px;box-sizing:border-box}
+@media(max-width:1200px){.distribution-filters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){.distribution-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.distribution-filters{grid-template-columns:minmax(0,1fr)}}
+
+.geo-analysis-empty{display:grid;gap:12px}.geo-analysis-empty h2,.geo-analysis-empty p{margin:0}.geo-analysis-empty p{max-width:580px;color:var(--muted);font-size:13px;line-height:1.65}.geo-analysis-empty .data-actions{justify-content:flex-start;flex-wrap:wrap;margin-top:6px}
+
+.target-page-heading{align-items:center;justify-content:space-between}.target-page-heading>.button{flex:none;white-space:nowrap}
+.target-filter-panel{margin-bottom:20px}.target-filters{grid-template-columns:repeat(4,minmax(0,1fr));align-items:start;gap:16px}
+.target-filters input,.target-filters select{height:44px;min-height:44px;box-sizing:border-box}
+@media(max-width:1000px){.target-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.target-filters{grid-template-columns:minmax(0,1fr)}.target-page-heading{align-items:flex-start;flex-direction:column;gap:16px}.target-page-heading>.button{align-self:flex-end}}

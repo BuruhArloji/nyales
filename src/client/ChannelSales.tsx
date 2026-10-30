@@ -11,7 +11,7 @@ export function ChannelSales({channels,cutoff,complete,onDrill}:{channels:Channe
  const drill=(c:Channel)=>onDrill('Rincian target '+name(c.channel),{kind:'targets',source_channel:c.channel});
  const tip=channels.find(c=>c.channel===active);
  return <section className="card channel-sales achievement-card" aria-labelledby={id}>
-  <header><h2 id={id}>Pencapaian per kanal</h2><p>Actual terhadap target yang disetujui</p></header>
+  <header><h2 id={id}>Pencapaian per kanal</h2></header>
   <div className="channel-achievement-body">
    <div className="channel-achievement-values">{channels.map(c=><button key={c.channel} className={'channel-achievement-value '+c.channel} onClick={()=>drill(c)} onMouseEnter={()=>setActive(c.channel)} onMouseLeave={()=>setActive(null)} onFocus={()=>setActive(c.channel)} onBlur={()=>setActive(null)} aria-label={`${name(c.channel)}, ${stateLabel(c)}, lihat rincian target`}>
     <span className="channel-achievement-name"><i/>{name(c.channel)}</span>
@@ -34,6 +34,6 @@ export function ChannelSales({channels,cutoff,complete,onDrill}:{channels:Channe
     {tip&&<div className="achievement-ring-tooltip" role="tooltip"><strong>{name(tip.channel)} · {stateLabel(tip)}</strong><span>Actual {compactNumber(tip.actual_minor,true).full}</span><span>Target {compactNumber(tip.target_minor,true).full}</span></div>}
    </div>
   </div>
-  <footer><p>Cutoff {cutoff} · {complete?'Sumber periode dikonfirmasi':'Observasi sementara'}</p><small>Actual mengikuti alokasi target pada sales, area, produk, dan periode yang sama. Klik kanal untuk rincian. Cincin penuh pada ≥100%; angka tetap menampilkan pencapaian sebenarnya.</small></footer>
+  {!complete&&<footer><p>Data sampai {cutoff} belum lengkap.</p></footer>}
  </section>;
 }

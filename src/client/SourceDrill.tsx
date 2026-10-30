@@ -21,9 +21,9 @@ export function SourceDrill({filters,source}:{filters:Record<string,string>;sour
   return()=>{active=false;controller.abort()};
  },[url,retry]);
  return <div className="source-drill">
-  <p className="muted">Rincian mengikuti scope dan filter saat dibuka. Data dimuat per halaman; perubahan sumber dapat memengaruhi halaman berikutnya.</p>
+
   {error?<p role="alert" className="notice danger">{error} <button className="button secondary" onClick={()=>setRetry(x=>x+1)}>Coba lagi</button></p>:!data?<Loading>Memuat rincian…</Loading>:<>
-   <p className="muted">Cutoff {data.cutoff} · Halaman {cursors.length} · {data.rows.length} record</p>
+   <p className="muted">{data.cutoff} · Halaman {cursors.length} · {data.rows.length} baris</p>
    <div className="table-wrap"><table><thead><tr><th>Record</th><th>Basis / nilai</th><th>Waktu / status</th></tr></thead><tbody>
     {data.rows.map(r=><tr key={r.id+(r.channel||'')}><td>{r.name||r.customer_name||r.source_invoice_id||r.activity_kind||r.id}</td><td>{r.net_minor!==undefined?money(r.net_minor):r.target_minor!==undefined?'Target '+money(r.target_minor)+(r.actual_minor!==undefined?' · Actual '+money(r.actual_minor):''):r.observed_actual_minor!==undefined?money(r.observed_actual_minor):r.channel||r.area_id||'—'}</td><td>{r.invoice_date||r.occurred_at||r.status||r.period_start||'Master saat ini'}</td></tr>)}
     {!data.rows.length&&<tr><td colSpan={3}>Belum ada record sesuai pilihan.</td></tr>}

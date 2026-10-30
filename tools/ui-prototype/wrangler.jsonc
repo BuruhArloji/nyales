@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "nyales-ui-prototype",
+  "main": "../../src/server/index.ts",
+  "compatibility_date": "2026-10-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {"APP_ENV":"local","LOCAL_AUTH":"true","FIREBASE_PROJECT_ID":""},
+  "d1_databases": [{"binding":"DB","database_name":"nyales-ui-prototype","database_id":"00000000-0000-0000-0000-000000000000","migrations_dir":"../../migrations"}],
+  "r2_buckets": [{"binding":"IMPORT_FILES","bucket_name":"nyales-ui-prototype-files"}]
+}

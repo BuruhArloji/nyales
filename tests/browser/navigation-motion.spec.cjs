@@ -62,3 +62,38 @@ test('same-page URL filters still remount data panels without resetting the shel
  await page.goBack();await expect(page).toHaveURL(/area_id=first/);
  expect(await page.evaluate(()=>window.__sidebar===document.querySelector('.sidebar'))).toBe(true);
 });
+
+test('hierarchy cards support clicks, collapse, search, existing forms and responsive canvas',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.addInitScript(()=>{
+  const person=(id,name,role_code,channel)=>({id,name,role_code,channel,status:'active',version:1});
+  const users=[person('head','Management UAT','MANAGEMENT',null),person('spv','Supervisor UAT','SUPERVISOR','field'),person('ayu','Ayu UAT','SALES_REP','field'),person('tele','Telesales UAT','TELESALES','telesales')];
+  window.__navigationResponses={'/api/users':users,'/api/areas':[{id:'west',name:'Barat UAT',status:'active'}],'/api/hierarchy-assignments':[{id:'report',manager_id:'spv',subordinate_id:'ayu',area_id:'west',channel:'field',effective_from_date:'2026-01-01',effective_to_date:null,version:1}],'/api/users/ayu':{...users[2],roles:[],areas:[]}};
+ });
+ await page.goto(origin+'/#page=people');await page.getByLabel('Tanggal pelaporan',{exact:true}).fill('2026-10-29');
+ await expect(page.locator('.org-person')).toHaveCount(3);
+ await expect(page.locator('.org-canvas').getByRole('combobox',{name:'Tampilan hirarki',exact:true})).toHaveValue('chart');
+ await page.getByRole('button',{name:'Buka tim Supervisor UAT',exact:true}).click();await expect(page.locator('.org-person')).toHaveCount(4);
+ await page.getByRole('button',{name:'Lipat tim Supervisor UAT',exact:true}).click();await expect(page.locator('.org-person')).toHaveCount(3);
+ await page.getByRole('searchbox',{name:'Cari anggota hirarki'}).fill('Ayu');await page.locator('.org-search-results button').click();
+ const detail=page.getByRole('complementary',{name:'Detail Ayu UAT'});await expect(detail).toBeVisible();
+ await detail.getByRole('button',{name:'Atur atasan',exact:true}).click();await expect(page.getByRole('combobox',{name:'Anggota',exact:true})).toHaveValue('ayu');await page.getByRole('button',{name:'Tutup popup',exact:true}).click();
+ await detail.getByRole('button',{name:'Kelola user',exact:true}).click();await expect(page.getByRole('dialog',{name:'Kelola Ayu UAT',exact:true})).toBeVisible();await page.getByRole('button',{name:'Tutup popup',exact:true}).click();
+ await page.getByRole('button',{name:'Tutup detail anggota'}).click();
+ await page.getByRole('combobox',{name:'Kanal hirarki',exact:true}).selectOption('telesales');await expect(page.getByRole('button',{name:'Lihat Ayu UAT',exact:true})).toHaveCount(0);
+ await page.getByRole('combobox',{name:'Kanal hirarki',exact:true}).selectOption('');
+ await page.getByRole('combobox',{name:'Tampilan hirarki',exact:true}).selectOption('history');await expect(page.getByRole('heading',{name:'Histori pelaporan',exact:true})).toBeVisible();await page.getByRole('combobox',{name:'Tampilan hirarki',exact:true}).selectOption('chart');
+ await page.setViewportSize({width:390,height:844});
+ await expect.poll(()=>page.locator('.org-chart-stage').evaluate(el=>{const r=el.getBoundingClientRect();return [...el.querySelectorAll('.org-person')].some(n=>{const p=n.getBoundingClientRect();return p.left>=r.left&&p.right<=r.right&&p.top>=r.top&&p.bottom<=r.bottom})})).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('hierarchy opens in chart mode after leaving history',async({page})=>{
+ await page.addInitScript(()=>{window.__navigationResponses={'/api/users':[],'/api/areas':[],'/api/hierarchy-assignments':[]}});
+ await page.goto(origin+'/#page=people');
+ const picker=page.locator('.org-canvas').getByRole('combobox',{name:'Tampilan hirarki',exact:true});
+ await expect(picker).toHaveValue('chart');await picker.selectOption('history');
+ await expect(page.getByRole('heading',{name:'Histori pelaporan',exact:true})).toBeVisible();
+ await page.reload();await expect(picker).toHaveValue('chart');
+ await expect(page.getByRole('heading',{name:'Histori pelaporan',exact:true})).toHaveCount(0);
+});
