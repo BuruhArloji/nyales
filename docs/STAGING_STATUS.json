@@ -2,12 +2,12 @@
   "date": "2026-10-30",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "b8e99fdc544caaebed4c78033282d13862482ca8",
+  "verified_remote_commit": "a966791eff34622efca02fb48935089f2416e070",
   "github_ci": {
-    "run_id": 40989026894,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40989026894",
-    "conclusion": "success",
-    "head_sha": "b8e99fdc544caaebed4c78033282d13862482ca8"
+    "run_id": 40990585734,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40990585734",
+    "head_sha": "a966791eff34622efca02fb48935089f2416e070",
+    "conclusion": "success"
   },
   "current_local_checks": {
     "staging_config_and_smoke_tests": 5,
@@ -114,9 +114,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40989054380,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40989054380",
-    "head_sha": "b8e99fdc544caaebed4c78033282d13862482ca8",
+    "run_id": 40990609009,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40990609009",
+    "head_sha": "a966791eff34622efca02fb48935089f2416e070",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -366,5 +366,41 @@
     },
     "screenshots_verified": true,
     "production_accepted": false
+  },
+  "mobile_layout_release": {
+    "date": "2026-10-30",
+    "status": "deployed and verified",
+    "commit": "a966791eff34622efca02fb48935089f2416e070",
+    "deployment_run_id": 40990609009,
+    "local_browser_tests": 6,
+    "local_build": "passed",
+    "local_api_pages_checked": [
+      "observability",
+      "overview",
+      "targets",
+      "assignments",
+      "people",
+      "invoices"
+    ],
+    "actual_staging_browser": {
+      "checked_at": "2026-10-30T02:19:34.636Z",
+      "origin": "https://nyales-staging.azaracourse.workers.dev",
+      "floating_dock": "passed",
+      "scroll_position": "passed",
+      "modal_hide_restore": "passed",
+      "viewports": [
+        320,
+        390,
+        430,
+        767
+      ],
+      "desktop_rail": "passed",
+      "errors": [],
+      "api_failures": [],
+      "business_writes": false,
+      "test_session_revoked": true
+    },
+    "new_migrations": 0,
+    "business_writes": false
   }
 }

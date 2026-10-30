@@ -1,3 +1,9 @@
+## 30 Oktober 2026 — dock mobile floating tersedia di staging
+
+Commit `a966791` dideploy melalui workflow40990609009; CI40990585734 lulus. Pada lebar<=767px, rail desktop menjadi dock bawah floating dengan ikon/label, target sentuh>=44px, safe-area dan ruang bawah konten. Submenu sticky di atas; tabel lebar digulir di panel. Dock disembunyikan selama dialog terbuka, lalu kembali saat ditutup. Desktop tetap sticky rail. Toolbar studio hanya lokal, ditempatkan di atas dock dan tidak masuk staging.
+
+Enam uji browser dan build lokal lulus. Enam halaman melalui API lokal diperiksa pada320/390/430px tanpa overflow/page error. Browser staging nyata di Kesehatan Sistem memeriksa dock fixed ketika scroll, dialog hide/restore, viewport320/390/430/767 dan rail desktop1280px; tidak ada JavaScript/API error. Enam public smoke lulus. Screenshot desktop/mobile/modal diperiksa, sesi uji dicabut; tidak ada mutation bisnis atau migration baru. Ini verifikasi layout browser, bukan bukti uji seluruh perangkat fisik.
+
 ## 30 Oktober 2026 — polesan UI dan org chart tersedia di staging
 
 Commit `b8e99fd` dipush ke BuruhArloji/nyales dan dideploy melalui workflow resmi [40989054380](https://github.com/BuruhArloji/nyales/actions/runs/40989054380); CI [40989026894](https://github.com/BuruhArloji/nyales/actions/runs/40989026894) lulus. Paket mencakup org chart/panel detail/pencarian/filter, dropdown Bagan/Histori dalam canvas bertitik samar dengan default Bagan, customizable select, perapian filter target/distribusi/GIS, aksi detail metrik dan copy ringkas. Prototipe lokal/HMR tetap terpisah dan toolbar studio tidak disertakan dalam staging.
