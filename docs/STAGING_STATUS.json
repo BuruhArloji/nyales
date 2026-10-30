@@ -2,11 +2,11 @@
   "date": "2026-10-30",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "a966791eff34622efca02fb48935089f2416e070",
+  "verified_remote_commit": "168317dd6785ed1df3206881c964cb2d24ad01f6",
   "github_ci": {
-    "run_id": 40990585734,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40990585734",
-    "head_sha": "a966791eff34622efca02fb48935089f2416e070",
+    "run_id": 40991936102,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40991936102",
+    "head_sha": "168317dd6785ed1df3206881c964cb2d24ad01f6",
     "conclusion": "success"
   },
   "current_local_checks": {
@@ -114,9 +114,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40990609009,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40990609009",
-    "head_sha": "a966791eff34622efca02fb48935089f2416e070",
+    "run_id": 40991945045,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40991945045",
+    "head_sha": "168317dd6785ed1df3206881c964cb2d24ad01f6",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -400,6 +400,41 @@
       "business_writes": false,
       "test_session_revoked": true
     },
+    "new_migrations": 0,
+    "business_writes": false
+  },
+  "dock_glass_release": {
+    "date": "2026-10-30",
+    "status": "deployed and verified in Chromium",
+    "commit": "168317dd6785ed1df3206881c964cb2d24ad01f6",
+    "deployment_run_id": 40991945045,
+    "local_browser_tests": 6,
+    "build": "passed",
+    "staging_browser": {
+      "checked_at": "2026-10-30T02:32:03.270Z",
+      "origin": "https://nyales-staging.azaracourse.workers.dev",
+      "optical_layer": {
+        "background": "rgba(255, 255, 255, 0.09)",
+        "backdrop": "url(\"#nyales-dock-refraction\") blur(3px) saturate(1.4)"
+      },
+      "floating_dock": "passed",
+      "scroll_position": "passed",
+      "modal_hide_restore": "passed",
+      "viewports": [
+        320,
+        390,
+        430,
+        767
+      ],
+      "desktop_rail": "passed",
+      "errors": [],
+      "api_failures": [],
+      "business_writes": false,
+      "test_session_revoked": true
+    },
+    "distortion_target_screenshots_verified": true,
+    "safari_behavior": "Transparent blur fallback without SVG backdrop filter; physical iOS not verified",
+    "reduced_transparency_fallback": true,
     "new_migrations": 0,
     "business_writes": false
   }

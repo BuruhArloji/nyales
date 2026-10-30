@@ -1,3 +1,9 @@
+## 30 Oktober 2026 — bottom dock transparan dengan lapisan optik
+
+Commit `168317d` dideploy melalui workflow40991945045; CI40991936102 lulus. Bottom dock memakai9% putih dan lapisan backdrop blur3px/saturate dengan SVG displacement halus pada Chromium; ikon/label tidak ikut terfilter. Highlight rim dan shadow memberi bentuk kaca. Safari memakai transparansi/blur4px tanpa SVG extension; reduced transparency/forced colors mempunyai fallback, tanpa klaim efek native iOS atau pengujian iPhone fisik. Pill Aktivitas Lapangan tidak diubah.
+
+Enam uji browser dan build lokal lulus. Perbandingan screenshot objek kartu serta garis pembanding menunjukkan distorsi dibanding fallback blur pada Chromium. Browser staging memverifikasi optical layer, scroll fixed, modal hide/restore, empat viewport dan desktop rail, tanpa JavaScript/API error. Enam public smoke lulus. Tidak ada perubahan data/API/migrasi, dan sesi uji dicabut. Bukti `.nyales-agent/staging/glass-browser-20261030.json` dan screenshot `test-results/staging-glass-dock-*.png`.
+
 ## 30 Oktober 2026 — dock mobile floating tersedia di staging
 
 Commit `a966791` dideploy melalui workflow40990609009; CI40990585734 lulus. Pada lebar<=767px, rail desktop menjadi dock bawah floating dengan ikon/label, target sentuh>=44px, safe-area dan ruang bawah konten. Submenu sticky di atas; tabel lebar digulir di panel. Dock disembunyikan selama dialog terbuka, lalu kembali saat ditutup. Desktop tetap sticky rail. Toolbar studio hanya lokal, ditempatkan di atas dock dan tidak masuk staging.
