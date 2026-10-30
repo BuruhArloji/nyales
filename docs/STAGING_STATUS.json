@@ -2,12 +2,12 @@
   "date": "2026-10-30",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "cf61f49864ae6ec9b5eef983588c8fb6f94cf768",
+  "verified_remote_commit": "b8e99fdc544caaebed4c78033282d13862482ca8",
   "github_ci": {
-    "run_id": 40871129186,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40871129186",
+    "run_id": 40989026894,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40989026894",
     "conclusion": "success",
-    "head_sha": "cf61f49864ae6ec9b5eef983588c8fb6f94cf768"
+    "head_sha": "b8e99fdc544caaebed4c78033282d13862482ca8"
   },
   "current_local_checks": {
     "staging_config_and_smoke_tests": 5,
@@ -114,9 +114,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 40987647438,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40987647438",
-    "head_sha": "cf61f49864ae6ec9b5eef983588c8fb6f94cf768",
+    "run_id": 40989054380,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40989054380",
+    "head_sha": "b8e99fdc544caaebed4c78033282d13862482ca8",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -320,7 +320,7 @@
     "deployment_run_id": 40987647438
   },
   "ui_polish_release": {
-    "status": "local checks passed; deployment requested by user, pending official workflow",
+    "status": "deployed and verified in actual staging browser",
     "date": "2026-10-30",
     "browser_tests_passed": 5,
     "build": "passed",
@@ -330,6 +330,41 @@
       "Metric detail navigation and concise supporting copy"
     ],
     "new_database_migrations": 0,
-    "business_data_seeded": false
+    "business_data_seeded": false,
+    "deployed_commit": "b8e99fdc544caaebed4c78033282d13862482ca8",
+    "deployment_run_id": 40989054380,
+    "ci_run_id": 40989026894,
+    "backend_tests_passed": 337,
+    "backend_tests_skipped": 8,
+    "backend_tests_failed": 0,
+    "actual_staging_browser": {
+      "hierarchy_chart": "passed",
+      "chart_history_dropdown": "passed",
+      "default_after_reload": "chart",
+      "person_detail": "passed",
+      "mobile_390px": "passed",
+      "javascript_errors": 0,
+      "api_failures": 0,
+      "business_writes": false,
+      "test_session_revoked": true
+    },
+    "served_assets_checks": {
+      "hierarchy_chunk": true,
+      "themed_dropdown": true,
+      "aligned_target_filters": true,
+      "distribution_filters": true,
+      "faint_dotted_canvas": true,
+      "no_local_prototype_injection": true
+    },
+    "staging_data_counts": {
+      "directory_customers": 11600,
+      "invoices": 80,
+      "credits": 4,
+      "target_items": 10,
+      "assignments": 20,
+      "migrations": 47
+    },
+    "screenshots_verified": true,
+    "production_accepted": false
   }
 }

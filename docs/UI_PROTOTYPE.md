@@ -30,3 +30,5 @@ Anggota tanpa relasi ditampilkan terpisah. Filter area hanya menggunakan endpoin
 Verifikasi hirarki: 6 uji model (tanggal transfer, filter, collapse, relasi ganda, profil hilang dan siklus), 4 uji browser navigasi/hirarki, serta production build lulus. Browser dengan API lokal juga memeriksa pencarian Novely, panel detail, pembukaan form tanpa menyimpan, kanal, histori dan viewport 1440/1024/768/390 px. Bukti screenshot: test-results/hierarchy-desktop.png, hierarchy-detail.png dan hierarchy-mobile.png.
 
 Pilihan Bagan/Histori kini berupa dropdown di toolbar dalam canvas yang sama, bukan tab di luar canvas. Halaman selalu dimulai pada Bagan saat dibuka ulang; pilihan tampilan tidak disimpan. Uji browser memeriksa dropdown di dalam canvas, pergantian histori, dan reset ke Bagan setelah reload.
+
+Pembaruan30 Oktober2026: polesan aplikasi yang dikembangkan pada prototipe sudah tersedia di staging melalui commitb8e99fd/workflow40989054380. Org chart/dropdown/detail dan mobile diverifikasi di browser staging nyata. Launcher, state lokal, serta toolbar studio tetap khusus prototipe.
