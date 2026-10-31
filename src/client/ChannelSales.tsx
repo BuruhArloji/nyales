@@ -13,7 +13,7 @@ export function ChannelSales({channels,cutoff,complete,onDrill}:{channels:Channe
  return <section className="card channel-sales achievement-card" aria-labelledby={id}>
   <header><h2 id={id}>Pencapaian per kanal</h2></header>
   <div className="channel-achievement-body">
-   <div className="channel-achievement-values">{channels.map(c=><button key={c.channel} className={'channel-achievement-value '+c.channel} onClick={()=>drill(c)} onMouseEnter={()=>setActive(c.channel)} onMouseLeave={()=>setActive(null)} onFocus={()=>setActive(c.channel)} onBlur={()=>setActive(null)} aria-label={`${name(c.channel)}, ${stateLabel(c)}, lihat rincian target`}>
+   <div className="channel-achievement-values">{channels.map(c=><button key={c.channel} className={'channel-achievement-value '+c.channel} onClick={()=>drill(c)} onMouseEnter={()=>setActive(c.channel)} onMouseLeave={()=>setActive(null)} onFocus={()=>setActive(c.channel)} onBlur={()=>setActive(null)}>
     <span className="channel-achievement-name"><i/>{name(c.channel)}</span>
     <strong>{compactNumber(c.actual_minor,true).short}</strong>
     <span className="channel-achievement-target">Target {compactNumber(c.target_minor,true).short}</span>

@@ -25,7 +25,7 @@ export function ChannelContribution({channels,period}:{channels:Channel[];period
    </svg>
    {selected&&<div className="contribution-tooltip" role="tooltip"><strong>{label(selected.channel)}</strong><span>{compactNumber(selected.actual_minor,true).full}</span>{valid&&<span>{(selected.actual_minor/total*100).toLocaleString('id-ID',{maximumFractionDigits:1})}% kontribusi</span>}</div>}
   </div>
-  <div className="contribution-legend">{channels.map(c=><button key={c.channel} className={c.channel} onMouseEnter={()=>setActive(c.channel)} onMouseLeave={()=>setActive(null)} onFocus={()=>setActive(c.channel)} onBlur={()=>setActive(null)} onClick={()=>setActive(c.channel)} aria-label={`${label(c.channel)}, ${compactNumber(c.actual_minor,true).full}`}><span><i/>{label(c.channel)}</span><strong>{compactNumber(c.actual_minor,true).short}</strong></button>)}</div>
+  <div className="contribution-legend">{channels.map(c=><button key={c.channel} className={c.channel} onMouseEnter={()=>setActive(c.channel)} onMouseLeave={()=>setActive(null)} onFocus={()=>setActive(c.channel)} onBlur={()=>setActive(null)} onClick={()=>setActive(c.channel)}><span><i/>{label(c.channel)}</span><strong>{compactNumber(c.actual_minor,true).short}</strong></button>)}</div>
   {!valid&&<p className="contribution-note">{channels.some(c=>c.actual_minor<0)?'Ada nilai net negatif; proporsi donut belum berlaku.':'Belum ada penjualan positif pada periode ini.'}</p>}
  </section>;
 }

@@ -12,10 +12,10 @@ function PersonCard({data:d}:NodeProps<PersonNode>){
  const p=d.person,initials=p.name.trim().split(/\s+/).slice(0,2).map(s=>s[0]).join('');
  return <div className={'org-person '+(d.selected?'is-selected ':'')+(p.status!=='active'?'is-inactive':'')}>
   <Handle type="target" position={Position.Top} isConnectable={false}/>
-  <button type="button" className="org-person-main nodrag" onClick={()=>d.onSelect(p.id)} aria-label={'Lihat '+p.name} aria-pressed={d.selected}>
+  <button type="button" className="org-person-main nodrag" onClick={()=>d.onSelect(p.id)} aria-pressed={d.selected}>
    <span className={'org-avatar '+(!p.channel?'org-avatar-leader':'')}>{initials}</span><span className="org-person-copy"><strong>{p.name}</strong><small>{roleName(p.role_code)}</small></span>
   </button>
-  <div className="org-person-bottom"><span>{p.status!=='active'?'Nonaktif':p.channel==='field'?'Lapangan':p.channel==='telesales'?'Telesales':'Organisasi'}</span>{d.count?<button className="org-collapse nodrag" type="button" aria-label={(d.collapsed?'Buka':'Lipat')+' tim '+p.name} aria-expanded={!d.collapsed} onClick={()=>d.onCollapse(p.id)}>{d.count} anggota {d.collapsed?<ChevronRight size={13}/>:<ChevronDown size={13}/>}</button>:<span>{d.unconnected?'Belum terhubung':'Anggota'}</span>}</div>
+  <div className="org-person-bottom"><span>{p.status!=='active'?'Nonaktif':p.channel==='field'?'Lapangan':p.channel==='telesales'?'Telesales':'Organisasi'}</span>{d.count?<button className="org-collapse nodrag" type="button" aria-expanded={!d.collapsed} onClick={()=>d.onCollapse(p.id)}>{d.count} anggota <span className="visually-hidden">{(d.collapsed?'Buka':'Lipat')+' tim '+p.name}</span>{d.collapsed?<ChevronRight size={13}/>:<ChevronDown size={13}/>}</button>:<span>{d.unconnected?'Belum terhubung':'Anggota'}</span>}</div>
   <Handle type="source" position={Position.Bottom} isConnectable={false}/>
  </div>;
 }
