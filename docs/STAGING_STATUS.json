@@ -236,7 +236,7 @@
     "source_originals_preserved": true,
     "prepared_locally": true,
     "r2_upload_and_hash_readback": "passed",
-    "customer_import_status": "partial_daily_budget_reserved",
+    "customer_import_status": "partial_user_limit_500",
     "full_restore_existing_business_and_sessions_preserved": true,
     "full_restore_foreign_key_violations": 0,
     "local_regression_passed": 327,
@@ -244,15 +244,15 @@
     "local_regression_failed": 0,
     "large_map_browser_fixture": "passed",
     "authenticated_staging_visual_confirmation": false,
-    "customers_imported": 11600,
-    "customers_remaining": 1024,
-    "completed_batches": 58,
+    "customers_imported": 12100,
+    "customers_remaining": 524,
+    "completed_batches": 60,
     "total_batches": 64,
-    "next_batch": 59,
-    "next_free_quota_reset_utc": "2026-10-31T00:00:00Z",
-    "next_free_quota_reset_jakarta": "2026-10-31T07:00:00+07:00",
-    "daily_write_budget_reserved": 80000,
-    "account_write_usage_baseline_plus_import": 77884,
+    "next_batch": 61,
+    "next_free_quota_reset_utc": "2026-11-01T00:00:00Z",
+    "next_free_quota_reset_jakarta": "2026-11-01T07:00:00+07:00",
+    "daily_write_budget_reserved": 30000,
+    "account_write_usage_baseline_plus_import": 6662,
     "cloud_previous_data_preserved": {
       "organization": true,
       "app_user": true,
@@ -266,16 +266,16 @@
       "previous_directory_customers": true
     },
     "cloud_foreign_key_violations": 0,
-    "cloud_unique_customer_codes": 11600,
-    "cloud_customers_without_sales_assignment": 11600,
+    "cloud_unique_customer_codes": 12100,
+    "cloud_customers_without_sales_assignment": 12100,
     "cloud_imported_by_area": [
       {
         "area_id": "maps-area-bekasi-kab",
-        "count": 6339
+        "count": 6830
       },
       {
         "area_id": "maps-area-bekasi-kota",
-        "count": 3667
+        "count": 3676
       },
       {
         "area_id": "maps-area-jakpus",
@@ -290,14 +290,37 @@
       "authenticated_staging_visual_confirmation": false
     },
     "automatic_resume_scheduled": false,
-    "checked_at": "2026-10-30T01:52:56.468733+00:00",
+    "checked_at": "2026-10-31T08:08:20.876661+00:00",
     "storage_sha256": "cb05078ad7724970839dcf9789b35acaf73b98147656600dec32cdb3ae18cc5d",
     "storage_byte_count": 15220158,
-    "current_attempt_new_batches": 21,
-    "current_attempt_blocker": "Conservative daily write budget reserved; provider analytics can lag, baseline includes migration index reservation",
-    "write_accounting_note": "Conservative reservation for migration index writes while provider analytics may lag; not a measured usage claim",
-    "current_attempt_customers_added": 4200,
-    "reference_readback_20261030": "SHA-256 matches enriched detail object"
+    "current_attempt_new_batches": 2,
+    "current_attempt_blocker": "Stopped at user-authorized 500 customers; 524 remain",
+    "write_accounting_note": "Provider execution metadata: 6512 writes for 500 customers, plus analytics baseline 150; analytics after import had not yet refreshed. Not final account-wide usage.",
+    "current_attempt_customers_added": 500,
+    "reference_readback_20261030": "SHA-256 matches enriched detail object",
+    "partial_batch": {
+      "batch": 61,
+      "imported": 100,
+      "remaining": 100
+    },
+    "next_batch_offset": 100,
+    "import_500_20261031": {
+      "customers_added": 500,
+      "batch_rows_read": 3006,
+      "batch_rows_written": 6512,
+      "full_batches": [
+        59,
+        60
+      ],
+      "partial_batch": 61,
+      "partial_count": 100,
+      "quota_exhausted": false,
+      "backup_restore_verified": true,
+      "preservation_reconciled": true,
+      "foreign_key_violations": 0,
+      "analytics_lag_detected": true,
+      "automatic_resume_scheduled": false
+    }
   },
   "pending_directory_followup": {
     "status": "deployed and migrations applied; independent public smoke passed; authenticated visual review pending",

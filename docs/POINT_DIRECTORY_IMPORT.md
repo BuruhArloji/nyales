@@ -69,3 +69,12 @@ Deployment redesign40995040761 ditolak provider pada pemeriksaan migration karen
 ### 31 Oktober 2026 — popup staging terverifikasi
 
 Deployment resmi 41182304003 sukses setelah reset kuota, commit `07449ad`. Enam smoke checks lulus. Popup pada titik nyata diuji desktop 360px/mobile 390px: metadata terpadu, footer aksi tetap tersedia dan tidak overflow; sesi uji dicabut. Tidak ada penulisan bisnis atau batch impor pada langkah ini; 1.024 customer masih menunggu. Artefak privat `popup-browser-20261030.json` memiliki timestamp pemeriksaan 31 Oktober; screenshot `test-results/staging-popup-redesign-{desktop,mobile}.png`.
+
+
+## 31 Oktober 2026 — impor dibatasi tepat 500 customer
+
+Atas instruksi pengguna, hanya 500 customer tambahan dimasukkan: batch59/60 masing-masing200 dan 100pertama batch61. Total direktori12.100, sisa524. Batch61 tersisa100; receipt parsial menyimpan offset0/count100 dan runner melanjutkan dari offset100, tanpa mengulang impor. Jangan memakai runner lama yang menganggap setiap receipt selalu satu batch penuh. File SQL asli dan hash manifest tetap utuh; uji lokal membuktikan dua potongan100 identik dengan200 sumber kecuali timestamp otomatis, serta menolak receipt overlap.
+
+Backup sebelum impor11.217.058byte diuji restore: quick_check ok, FK0. Rekonsiliasi sesudah impor membuktikan organisasi, user/role, invoice/retur, target, assignment, sesi, customer asli serta11.600 customer direktori sebelumnya tidak berubah; kode12.100 unik dan tidak ada assignment baru, FK0. Metadata eksekusi tiga file melaporkan3.006 reads dan6.512 writes. Ini pemakaian batch saja, di luar backup/verifikasi/operasi lain. Analytics sebelum impor2.597.649 reads/150 writes; sesudah impor masih menunjukkan angka sama karena lag, sehingga bukan bukti total akhir harian. Kuota tidak habis dan impor berhenti pada batas pengguna. Referensi peta2.638 dan review812 tidak berubah; tidak ada deploy kode/seed/penugasan baru.
+
+Bukti privat: BEFORE_500_BACKUP_20261031.json, CLOUD_500_RECONCILED_20261031.json, IMPORT_500_USAGE_20261031.json dan PARTIAL_BATCH_VALIDATION_20261031.json pada folder customer-source-20261028. Tidak ada resume otomatis. Runner privat terbaru `.git/directory-cloud.py` mendukung `--max-customers`; salinannya disimpan sebagai bounded-import-runner-20261031.py di folder bukti privat.
