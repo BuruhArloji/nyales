@@ -64,3 +64,8 @@ Popup desktop diperlebar menjadi360px (container maksimum400px dan tetap dibatas
 Enam uji browser fixture lulus: cluster15k, fetch detail saat dibuka, foto berhasil/gagal, pemisahan metadata dan header, callback Street View, URL sumber, referensi, batas mobile serta footer tetap terlihat pada peta300px dengan detail panjang. Build lulus.
 
 Deployment redesign40995040761 ditolak provider pada pemeriksaan migration karena D1 daily row read limit7500. Belum online; live tetap168317d. Reset berikut31 Oktober07.00WIB, tidak ada retry otomatis atau bypass migrasi. Pemeriksaan fixture lokal bukan bukti visual staging dengan foto sumber nyata.
+
+
+### 31 Oktober 2026 — popup staging terverifikasi
+
+Deployment resmi 41182304003 sukses setelah reset kuota, commit `07449ad`. Enam smoke checks lulus. Popup pada titik nyata diuji desktop 360px/mobile 390px: metadata terpadu, footer aksi tetap tersedia dan tidak overflow; sesi uji dicabut. Tidak ada penulisan bisnis atau batch impor pada langkah ini; 1.024 customer masih menunggu. Artefak privat `popup-browser-20261030.json` memiliki timestamp pemeriksaan 31 Oktober; screenshot `test-results/staging-popup-redesign-{desktop,mobile}.png`.

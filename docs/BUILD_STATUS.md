@@ -1,3 +1,7 @@
+## 31 Oktober 2026 — popup lokasi sudah online
+
+Workflow [41182304003](https://github.com/BuruhArloji/nyales/actions/runs/41182304003) berhasil setelah reset kuota, termasuk pemeriksaan, build, migrasi resmi tanpa seed, publikasi, dan smoke. Commit terpasang `07449ad` memuat redesign `1c99e04`. Enam pemeriksaan layanan independen lulus. Browser staging dengan titik direktori nyata memverifikasi lebar desktop 360px, metadata terpadu, tombol Street View/Google Maps tetap terlihat saat detail digulir, dan batas popup mobile 390px. Tidak ada JavaScript error; sesi uji dicabut, tanpa penulisan data bisnis. Tidak ada migration/seed baru. Ini verifikasi staging, bukan acceptance produksi. Sisa impor 1.024 customer belum dilanjutkan pada deployment ini.
+
 ## 30 Oktober2026 — redesign popup lokasi selesai lokal, deploy tertahan kuota
 
 Commit `1c99e04` menambah popup360px desktop, metadata status pelanggan/Sales-PIC menyatu dengan detail lokasi, foto, serta footer Street View/Google Maps yang tetap terlihat saat body digulir. Enam pengujian browser fixture, TypeScript dan build lulus. Provider data/endpoint/skema tidak diubah.
