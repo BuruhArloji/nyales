@@ -12,6 +12,7 @@ import {regionalAnalytics} from './geography-analytics';
 import {customerRisk} from './customer-risk';
 import {riskEvaluations} from './risk-evaluations';
 import{observability}from'./observability';
+import{cachedJson,cacheStatus,scopeCacheKey,READ_MODEL_TTL_SECONDS}from'./cache';
 import{telemetry,measuredJob}from'./telemetry';
 import{monitoring,notificationMaintenance,operationalReminders,reportMaintenance}from'./monitoring';
 import{incentives}from'./incentives';
@@ -206,9 +207,15 @@ async function readCustomers(db:D1Database,s:Scope){
 
 }
 
+/** Cached per authorization scope: dashboard, customer list, map and queue all read the same model. */
+async function loadCustomers(c:any){
+ const s=c.get('scope') as Scope;
+ return cachedJson(c,scopeCacheKey(s,'customers'),READ_MODEL_TTL_SECONDS,()=>readCustomers(c.env.DB,s));
+ }
+
 scopedRoutes.get('/api/customers',async c=>{
 
- let data=await readCustomers(c.env.DB,c.get('scope'));
+ const cached=await loadCustomers(c);c.header('X-NYALES-Cache',cacheStatus(cached));let data=cached.value;
  try{data=await filterGeoCustomers(c,data)}catch(e){const m=/^(403|404|409|412|422|503):(.+)$/.exec((e as Error).message);return c.json({code:m?.[2]||'GEOGRAPHY_UNAVAILABLE'},(m?Number(m[1]):503) as any)}
 
  const channel=c.req.query('channel')||'field',assignmentStatus=c.req.query('assignment_status');
@@ -233,7 +240,7 @@ scopedRoutes.get('/api/customers/:id',async c=>{const requested=c.req.param('id'
 
 scopedRoutes.get('/api/dashboard',async c=>{
 
- const s=c.get('scope'),f=invoicePredicate(s);const customers=await readCustomers(c.env.DB,s);
+ const s=c.get('scope'),f=invoicePredicate(s);const cachedCustomers=await loadCustomers(c);c.header('X-NYALES-Cache',cacheStatus(cachedCustomers));const customers=cachedCustomers.value;
 
  const rows=await c.env.DB.prepare(`SELECT i.channel,SUM(i.net_minor) amount,COUNT(DISTINCT i.rep_id) reps FROM invoice i WHERE ${f.sql} AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=? GROUP BY i.channel`).bind(...f.params,s.date.slice(0,7)+'-01',s.date).all<{channel:string;amount:number;reps:number}>();
 
@@ -251,7 +258,7 @@ scopedRoutes.get('/api/dashboard',async c=>{
 
 scopedRoutes.get('/api/telesales/queue',async c=>{
 
- const s=c.get('scope');const data=await readCustomers(c.env.DB,s);
+ const s=c.get('scope');const cached=await loadCustomers(c);c.header('X-NYALES-Cache',cacheStatus(cached));const data=cached.value;
 
  const assigned=await c.env.DB.prepare(`SELECT COALESCE((SELECT canonical_id FROM customer_alias al WHERE al.organization_id=ca.organization_id AND al.source_id=ca.outlet_id),outlet_id) outlet_id FROM customer_assignment ca WHERE organization_id=? AND channel='telesales' AND effective_from_date<=? AND (effective_to_date IS NULL OR effective_to_date>?)${s.orgWide||s.allRepsInArea?'':` AND rep_id IN (${s.repIds.map(()=>'?').join(',')})`}`).bind(s.identity.organization_id,s.date,s.date,...(s.orgWide||s.allRepsInArea?[]:s.repIds)).all<{outlet_id:string}>();
 
@@ -263,7 +270,7 @@ scopedRoutes.get('/api/telesales/queue',async c=>{
 
 async function mapPayload(c:any){
 
- const s=c.get('scope') as Scope;let customers=await readCustomers(c.env.DB,s);
+ const s=c.get('scope') as Scope;const cachedCustomers=await loadCustomers(c);c.header('X-NYALES-Cache',cacheStatus(cachedCustomers));let customers=cachedCustomers.value;
 
  const areaId=c.req.query('area_id'),repId=c.req.query('rep_id'),channel=c.req.query('channel')||'field',status=c.req.query('customer_status');
 
