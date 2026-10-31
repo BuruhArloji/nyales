@@ -13,6 +13,7 @@ import {customerRisk} from './customer-risk';
 import {riskEvaluations} from './risk-evaluations';
 import{observability}from'./observability';
 import{cachedJson,cacheStatus,scopeCacheKey,READ_MODEL_TTL_SECONDS}from'./cache';
+import{readCustomerPage}from'./customer-page';
 import{telemetry,measuredJob}from'./telemetry';
 import{monitoring,notificationMaintenance,operationalReminders,reportMaintenance}from'./monitoring';
 import{incentives}from'./incentives';
@@ -214,6 +215,23 @@ async function loadCustomers(c:any){
  }
 
 scopedRoutes.get('/api/customers',async c=>{
+
+ // Paged directory: filters, ordering and the count run inside SQLite so a list
+ // page reads ~100 customers instead of the whole population.
+ const paged=c.req.query('limit');
+ const geoDrill=c.req.query('geo_boundary_id')||c.req.query('geo_bucket')||c.req.query('geo_dataset_id');
+ if(paged&&!geoDrill){
+   const limit=Number(paged),offset=Number(c.req.query('offset')||0);
+   const channel=c.req.query('channel')||'field',assignmentStatus=c.req.query('assignment_status');
+   if(!Number.isInteger(limit)||limit<1||limit>200||!Number.isInteger(offset)||offset<0)return c.json({code:'VALIDATION_ERROR'},422);
+   if(!['field','telesales'].includes(channel)||assignmentStatus&&!['assigned','unassigned'].includes(assignmentStatus))return c.json({code:'VALIDATION_ERROR'},422);
+   const page=await readCustomerPage(c.env.DB,c.get('scope'),{
+     limit,offset,q:c.req.query('q')||'',areaId:c.req.query('area_id')||'',repId:c.req.query('rep_id')||'',
+     channel:channel as 'field'|'telesales',assignmentStatus:assignmentStatus as 'assigned'|'unassigned'|undefined,
+     status:c.req.query('status')||'',recordStatus:c.req.query('record_status')||'',location:c.req.query('location')||'',
+   });
+   return c.json({data:page.rows,meta:{...meta(),total:page.total,limit:page.limit,offset:page.offset}});
+ }
 
  const cached=await loadCustomers(c);c.header('X-NYALES-Cache',cacheStatus(cached));let data=cached.value;
  try{data=await filterGeoCustomers(c,data)}catch(e){const m=/^(403|404|409|412|422|503):(.+)$/.exec((e as Error).message);return c.json({code:m?.[2]||'GEOGRAPHY_UNAVAILABLE'},(m?Number(m[1]):503) as any)}
