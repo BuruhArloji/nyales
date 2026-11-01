@@ -12,7 +12,7 @@ import {regionalAnalytics} from './geography-analytics';
 import {customerRisk} from './customer-risk';
 import {riskEvaluations} from './risk-evaluations';
 import{observability}from'./observability';
-import{cachedJson,cacheStatus,scopeCacheKey,READ_MODEL_TTL_SECONDS}from'./cache';
+import{cachedJson,cacheStatus,scopeCacheKey,READ_MODEL_TTL_SECONDS,DASHBOARD_TTL_SECONDS}from'./cache';
 import{readCustomerPage}from'./customer-page';
 import{telemetry,measuredJob}from'./telemetry';
 import{monitoring,notificationMaintenance,operationalReminders,reportMaintenance}from'./monitoring';
@@ -257,22 +257,28 @@ scopedRoutes.get('/api/customers',async c=>{
 scopedRoutes.get('/api/customers/:id',async c=>{const requested=c.req.param('id');const alias=await c.env.DB.prepare('SELECT canonical_id FROM customer_alias WHERE organization_id=? AND source_id=?').bind(c.get('identity').organization_id,requested).first<{canonical_id:string}>();const data=(await readCustomers(c.env.DB,c.get('scope'))).find(x=>x.id===(alias?.canonical_id||requested));if(data)c.header('ETag',`"${data.version}"`);return data?c.json({data,meta:{...meta(),requested_customer_id:requested,canonical_customer_id:data.id,alias_resolved:Boolean(alias)}}):c.json({code:'NOT_FOUND'},404)});
 
 scopedRoutes.get('/api/dashboard',async c=>{
+ const s=c.get('scope') as Scope;
+ const cached=await cachedJson(c,scopeCacheKey(s,'dashboard'),DASHBOARD_TTL_SECONDS,()=>buildDashboard(c,s));
+ c.header('X-NYALES-Cache',cacheStatus(cached));
+ return c.json({data:cached.value,meta:meta()});
+});
 
- const s=c.get('scope'),f=invoicePredicate(s);const cachedCustomers=await loadCustomers(c);c.header('X-NYALES-Cache',cacheStatus(cachedCustomers));const customers=cachedCustomers.value;
+async function buildDashboard(c:any,s:Scope){
+ const db=c.env.DB as D1Database;
+ const f=invoicePredicate(s);const customers=(await loadCustomers(c)).value;
 
- const rows=await c.env.DB.prepare(`SELECT i.channel,SUM(i.net_minor) amount,COUNT(DISTINCT i.rep_id) reps FROM invoice i WHERE ${f.sql} AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=? GROUP BY i.channel`).bind(...f.params,s.date.slice(0,7)+'-01',s.date).all<{channel:string;amount:number;reps:number}>();
+ const rows=await db.prepare(`SELECT i.channel,SUM(i.net_minor) amount,COUNT(DISTINCT i.rep_id) reps FROM invoice i WHERE ${f.sql} AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=? GROUP BY i.channel`).bind(...f.params,s.date.slice(0,7)+'-01',s.date).all<{channel:string;amount:number;reps:number}>();
 
  const firstMonth=new Date(s.date.slice(0,7)+'-01T00:00:00Z');firstMonth.setUTCMonth(firstMonth.getUTCMonth()-5);
 
- const history=await c.env.DB.prepare(`SELECT substr(i.invoice_date,1,7) month,SUM(i.net_minor) amount FROM invoice i WHERE ${f.sql} AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=? GROUP BY substr(i.invoice_date,1,7) ORDER BY month`).bind(...f.params,firstMonth.toISOString().slice(0,10),s.date).all<{month:string;amount:number}>();
+ const history=await db.prepare(`SELECT substr(i.invoice_date,1,7) month,SUM(i.net_minor) amount FROM invoice i WHERE ${f.sql} AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=? GROUP BY substr(i.invoice_date,1,7) ORDER BY month`).bind(...f.params,firstMonth.toISOString().slice(0,10),s.date).all<{month:string;amount:number}>();
 
- const trend=Array.from({length:6},(_,index)=>{const monthDate=new Date(firstMonth);monthDate.setUTCMonth(firstMonth.getUTCMonth()+index);const month=monthDate.toISOString().slice(0,7);return {month,actual_minor:history.results.find(x=>x.month===month)?.amount??0,target_minor:null}});
+ const trend=Array.from({length:6},(_,index)=>{const monthDate=new Date(firstMonth);monthDate.setUTCMonth(firstMonth.getUTCMonth()+index);const month=monthDate.toISOString().slice(0,7);return {month,actual_minor:history.results.find((x:any)=>x.month===month)?.amount??0,target_minor:null}});
 
  const targetOverview=await targetSummary(c.env.DB,s,s.date.slice(0,7));const targetTotal=targetOverview.target_minor,targetActual=targetOverview.actual_minor;
- const customerCohort=customers.filter(x=>x.record_status==='active'),unknownCustomerCount=customerCohort.filter(x=>x.status==='Unknown').length;
- return c.json({data:{period:s.date.slice(0,7),trend,actual_net_minor:rows.results.reduce((a,r)=>a+r.amount,0),target_net_minor:targetTotal,target_needs_review:targetOverview.needs_review,achievement:targetTotal&&targetActual!==null&&!targetOverview.needs_review?targetActual/targetTotal*100:null,active_customer_count:unknownCustomerCount?null:customerCohort.filter(x=>x.status==='Aktif').length,customer_status_unknown_count:unknownCustomerCount,observed_active_customer_count:customerCohort.filter(x=>x.segmentation?.observed_status==='Aktif').length,sales_rep_count:rows.results.reduce((a,r)=>a+r.reps,0),channels:rows.results.map(r=>({channel:r.channel,actual_minor:r.amount,target_minor:null}))},meta:meta()});
-
-});
+ const customerCohort=customers.filter((x:any)=>x.record_status==='active'),unknownCustomerCount=customerCohort.filter((x:any)=>x.status==='Unknown').length;
+ return {period:s.date.slice(0,7),trend,actual_net_minor:rows.results.reduce((a:number,r:any)=>a+r.amount,0),target_net_minor:targetTotal,target_needs_review:targetOverview.needs_review,achievement:targetTotal&&targetActual!==null&&!targetOverview.needs_review?targetActual/targetTotal*100:null,active_customer_count:unknownCustomerCount?null:customerCohort.filter((x:any)=>x.status==='Aktif').length,customer_status_unknown_count:unknownCustomerCount,observed_active_customer_count:customerCohort.filter((x:any)=>x.segmentation?.observed_status==='Aktif').length,sales_rep_count:rows.results.reduce((a:number,r:any)=>a+r.reps,0),channels:rows.results.map((r:any)=>({channel:r.channel,actual_minor:r.amount,target_minor:null}))};
+}
 
 scopedRoutes.get('/api/telesales/queue',async c=>{
 
@@ -319,7 +325,7 @@ async function mapPayload(c:any){
  const reference=await referencePoints(c);
  const positions=await (c.env.DB as D1Database).prepare(`SELECT p.user_id id,u.name,p.latitude_e7,p.longitude_e7,p.captured_at last_seen,p.source,p.accuracy_m FROM sales_last_position p JOIN app_user u ON u.id=p.user_id AND u.organization_id=p.organization_id WHERE ${sql} AND u.status='active'`).bind(...args).all<{id:string;name:string;latitude_e7:number;longitude_e7:number;last_seen:string;source:string;accuracy_m:number|null}>();
 
- return {data:{reference_points:reference.points,reference_point_count:reference.total,reference_scope_note:reference.scope_note,total_customer_count:customers.length,missing_coordinates_count:customers.filter(x=>x.record_status!=='inactive'&&(x.lat===null||x.lng===null)).length,inactive_customer_count:customers.filter(x=>x.record_status==='inactive').length,all_customers:customers,customers:customers.filter(x=>x.record_status!=='inactive'&&x.lat!==null&&x.lng!==null),sales:positions.results.map((r:any)=>{const seconds=Math.floor((Date.now()-Date.parse(r.last_seen))/1000);return {id:r.id,name:r.name,lat:r.latitude_e7/1e7,lng:r.longitude_e7/1e7,last_seen:r.last_seen,source:r.source,accuracy_m:r.accuracy_m,age_seconds:Number.isFinite(seconds)&&seconds>=0?seconds:null,clock_status:!Number.isFinite(seconds)?'invalid':seconds<0?'future':'valid',position_state:'last_received'}}),basemap:{provider:c.env.MAP_TILE_URL?'custom_raster':'openfreemap',style_url:c.env.MAP_TILE_URL?null:'https://tiles.openfreemap.org/styles/positron',tile_url:c.env.MAP_TILE_URL||'https://tile.openstreetmap.org/{z}/{x}/{y}.png',attribution:c.env.MAP_ATTRIBUTION||'© OpenStreetMap contributors',configured:Boolean(c.env.MAP_TILE_URL)}},meta:{...meta(),routing:false}};
+ return {data:{reference_points:reference.points,reference_point_count:reference.total,reference_scope_note:reference.scope_note,total_customer_count:customers.length,missing_coordinates_count:customers.filter(x=>x.record_status!=='inactive'&&(x.lat===null||x.lng===null)).length,inactive_customer_count:customers.filter(x=>x.record_status==='inactive').length,all_customers:customers,customers:customers.filter(x=>x.record_status!=='inactive'&&x.lat!==null&&x.lng!==null),sales:positions.results.map((r:any)=>{const seconds=Math.floor((Date.now()-Date.parse(r.last_seen))/1000);return {id:r.id,name:r.name,lat:r.latitude_e7/1e7,lng:r.longitude_e7/1e7,last_seen:r.last_seen,source:r.source,accuracy_m:r.accuracy_m,age_seconds:Number.isFinite(seconds)&&seconds>=0?seconds:null,clock_status:!Number.isFinite(seconds)?'invalid':seconds<0?'future':'valid',position_state:'last_received'}}),basemap:{provider:c.env.MAP_TILE_URL?'custom_raster':'openfreemap',style_url:c.env.MAP_TILE_URL?null:'https://tiles.openfreemap.org/styles/positron',tile_url:c.env.MAP_TILE_URL||'https://tile.openstreetmap.org/{z}/{x}/{y}.png',attribution:c.env.MAP_ATTRIBUTION||'Â© OpenStreetMap contributors',configured:Boolean(c.env.MAP_TILE_URL)}},meta:{...meta(),routing:false}};
 
 }
 
@@ -400,3 +406,5 @@ export async function runScheduled(env:Bindings){
  if(failed)throw new Error('NYALES_SCHEDULED_CHECKPOINT_FAILED');
 }
 export default Object.assign(app,{scheduled:async(_event:ScheduledController,env:Bindings,ctx:ExecutionContext)=>{ctx.waitUntil(runScheduled(env))}});
+
+

@@ -8,6 +8,7 @@ import type {Scope} from './scope';
 
 const ORIGIN='https://nyales-cache.internal/';
 export const READ_MODEL_TTL_SECONDS=60;
+export const DASHBOARD_TTL_SECONDS=300;
 
 export type CacheLookup<T>={value:T;hit:boolean;enabled:boolean};
 
