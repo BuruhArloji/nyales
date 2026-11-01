@@ -93,6 +93,7 @@ Account   → D1:Edit
 Account   → R2:Edit
 Account   → Account Settings:Read
 Account   → Workers Tail:Read      (untuk debugging via wrangler tail)
+Account   → Account Analytics:Read  (untuk scripts/quota-report.mjs)
 ```
 
 Batasi token ke **satu akun** dan **resource nyales-staging saja**.
@@ -150,8 +151,8 @@ npm run staging:smoke -- https://nyales-staging.azaracourse.workers.dev test-res
 1 sesi pengguna = 10 putaran × 3 halaman ≈ **1,8 juta baris** sebelum optimasi.
 Artinya **maksimal ~2 sesi uji per hari**. Sebelum menjalankan uji beban:
 
-```powershell
-powershell -File .nyales-agent/quota-report.ps1
+```bash
+CLOUDFLARE_API_TOKEN=... node scripts/quota-report.mjs
 ```
 
 - `STATUS: OK` → aman
@@ -205,6 +206,6 @@ powershell -File .nyales-agent/quota-report.ps1
 > `npm test`, `npm run build` sebelum menyentuh apa pun. Uji UI hanya lewat
 > `npm run ui:prototype` (lokal, seed sintetis). Deploy hanya staging, lewat GitHub Actions
 > `deploy-staging.yml`, dengan input `https://nyales-staging.azaracourse.workers.dev`.
-> Kuota D1 free tier 5 juta reads/hari — cek `.nyales-agent/quota-report.ps1` sebelum
+> Kuota D1 free tier 5 juta reads/hari — cek `node scripts/quota-report.mjs` sebelum
 > pengujian beban; satu sesi uji bisa menghabiskan 1,8 juta. Jangan pernah seed staging,
 > jangan migrasi produksi, jangan pakai sesi wrangler global.

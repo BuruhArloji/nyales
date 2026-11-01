@@ -59,10 +59,12 @@ Semua harus lolos sebelum dan sesudah perubahan.
 Free tier: **5 juta rows read/hari**, reset 00:00 UTC (07:00 WIB).
 Satu sesi uji (10 putaran × 3 halaman) bisa menghabiskan **±1,8 juta**.
 
-Sebelum uji beban:
+Sebelum uji beban (butuh token dengan scope **Account Analytics: Read**):
 
-```powershell
-powershell -File .nyales-agent/quota-report.ps1
+```bash
+CLOUDFLARE_API_TOKEN=... node scripts/quota-report.mjs
+# atau
+npm run quota:report
 ```
 
 - `OK` → aman

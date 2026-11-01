@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "nyales",
   "version": "0.1.0",
   "private": true,
@@ -51,6 +51,7 @@
     "test:recovery": "playwright test --config playwright.recovery-objects.config.cjs",
     "pilot:release-gate": "tsx scripts/pilot-release-gate.ts",
     "staging:smoke": "node scripts/staging-smoke.mjs",
+    "quota:report": "node scripts/quota-report.mjs",
     "test:auth-setup": "playwright test --config playwright.auth-setup.config.cjs",
     "ui:prototype": "node scripts/ui-prototype.cjs"
   },
@@ -90,3 +91,4 @@
     "@grpc/grpc-js": "^1.13.6"
   }
 }
+
