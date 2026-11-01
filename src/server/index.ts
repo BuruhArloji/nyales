@@ -168,7 +168,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
 
 });
 
-scopedRoutes.onError((err,c)=>{console.error('NYALES request failed',err.name);return c.json({code:'DATA_UNAVAILABLE',detail:'Data tidak dapat dimuat. Coba lagi.'},503)});
+scopedRoutes.onError((err,c)=>{console.error('NYALES request failed',err.name,String((err as Error).message||''),String((err as Error).stack||'').slice(0,900));return c.json({code:'DATA_UNAVAILABLE',detail:'Data tidak dapat dimuat. Coba lagi.'},503)});
 
 function meta(){return {request_id:crypto.randomUUID(),server_time:new Date().toISOString(),source:'d1',validation_state:'provisional',freshness_state:'manual'}}
 

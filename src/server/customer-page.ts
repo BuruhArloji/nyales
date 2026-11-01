@@ -68,16 +68,16 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
   const ids=page.results.map((row:any)=>row.id);
   if(!ids.length)return{rows:[],total,limit,offset};
 
-  const marks=ids.map(()=>'?').join(',');
-
-  const segmentRows=(await db.prepare(`SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=? AND customer_id IN (${marks})`).bind(run.id,...ids).all<any>()).results;
+  const segmentRows=(await db.prepare(`SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=? AND customer_id IN (SELECT value FROM json_each(?))`).bind(run.id,JSON.stringify(ids)).all<any>()).results;
 
   const assignmentRows=(await db.prepare(`SELECT COALESCE(al.canonical_id,ca.outlet_id) customer_id,ca.rep_id,ca.channel,u.name
     FROM customer_assignment ca
     LEFT JOIN customer_alias al ON al.organization_id=ca.organization_id AND al.source_id=ca.outlet_id
     JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id
-    WHERE ca.organization_id=? AND ca.outlet_id IN (SELECT f.id FROM customer_outlet f WHERE f.organization_id=? AND (f.id IN (${marks}) OR f.merged_into_id IN (${marks})))
-      AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)`).bind(org,org,...ids,...ids,s.date,s.date).all<any>()).results;
+    WHERE ca.organization_id=?
+      AND (ca.outlet_id IN (SELECT value FROM json_each(?))
+        OR ca.outlet_id IN (SELECT f.id FROM customer_outlet f WHERE f.organization_id=? AND f.merged_into_id IN (SELECT value FROM json_each(?))))
+      AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)`).bind(org,JSON.stringify(ids),org,JSON.stringify(ids),s.date,s.date).all<any>()).results;
 
   const inv=invoicePredicate(s);
   const factRows=(await db.prepare(`WITH facts AS (
@@ -86,7 +86,7 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
       FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id
       WHERE ${inv.sql} AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date<=?
       GROUP BY COALESCE(child.merged_into_id,child.id)
-    ) SELECT customer_id,last,actual FROM facts WHERE customer_id IN (${marks})`).bind(...inv.params,s.date,...ids).all<any>()).results;
+    ) SELECT customer_id,last,actual FROM facts WHERE customer_id IN (SELECT value FROM json_each(?))`).bind(...inv.params,s.date,JSON.stringify(ids)).all<any>()).results;
 
   const segments=new Map(segmentRows.map((row:any)=>[row.customer_id,row]));
   const facts=new Map(factRows.map((row:any)=>[row.customer_id,row]));
