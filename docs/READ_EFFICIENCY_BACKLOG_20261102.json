@@ -151,7 +151,7 @@
       "id": "READ-006",
       "priority": "P0",
       "title": "Client dedupe lazy references dan abort",
-      "status": "Planned",
+      "status": "In progress",
       "conditional": false,
       "owner_role": "Frontend Engineer",
       "assignee": null,
@@ -172,7 +172,8 @@
         "Request trace comparison",
         "Browser tests"
       ],
-      "remote_execution_requires_budget_preflight": true
+      "remote_execution_requires_budget_preflight": true,
+      "progress": "Customer references reused within mounted page and refreshed after writes; Monitoring customer choices load on form open. Six local browser checks pass. Global browser request deduplication and bounded lookups remain pending."
     },
     {
       "id": "READ-007",
@@ -460,5 +461,6 @@
   "pending_provider_validation_items": [
     "READ-001",
     "READ-002"
-  ]
+  ],
+  "frontend_progress_report": "READ_FRONTEND_PROGRESS_20261102.md"
 }

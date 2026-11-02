@@ -38,6 +38,22 @@ export function Customers(){
  const [events,setEvents]=useState<any[]>([]),[timelineError,setTimelineError]=useState(''),[timelineLoading,setTimelineLoading]=useState(false),[more,setMore]=useState(false);
 
  const retry=useRef<{signature:string;key:string}|null>(null);
+ const referencesReady=useRef(false),loadSequence=useRef(0),mounted=useRef(true);
+ const referenceRequest=useRef<Promise<{contacts:Row[];areas:Row[]}>|null>(null);
+
+ function loadReferences(refresh=false):Promise<{contacts:Row[];areas:Row[]}|null>{
+  if(refresh)referencesReady.current=false;
+  if(referencesReady.current)return Promise.resolve(null);
+  if(referenceRequest.current)return referenceRequest.current;
+  const request:Promise<{contacts:Row[];areas:Row[]}>=Promise.all(['contacts','areas'].map(async name=>{
+   const response=await apiFetch('/api/'+name);
+   return(await response.json() as {data:Row[]}).data;
+  })).then(([contacts,areas])=>({contacts,areas})).finally(()=>{
+   if(referenceRequest.current===request)referenceRequest.current=null;
+  });
+  referenceRequest.current=request;
+  return request;
+ }
 
  async function loadCustomers(pageIndex:number){
   const p=new URLSearchParams(geoQuery);
@@ -53,11 +69,22 @@ export function Customers(){
   const body=await r.json() as {data:Row[];meta?:{total?:number}};
   return{rows:body.data,total:body.meta?.total??body.data.length};
  }
- async function load(pageIndex=page){setLoading(true);try{const [customers,contacts,areas]=await Promise.all([loadCustomers(pageIndex),apiFetch('/api/contacts').then(async r=>(await r.json() as {data:Row[]}).data),apiFetch('/api/areas').then(async r=>(await r.json() as {data:Row[]}).data)]);setRecords({customers:customers.rows,contacts});setTotal(customers.total);setAreas(areas);setError('')}catch(e){setError((e as Error).message)}finally{setLoading(false)}}
+ async function load(pageIndex=page,refreshReferences=false){
+  const sequence=++loadSequence.current;setLoading(true);
+  try{
+   const [customers,references]=await Promise.all([loadCustomers(pageIndex),loadReferences(refreshReferences)]);
+   if(!mounted.current||sequence!==loadSequence.current)return;
+   setRecords(previous=>({customers:customers.rows,contacts:references?.contacts??previous.contacts}));
+   setTotal(customers.total);
+   if(references){setAreas(references.areas);referencesReady.current=true}
+   setError('');
+  }catch(e){if(mounted.current&&sequence===loadSequence.current)setError((e as Error).message)}
+  finally{if(mounted.current&&sequence===loadSequence.current)setLoading(false)}
+ }
 
- useEffect(()=>{void load(0)},[]);
+ useEffect(()=>{mounted.current=true;void load(0);return()=>{mounted.current=false;loadSequence.current++}},[]);
  // Filters and paging are resolved by the API; debounce keeps typing from spamming D1.
- useEffect(()=>{if(!serverPaged){firstLoad.current=false;return}if(firstLoad.current){firstLoad.current=false;return}const timer=setTimeout(()=>{void load(page)},250);return()=>clearTimeout(timer)},[q,area,status,location,recordStatus,page]);
+ useEffect(()=>{if(!serverPaged||kind!=='customers'){firstLoad.current=false;return}if(firstLoad.current){firstLoad.current=false;return}const timer=setTimeout(()=>{void load(page)},250);return()=>clearTimeout(timer)},[q,area,status,location,recordStatus,page,kind]);
  // Risk evidence opens the canonical customer through the existing scoped detail endpoint.
  useEffect(()=>{if(!context.risk_run_id||!context.customer_id)return;let active=true;apiFetch('/api/customers/'+encodeURIComponent(context.customer_id)).then(r=>r.json() as Promise<{data:Row}>).then(({data})=>{if(active){setEdit(data);setModal('detail')}}).catch(e=>active&&setError(e.message));return()=>{active=false}},[]);
 
@@ -71,7 +98,7 @@ export function Customers(){
 
  async function send(path:string,method:string,body:object,version?:number){const signature=JSON.stringify([path,method,body,version]);if(retry.current?.signature!==signature)retry.current={signature,key:crypto.randomUUID()};const r=await apiFetch(path,{method,headers:{'Content-Type':'application/json','Idempotency-Key':retry.current.key,...(version?{'If-Match':`"${version}"`}:{})},body:JSON.stringify(body)});retry.current=null;return r}
 
- async function run(work:()=>Promise<unknown>,success:string){if(busy)return;setBusy(true);setError('');setMessage('');try{await work();setModal(null);setEdit(null);setDraft({...empty});await load();setMessage(success)}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
+ async function run(work:()=>Promise<unknown>,success:string){if(busy)return;setBusy(true);setError('');setMessage('');try{await work();setModal(null);setEdit(null);setDraft({...empty});await load(page,true);setMessage(success)}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
 
  function save(e:React.FormEvent){e.preventDefault();void run(async()=>{
 

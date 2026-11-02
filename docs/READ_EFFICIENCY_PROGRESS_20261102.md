@@ -1,6 +1,6 @@
 # Penghematan read — implementasi awal, 2 November 2026
 
-Pekerjaan pertama membatasi `GET /api/customers/:id` ke satu customer yang berhak dilihat. Jalur sebelumnya membangun seluruh directory lalu mencari satu ID di JavaScript. Perubahan ini lokal; belum dideploy dan belum diukur pada D1 staging.
+Pekerjaan pertama membatasi `GET /api/customers/:id` ke satu customer yang berhak dilihat. Jalur sebelumnya membangun seluruh directory lalu mencari satu ID di JavaScript. Slice detail sudah dideploy melalui [GitHub Actions](https://github.com/BuruhArloji/nyales/actions/runs/41452716689) pada commit `595c9ef`; smoke publik lulus. Pengukuran rows read D1 staging masih tertunda. Perbaikan berikutnya dicatat pada [penghematan request frontend](READ_FRONTEND_PROGRESS_20261102.md).
 
 ## Hasil pengukuran lokal
 
