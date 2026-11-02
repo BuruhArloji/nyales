@@ -2,11 +2,11 @@
   "date": "2026-11-02",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "1d710da68c4fb3f644dc939d3121f3425d1992ed",
+  "verified_remote_commit": "9357bce6c08baf1dac7204fb93ec1d549e6bf151",
   "github_ci": {
-    "run_id": 41396166198,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/41396166198",
-    "head_sha": "1d710da68c4fb3f644dc939d3121f3425d1992ed",
+    "run_id": 41402500404,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/41402500404",
+    "head_sha": "9357bce6c08baf1dac7204fb93ec1d549e6bf151",
     "conclusion": "success"
   },
   "current_local_checks": {
@@ -114,9 +114,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 41396170233,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/41396170233",
-    "head_sha": "1d710da68c4fb3f644dc939d3121f3425d1992ed",
+    "run_id": 41402510308,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/41402510308",
+    "head_sha": "9357bce6c08baf1dac7204fb93ec1d549e6bf151",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -538,5 +538,39 @@
     "large_server_join_fixture": 15000,
     "worker_resource_limit_followup": "Quadratic customer/pin join replaced with indexed Map; previously failing map and channel-change flow passed on final staging version",
     "staging_analytics_limitation": "ACTIVE_DATASET_REQUIRED remains expected until reviewed administrative boundaries are activated"
+  },
+  "action_buttons_release": {
+    "date": "2026-11-02",
+    "status": "deployed; actual browser verification passed",
+    "commit": "9357bce6c08baf1dac7204fb93ec1d549e6bf151",
+    "deployment_run_id": 41402510308,
+    "existing_text_action_declarations": 124,
+    "source_links_styled": 2,
+    "browser_navigation_tests_passed": 8,
+    "staging_browser": {
+      "date": "2026-11-02T06:54:42.021Z",
+      "origin": "https://nyales-staging.azaracourse.workers.dev",
+      "actionStyles": "passed",
+      "metrics": [
+        {
+          "height": 44,
+          "border": "solid",
+          "decoration": "none",
+          "background": "rgb(237, 243, 239)"
+        },
+        {
+          "height": 44,
+          "border": "solid",
+          "decoration": "none",
+          "background": "rgb(237, 243, 239)"
+        }
+      ],
+      "existingFormAction": "passed",
+      "escape": "passed",
+      "businessWrites": false,
+      "testSessionRevoked": true
+    },
+    "business_writes": false,
+    "new_migrations": 0
   }
 }
