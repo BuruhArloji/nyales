@@ -26,6 +26,7 @@ jobs:
       VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
       VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}
       VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.VITE_FIREBASE_AUTH_DOMAIN }}
+      VITE_NYALES_DEMO_TERRITORY_URL: /demo/territories-demo.pmtiles
       NYALES_STAGING_URL: ${{ inputs.staging_url }}
       FIRST_ADMIN_EMAIL: ${{ vars.FIRST_ADMIN_EMAIL }}
       FIRST_ADMIN_ORGANIZATION_NAME: ${{ vars.FIRST_ADMIN_ORGANIZATION_NAME }}
@@ -51,6 +52,22 @@ jobs:
         run: npm run build
       - name: Validate deploy bundle without publishing
         run: npx wrangler deploy --dry-run --config wrangler.staging.generated.json
+      - name: Review pending staging D1 migrations
+        run: npx wrangler d1 migrations list nyales-staging --remote --config wrangler.staging.generated.json
+      - name: Download private portfolio demo package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/portfolio-demo"
+          gh release download nyales-demo-territory-20261103 --repo "$GITHUB_REPOSITORY" --pattern portfolio-demo.tar.gz --dir "$RUNNER_TEMP/portfolio-demo"
+          tar -xzf "$RUNNER_TEMP/portfolio-demo/portfolio-demo.tar.gz" -C "$RUNNER_TEMP/portfolio-demo"
+          node --input-type=module -e "import fs from 'node:fs'; import crypto from 'node:crypto'; const root=process.env.RUNNER_TEMP+'/portfolio-demo'; const checks=JSON.parse(fs.readFileSync(root+'/PACKAGE_CHECKSUMS.json','utf8')); for (const [name,meta] of Object.entries(checks.artifacts)) { const hash=crypto.createHash('sha256').update(fs.readFileSync(root+'/'+name)).digest('hex'); if(hash!==meta.sha256) throw Error('PACKAGE_CHECKSUM_MISMATCH '+name); }"
+      - name: Upload portfolio demo assets to staging R2
+        run: |
+          npx wrangler r2 object put "$CF_R2_BUCKET/portfolio-demo/territories-demo.pmtiles" --file "$RUNNER_TEMP/portfolio-demo/territories-demo.pmtiles" --remote --config wrangler.staging.generated.json --content-type application/vnd.pmtiles --cache-control 'public, max-age=300' --force
+          npx wrangler r2 object put "$CF_R2_BUCKET/portfolio-demo/manifest.json" --file "$RUNNER_TEMP/portfolio-demo/manifest.json" --remote --config wrangler.staging.generated.json --content-type 'application/json; charset=utf-8' --cache-control 'public, max-age=300' --force
+          npx wrangler r2 object put "$CF_R2_BUCKET/portfolio-demo/area-summary.json" --file "$RUNNER_TEMP/portfolio-demo/area-summary.json" --remote --config wrangler.staging.generated.json --content-type 'application/json; charset=utf-8' --cache-control 'public, max-age=300' --force
+          npx wrangler r2 object put "$CF_R2_BUCKET/portfolio-demo/exceptions.csv" --file "$RUNNER_TEMP/portfolio-demo/exceptions.csv" --remote --config wrangler.staging.generated.json --content-type 'text/csv; charset=utf-8' --cache-control 'public, max-age=300' --force
       - name: Apply staging D1 migrations (no seed)
         run: npx wrangler d1 migrations apply nyales-staging --remote --config wrangler.staging.generated.json
       - name: Deploy staging Worker and assets

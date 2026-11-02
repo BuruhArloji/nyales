@@ -24,6 +24,7 @@ import {segmentation,segmentationSnapshot,dailySegmentation} from './segmentatio
 import {invoices} from './invoices';
 import {recovery} from './recovery';
 import {boundaries} from './boundaries';
+import {demoTerritoryFiles} from './demo-territory';
 import {distribution} from './distribution';
 import {createGeographyRoutes,filterGeoCustomers} from './geography';
 
@@ -55,6 +56,7 @@ type Bindings={DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_I
 const app=new Hono<{Bindings:Bindings;Variables:{identity:Identity;scope:Scope;auth:SessionAuth;deviceSession:SessionEnv['Variables']['deviceSession']}}>();
 
 app.onError((_err,c)=>{console.error('NYALES_API_UNHANDLED');return c.json({code:'INTERNAL_ERROR',request_id:c.res.headers.get('X-Request-ID')||null},500)});
+app.route('/',demoTerritoryFiles);
 app.use('/api/*',telemetry);
 app.use('/api/*',httpSecurity);
 
@@ -413,5 +415,4 @@ export async function runScheduled(env:Bindings){
  if(failed)throw new Error('NYALES_SCHEDULED_CHECKPOINT_FAILED');
 }
 export default Object.assign(app,{scheduled:async(_event:ScheduledController,env:Bindings,ctx:ExecutionContext)=>{ctx.waitUntil(runScheduled(env))}});
-
 

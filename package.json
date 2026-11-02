@@ -23,6 +23,13 @@
     "training:check": "tsx scripts/training-check.ts",
     "test:boundaries": "playwright test --config playwright.boundaries.config.cjs",
     "boundaries:pack": "tsx scripts/pack-boundaries.ts",
+    "boundaries:big:acquire": "python3 scripts/acquire-big-boundaries-national.py",
+    "boundaries:big:reconcile": "python3 scripts/reconcile-big-boundaries.py",
+    "boundaries:demo:prepare": "python3 scripts/prepare-demo-territories.py",
+    "boundaries:demo:verify": "python3 scripts/verify-demo-territories.py",
+    "boundaries:demo:package": "node scripts/package-demo-staging.mjs",
+    "test:boundaries:demo": "python3 tests/test_demo_territories.py",
+    "test:boundaries:tools": "python3 tests/test_big_boundary_acquisition.py && python3 tests/test_boundary_reconciliation.py && python3 tests/test_demo_territories.py",
     "boundaries:contract": "tsx scripts/generate-boundary-contract.ts",
     "test:geography": "playwright test --config playwright.geography.config.cjs",
     "test:distribution": "playwright test --config playwright.distribution.config.cjs",
@@ -67,6 +74,7 @@
     "lucide-react": "^0.468.0",
     "maplibre-gl": "^6.14.0",
     "motion": "^14.3.0",
+    "pmtiles": "^4.5.0",
     "qrcode": "^1.5.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -91,4 +99,3 @@
     "@grpc/grpc-js": "^1.13.6"
   }
 }
-

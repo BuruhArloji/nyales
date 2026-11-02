@@ -6,6 +6,7 @@ import {readBoundaryDatasets} from './boundary-data';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 
 import {MapLibreCanvas} from './MapView';
+import {DemoTerritoryMap} from './DemoTerritoryMap';
 
 import {apiFetch,useIdentity} from './auth';
 
@@ -22,6 +23,8 @@ import {geoStatusLabels,type GeoContext} from '../shared/geography';
 async function get(url:string){return (await(await apiFetch(url)).json() as {data:any}).data}
 
 const levels=['province','regency','district','village'] as const;
+
+const demoTerritoryUrl=String((import.meta as any).env?.VITE_NYALES_DEMO_TERRITORY_URL||'');
 
 export function GeographyPage(){
 
@@ -66,6 +69,8 @@ export function GeographyPage(){
  async function showStreet(c:any){if(document.fullscreenElement)await document.exitFullscreen().catch(()=>{});setStreet(c)}
 
  return <><div className="page-heading"><div><h1>Peta & Wilayah</h1></div></div>
+
+ {canManage&&demoTerritoryUrl&&<DemoTerritoryMap tilesUrl={demoTerritoryUrl}/>}
 
  <FilterPanel count={[area,rep,status,datasetId,channel!=='field'?channel||'combined':''].filter(Boolean).length} onReset={()=>{setArea('');setRep('');setStatus('');setDatasetId('');setChannel('field');setSelected('');setHierarchy({})}} className="geo-filters" label="Filter peta dan wilayah" summary={[channel==='telesales'?'Telesales':channel?'Lapangan':'Semua kanal',area?areas.find(a=>a.id===area)?.name:'Semua area',rep?users.find(u=>u.id===rep)?.name:null,status||null,period].filter(Boolean).join(' · ')}><div className="assignment-filters">
 
@@ -119,4 +124,3 @@ export function GeographyPage(){
  </section>}{street&&<StreetView customer={street} onClose={()=>setStreet(null)}/>}</>;
 
 }
-

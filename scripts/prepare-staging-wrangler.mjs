@@ -16,7 +16,7 @@ export function stagingConfig(env){
   main:'dist/nyales/index.js',no_bundle:true,compatibility_date:'2026-10-17',compatibility_flags:['nodejs_compat'],
   // Cron disabled during initial staging bootstrap; enable after source/account capacity review.
   triggers:{crons:[]},observability:{enabled:true,head_sampling_rate:0.1},
-  assets:{directory:'./dist/client',not_found_handling:'single-page-application',run_worker_first:['/api/*']},
+  assets:{directory:'./dist/client',not_found_handling:'single-page-application',run_worker_first:['/api/*','/demo/*']},
   vars:{APP_ENV:'staging',LOCAL_AUTH:'true',FIREBASE_PROJECT_ID:env.FIREBASE_PROJECT_ID,...(firstAdmin?{FIRST_ADMIN_EMAIL:firstAdmin,FIRST_ADMIN_ORGANIZATION_NAME:organization}:{})},
   r2_buckets:[{binding:'IMPORT_FILES',bucket_name:env.CF_R2_BUCKET}],
   d1_databases:[{binding:'DB',database_name:'nyales-staging',database_id:env.CF_D1_DATABASE_ID,migrations_dir:'migrations'}]};

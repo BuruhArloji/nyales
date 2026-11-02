@@ -54,10 +54,12 @@ Semua harus lolos sebelum dan sesudah perubahan.
 
 - **Tidak ada produksi.** Hanya staging. Migrasi tidak pernah dijalankan ke produksi.
 
-## Kuota D1 — batas paling mudah dilanggar
+## Kuota D1 — ikuti plan akun yang benar
 
-Free tier: **5 juta rows read/hari**, reset 00:00 UTC (07:00 WIB).
-Satu sesi uji (10 putaran × 3 halaman) bisa menghabiskan **±1,8 juta**.
+- Workers Free: **5 juta rows read/hari** dan **100.000 rows written/hari**, reset 00:00 UTC.
+- Workers Paid: **25 miliar rows read/bulan** dan **50 juta rows written/bulan** sudah termasuk; pemakaian lebih dihitung sesuai tarif. Batas harian Free tidak berlaku setelah akun beralih ke Paid.
+- DDL (termasuk pembuatan indeks) dapat ikut memakai rows read/written. Periksa target akun melalui `CF_ACCOUNT_ID` sebelum aksi remote; database staging bernama `nyales-staging` dan tidak memiliki switch plan terpisah.
+- Operator mengonfirmasi Workers Paid aktif pada akun staging per 3 Nov 2026. Jangan menunggu reset Free jika workflow memakai akun Paid tersebut.
 
 Sebelum uji beban (butuh token dengan scope **Account Analytics: Read**):
 
@@ -104,10 +106,10 @@ Kalau D1 menolak: jangan retry berulang, jangan ubah kode untuk "mengakali" — 
 | `docs/AGENT_ACCESS.md` | apa yang boleh/tidak boleh diserahkan ke agent lain |
 | `docs/AUTH_SETUP.md` | auth, Firebase, MFA |
 
-## Kondisi saat ini (per 1 Nov 2026)
+## Kondisi saat ini (per 3 Nov 2026)
 
 - `main` memuat: cache read-model, pagination customer di SQLite, migrasi `0048` (index).
 - Migrasi `0048` **belum diterapkan** ke staging.
 - Test `tests/m2-foundation.test.ts` ("customer merge cannot duplicate achievement") gagal
   pada pergantian bulan karena fixture bergantung tanggal berjalan — bukan regresi.
-- Kuota D1 habis sampai 00:00 UTC.
+- Workers Paid aktif menurut konfirmasi operator; migrasi D1 `0048` masih tertunda sebelum deploy staging.
