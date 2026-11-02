@@ -1,3 +1,6 @@
+import {Hono} from 'hono';
+import {createGeographyRoutes} from '../src/server/geography';
+import {resolveScope} from '../src/server/scope';
 import {readFileSync} from 'node:fs';
 import {database} from './sqlite-helper';
 import {test} from 'node:test';
@@ -50,4 +53,14 @@ test('WEB-064 draft cannot publish; missing/tampered source fails closed; change
 test('WEB-064 migration preserves existing immutable review history and backfills revision ordering',()=>{
  const {sqlite}=database('0035');sqlite.exec("INSERT INTO organization(id,name) VALUES('o','Org');INSERT INTO branch(id,organization_id,name,timezone) VALUES('b','o','Branch','Asia/Jakarta');INSERT INTO area(id,organization_id,name,branch_id) VALUES('a','o','Area','b');INSERT INTO customer_outlet(id,organization_id,area_id,name,address) VALUES('c','o','a','Customer','Address');INSERT INTO customer_admin_location(id,organization_id,outlet_id,method,status,evidence_json,effective_from_date) VALUES('old-b','o','c','coordinate','needs_review','{}','2026-09-02'),('old-a','o','c','coordinate','needs_review','{}','2026-09-01');");
  const before=sqlite.prepare('SELECT id,evidence_json,effective_from_date FROM customer_admin_location ORDER BY id').all();sqlite.exec(readFileSync('migrations/0036_customer_geography_review.sql','utf8'));assert.deepEqual(sqlite.prepare('SELECT id,evidence_json,effective_from_date FROM customer_admin_location ORDER BY id').all(),before);assert.deepEqual(sqlite.prepare('SELECT revision FROM customer_admin_location ORDER BY id').all().map(r=>r.revision),[1,2]);assert.throws(()=>sqlite.exec("UPDATE customer_admin_location SET evidence_json='changed'"),/NEW_REVISION/);sqlite.close();
+});
+
+
+test('15k map points join by indexed identity without quadratic scans or missing customers',async()=>{
+ const f=fixture();let idReads=0;
+ const customers=Array.from({length:15000},(_,i)=>({get id(){assert.ok(++idReads<200000,'Quadratic customer identity scan');return 'point-'+i},name:'Point '+i,coordinate_status:'unverified',latitude_e7:-62000000,longitude_e7:1068000000}));
+ const h=new Hono();h.use('*',async(c,next)=>{const identity={id:'mg',name:'Manager',role:'MANAGEMENT',organization_id:'o'} as any;c.set('identity' as never,identity);c.set('scope' as never,await resolveScope(f.adapter as any,identity) as never);await next()});
+ h.route('/',createGeographyRoutes(async()=>({data:{all_customers:customers,customers,sales:[]}})));
+ const response=await h.request('/api/geo/map?channel=field',{}, {DB:f.adapter});assert.equal(response.status,200);const payload=(await response.json() as any).data;
+ assert.equal(payload.stats.total,15000);assert.equal(payload.map.customers.length,15000);assert.equal(payload.map.customers[0].id,'point-0');assert.equal(payload.map.customers[14999].id,'point-14999');assert.equal(payload.stats.unmapped,15000);assert.ok(idReads<200000);
 });
