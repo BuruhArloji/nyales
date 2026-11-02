@@ -1,3 +1,7 @@
+## 2 November 2026 — aksi teks menjadi tombol soft/outline
+
+Gaya bersama124 deklarasi `text-button` diubah menjadi tombol soft pada panel/detail dan outline ringan di tabel; label, handler, disabled, permission dan endpoint tetap. Mobile44px, label panjang dapat membungkus, focus-visible/reduced-motion/forced-colors tersedia. Dua tautan sumber pada detail batas menjadi action-link tanpa mengubah href/target/rel; tautan telepon, inline dan skip link tetap. Delapan tes navigasi lulus dan pemeriksaan visual desktop/mobile fixture hirarki lulus, tanpa overflow, aksi Atur atasan membuka modal dan Escape menutup. Build menghasilkan Worker/client berhasil; pemeriksaan shell gabungan setelah build mengembalikan1 karena tidak ada listener lokal5190/5191, bukan kegagalan kompilasi. Publikasi dan smoke staging masih menunggu. Tidak ada migration, seed, atau penulisan bisnis.
+
 ## 2 November 2026 — hasil audit UI/UX sudah online dan terverifikasi
 
 Commit `1d710da` (UI `ea0ba95`, perbaikan testclock `8327c42`) berhasil melalui workflow41396170233 dan CI41396166198. Enam public smoke lulus. Browser staging memverifikasi filter kanal Peta/Target,10 kartu target, memori halaman grup, label11→22px, fallback kontras/reduced-motion, viewport320/390/768/1440 tanpa overflow, Axe tanpa temuan pada cakupan uji, tanpa pageerror. Titik sumber nyata diverifikasi: popup desktop360px dan sheet mobile dengan foto/status/PIC/aksi tetap; sesi uji sukses dicabut, tanpa mutation bisnis.

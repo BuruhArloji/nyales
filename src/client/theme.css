@@ -290,3 +290,17 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 
 .liquid-tabs>.liquid-slider[data-spring=true]{transition:none}
 .filter-sheet-actions{gap:10px;flex-wrap:wrap}
+
+/* Action hierarchy: soft controls outside tables, quiet outlined actions in rows. */
+:root{--action-soft:#edf3ef;--action-hover:#e1ebe5;--action-border:#d1ddd5;--action-ink:#294a3b}
+:root button.text-button,:root a.action-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;max-width:100%;box-sizing:border-box;padding:8px 13px;margin:3px 6px 3px 0;border:1px solid var(--action-border);border-radius:12px;background:var(--action-soft);color:var(--action-ink);font:500 .857rem/1.4 Inter,system-ui,sans-serif;text-align:center;text-decoration:none;white-space:normal;overflow-wrap:anywhere;vertical-align:middle;cursor:pointer;transition:background-color 150ms ease,border-color 150ms ease,transform 100ms ease}
+:root :is(td,.row-actions) button.text-button{background:transparent;border-color:#d9e2dc;box-shadow:none}
+:root button.text-button:hover:not(:disabled),:root a.action-link:hover{background:var(--action-hover);border-color:#a9c2b3;color:#1e3d2e;text-decoration:none}
+:root button.text-button:active:not(:disabled),:root a.action-link:active{transform:scale(.98)}
+:root button.text-button:disabled{opacity:.45;cursor:not-allowed}
+:root button.text-button:focus-visible,:root a.action-link:focus-visible{outline:3px solid #087e73;outline-offset:3px}
+:root .coverage-heading button.text-button{font-size:.857rem;padding:8px 13px;white-space:normal}
+@media(max-width:767px){:root button.text-button,:root a.action-link{min-height:44px;padding:10px 14px;font-size:.875rem;line-height:1.4}}
+@media(hover:none){:root button.text-button:hover:not(:disabled),:root a.action-link:hover{background:var(--action-soft);border-color:var(--action-border)}:root :is(td,.row-actions) button.text-button:hover:not(:disabled){background:transparent}}
+@media(prefers-reduced-motion:reduce){:root button.text-button,:root a.action-link{transition:none}:root button.text-button:active:not(:disabled),:root a.action-link:active{transform:none}}
+@media(forced-colors:active){:root button.text-button,:root a.action-link{border:1px solid ButtonText;color:ButtonText;background:ButtonFace}}
