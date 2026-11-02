@@ -1,3 +1,9 @@
+## 2 November 2026 — hasil audit UI/UX sudah online dan terverifikasi
+
+Commit `1d710da` (UI `ea0ba95`, perbaikan testclock `8327c42`) berhasil melalui workflow41396170233 dan CI41396166198. Enam public smoke lulus. Browser staging memverifikasi filter kanal Peta/Target,10 kartu target, memori halaman grup, label11→22px, fallback kontras/reduced-motion, viewport320/390/768/1440 tanpa overflow, Axe tanpa temuan pada cakupan uji, tanpa pageerror. Titik sumber nyata diverifikasi: popup desktop360px dan sheet mobile dengan foto/status/PIC/aksi tetap; sesi uji sukses dicabut, tanpa mutation bisnis.
+
+Kegagalan awal tes dashboard diperbaiki dengan clock khusus fixture Oktober. Verifikasi live juga menemukan Worker resource limit pada join peta yang kuadratik; ID join kini memakai Map dan uji15.000titik memverifikasi jumlah/urutan serta batas pencarian. Alur live yang semula503 kemudian lulus tanpa mengurangi data. Analitik wilayah masih memerlukan dataset batas aktif (409 expected), tidak diklaim selesai melalui UI ini. Enam tes popup, delapan tes navigasi dan tujuh tes geography lulus. Build standar lulus; peringatan bundle besar tetap ada. Tidak ada migration/seed/import bisnis baru; iOS/Safari fisik dan acceptance produksi belum terverifikasi. [Laporan dan pelaksanaan](UI_UX_APPLE_REVIEW_20261102.md).
+
 ## 2 November 2026 — pelaksanaan audit Apple UI/UX
 
 Perbaikan BOM build, FilterPanel mobile Peta/Target, label dan area sentuh, target cards, detail lokasi sebagai sheet mobile, material/fallback kontras, memori halaman grup dan motion tersedia. Enam tes popup direktori, delapan tes navigasi/hirarki/responsif, TypeScript serta build standar lulus. Uji browser/API lokal sintetis memastikan filter tetap berfungsi, tanpa pageerror atau penulisan bisnis. Rincian dan batas verifikasi pada [laporan](UI_UX_APPLE_REVIEW_20261102.md). Menunggu deployment resmi staging dan smoke; tidak ada migrasi atau seed baru.

@@ -1,12 +1,12 @@
 {
-  "date": "2026-10-31",
+  "date": "2026-11-02",
   "repository": "BuruhArloji/nyales",
   "repository_visibility": "private",
-  "verified_remote_commit": "07449ad2521e5c9920547932ceb3f7fbf20c2287",
+  "verified_remote_commit": "1d710da68c4fb3f644dc939d3121f3425d1992ed",
   "github_ci": {
-    "run_id": 40995478677,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/40995478677",
-    "head_sha": "07449ad2521e5c9920547932ceb3f7fbf20c2287",
+    "run_id": 41396166198,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/41396166198",
+    "head_sha": "1d710da68c4fb3f644dc939d3121f3425d1992ed",
     "conclusion": "success"
   },
   "current_local_checks": {
@@ -114,9 +114,9 @@
     "missing_secrets": []
   },
   "staging_deployment": {
-    "run_id": 41182304003,
-    "url": "https://github.com/BuruhArloji/nyales/actions/runs/41182304003",
-    "head_sha": "07449ad2521e5c9920547932ceb3f7fbf20c2287",
+    "run_id": 41396170233,
+    "url": "https://github.com/BuruhArloji/nyales/actions/runs/41396170233",
+    "head_sha": "1d710da68c4fb3f644dc939d3121f3425d1992ed",
     "status": "completed",
     "conclusion": "success",
     "origin": "https://nyales-staging.azaracourse.workers.dev",
@@ -491,7 +491,7 @@
   },
   "apple_ui_release": {
     "date": "2026-11-02",
-    "status": "verified locally; pending official staging deployment",
+    "status": "deployed and verified in actual staging browser",
     "browser_navigation_tests_passed": 8,
     "browser_directory_tests_passed": 6,
     "typecheck": "passed",
@@ -500,6 +500,43 @@
     "new_migrations": 0,
     "business_writes": false,
     "physical_ios_verified": false,
-    "production_accepted": false
+    "production_accepted": false,
+    "commit": "1d710da68c4fb3f644dc939d3121f3425d1992ed",
+    "deployment_run_id": 41396170233,
+    "ci_run_id": 41396166198,
+    "staging_browser": {
+      "mapTop": 595.8345947265625,
+      "filterApplied": true,
+      "targetCards": 10,
+      "remembersLastPage": true,
+      "preferences": {
+        "animation": "none",
+        "glass": "none",
+        "fill": "rgb(244, 248, 246)"
+      },
+      "fontScaled": 22,
+      "axe": [],
+      "origin": "https://nyales-staging.azaracourse.workers.dev",
+      "sessionRevoked": true,
+      "errors": [],
+      "noBusinessWrites": true
+    },
+    "source_popup": {
+      "checked_at": "2026-11-02T05:44:41.677Z",
+      "origin": "https://nyales-staging.azaracourse.workers.dev",
+      "real_directory_popup": "passed",
+      "mobile_sheet": "passed",
+      "desktop_width": 360,
+      "unified_metadata": "passed",
+      "persistent_actions": "passed",
+      "mobile_bounds": "passed",
+      "errors": [],
+      "business_writes": false,
+      "test_session_revoked": true
+    },
+    "geography_tests_passed": 7,
+    "large_server_join_fixture": 15000,
+    "worker_resource_limit_followup": "Quadratic customer/pin join replaced with indexed Map; previously failing map and channel-change flow passed on final staging version",
+    "staging_analytics_limitation": "ACTIVE_DATASET_REQUIRED remains expected until reviewed administrative boundaries are activated"
   }
 }
