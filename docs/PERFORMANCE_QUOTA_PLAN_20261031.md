@@ -1,3 +1,5 @@
+> **Arsip rencana 31 Oktober.** Diagnosis dan angka di bawah merupakan catatan historis, bukan kondisi live saat ini. Urutan kerja serta asumsi teknis diperbarui pada [Rencana Penghematan Pembacaan D1 2 November](READ_EFFICIENCY_PLAN_20261102.md); pagination dan cache kini sudah tersedia, tetapi efektivitas serta gap-nya masih harus diukur.
+
 # Rencana Perbaikan Beban Baca D1 & Kesiapan Data — NYALES
 
 Tanggal: 2026-10-31

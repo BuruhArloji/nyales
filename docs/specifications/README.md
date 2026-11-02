@@ -80,3 +80,9 @@ OR-Tools9.15.6755 benar-benar terpasang di venv lokal dan menghitung daily kerne
 ## Direktori titik — 28 Oktober 2026
 
 [Impor direktori warung dan referensi peta](../POINT_DIRECTORY_IMPORT.md) mencatat keputusan pengguna, deduplikasi, migration0046, perubahan respons peta, batas scope dan prosedur batch sesuai kuota. Status cloud aktual ada pada STAGING_STATUS.json.
+
+## Program penghematan read D1 — 2 November 2026
+
+[Rencana teknis lengkap](../READ_EFFICIENCY_PLAN_20261102.md) dan [backlog READ-001–016](../READ_EFFICIENCY_BACKLOG_20261102.json) memuat diagnosis kode, budget/SLI, optimasi API/query/indeks/cache, konsistensi, GIS, materialisasi bersyarat, pengujian dan rollout. Implementasi lokal awal membatasi query detail customer tanpa mengubah bentuk respons, skema, status acceptance WEB, atau layanan provider. READ-001/002 masih In progress; item lainnya Planned.
+
+Progres awal: [baseline lokal dan detail customer](../READ_EFFICIENCY_PROGRESS_20261102.md). READ-001/002 belum dinyatakan selesai sebelum pengukuran D1 staging.

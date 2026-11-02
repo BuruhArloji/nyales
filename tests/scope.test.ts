@@ -27,6 +27,9 @@ test('resource scopes enforce organization, area, subtree, assignment, invoice a
  const json=async(u:string,r:string,path:string)=>{const response=await request(u,r,path);assert.equal(response.status,200,path);return await response.json() as any};
  for(const [user,role,ids,total] of [ ['mg','MANAGEMENT',['c1','c2','c3','c4'],600],['mg','NSM',['c1','c2','c3','c4'],600],['am','AREA_MANAGER',['c1','c2'],300],['sp','SUPERVISOR',['c1'],100],['r1','SALES_REP',['c1','c2','c4'],100],['ts','TELESALES',['c1'],0] ] as const){
   const list=await json(user,role,'/api/customers');assert.deepEqual(list.data.map((c:any)=>c.id).sort(),[...ids].sort(),role);
+  // Detail must preserve every business field and the exact same authorization
+  // as the legacy directory for all six hierarchy/channel roles.
+  for(const row of list.data){const detail=await request(user,role,'/api/customers/'+row.id);assert.equal(detail.status,200,role);assert.equal(detail.headers.get('ETag'),`"${row.version}"`);assert.deepEqual((await detail.json() as any).data,row,role+' detail parity')}
   assert.equal((await json(user,role,'/api/dashboard')).data.actual_net_minor,total,role);
   assert.equal((await request(user,role,'/api/customers/cx')).status,404,role);
   assert.equal(JSON.stringify(list).includes('auth_subject'),false);

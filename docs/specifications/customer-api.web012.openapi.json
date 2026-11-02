@@ -308,7 +308,8 @@
         }
       ],
       "get": {
-        "summary": "Get a visible customers record",
+        "summary": "Get one visible customer record",
+        "description": "Resolves a tenant-scoped alias to its canonical customer, checks current resource scope, and loads only that customer family and its supporting facts. Returns the existing customer projection and version ETag; response meta retains requested_customer_id, canonical_customer_id and alias_resolved. Missing, foreign-tenant and out-of-scope IDs all return NOT_FOUND. Segmentation snapshot preparation may still be organization-wide on a cold snapshot; this endpoint does not introduce a cross-request detail cache.",
         "responses": {
           "200": {
             "description": "Successful response",

@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "program": "NYALES D1 read efficiency",
+  "version": "1.0",
+  "date": "2026-11-02",
+  "status": "In progress",
+  "source_revision": "444937165ee375d16b08ea781207a087094f3c90",
+  "plan": "READ_EFFICIENCY_PLAN_20261102.md",
+  "implementation_started": true,
+  "runtime_changes": true,
+  "billing_changes": false,
+  "effort_person_days": {
+    "min": 24.5,
+    "max": 42
+  },
+  "items": [
+    {
+      "id": "READ-001",
+      "priority": "P0",
+      "title": "Baseline dan query register",
+      "status": "In progress",
+      "conditional": false,
+      "owner_role": "Engineering Lead",
+      "assignee": null,
+      "dependencies": [],
+      "effort_person_days": {
+        "min": 2,
+        "max": 3
+      },
+      "acceptance_criteria": [
+        "Inventory endpoint, query, index dan migration applied lengkap",
+        "Cold/warm journey mempunyai biaya auth, data, count dan observer",
+        "Provider plan, account allocation dan metadata gaps tercatat"
+      ],
+      "deliverables": [
+        "Query register",
+        "Baseline ledger",
+        "Benchmark manifest"
+      ],
+      "remote_execution_requires_budget_preflight": true,
+      "progress": "Partial offline synthetic baseline captured; provider rows_read and full journey inventory pending."
+    },
+    {
+      "id": "READ-002",
+      "priority": "P0",
+      "title": "Detail customer berdasarkan canonical ID",
+      "status": "In progress",
+      "conditional": false,
+      "owner_role": "Backend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-001"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "Detail memakai scoped query by ID tanpa full readCustomers",
+        "Alias, ETag, 404 dan nilai bisnis setara",
+        "Target awal detail <=200 data rows read dikalibrasi baseline"
+      ],
+      "deliverables": [
+        "Detail query",
+        "Regression report"
+      ],
+      "remote_execution_requires_budget_preflight": true,
+      "progress": "Bounded customer detail implemented and reconciled locally; staging deployment and D1 rows_read validation pending."
+    },
+    {
+      "id": "READ-003",
+      "priority": "P0",
+      "title": "Scoped customer lookup dan migrasi consumer",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Frontend and Backend Engineers",
+      "assignee": null,
+      "dependencies": [
+        "READ-001",
+        "READ-002"
+      ],
+      "effort_person_days": {
+        "min": 2,
+        "max": 3
+      },
+      "acceptance_criteria": [
+        "Default limit20 dan scope server",
+        "Form tidak memuat seluruh customer sebelum dipakai",
+        "Selected ID tetap dapat dimuat aman saat di luar halaman"
+      ],
+      "deliverables": [
+        "Options API contract",
+        "Consumer inventory"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-004",
+      "priority": "P0",
+      "title": "Page-first enrichment count dan geo pagination",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Backend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-001"
+      ],
+      "effort_person_days": {
+        "min": 2,
+        "max": 3
+      },
+      "acceptance_criteria": [
+        "Semua mode list mempunyai hasil terbatas",
+        "COUNT tidak berulang hanya karena berpindah halaman",
+        "Rekonsiliasi actual dan alias lulus pada query baru"
+      ],
+      "deliverables": [
+        "Query plans",
+        "Paged API contract"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-005",
+      "priority": "P0",
+      "title": "Index review dan migration terukur",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Backend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-001",
+        "READ-004"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "0048 dan indeks applied terverifikasi sebelum membuat indeks baru",
+        "EXPLAIN dan provider meta menunjukkan manfaat",
+        "Biaya build index dan write amplification diberi budget"
+      ],
+      "deliverables": [
+        "Index ADR",
+        "Migration and rollback runbook"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-006",
+      "priority": "P0",
+      "title": "Client dedupe lazy references dan abort",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Frontend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-001",
+        "READ-003"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "Tidak ada repeated contacts/areas load yang tidak diperlukan",
+        "Response lama tidak menimpa filter terbaru",
+        "Logout dan scope change membersihkan cache sesi"
+      ],
+      "deliverables": [
+        "Request trace comparison",
+        "Browser tests"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-007",
+      "priority": "P0",
+      "title": "Cache consistency dan revision authority",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Engineering Lead",
+      "assignee": null,
+      "dependencies": [
+        "READ-001",
+        "READ-002"
+      ],
+      "effort_person_days": {
+        "min": 2,
+        "max": 3
+      },
+      "acceptance_criteria": [
+        "Scope diperiksa sebelum cache hit",
+        "Revision diubah atomik dengan mutation atau durable dirty record",
+        "Cross tenant revoke read-your-write dan actor-specific cases lulus"
+      ],
+      "deliverables": [
+        "Cache ADR",
+        "Invalidation matrix",
+        "Security tests"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-008",
+      "priority": "P1",
+      "title": "Cache instrumentation singleflight dan freshness",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Backend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-005",
+        "READ-007"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "HIT MISS OFF dan biaya auth dibedakan",
+        "Fresh stale dan failclosed sesuai kelas data",
+        "Singleflight dibatasi per isolate dan fallback tidak runaway"
+      ],
+      "deliverables": [
+        "Cache metrics",
+        "Failure and concurrency tests"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-009",
+      "priority": "P1",
+      "title": "Pisahkan pin detail dan posisi sales",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Frontend and Backend Engineers",
+      "assignee": null,
+      "dependencies": [
+        "READ-002",
+        "READ-005",
+        "READ-007"
+      ],
+      "effort_person_days": {
+        "min": 3,
+        "max": 5
+      },
+      "acceptance_criteria": [
+        "Perubahan posisi tidak membaca fakta seluruh customer",
+        "Viewport total partial indicator dan pencarian tetap benar",
+        "Tidak ada pemangkasan titik atau scope leak tersembunyi"
+      ],
+      "deliverables": [
+        "Map API ADR",
+        "Large spatial fixture report"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-010",
+      "priority": "P1",
+      "title": "Metadata coverage dan observer overhead",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Backend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-001"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "Unknown metadata tidak dilaporkan sebagai zero",
+        "Overhead ops_hourly masuk ledger",
+        "Audit bisnis tidak disampling"
+      ],
+      "deliverables": [
+        "Telemetry coverage report",
+        "Observer cost report"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-011",
+      "priority": "P1",
+      "title": "Budget controller alert dan runbook",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Ops PIC",
+      "assignee": null,
+      "dependencies": [
+        "READ-001",
+        "READ-010"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "Ambang50/70/85/95 dan forecast memiliki tindakan",
+        "Analytics lag dan rate limit memicu backoff",
+        "Quota dan CPU failure dibedakan serta alert dideduplikasi"
+      ],
+      "deliverables": [
+        "Capacity policy",
+        "Incident runbook"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-012",
+      "priority": "P1",
+      "title": "Read model grain dan reconciliation ADR",
+      "status": "Planned",
+      "conditional": true,
+      "owner_role": "Engineering Lead",
+      "assignee": null,
+      "dependencies": [
+        "READ-004",
+        "READ-005",
+        "READ-008"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "Dibangun hanya bila residual cost membenarkan",
+        "Grain menjaga atribusi invoice retur alias dan kanal",
+        "Estimasi write storage rebuild serta freshness disetujui"
+      ],
+      "deliverables": [
+        "Materialization ADR"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-013",
+      "priority": "P1",
+      "title": "Incremental read model dan atomic publish",
+      "status": "Planned",
+      "conditional": true,
+      "owner_role": "Backend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-012"
+      ],
+      "effort_person_days": {
+        "min": 3,
+        "max": 5
+      },
+      "acceptance_criteria": [
+        "Dirty keys idempotent dan pointer tidak publish parsial",
+        "Exact financial reconciliation dan source version guards lulus",
+        "Recovery dan measured write amplification memenuhi budget"
+      ],
+      "deliverables": [
+        "Read model pipeline",
+        "Reconciliation and recovery report"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-014",
+      "priority": "P1",
+      "title": "Bounded import export dan maintenance",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Ops and Backend Engineer",
+      "assignee": null,
+      "dependencies": [
+        "READ-005",
+        "READ-011"
+      ],
+      "effort_person_days": {
+        "min": 1,
+        "max": 2
+      },
+      "acceptance_criteria": [
+        "Receipt offset mencegah impor ulang",
+        "Export terikat scope pada pembuatan dan download",
+        "Backup migration smoke mempunyai budget dan tidak bypass checks"
+      ],
+      "deliverables": [
+        "Operations runbook",
+        "Bounded execution ledger"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-015",
+      "priority": "P0",
+      "title": "Regression security load dan canary acceptance",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "QA Lead",
+      "assignee": null,
+      "dependencies": [
+        "READ-002",
+        "READ-003",
+        "READ-004",
+        "READ-005",
+        "READ-006",
+        "READ-007",
+        "READ-008",
+        "READ-009",
+        "READ-010",
+        "READ-011",
+        "READ-014"
+      ],
+      "effort_person_days": {
+        "min": 2,
+        "max": 3
+      },
+      "acceptance_criteria": [
+        "Fixture scope finance rolling90hari dan invalidation wajib lulus",
+        "Before-after comparable dan termasuk seluruh layer read",
+        "Canary rollback serta pilot7hari diterima; SLO30hari tidak diklaim dari7hari"
+      ],
+      "deliverables": [
+        "Acceptance evidence pack"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    },
+    {
+      "id": "READ-016",
+      "priority": "P1",
+      "title": "Capacity review dan handover",
+      "status": "Planned",
+      "conditional": false,
+      "owner_role": "Product Owner and Engineering Lead",
+      "assignee": null,
+      "dependencies": [
+        "READ-009",
+        "READ-011",
+        "READ-014",
+        "READ-015"
+      ],
+      "effort_person_days": {
+        "min": 0.5,
+        "max": 1
+      },
+      "acceptance_criteria": [
+        "PIC menerima dashboard runbook dan budget",
+        "Conditional work Deferred atau diimplementasikan dengan alasan",
+        "Keputusan Free Paid memakai biaya nyata tanpa upgrade otomatis"
+      ],
+      "deliverables": [
+        "Capacity decision",
+        "Handover record"
+      ],
+      "remote_execution_requires_budget_preflight": true
+    }
+  ],
+  "next_recommended_item": "READ-003",
+  "progress_report": "READ_EFFICIENCY_PROGRESS_20261102.md",
+  "pending_provider_validation_items": [
+    "READ-001",
+    "READ-002"
+  ]
+}
