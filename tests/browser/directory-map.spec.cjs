@@ -10,9 +10,9 @@ test.beforeAll(async()=>{
  server=createServer(async(req,res)=>{try{
   if(req.url.startsWith('/api/')){res.writeHead(401,{'Content-Type':'application/json'});res.end('{"code":"UNAUTHENTICATED"}');return}
   if(req.url.startsWith('/fonts/')){res.writeHead(204);res.end();return}
-  const files={'/fixture.js':['test-results/directory-map/fixture.js','text/javascript'],'/map-worker.js':['node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs','text/javascript'],'/styles.css':['src/client/styles.css','text/css'],'/theme.css':['src/client/theme.css','text/css'],'/map.css':['node_modules/maplibre-gl/dist/maplibre-gl.css','text/css']};
+  const files={'/fixture.js':['test-results/directory-map/fixture.js','text/javascript'],'/map-worker.js':['node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs','text/javascript'],'/styles.css':['src/client/styles.css','text/css'],'/theme.css':['src/client/theme.css','text/css'],'/mobile.css':['src/client/mobile.css','text/css'],'/map.css':['node_modules/maplibre-gl/dist/maplibre-gl.css','text/css']};
   if(files[req.url]){const[f,type]=files[req.url];res.writeHead(200,{'Content-Type':type});res.end(await readFile(f));return}
-  res.writeHead(200,{'Content-Type':'text/html'});res.end('<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/map.css"></head><body><div id="root"></div><script src="/fixture.js"></script></body></html>');
+  res.writeHead(200,{'Content-Type':'text/html'});res.end('<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/map.css"><link rel="stylesheet" href="/mobile.css"></head><body><div id="root"></div><script src="/fixture.js"></script></body></html>');
  }catch{res.writeHead(500);res.end('Fixture error')}});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));origin='http://127.0.0.1:'+server.address().port;
 });
@@ -57,7 +57,7 @@ test('failed photo has a visible fallback and mobile popup stays inside the view
  await page.setViewportSize({width:390,height:844});const calls=await detailFixture(page,{failedPhoto:true});expect(calls).toHaveLength(0);
  await page.evaluate(()=>window.__directoryFixtureMap.jumpTo({center:[106.82,-6.21],zoom:15}));
  await page.getByRole('button',{name:'Warung Foto, Unknown',exact:true}).click();const card=page.locator('.map-popup-card');await expect(card.getByText('Foto sumber belum tersedia.')).toBeVisible();await expect(card.locator('img')).toHaveCount(0);
- const box=await card.boundingBox(),mapBox=await page.locator('.maplibre-canvas').boundingBox();expect(box.width).toBeLessThanOrEqual(366);expect(box.y).toBeGreaterThanOrEqual(mapBox.y);expect(box.y+box.height).toBeLessThanOrEqual(mapBox.y+mapBox.height);
+ const box=await card.boundingBox(),mapBox=await page.locator('.maplibre-canvas').boundingBox();expect(box.width).toBeLessThanOrEqual(374);expect(box.y).toBeGreaterThanOrEqual(0);expect(box.y+box.height).toBeLessThanOrEqual(844);await expect(page.locator('dialog.location-sheet')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('dialog.location-sheet')).toHaveCount(0);await page.getByRole('button',{name:'Warung Foto, Unknown',exact:true}).click();
  await expect(card.getByRole('link',{name:'Buka di Google Maps'})).toHaveAttribute('target','_blank');
  await page.screenshot({path:'test-results/directory-map/mobile-source-details.png'});
 });

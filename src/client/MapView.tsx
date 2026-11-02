@@ -72,20 +72,26 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
    if(kind==='sales'){addFact(facts,'Lokasi terakhir',item.last_seen);addFact(facts,'Sumber',item.source)}
    if(kind!=='sales'){
     const actions=document.createElement('footer');actions.className='map-popup-actions';
-    if(kind==='customer'){const button=document.createElement('button');button.type='button';button.className='map-popup-action map-popup-street';button.appendChild(icon('street'));button.appendChild(document.createTextNode('Street View'));button.addEventListener('click',()=>onStreetView(item));actions.appendChild(button)}
+    if(kind==='customer'){const button=document.createElement('button');button.type='button';button.className='map-popup-action map-popup-street';button.appendChild(icon('street'));button.appendChild(document.createTextNode('Street View'));button.addEventListener('click',()=>{if(window.matchMedia('(max-width:767px)').matches)popups.current.forEach(p=>p.remove());onStreetView(item)});actions.appendChild(button)}
     const link=document.createElement('a');link.className='map-popup-action map-popup-google';link.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(item.lat+','+item.lng);link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','Buka di Google Maps');link.appendChild(icon('map'));link.appendChild(document.createTextNode('Google Maps'));actions.appendChild(link);content.appendChild(actions);
    }
    return content;
   };
   const makePopup=(item:any,kind:'customer'|'sales'|'reference',offset:number)=>{
-   const content=popup(item,kind),tip=new maplibregl.Popup({offset,maxWidth:'400px',className:'map-source-popup'}).setDOMContent(content);let requested=false;
-   const fit=()=>{if(!tip.isOpen())return;const height=map.getContainer().clientHeight,y=map.project([item.lng,item.lat]).y,compact=map.getContainer().clientWidth<520;
+   const content=popup(item,kind),tip=new maplibregl.Popup({offset,maxWidth:'400px',className:'map-source-popup'}).setDOMContent(content);let requested=false;let sheet:HTMLDialogElement|null=null;let previousFocus:Element|null=null;
+   const fit=()=>{if(!tip.isOpen())return;
+    if(window.matchMedia('(max-width:767px)').matches){
+     if(!sheet){previousFocus=document.activeElement;sheet=document.createElement('dialog');sheet.className='location-sheet';sheet.setAttribute('aria-label','Detail '+item.name);const close=document.createElement('button');close.type='button';close.className='location-sheet-close';close.setAttribute('aria-label','Tutup detail lokasi');close.textContent='×';close.addEventListener('click',()=>tip.remove());sheet.addEventListener('cancel',event=>{event.preventDefault();tip.remove()});sheet.appendChild(close);sheet.appendChild(content);document.body.appendChild(sheet);sheet.showModal();close.focus();tip.getElement().style.visibility='hidden'}
+     content.style.maxHeight='calc(85dvh - 20px)';return;
+    }
+    if(sheet){sheet.close();sheet.removeChild(content);sheet.remove();sheet=null;tip.setDOMContent(content);tip.getElement().style.visibility='visible'}
+    const height=map.getContainer().clientHeight,y=map.project([item.lng,item.lat]).y,compact=map.getContainer().clientWidth<520;
     if(compact)tip.addClassName('map-source-popup-compact');else tip.removeClassName('map-source-popup-compact');
     content.style.maxHeight='min('+Math.max(80,Math.min(560,compact?height-48:Math.max(y,height-y)-48))+'px,72dvh)';tip.setMaxWidth(Math.min(400,map.getContainer().clientWidth-24)+'px');
    };
    const observer=new ResizeObserver(fit);
    tip.on('open',()=>{fit();observer.observe(content);map.on('resize',fit);map.on('move',fit);if(!requested&&kind!=='sales'){requested=true;loadDetail(content,item,kind)}});
-   tip.on('close',()=>{observer.disconnect();map.off('resize',fit);map.off('move',fit)});
+   tip.on('close',()=>{if(sheet){sheet.close();sheet.remove();sheet=null;if(previousFocus instanceof HTMLElement&&previousFocus.isConnected)previousFocus.focus()}observer.disconnect();map.off('resize',fit);map.off('move',fit)});
    return tip;
   };
   // Large customer collections use WebGL clusters, avoiding thousands of DOM buttons.

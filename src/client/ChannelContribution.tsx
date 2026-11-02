@@ -11,7 +11,7 @@ export function ChannelContribution({channels,period}:{channels:Channel[];period
  let cursor=-90+gap/2;
  const segments=valid?positive.map(c=>{const span=c.actual_minor/total*(360-gap*positive.length),start=cursor,end=start+Math.min(span,359.999),a=point(start),b=point(end),mid=(start+end)/2,pos=point(mid);cursor+=span+gap;let rotation=(mid+90)%360;if(rotation>90&&rotation<270)rotation-=180;return{...c,span,pos,rotation,path:`M${a.x} ${a.y} A105 105 0 ${span>180?1:0} 1 ${b.x} ${b.y}`}}):[];
  const selected=channels.find(c=>c.channel===active);
- return <section className="card contribution-card glass-card" aria-labelledby={id}>
+ return <section className="card contribution-card" aria-labelledby={id}>
   <header className="contribution-header"><h2 id={id}>Kontribusi kanal</h2><p>Invoice net · {period}</p></header>
   <div className="contribution-visual">
    <svg viewBox="0 0 320 320" aria-label="Kontribusi actual penjualan per kanal">

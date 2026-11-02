@@ -25,7 +25,7 @@ function useIndicator<T extends HTMLElement>(dependency:unknown,selector:string)
  },[dependency,selector]);
  return {ref,box};
 }
-function Indicator({box}:{box:{x:number;y:number;width:number;height:number}|null}){return box?<span className="liquid-slider" aria-hidden="true" style={{width:box.width,height:box.height,transform:`translate(${box.x}px, ${box.y}px)`}}/>:null}
+function Indicator({box}:{box:{x:number;y:number;width:number;height:number}|null}){const reduced=useReducedMotion();return box?<motion.span className="liquid-slider" data-spring="true" aria-hidden="true" initial={false} animate={{x:box.x,y:box.y,width:box.width,height:box.height}} transition={reduced?{duration:0}:navigationSpring}/>:null}
 export function LiquidNav({activeKey,children}:{activeKey:string;children:React.ReactNode}){
  const ref=useRef<HTMLElement>(null);
  useLayoutEffect(()=>{

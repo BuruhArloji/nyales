@@ -73,8 +73,8 @@ test('hierarchy cards support clicks, collapse, search, existing forms and respo
  await page.goto(origin+'/#page=people');await page.getByLabel('Tanggal pelaporan',{exact:true}).fill('2026-10-29');
  await expect(page.locator('.org-person')).toHaveCount(3);
  await expect(page.locator('.org-canvas').getByRole('combobox',{name:'Tampilan hirarki',exact:true})).toHaveValue('chart');
- await page.getByRole('button',{name:'Buka tim Supervisor UAT',exact:true}).click();await expect(page.locator('.org-person')).toHaveCount(4);
- await page.getByRole('button',{name:'Lipat tim Supervisor UAT',exact:true}).click();await expect(page.locator('.org-person')).toHaveCount(3);
+ await page.getByRole('button',{name:/Buka tim Supervisor UAT/}).click();await expect(page.locator('.org-person')).toHaveCount(4);
+ await page.getByRole('button',{name:/Lipat tim Supervisor UAT/}).click();await expect(page.locator('.org-person')).toHaveCount(3);
  await page.getByRole('searchbox',{name:'Cari anggota hirarki'}).fill('Ayu');await page.locator('.org-search-results button').click();
  const detail=page.getByRole('complementary',{name:'Detail Ayu UAT'});await expect(detail).toBeVisible();
  await detail.getByRole('button',{name:'Atur atasan',exact:true}).click();await expect(page.getByRole('combobox',{name:'Anggota',exact:true})).toHaveValue('ayu');await page.getByRole('button',{name:'Tutup popup',exact:true}).click();
@@ -114,4 +114,23 @@ test('mobile dock stays floating during scroll, reaches all groups and leaves co
  await page.setViewportSize({width:390,height:844});
  for(const name of ['Pelanggan','Penjualan','Aktivitas','Kelola','Analitik']){await nav.getByRole('button',{name,exact:true}).click();await expect(nav.getByRole('button',{name,exact:true})).toHaveAttribute('aria-current','true')}
  await page.setViewportSize({width:1280,height:900});await expect(dock).toHaveCSS('position','sticky');
+});
+
+
+test('group navigation restores the previous page and respects browser history',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});await page.goto(origin);
+ const groups=page.getByRole('navigation',{name:'Kelompok workspace'}),workspace=page.getByRole('navigation',{name:'Halaman workspace'});
+ await workspace.getByRole('button',{name:'Monitoring',exact:true}).click();
+ await groups.getByRole('button',{name:'Pelanggan',exact:true}).click();
+ await groups.getByRole('button',{name:'Analitik',exact:true}).click();
+ await expect(workspace.getByRole('button',{name:'Monitoring',exact:true})).toHaveAttribute('aria-current','page');
+ await page.goBack();await expect(groups.getByRole('button',{name:'Pelanggan',exact:true})).toHaveAttribute('aria-current','true');
+});
+
+test('compact navigation labels scale and high contrast removes backdrop optics',async({page})=>{
+ await page.setViewportSize({width:390,height:844});await page.emulateMedia({reducedMotion:'reduce',contrast:'more'});await page.goto(origin);
+ const label=page.locator('.rail-text').first();expect(await label.evaluate(el=>parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(11);
+ expect(await page.locator('.sidebar').evaluate(el=>getComputedStyle(el,'::before').display)).toBe('none');
+ await page.addStyleTag({content:'html{font-size:200%!important}'});expect(await label.evaluate(el=>parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(22);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

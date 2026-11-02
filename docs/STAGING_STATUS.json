@@ -488,5 +488,18 @@
       "test_session_revoked": true
     },
     "previous_blocked_run_id": 40995040761
+  },
+  "apple_ui_release": {
+    "date": "2026-11-02",
+    "status": "verified locally; pending official staging deployment",
+    "browser_navigation_tests_passed": 8,
+    "browser_directory_tests_passed": 6,
+    "typecheck": "passed",
+    "build": "passed",
+    "local_end_to_end": "passed; synthetic prototype with real local API",
+    "new_migrations": 0,
+    "business_writes": false,
+    "physical_ios_verified": false,
+    "production_accepted": false
   }
 }

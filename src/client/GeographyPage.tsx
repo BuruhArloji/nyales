@@ -1,3 +1,4 @@
+import {FilterPanel} from './FilterPanel';
 import {CustomerRisk} from './CustomerRisk';
 import {RegionalAnalytics} from './RegionalAnalytics';
 import {LiquidTabs} from './LiquidNav';
@@ -66,7 +67,7 @@ export function GeographyPage(){
 
  return <><div className="page-heading"><div><h1>Peta & Wilayah</h1></div></div>
 
- <section className="card geo-filters" aria-label="Filter peta dan wilayah"><div className="assignment-filters">
+ <FilterPanel count={[area,rep,status,datasetId,channel!=='field'?channel||'combined':''].filter(Boolean).length} onReset={()=>{setArea('');setRep('');setStatus('');setDatasetId('');setChannel('field');setSelected('');setHierarchy({})}} className="geo-filters" label="Filter peta dan wilayah" summary={[channel==='telesales'?'Telesales':channel?'Lapangan':'Semua kanal',area?areas.find(a=>a.id===area)?.name:'Semua area',rep?users.find(u=>u.id===rep)?.name:null,status||null,period].filter(Boolean).join(' · ')}><div className="assignment-filters">
 
  <label>Area peta<select aria-label="Area peta" value={area} onChange={e=>{setArea(e.target.value);setSelected('')}}><option value="">Semua area dalam scope</option>{areas.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
 
@@ -80,7 +81,7 @@ export function GeographyPage(){
 
  {canManage&&<label>Rilis batas<select aria-label="Rilis batas" value={datasetId} onChange={e=>{setDatasetId(e.target.value);setSelected('');setHierarchy({})}}><option value="">Rilis aktif</option>{datasets.filter(d=>d.status==='active'||d.status==='draft'&&d.uploaded_features===d.expected_features&&d.uploaded_chunks===d.expected_chunks).map(d=><option key={d.id} value={d.id}>{d.release_version} · {d.status==='draft'?'Draft (pratinjau)':'Aktif'}</option>)}</select></label>}
 
- </div><small>Pemetaan dan posisi menunjukkan data terkini. Mode Kinerja / Coverage membaca periode laporan; snapshot mapping yang sama dipakai pada periode pembanding.</small></section>
+ </div><small>Pemetaan dan posisi menunjukkan data terkini. Mode Kinerja / Coverage membaca periode laporan; snapshot mapping yang sama dipakai pada periode pembanding.</small></FilterPanel>
 
  {error&&<p className="notice danger" role="alert">{error}<button className="button secondary" onClick={()=>setRetry(n=>n+1)}>Coba lagi</button></p>}
 

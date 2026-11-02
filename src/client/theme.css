@@ -110,9 +110,9 @@ tbody tr:hover{background:#edf4f080}
 .sidebar{padding-left:24px;padding-right:4px;align-items:flex-start}
 .sidebar .brand{margin-left:3px}
 .sidebar nav{gap:16px;overflow:visible}
-.sidebar nav .rail-item{position:relative;display:flex;flex-direction:row;justify-content:flex-start;align-items:center;gap:0;width:44px;height:44px;min-height:44px;padding:0 12px;border-radius:999px;background:#ffffff69;border:1px solid #ffffffa6;color:#53635d;white-space:nowrap;overflow:visible;box-shadow:inset 0 1px 0 #ffffffb3;transition:width .55s cubic-bezier(.22,.9,.25,1),background-color .2s ease,color .2s ease,box-shadow .2s ease}
+.sidebar nav .rail-item{position:relative;display:flex;flex-direction:row;justify-content:flex-start;align-items:center;gap:0;width:44px;height:44px;min-height:44px;padding:0 12px;border-radius:999px;background:#ffffff69;border:1px solid #ffffffa6;color:#53635d;white-space:nowrap;overflow:visible;box-shadow:inset 0 1px 0 #ffffffb3;transition:width .32s cubic-bezier(.22,.9,.25,1),background-color .2s ease,color .2s ease,box-shadow .2s ease}
 .sidebar nav .rail-item svg{flex:0 0 18px;width:18px;height:18px}
-.sidebar nav .rail-item .rail-text{display:block;max-width:0;opacity:0;overflow:hidden;transform:translateX(-4px);font-size:11px;font-weight:400;transition:max-width .55s cubic-bezier(.22,.9,.25,1),opacity .18s ease,margin-left .55s cubic-bezier(.22,.9,.25,1),transform .55s cubic-bezier(.22,.9,.25,1)}
+.sidebar nav .rail-item .rail-text{display:block;max-width:0;opacity:0;overflow:hidden;transform:translateX(-4px);font-size:11px;font-weight:400;transition:max-width .32s cubic-bezier(.22,.9,.25,1),opacity .18s ease,margin-left .32s cubic-bezier(.22,.9,.25,1),transform .32s cubic-bezier(.22,.9,.25,1)}
 .sidebar nav .rail-item.active{width:124px;background:#242625;color:#fff;border-color:#242625;box-shadow:0 4px 12px #24382d18}
 .sidebar nav .rail-item.active .rail-text{max-width:84px;opacity:1;margin-left:10px;transform:translateX(0)}
 .sidebar nav .rail-item:not(.active):is(:hover,:focus-visible){background:#ffffffe0;box-shadow:0 4px 14px #244e3d14,inset 0 1px 0 #fff}
@@ -151,7 +151,7 @@ body{background:radial-gradient(ellipse at 20% 20%,#b7ddd0,transparent 60%),radi
 
 /* Uiverse / gleydson_9898 motion only; NYALES colors, glass and geometry remain. */
 .liquid-nav{isolation:isolate}
-.liquid-nav .liquid-slider{position:absolute;left:0;top:0;border-radius:999px;background:var(--ink);z-index:0;pointer-events:none;transition:transform .55s cubic-bezier(.22,.9,.25,1),width .55s cubic-bezier(.22,.9,.25,1),height .55s cubic-bezier(.22,.9,.25,1)}
+.liquid-nav .liquid-slider{position:absolute;left:0;top:0;border-radius:999px;background:var(--ink);z-index:0;pointer-events:none;transition:transform .32s cubic-bezier(.22,.9,.25,1),width .32s cubic-bezier(.22,.9,.25,1),height .32s cubic-bezier(.22,.9,.25,1)}
 .liquid-nav .liquid-slider::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 1px #ffffff0f,inset 0 -1px 2px #00000099;pointer-events:none}
 .workspace-tabs.liquid-nav button{position:relative;z-index:1;transition:color .35s ease,transform .2s ease}
 .workspace-tabs.liquid-nav[data-ready=true] button.active{background:transparent}
@@ -160,7 +160,7 @@ body{background:radial-gradient(ellipse at 20% 20%,#b7ddd0,transparent 60%),radi
 
 /* The same motion for in-page sections, including wrapped mobile tabs. */
 .liquid-tabs{position:relative;isolation:isolate}
-.liquid-tabs>.liquid-slider{position:absolute;left:0;top:0;z-index:0;pointer-events:none;border-radius:999px;background:var(--ink);transition:transform .55s cubic-bezier(.22,.9,.25,1),width .55s cubic-bezier(.22,.9,.25,1),height .55s cubic-bezier(.22,.9,.25,1)}
+.liquid-tabs>.liquid-slider{position:absolute;left:0;top:0;z-index:0;pointer-events:none;border-radius:999px;background:var(--ink);transition:transform .32s cubic-bezier(.22,.9,.25,1),width .32s cubic-bezier(.22,.9,.25,1),height .32s cubic-bezier(.22,.9,.25,1)}
 .settings-tabs.liquid-tabs>button{position:relative;z-index:1;transition:color .35s ease,transform .2s ease}
 .settings-tabs.liquid-tabs[data-ready=true]>button{background:transparent;border-color:transparent}
 .settings-tabs.liquid-tabs>button:active{transform:scale(.97)}
@@ -183,7 +183,7 @@ body{background:radial-gradient(ellipse at 20% 20%,#b7ddd0,transparent 60%),radi
 .page-scene>.table-wrap,.page-scene>.settings-tabs,.page-scene>.settings-layout>.card,
 .page-scene>.metric-grid>.card,.page-scene>.content-grid>.card,
 .page-scene>.telesales-grid>.card{
- animation:nyales-page-rise .55s cubic-bezier(.22,.9,.25,1) var(--enter-delay,80ms) backwards;
+ animation:nyales-page-rise .24s cubic-bezier(.22,.9,.25,1) backwards;
 }
 .page-scene>.page-heading{--enter-delay:0ms}
 .page-scene>.page-toolbar,.page-scene>.filters,.page-scene>.toolbar,.page-scene>.settings-tabs{--enter-delay:35ms}
@@ -271,3 +271,22 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 .target-filters input,.target-filters select{height:44px;min-height:44px;box-sizing:border-box}
 @media(max-width:1000px){.target-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.target-filters{grid-template-columns:minmax(0,1fr)}.target-page-heading{align-items:flex-start;flex-direction:column;gap:16px}.target-page-heading>.button{align-self:flex-end}}
+
+/* Apple review: clear content, selective glass, predictable compact controls. */
+:root{--surface-content:#f8f9f8;--surface-glass:rgba(255,255,255,.56);--surface-glass-strong:#f4f8f6;--motion-fast:160ms;--motion-settle:320ms}
+.contribution-card{background:var(--surface-content);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.app-dialog{background:var(--surface-glass-strong);backdrop-filter:none;-webkit-backdrop-filter:none}
+.app-dialog-header{background:var(--surface-glass-strong);backdrop-filter:none;-webkit-backdrop-filter:none}
+.app-dialog-body{background:transparent}
+.compact-filter-bar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px;min-width:0}
+.compact-filter-bar>span{color:var(--muted);font-size:.9rem;line-height:1.5;min-width:0;overflow-wrap:anywhere}
+.compact-filter-bar>.button{flex:none}
+.filter-sheet-actions{position:sticky;bottom:0;padding-top:16px;background:var(--surface-glass-strong);display:flex;justify-content:flex-end}
+.filter-sheet .geo-filters,.filter-sheet .target-filter-panel{margin:0}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
+ .glass-card,.settings-tabs,.map-mode-toggle,.maplibre-canvas .maplibregl-ctrl-group,.login-card,.icon-button{background:var(--surface-glass-strong);backdrop-filter:none;-webkit-backdrop-filter:none;border:1px solid #52665e;box-shadow:none}
+ .glass-card::before,.glass-card::after{display:none}
+}
+
+.liquid-tabs>.liquid-slider[data-spring=true]{transition:none}
+.filter-sheet-actions{gap:10px;flex-wrap:wrap}

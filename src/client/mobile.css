@@ -52,3 +52,58 @@
 }
 @media(max-width:767px) and (prefers-reduced-transparency:reduce){.app-shell>.sidebar{background:#eff6f0f5}.app-shell>.sidebar::before{backdrop-filter:none;-webkit-backdrop-filter:none}}
 @media(max-width:767px) and (forced-colors:active){.app-shell>.sidebar{background:Canvas;border-color:CanvasText}.app-shell>.sidebar::before,.app-shell>.sidebar::after{display:none}}
+
+@media(max-width:767px){
+ :root{font-size:16px}
+ .app-shell>.sidebar{width:calc(100% - 24px);max-width:380px;padding:7px}
+ .app-shell>.sidebar nav{width:100%;gap:2px}
+ .app-shell>.sidebar nav .rail-item,.app-shell>.sidebar nav .rail-item.active{flex:1 1 0;width:auto;min-width:0;height:58px;min-height:58px;padding:6px 0}
+ .app-shell>.sidebar nav .rail-item .rail-text,.app-shell>.sidebar nav .rail-item.active .rail-text{font-size:.6875rem;line-height:1.3;white-space:normal;overflow-wrap:anywhere;max-height:none}
+ .metric>span,.metric small,.card-header small,.contribution-header p,.contribution-note,.overview-period{font-size:.75rem;line-height:1.5}
+ .metric .metric-corner{width:44px;height:44px;right:8px;top:8px}
+ .metric .metric-corner-action:before{display:none}
+ .metric>span{padding-right:40px}
+ .button,.text-button,.settings-tabs .button,.map-mode-toggle button,.sales-chart-header select,.org-view-select,.org-chart-toolbar .button{min-height:44px}
+ .maplibre-canvas .maplibregl-ctrl-group button{width:44px;height:44px}
+ .maplibregl-popup-close-button{width:44px;height:44px}
+ input,select,textarea,.filters select,.filters input,.toolbar select,.assignment-filters select,.assignment-filters input{font-size:1rem}
+ .filter-sheet{width:calc(100vw - 16px);margin:auto auto 8px;border-radius:24px 24px 16px 16px;max-height:calc(100dvh - 24px)}
+ .filter-sheet .assignment-filters{grid-template-columns:1fr;gap:16px}
+ .filter-sheet label{font-size:.875rem}
+ .filter-sheet .geo-filters>small{display:block;font-size:.75rem;margin-top:16px}
+ .map-layout:has(.map-sales-scroll>p:only-child) .map-list{height:auto;min-height:100px}
+ .map-layout:has(.map-sales-scroll>p:only-child) .map-sales-scroll{flex:none}
+ .geo-map>.callout{font-size:.75rem;padding:10px;margin:8px 0}
+ .geo-legend{font-size:.75rem;margin:12px 0}
+}
+@media(max-width:767px) and (prefers-contrast:more), (max-width:767px) and (prefers-reduced-transparency:reduce){
+ .app-shell>.sidebar{background:#f4f8f6;border:1px solid #52665e;box-shadow:0 4px 16px #152e2326}
+ .app-shell>.sidebar::before,.app-shell>.sidebar::after{display:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+ .app-shell>.sidebar nav .rail-item{text-shadow:none;color:#243e31}
+ .app-shell>.sidebar nav .rail-item.active{color:#fff;background:#242625}
+}
+
+.location-sheet{padding:0;border:1px solid #ffffffb3;background:#f4f8f6;color:#242625;border-radius:26px 26px 16px 16px;width:min(560px,calc(100vw - 16px));max-width:none;max-height:90dvh;margin:auto auto calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 20px 70px #16332638;overflow:hidden}
+.location-sheet::backdrop{background:#172d294d}
+.location-sheet .map-popup-card{display:flex;flex-direction:column;overflow:hidden;width:100%;max-width:none;border:0;box-shadow:none;color:#263a31}
+.location-sheet .map-popup-heading{padding-right:58px}
+.location-sheet-close{position:absolute;z-index:2;right:12px;top:12px;width:44px;height:44px;border:0;border-radius:50%;background:#e4eee9;color:#243e31;font-size:26px}
+.app-shell:has(.location-sheet[open])>.sidebar,body:has(.location-sheet[open]) .app-shell>.sidebar{visibility:hidden;pointer-events:none}
+
+.target-mobile-list{display:none}
+@media(max-width:767px){
+ .target-desktop-table{display:none}.target-mobile-list{display:grid;gap:16px}
+ .target-mobile-row{padding:16px 0;border-bottom:1px solid #dfe3e1;min-width:0}
+ .target-mobile-row header{display:flex;justify-content:space-between;gap:12px;align-items:start}
+ .target-mobile-row strong{font-size:1rem;overflow-wrap:anywhere}
+ .target-mobile-row small{font-size:.75rem;line-height:1.5;color:var(--muted)}
+ .target-mobile-row dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+ .target-mobile-row dt{font-size:.75rem;color:var(--muted)}.target-mobile-row dd{margin:4px 0 0;font-size:.9rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+}
+
+@media(hover:none){.app-shell>.sidebar nav .rail-item:not(.active):hover{background:transparent;box-shadow:none}}
+
+body:has(.location-sheet[open]){overflow:hidden}
+.location-sheet .map-popup-fact{font-size:.875rem;grid-template-columns:100px minmax(0,1fr)}
+.location-sheet .map-popup-heading>small{font-size:.75rem!important}
+.location-sheet .map-popup-action{font-size:.8125rem}

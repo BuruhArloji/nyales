@@ -1,3 +1,7 @@
+## 2 November 2026 — pelaksanaan audit Apple UI/UX
+
+Perbaikan BOM build, FilterPanel mobile Peta/Target, label dan area sentuh, target cards, detail lokasi sebagai sheet mobile, material/fallback kontras, memori halaman grup dan motion tersedia. Enam tes popup direktori, delapan tes navigasi/hirarki/responsif, TypeScript serta build standar lulus. Uji browser/API lokal sintetis memastikan filter tetap berfungsi, tanpa pageerror atau penulisan bisnis. Rincian dan batas verifikasi pada [laporan](UI_UX_APPLE_REVIEW_20261102.md). Menunggu deployment resmi staging dan smoke; tidak ada migrasi atau seed baru.
+
 ## 31 Oktober 2026 — impor dibatasi tepat 500 customer
 
 Atas instruksi pengguna, hanya 500 customer tambahan dimasukkan: batch59/60 masing-masing200 dan 100pertama batch61. Total direktori12.100, sisa524. Batch61 tersisa100; receipt parsial menyimpan offset0/count100 dan runner melanjutkan dari offset100, tanpa mengulang impor. Jangan memakai runner lama yang menganggap setiap receipt selalu satu batch penuh. File SQL asli dan hash manifest tetap utuh; uji lokal membuktikan dua potongan100 identik dengan200 sumber kecuali timestamp otomatis, serta menolak receipt overlap.
