@@ -2,7 +2,7 @@ import {execFileSync} from 'node:child_process';
 import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
-import {assertMappings,buildRealPointMappings,DEMO_PREFIX,digest,DIRECTORY_DATASET_ID,LOCATION_MAPPING_ID,mappingSql,selectionPayload,sqlValue,type CustomerRow,type LocationMapping} from './bekasi-real-point-mapping';
+import {assertMappings,buildRealPointMappings,businessSignatureSql,DEMO_PREFIX,digest,DIRECTORY_DATASET_ID,LOCATION_MAPPING_ID,mappingSql,selectionPayload,sqlValue,type CustomerRow,type LocationMapping} from './bekasi-real-point-mapping';
 
 const ROOT=process.cwd(),CONFIG=resolve(ROOT,'wrangler.staging.generated.json');
 const APPLY=process.argv.includes('--apply'),REMOTE=process.argv.includes('--remote');
@@ -15,7 +15,7 @@ function assertStaging(){
 }
 function wrangler(args:string[]){
  try{return execFileSync('npx',['wrangler','d1','execute','nyales-staging','--remote','--yes','--config',CONFIG,...args],{cwd:ROOT,env:process.env,encoding:'utf8',stdio:['ignore','pipe','pipe'],maxBuffer:64*1024*1024})}
- catch(error){throw Error('STAGING_D1_COMMAND_FAILED_EXIT_'+String((error as {status?:number}).status??'UNKNOWN'))}
+ catch(error){const failure=error as {status?:number;stdout?:string;stderr?:string},detail=String(failure.stdout||'')+'\n'+String(failure.stderr||''),schema=/no such (column|table):\s*([A-Za-z_][A-Za-z0-9_.]*)/.exec(detail),limit=/(?:quota|limit has been reached|maximum[^\n]*(?:response|result)[^\n]*size)/i.test(detail);throw Error('STAGING_D1_COMMAND_FAILED_EXIT_'+String(failure.status??'UNKNOWN')+(schema?'_'+schema[1].toUpperCase()+'_'+schema[2]:limit?'_PROVIDER_LIMIT_REJECTION':''))}
 }
 function resultRows(value:any):any[]|null{
  if(Array.isArray(value)){for(const item of value){const result=resultRows(item);if(result)return result}}
@@ -28,15 +28,7 @@ function query(sql:string){
  const rows=resultRows(parsed);if(!rows)throw Error('STAGING_D1_RESULTS_INVALID');return rows;
 }
 function one(sql:string){const row=query(sql)[0];if(!row)throw Error('STAGING_D1_ROW_MISSING');return row}
-function businessSignature(org:string){const q=sqlValue(org);return one(`SELECT
- (SELECT COUNT(*) FROM invoice WHERE organization_id=${q}) invoice_count,
- (SELECT COALESCE(SUM(net_minor),0) FROM invoice WHERE organization_id=${q}) invoice_total,
- (SELECT COALESCE(SUM(version),0) FROM invoice WHERE organization_id=${q}) invoice_versions,
- (SELECT COUNT(*) FROM customer_assignment WHERE organization_id=${q}) assignments,
- (SELECT COUNT(*) FROM target_version WHERE organization_id=${q}) target_versions,
- (SELECT COALESCE(SUM(version),0) FROM target_version WHERE organization_id=${q}) target_version_sum,
- (SELECT COUNT(*) FROM activity WHERE organization_id=${q}) activities,
- (SELECT COUNT(*) FROM visit_event WHERE organization_id=${q}) visit_events`)}
+function businessSignature(org:string){return one(businessSignatureSql(org))}
 function customers(org:string){return query(`SELECT * FROM customer_outlet WHERE organization_id=${sqlValue(org)} ORDER BY id`) as CustomerRow[]}
 function main(){
  if(!APPLY){console.log('Dry-run only. Embed DEMO operations on existing customer point IDs through an audit sidecar. No customer rows or coordinates are written. Use --apply --remote in staging workflow.');return}

@@ -65,3 +65,16 @@ export function mappingSql(mapping:LocationMapping,organizationId:string,actorId
  // Audit sidecar only. No customer coordinates, identities, addresses, assignments, or history are written.
  return `INSERT INTO master_audit(id,organization_id,actor_id,resource_type,resource_id,action,occurred_at,before_json,after_json) SELECT ${[id,organizationId,actorId,'demo_operation_point_link',m.demo_customer_id,'operation_point_link_selected',occurredAt,JSON.stringify(m.before),payload].map(q).join(',')} WHERE NOT EXISTS(SELECT 1 FROM master_audit WHERE id=${q(id)}) AND ${sourceGuard} AND ${demoGuard};`;
 }
+
+export function businessSignatureSql(organizationId:string){
+ const q=sqlValue(organizationId);
+ return `SELECT
+ (SELECT COUNT(*) FROM invoice WHERE organization_id=${q}) invoice_count,
+ (SELECT COALESCE(SUM(net_minor),0) FROM invoice WHERE organization_id=${q}) invoice_total,
+ (SELECT json_group_array(source_version) FROM (SELECT source_version FROM invoice WHERE organization_id=${q} ORDER BY id)) invoice_versions,
+ (SELECT COUNT(*) FROM customer_assignment WHERE organization_id=${q}) assignments,
+ (SELECT COUNT(*) FROM target_version WHERE organization_id=${q}) target_versions,
+ (SELECT COALESCE(SUM(version),0) FROM target_version WHERE organization_id=${q}) target_version_sum,
+ (SELECT COUNT(*) FROM activity WHERE organization_id=${q}) activities,
+ (SELECT COUNT(*) FROM visit_event WHERE organization_id=${q}) visit_events`;
+}
