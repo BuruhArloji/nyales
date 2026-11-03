@@ -14,7 +14,7 @@ test('Staging deploy binds built Worker, root paths, matching Firebase and isola
  for(const overrides of [{CF_D1_DATABASE_ID:'00000000-0000-0000-0000-000000000000'},{CF_R2_BUCKET:'nyales-import-sources'},{CF_ACCOUNT_ID:'invalid'},{FIREBASE_PROJECT_ID:''},{VITE_FIREBASE_PROJECT_ID:'another-project'},{VITE_FIREBASE_AUTH_DOMAIN:'https://invalid/path'}])assert.throws(()=>stagingConfig({...values,...overrides}));
 });
 test('Staging mutation is explicit; only the verified demo package crosses jobs without staging secrets or generated bindings',async()=>{
- const workflow=await readFile('.github/workflows/deploy-staging.yml','utf8');
+ const workflow=(await readFile('.github/workflows/deploy-staging.yml','utf8')).replace(/\r\n/g,'\n');
  assert.ok(workflow.includes('workflow_dispatch:'));assert.ok(!/^  push:/m.test(workflow));
  assert.ok(workflow.indexOf('Validate staging configuration')<workflow.indexOf('Build with matching Firebase'));
  assert.ok(workflow.indexOf('--dry-run')<workflow.indexOf('migrations apply'));

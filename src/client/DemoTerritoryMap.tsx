@@ -58,7 +58,8 @@ function densityLegendItems(metadata:DensityMetadata):DensityLegendItem[]{
 function demoDataBasePath(tilesUrl:string){try{return new URL(tilesUrl,window.location.origin).pathname.replace(/\/[^/]*$/,'')}catch{return ''}}
 
 export function DemoTerritoryMap({tilesUrl}:{tilesUrl:string}){
- const canvas=useRef<HTMLDivElement>(null),mapRef=useRef<maplibregl.Map|null>(null);
+ const canvas=useRef<HTMLDivElement>(null),stage=useRef<HTMLDivElement>(null),detailRef=useRef<HTMLDetailsElement>(null),mapRef=useRef<maplibregl.Map|null>(null);
+ const [panelOpen,setPanelOpen]=useState(()=>!window.matchMedia('(max-width: 800px)').matches);
  const [manifest,setManifest]=useState<Manifest|null>(null),[areas,setAreas]=useState<AreaSummary[]>([]),[selected,setSelected]=useState<Record<string,any>|null>(null),[mapError,setMapError]=useState(''),[mapReady,setMapReady]=useState(false),[dataError,setDataError]=useState(''),[mapMode,setMapMode]=useState<MapMode>('area');
  const dataBasePath=demoDataBasePath(tilesUrl);
  const densityMeta=manifest?.population_density;
@@ -83,6 +84,7 @@ export function DemoTerritoryMap({tilesUrl}:{tilesUrl:string}){
   });
   mapRef.current=map;
   map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
+  if(stage.current)map.addControl(new maplibregl.FullscreenControl({container:stage.current}),'top-right');
   map.on('load',()=>{
    const url=`pmtiles://${window.location.origin}${tilesUrl}`;
    map.addSource('demo-territories',{type:'vector',url});
@@ -98,7 +100,7 @@ export function DemoTerritoryMap({tilesUrl}:{tilesUrl:string}){
    setMapReady(true);
    map.on('click','demo-territory-fill',(event:any)=>{
     const properties=event.features?.[0]?.properties;
-    if(properties)setSelected({...properties});
+    if(properties){setSelected({...properties});setPanelOpen(true);if(detailRef.current)detailRef.current.open=true;}
    });
    map.on('mouseenter','demo-territory-fill',()=>{map.getCanvas().style.cursor='pointer'});
    map.on('mouseleave','demo-territory-fill',()=>{map.getCanvas().style.cursor=''});
@@ -121,27 +123,20 @@ export function DemoTerritoryMap({tilesUrl}:{tilesUrl:string}){
  const formatPopulation=(value:unknown)=>numberFormat.format(Number(value||0));
  const formatDensity=(value:unknown)=>densityFormat.format(Number(value||0));
  return <section className="card geo-map demo-territory-card" aria-labelledby="demo-territory-title">
-  <div className="card-header">
+  <div className="demo-territory-layout demo-map-workspace" ref={stage}>
+   <div className="geo-stage demo-territory-stage"><div ref={canvas} className="map-canvas maplibre-canvas" role="img" aria-label={mapMode==='density'?'Peta kepadatan penduduk per desa dan kelurahan':'Peta empat wilayah owner DEMO per desa dan kelurahan'}/>{!mapReady&&!mapError&&<div className="demo-map-loading" role="status">Memuat peta DEMO…</div>}</div>
+  <div className="demo-map-heading">
    <div><h2 id="demo-territory-title">Area Territory Management · DEMO</h2><small>{manifest?`${numberFormat.format(manifest.source_validation.feature_count)} polygon · ${numberFormat.format(manifest.assignment.assigned_code_count)} assignment sintetis · ${numberFormat.format(manifest.assignment.exception_feature_count)} perlu review`: 'Memuat ringkasan demo…'}</small></div>
    <span className="badge">PORTOFOLIO · DEMO</span>
   </div>
-  <p className="callout" role="note">Ini simulasi kepemilikan berdasarkan kelompok provinsi, bukan pembagian outlet/workload yang sudah dioptimalkan. Owner `DEMO-PIC-01` s.d. `DEMO-PIC-04` adalah placeholder; tidak ada assignment sales nyata.</p>
-  {dataError&&<p className="notice danger" role="alert">{dataError}</p>}
-  {mapError&&<p className="notice danger" role="alert">{mapError}</p>}
-  {manifest&&<div className="demo-territory-stats" aria-label="Ringkasan peta DEMO">
-   <div><small>Unit berbatas</small><strong>{numberFormat.format(manifest.source_validation.feature_count)}</strong></div>
-   <div><small>Assignment DEMO</small><strong>{numberFormat.format(manifest.assignment.assigned_code_count)}</strong></div>
-   <div><small>Exception review</small><strong>{numberFormat.format(manifest.assignment.exception_feature_count)}</strong></div>
-   <div><small>Mulai efektif (demo)</small><strong>{manifest.assignment.effective_from}</strong></div>
-  </div>}
-  {manifest&&<div className="data-actions"><a className="button secondary" href={`${dataBasePath}/exceptions.csv`} download="nyales-demo-exceptions.csv">Unduh CSV pengecualian · {numberFormat.format(manifest.assignment.exception_feature_count)} unit / {numberFormat.format(manifest.assignment.exception_issue_rows)} isu</a></div>}
   {manifest&&<div className="demo-map-mode" role="group" aria-label="Pilih lapisan peta DEMO">
    <span>Lapisan peta</span>
    <button type="button" className="button secondary" aria-pressed={mapMode==='area'} onClick={()=>chooseMapMode('area')}>Area DEMO</button>
    <button type="button" className="button secondary" aria-pressed={mapMode==='density'} disabled={!densityMeta||densityLegend.length!==5} onClick={()=>chooseMapMode('density')}>Kepadatan penduduk</button>
   </div>}
-  <div className="geo-layout demo-territory-layout">
-   <div className="geo-stage demo-territory-stage"><div ref={canvas} className="map-canvas maplibre-canvas" role="img" aria-label={mapMode==='density'?'Peta kepadatan penduduk per desa dan kelurahan':'Peta empat wilayah owner DEMO per desa dan kelurahan'}/>{!mapReady&&!mapError&&<div className="demo-map-loading" role="status">Memuat peta DEMO…</div>}</div>
+  {(dataError||mapError)&&<p className="notice danger demo-map-error" role="alert">{dataError||mapError}</p>}
+  <details className="demo-map-panel" open={panelOpen} onToggle={event=>setPanelOpen(event.currentTarget.open)}>
+   <summary>Legenda & rincian wilayah</summary>
    <aside className="geo-panel" aria-label={mapMode==='density'?'Legenda kepadatan dan detail polygon':'Ringkasan Area demo dan detail polygon'}>
     {mapMode==='density'&&densityMeta?<div className="demo-density-legend" aria-label="Legenda kepadatan penduduk">
      <h3>Kepadatan penduduk</h3>
@@ -153,13 +148,13 @@ export function DemoTerritoryMap({tilesUrl}:{tilesUrl:string}){
      <small className="demo-density-note">Ambang P20/P40/P60/P80 dihitung dari {numberFormat.format(densityMeta.valid_feature_count)} unit yang memiliki data. Kelas membagi unit administrasi, bukan luas wilayah.</small>
     </div>:<>
      <div className="demo-area-legend" aria-label="Legenda Area demo">{labels.map((item,index)=><div className="demo-area-row" key={item.id}><span className="demo-area-swatch" style={{background:areaPalette[index]}}/><span><strong>{item.name}</strong><small>{item.owner}</small></span></div>)}<div className="demo-area-row"><span className="demo-area-swatch review"/><span><strong>DEMO – Perlu review</strong><small>Tidak diberi owner</small></span></div></div>
-     {areas.map((item,index)=><article className="demo-area-summary" key={item.demo_area_id}>
+     <details className="demo-area-breakdown"><summary>Ringkasan 4 area</summary>{areas.map((item,index)=><article className="demo-area-summary" key={item.demo_area_id}>
       <div><span className="demo-area-swatch" style={{background:areaPalette[index]}}/><strong>{item.demo_area_name}</strong></div>
       <small>{numberFormat.format(item.assigned_units)} unit · {item.synthetic_owner_id}</small>
       <small>Populasi 2026 (estimasi): {formatPopulation(item.estimated_population_2026)}</small>
-     </article>)}
+     </article>)}</details>
     </>}
-    <section className="geo-detail demo-territory-detail" aria-live="polite" aria-label="Detail polygon terpilih">
+    <details ref={detailRef} className="geo-detail demo-territory-detail" open><summary>Detail polygon</summary><section aria-live="polite" aria-label="Detail polygon terpilih">
      {selected?<><h3>{selected.desa_name||'Nama tidak tersedia'}</h3><small>{selected.admin_type||'Unit admin'} · {selected.admin_code_pum||'PUM kosong'}</small><dl>
       <div><dt>Provinsi</dt><dd>{selected.province_name||'Tidak diketahui'}</dd></div>
       <div><dt>Area DEMO</dt><dd>{selected.demo_area_name||'Tidak diketahui'}</dd></div>
@@ -168,10 +163,20 @@ export function DemoTerritoryMap({tilesUrl}:{tilesUrl:string}){
       <div><dt>Kepadatan penduduk</dt><dd>{selected.population_density_km2==null?'Tidak tersedia':formatDensity(selected.population_density_km2)+' orang/km² (estimasi)'}</dd></div>
       <div><dt>Status</dt><dd>{selected.assignment_status||'Tidak diketahui'}</dd></div>
      </dl></>:<p className="muted">Klik polygon untuk melihat unit administrasi, Area/owner placeholder, estimasi populasi, dan kepadatannya.</p>}
-    </section>
+    </section></details>
     <small className="demo-territory-note">Batas: {manifest?.boundary_source.label||'BIG 2022-based'} · Populasi dan kepadatan: WorldPop 2026 (estimasi, bukan sensus). Hak redistribusi batas belum diverifikasi.</small>
    </aside>
-  </div>
+  </details>
+  <details className="demo-map-info"><summary>Informasi & sumber · DEMO</summary><div className="demo-map-info-body">  <p className="callout" role="note">Ini simulasi kepemilikan berdasarkan kelompok provinsi, bukan pembagian outlet/workload yang sudah dioptimalkan. Owner `DEMO-PIC-01` s.d. `DEMO-PIC-04` adalah placeholder; tidak ada assignment sales nyata.</p>
+  {manifest&&<div className="demo-territory-stats" aria-label="Ringkasan peta DEMO">
+   <div><small>Unit berbatas</small><strong>{numberFormat.format(manifest.source_validation.feature_count)}</strong></div>
+   <div><small>Assignment DEMO</small><strong>{numberFormat.format(manifest.assignment.assigned_code_count)}</strong></div>
+   <div><small>Exception review</small><strong>{numberFormat.format(manifest.assignment.exception_feature_count)}</strong></div>
+   <div><small>Mulai efektif (demo)</small><strong>{manifest.assignment.effective_from}</strong></div>
+  </div>}
+  {manifest&&<div className="data-actions"><a className="button secondary" href={`${dataBasePath}/exceptions.csv`} download="nyales-demo-exceptions.csv">Unduh CSV pengecualian · {numberFormat.format(manifest.assignment.exception_feature_count)} unit / {numberFormat.format(manifest.assignment.exception_issue_rows)} isu</a></div>}
+
   <footer className="geo-source"><small>PMTiles nasional · max zoom {manifest?.tiles?.maxzoom??'—'} · arsip {manifest?.tiles?.verified_by_pmtiles_cli?'terverifikasi':'belum tersedia'} · kepadatan {densityMeta?.valid_feature_count?numberFormat.format(densityMeta.valid_feature_count)+' nilai':'—'}</small><small>Assignment sintetis untuk portofolio · D1 tidak diubah · tidak untuk operasi.</small></footer>
+ </div></details></div>
  </section>;
 }
