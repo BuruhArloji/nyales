@@ -12,10 +12,42 @@ concurrency:
   group: nyales-staging
   cancel-in-progress: false
 jobs:
+  package:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Draft releases are visible only to a token with repository write access.
+    # This isolated job receives no Cloudflare/Firebase secrets.
+    permissions:
+      contents: write
+    steps:
+      - name: Deploy main only
+        run: test "$GITHUB_REF" = refs/heads/main
+      - name: Download and validate private portfolio demo package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/portfolio-archive" "$RUNNER_TEMP/portfolio-demo"
+          gh release download nyales-demo-territory-20261103 --repo "$GITHUB_REPOSITORY" --pattern portfolio-demo.tar.gz --dir "$RUNNER_TEMP/portfolio-archive"
+          tar -xzf "$RUNNER_TEMP/portfolio-archive/portfolio-demo.tar.gz" -C "$RUNNER_TEMP/portfolio-demo"
+          node --input-type=module -e "import fs from 'node:fs'; import crypto from 'node:crypto'; const root=process.env.RUNNER_TEMP+'/portfolio-demo'; const checks=JSON.parse(fs.readFileSync(root+'/PACKAGE_CHECKSUMS.json','utf8')); for (const [name,meta] of Object.entries(checks.artifacts)) { const hash=crypto.createHash('sha256').update(fs.readFileSync(root+'/'+name)).digest('hex'); if(hash!==meta.sha256) throw Error('PACKAGE_CHECKSUM_MISMATCH '+name); }"
+      - name: Pass verified files to staging job
+        uses: actions/upload-artifact@v4
+        with:
+          name: nyales-portfolio-demo-package
+          path: ${{ runner.temp }}/portfolio-demo/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
   deploy:
+    needs: package
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: staging
     timeout-minutes: 25
+    permissions:
+      contents: read
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
@@ -54,14 +86,13 @@ jobs:
         run: npx wrangler deploy --dry-run --config wrangler.staging.generated.json
       - name: Review pending staging D1 migrations
         run: npx wrangler d1 migrations list nyales-staging --remote --config wrangler.staging.generated.json
-      - name: Download private portfolio demo package
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          mkdir -p "$RUNNER_TEMP/portfolio-demo"
-          gh release download nyales-demo-territory-20261103 --repo "$GITHUB_REPOSITORY" --pattern portfolio-demo.tar.gz --dir "$RUNNER_TEMP/portfolio-demo"
-          tar -xzf "$RUNNER_TEMP/portfolio-demo/portfolio-demo.tar.gz" -C "$RUNNER_TEMP/portfolio-demo"
-          node --input-type=module -e "import fs from 'node:fs'; import crypto from 'node:crypto'; const root=process.env.RUNNER_TEMP+'/portfolio-demo'; const checks=JSON.parse(fs.readFileSync(root+'/PACKAGE_CHECKSUMS.json','utf8')); for (const [name,meta] of Object.entries(checks.artifacts)) { const hash=crypto.createHash('sha256').update(fs.readFileSync(root+'/'+name)).digest('hex'); if(hash!==meta.sha256) throw Error('PACKAGE_CHECKSUM_MISMATCH '+name); }"
+      - name: Receive verified portfolio package
+        uses: actions/download-artifact@v4
+        with:
+          name: nyales-portfolio-demo-package
+          path: ${{ runner.temp }}/portfolio-demo
+      - name: Recheck portfolio package checksums
+        run: node --input-type=module -e "import fs from 'node:fs'; import crypto from 'node:crypto'; const root=process.env.RUNNER_TEMP+'/portfolio-demo'; const checks=JSON.parse(fs.readFileSync(root+'/PACKAGE_CHECKSUMS.json','utf8')); for (const [name,meta] of Object.entries(checks.artifacts)) { const hash=crypto.createHash('sha256').update(fs.readFileSync(root+'/'+name)).digest('hex'); if(hash!==meta.sha256) throw Error('PACKAGE_CHECKSUM_MISMATCH '+name); }"
       - name: Upload portfolio demo assets to staging R2
         run: |
           npx wrangler r2 object put "$CF_R2_BUCKET/portfolio-demo/territories-demo.pmtiles" --file "$RUNNER_TEMP/portfolio-demo/territories-demo.pmtiles" --remote --config wrangler.staging.generated.json --content-type application/vnd.pmtiles --cache-control 'public, max-age=300' --force
