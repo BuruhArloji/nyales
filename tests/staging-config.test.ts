@@ -13,6 +13,25 @@ test('Staging deploy binds built Worker, root paths, matching Firebase and isola
  for(const overrides of [{FIRST_ADMIN_EMAIL:'owner@example.test'},{FIRST_ADMIN_ORGANIZATION_NAME:'NYALES Pilot'},{FIRST_ADMIN_EMAIL:'invalid',FIRST_ADMIN_ORGANIZATION_NAME:'Org'}])assert.throws(()=>stagingConfig({...values,...overrides}));
  for(const overrides of [{CF_D1_DATABASE_ID:'00000000-0000-0000-0000-000000000000'},{CF_R2_BUCKET:'nyales-import-sources'},{CF_ACCOUNT_ID:'invalid'},{FIREBASE_PROJECT_ID:''},{VITE_FIREBASE_PROJECT_ID:'another-project'},{VITE_FIREBASE_AUTH_DOMAIN:'https://invalid/path'}])assert.throws(()=>stagingConfig({...values,...overrides}));
 });
-test('Staging mutation is dispatched explicitly; Firebase is available before build and no generated bindings are uploaded',async()=>{
- const workflow=await readFile('.github/workflows/deploy-staging.yml','utf8');assert.ok(workflow.includes('workflow_dispatch:'));assert.ok(!/^  push:/m.test(workflow));assert.ok(workflow.indexOf('Validate staging configuration')<workflow.indexOf('Build with matching Firebase'));assert.ok(workflow.indexOf('--dry-run')<workflow.indexOf('migrations apply'));assert.ok(workflow.indexOf('stagingOrigin(process.env.NYALES_STAGING_URL)')<workflow.indexOf('migrations apply'));assert.ok(!workflow.includes('seed.sql'));assert.ok(!workflow.includes('upload-artifact'));assert.ok(workflow.includes('test "$GITHUB_REF" = refs/heads/main'));
+test('Staging mutation is explicit; only the verified demo package crosses jobs without staging secrets or generated bindings',async()=>{
+ const workflow=await readFile('.github/workflows/deploy-staging.yml','utf8');
+ assert.ok(workflow.includes('workflow_dispatch:'));assert.ok(!/^  push:/m.test(workflow));
+ assert.ok(workflow.indexOf('Validate staging configuration')<workflow.indexOf('Build with matching Firebase'));
+ assert.ok(workflow.indexOf('--dry-run')<workflow.indexOf('migrations apply'));
+ assert.ok(workflow.indexOf('stagingOrigin(process.env.NYALES_STAGING_URL)')<workflow.indexOf('migrations apply'));
+ assert.ok(!workflow.includes('seed.sql'));assert.ok(workflow.includes('test "$GITHUB_REF" = refs/heads/main'));
+ const packageStart=workflow.indexOf('\n  package:\n'),deployStart=workflow.indexOf('\n  deploy:\n',packageStart);
+ assert.ok(packageStart>=0&&deployStart>packageStart);
+ const packageJob=workflow.slice(packageStart,deployStart);
+ assert.ok(packageJob.includes('permissions:\n      contents: write'));
+ assert.ok(packageJob.includes('actions/upload-artifact@v4'));
+ assert.ok(packageJob.includes('path: ${{ runner.temp }}/portfolio-demo/'));
+ assert.ok(packageJob.includes('gh release download nyales-demo-territory-20261103'));
+ assert.ok(!packageJob.includes('CLOUDFLARE_API_TOKEN'));
+ assert.ok(!packageJob.includes('wrangler.staging.generated.json'));
+ assert.ok(!packageJob.includes('FIREBASE_PROJECT_ID'));
+ const deployJob=workflow.slice(deployStart);
+ assert.ok(deployJob.includes('needs: package'));
+ assert.ok(deployJob.includes('permissions:\n      contents: read'));
+ assert.ok(deployJob.includes('actions/download-artifact@v4'));
 });
