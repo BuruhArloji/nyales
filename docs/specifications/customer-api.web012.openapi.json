@@ -155,8 +155,69 @@
               "minLength": 1,
               "maxLength": 128
             }
+          },
+          {
+            "in": "query",
+            "name": "projection",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "assignment"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "channel",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "assignment_status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "assigned",
+                "unassigned"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "record_status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive"
+              ]
+            }
           }
-        ]
+        ],
+        "description": "Optional projection=assignment requires pagination (limit 1..200) and returns only customer identity, area, record status, version and current channel owners. It omits invoice and segmentation fields and does not build segmentation snapshots. Existing unprojected responses remain unchanged. status (segmentation status) is not supported with assignment projection. All role, tenant and assignment filters are enforced before pagination."
       },
       "post": {
         "summary": "Create customers (Management/NSM)",

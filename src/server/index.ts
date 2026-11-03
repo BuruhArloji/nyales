@@ -230,15 +230,19 @@ scopedRoutes.get('/api/customers',async c=>{
  // page reads ~100 customers instead of the whole population.
  const paged=c.req.query('limit');
  const geoDrill=c.req.query('geo_boundary_id')||c.req.query('geo_bucket')||c.req.query('geo_dataset_id');
+ if(c.req.query('projection')&&(!paged||geoDrill))return c.json({code:'VALIDATION_ERROR'},422);
  if(paged&&!geoDrill){
    const limit=Number(paged),offset=Number(c.req.query('offset')||0);
    const channel=c.req.query('channel')||'field',assignmentStatus=c.req.query('assignment_status');
+   const projection=c.req.query('projection');
+   if(projection&&projection!=='assignment'||projection==='assignment'&&c.req.query('status'))return c.json({code:'VALIDATION_ERROR'},422);
    if(!Number.isInteger(limit)||limit<1||limit>200||!Number.isInteger(offset)||offset<0)return c.json({code:'VALIDATION_ERROR'},422);
    if(!['field','telesales'].includes(channel)||assignmentStatus&&!['assigned','unassigned'].includes(assignmentStatus))return c.json({code:'VALIDATION_ERROR'},422);
    const page=await readCustomerPage(c.env.DB,c.get('scope'),{
      limit,offset,q:c.req.query('q')||'',areaId:c.req.query('area_id')||'',repId:c.req.query('rep_id')||'',
      channel:channel as 'field'|'telesales',assignmentStatus:assignmentStatus as 'assigned'|'unassigned'|undefined,
      status:c.req.query('status')||'',recordStatus:c.req.query('record_status')||'',location:c.req.query('location')||'',
+     projection:projection as 'assignment'|undefined,
    });
    return c.json({data:page.rows,meta:{...meta(),total:page.total,limit:page.limit,offset:page.offset}});
  }

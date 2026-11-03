@@ -21,18 +21,20 @@ export type CustomerPageQuery={
   status?:string;
   recordStatus?:string;
   location?:string;
+  projection?:'assignment';
 };
 
 export type CustomerPage={rows:any[];total:number;limit:number;offset:number};
 
 const ACTIVE_ASSIGNMENT=`ca.channel=? AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)`;
-const assignmentExists=(extra='')=>`EXISTS (SELECT 1 FROM customer_assignment ca WHERE ca.organization_id=co.organization_id AND ca.outlet_id IN (SELECT f.id FROM customer_outlet f WHERE f.organization_id=co.organization_id AND (f.id=co.id OR f.merged_into_id=co.id)) AND ${ACTIVE_ASSIGNMENT}${extra})`;
+const assignmentExists=(extra='')=>`EXISTS (SELECT 1 FROM customer_assignment ca WHERE ca.organization_id=co.organization_id AND ca.outlet_id IN (SELECT co.id UNION SELECT f.id FROM customer_outlet f WHERE f.organization_id=co.organization_id AND f.merged_into_id=co.id) AND ${ACTIVE_ASSIGNMENT}${extra})`;
 
 export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery):Promise<CustomerPage>{
   const org=s.identity.organization_id;
   const limit=Math.min(MAX_PAGE,Math.max(1,Math.floor(q.limit??100)));
   const offset=Math.max(0,Math.floor(q.offset??0));
-  const run=await segmentationSnapshot(db,org,s.date);
+  const assignmentOnly=q.projection==='assignment';
+  const run=assignmentOnly?null:await segmentationSnapshot(db,org,s.date);
 
   const filter=customerPredicate(s);
   const where:string[]=[filter.sql,'co.merged_into_id IS NULL'];
@@ -59,28 +61,30 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
 
   const from=`FROM customer_outlet co
     JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id
-    LEFT JOIN customer_status_snapshot ss ON ss.run_id=? AND ss.customer_id=co.id
+    ${assignmentOnly?'':'LEFT JOIN customer_status_snapshot ss ON ss.run_id=? AND ss.customer_id=co.id'}
     WHERE ${where.join(' AND ')}`;
 
-  const total=(await db.prepare(`SELECT COUNT(*) n ${from}`).bind(run.id,...params).first<{n:number}>())?.n||0;
-  const page=await db.prepare(`SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified ${from} ORDER BY co.name COLLATE NOCASE,co.id LIMIT ? OFFSET ?`).bind(run.id,...params,limit,offset).all<any>();
+  const fromParams=[...(run?[run.id]:[]),...params];
+  const total=(await db.prepare(`SELECT COUNT(*) n ${from}`).bind(...fromParams).first<{n:number}>())?.n||0;
+  const columns=assignmentOnly?'co.id,co.name,a.name area,co.area_id,co.external_code,co.version,co.record_status':'co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified';
+  const page=await db.prepare(`SELECT ${columns} ${from} ORDER BY co.name COLLATE NOCASE,co.id LIMIT ? OFFSET ?`).bind(...fromParams,limit,offset).all<any>();
 
   const ids=page.results.map((row:any)=>row.id);
   if(!ids.length)return{rows:[],total,limit,offset};
 
-  const segmentRows=(await db.prepare(`SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=? AND customer_id IN (SELECT value FROM json_each(?))`).bind(run.id,JSON.stringify(ids)).all<any>()).results;
+  const segmentRows=run?(await db.prepare(`SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=? AND customer_id IN (SELECT value FROM json_each(?))`).bind(run.id,JSON.stringify(ids)).all<any>()).results:[];
 
   const assignmentRows=(await db.prepare(`SELECT COALESCE(al.canonical_id,ca.outlet_id) customer_id,ca.rep_id,ca.channel,u.name
     FROM customer_assignment ca
     LEFT JOIN customer_alias al ON al.organization_id=ca.organization_id AND al.source_id=ca.outlet_id
     JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id
     WHERE ca.organization_id=?
-      AND (ca.outlet_id IN (SELECT value FROM json_each(?))
-        OR ca.outlet_id IN (SELECT f.id FROM customer_outlet f WHERE f.organization_id=? AND f.merged_into_id IN (SELECT value FROM json_each(?))))
+      AND ca.outlet_id IN (SELECT value FROM json_each(?)
+        UNION SELECT f.id FROM customer_outlet f WHERE f.organization_id=? AND f.merged_into_id IN (SELECT value FROM json_each(?)))
       AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)`).bind(org,JSON.stringify(ids),org,JSON.stringify(ids),s.date,s.date).all<any>()).results;
 
   const inv=invoicePredicate(s);
-  const factRows=(await db.prepare(`WITH facts AS (
+  const factRows=assignmentOnly?[]:(await db.prepare(`WITH facts AS (
       SELECT COALESCE(child.merged_into_id,child.id) customer_id,MAX(i.invoice_date) last,
              SUM(i.net_minor) actual
       FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id
@@ -103,6 +107,14 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
       const segment=segments.get(r.id);
       const fact=facts.get(r.id) as any;
       const owner=owners.get(r.id)||[];
+      if(assignmentOnly)return{
+        id:r.id,name:r.name,area_id:r.area_id,area:String(r.area||'').replace(/^Area /,''),
+        external_code:r.external_code,version:r.version,record_status:r.record_status,
+        field_rep_id:owner.find(x=>x.channel==='field')?.rep_id||null,
+        telesales_rep_id:owner.find(x=>x.channel==='telesales')?.rep_id||null,
+        owner:owner.find(x=>x.channel==='field')?.name||'Belum assigned',
+        telesales_owner:owner.find(x=>x.channel==='telesales')?.name||'Belum assigned',
+      };
       return{
         id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,
         external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,
