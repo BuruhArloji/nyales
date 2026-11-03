@@ -188,7 +188,8 @@ function seedKey(table:string,columns:string[]){
   if(!keys||keys.some(key=>!columns.includes(key)))throw new Error(`UNSUPPORTED_SEED_KEY_${table}`);
   return keys;
 }
-export function toInsertStatements(dataset:BekasiPortfolio,rowsPerStatement=40){
+export function createBekasiStartMarker(dataset:BekasiPortfolio):SeedRow{return{id:`${PREFIX}manifest-started`,organization_id:dataset.organizationId,actor_id:dataset.managementId,resource_type:'training_dataset',resource_id:DATASET_ID,action:'seed_started',occurred_at:dataset.createdAt,before_json:null,after_json:JSON.stringify({...dataset.manifest,seed_status:'in_progress'})}};
+export function toInsertStatements(dataset:BekasiPortfolio,rowsPerStatement=16){
   const statements:string[]=[];
   for(const table of TABLE_ORDER){
     const rows=dataset.rows[table]||[];

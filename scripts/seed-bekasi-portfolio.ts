@@ -2,13 +2,15 @@ import {execFileSync} from 'node:child_process';
 import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
-import {buildBekasiPortfolio,DATASET_ID,EXPECTED,PREFIX,toInsertStatements} from './bekasi-portfolio-data';
+import {buildBekasiPortfolio,createBekasiStartMarker,DATASET_ID,EXPECTED,PREFIX,toInsertStatements} from './bekasi-portfolio-data';
 
 const ROOT=process.cwd();
 const CONFIG=resolve(ROOT,'wrangler.staging.generated.json');
 const APPLY=process.argv.includes('--apply');
 const REMOTE=process.argv.includes('--remote');
-const CHUNK_STATEMENTS=15;
+const CHUNK_STATEMENTS=8;
+const MAX_SQL_STATEMENT_BYTES=64*1024;
+const MAX_SQL_FILE_BYTES=512*1024;
 
 function assertStagingConfig(){
   if(!REMOTE)throw new Error('REMOTE_FLAG_REQUIRED');
@@ -119,15 +121,22 @@ async function main(){
     return;
   }
   const sqlStatements=toInsertStatements(dataset);
+  if(sqlStatements.some(sql=>Buffer.byteLength(sql)>MAX_SQL_STATEMENT_BYTES))throw new Error('BEKASI_SQL_STATEMENT_TOO_LARGE');
+  const groups:Array<string[]> = [];
+  for(let index=0;index<sqlStatements.length;index+=CHUNK_STATEMENTS)groups.push(sqlStatements.slice(index,index+CHUNK_STATEMENTS));
+  const contents=groups.map(group=>group.join('\n\n')+'\n');
+  if(contents.some(content=>Buffer.byteLength(content)>MAX_SQL_FILE_BYTES))throw new Error('BEKASI_SQL_FILE_TOO_LARGE');
+  const startMarker=createBekasiStartMarker(dataset);
+  const startSql=toInsertStatements({...dataset,rows:{master_audit:[startMarker]}},1)[0];
+  wrangler(['--command',startSql]);
+  console.log('Bekasi DEMO in-progress disclosure marker applied.');
   const dir=mkdtempSync(join(tmpdir(),'nyales-bekasi-demo-'));
   try{
-    const groups:Array<string[]>=[];
-    for(let index=0;index<sqlStatements.length;index+=CHUNK_STATEMENTS)groups.push(sqlStatements.slice(index,index+CHUNK_STATEMENTS));
-    for(let index=0;index<groups.length;index++){
+    for(let index=0;index<contents.length;index++){
       const file=join(dir,`chunk-${String(index+1).padStart(3,'0')}.sql`);
-      writeFileSync(file,groups[index].join('\n\n')+'\n',{encoding:'utf8',mode:0o600});
+      writeFileSync(file,contents[index],{encoding:'utf8',mode:0o600});
       wrangler(['--file',file]);
-      console.log(`Bekasi DEMO data chunk ${index+1}/${groups.length} applied.`);
+      console.log(`Bekasi DEMO data chunk ${index+1}/${contents.length} applied.`);
     }
   }finally{rmSync(dir,{recursive:true,force:true})}
   const actual=one(countSql(orgId));

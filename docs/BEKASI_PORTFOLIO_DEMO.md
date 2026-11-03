@@ -17,4 +17,4 @@ Dataset portofolio ini menggambarkan operasi lapangan sintetis selama tiga bulan
 - Seed menambahkan record baru saja. Sebelum dan sesudah import, runner membandingkan jumlah pelanggan direktori, invoice non-DEMO, dan versi target aktif; jika salah satunya berubah, run dinyatakan gagal.
 - Dataset ditulis hanya melalui workflow `NYALES staging deploy` pada branch `main`, dengan input `seed_bekasi_demo` yang **default-nya false**. Runner menolak konfigurasi selain `nyales-staging` dengan `APP_ENV=staging`, menulis secara idempotent, dan memverifikasi jumlah record setelah import. Tidak ada jalur production.
 
-Aplikasi menampilkan disclosure **“DEMO · Simulasi operasi Bekasi (Agu–Okt 2026)”** hanya setelah manifest dataset sintetis berhasil tersimpan di staging.
+Aplikasi menampilkan disclosure **DEMO** segera setelah marker pengisian awal tersimpan; selama import pesannya menyebut “sedang dimuat”, lalu setelah seluruh jumlah dan rekonsiliasi lulus berubah menjadi “Simulasi operasi Bekasi (Agu–Okt 2026)”. Import dibagi menjadi batch SQL kecil yang dapat dilanjutkan: jika satu batch gagal, retry melewati ID yang sudah ada, bukan memperbarui record lama.
