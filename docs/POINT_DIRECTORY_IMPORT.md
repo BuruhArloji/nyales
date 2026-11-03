@@ -95,3 +95,8 @@ Deployment GitHub Actions `41689906637` pada commit `8882970` berhasil. Seluruh 
 Indeks ringan menggantikan metadata objek lama sambil mempertahankan 2.638 referensi dan 16.074 detail lama; objek R2 lama disimpan untuk pemulihan. Total referensi siap tampil menjadi 10.743. Saldo 524 customer dari sumber lama tetap mengikuti receipt lama dan tidak dijalankan ulang pada impor incremental ini.
 
 Bukti dan sumber privat: `.nyales-agent/customer-source-20261104/IMPORT_REPORT_FINAL.json`, `CLOUD_RECONCILED.json`, `CLOUD_PROGRESS.json`, `clean/source-dedup-audit.csv`, serta `clean/review-points.csv`. Tidak ada sumber, detail kontak, SQL berisi customer, atau backup yang dikirim ke Git. Pengujian tampilan tetap diserahkan kepada pengguna.
+
+
+### Tooltip kompak peta — 4 November 2026
+
+Desain disepakati memakai ikon lapisan, satu ukuran font 13px, label di kiri dan angka lokal Indonesia rata kanan. Cluster menampilkan pelanggan, titik nonpelanggan, penjualan, aktivitas, pelanggan tercakup, churn, dan status belum terverifikasi. Periode memakai periode data yang diterima. Nama sumber dipasang sebagai teks DOM. Tooltip titik tunggal mengikuti gaya yang sama. Istilah titik nonpelanggan konsisten di layer, legenda dan popup; kategori sumber serta definisi bisnis tidak berubah. Tooltip hanya dibuat ulang ketika berpindah fitur dan tidak dipasang ulang pada setiap pergerakan pointer; tidak menambahkan request API.

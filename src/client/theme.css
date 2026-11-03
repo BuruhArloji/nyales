@@ -373,3 +373,22 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 
 .map-layer-anchor{position:relative}.map-layer-panel{position:absolute;top:calc(100% + 8px);left:0;width:240px;padding:12px;z-index:8;background:#f8fffcf2;border:1px solid #fff;border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 8px 28px #17382a24}.map-layer-panel label{display:flex;align-items:center;gap:10px;min-height:42px;font-size:12px;cursor:pointer}.map-layer-panel input,.map-transaction-filter input{accent-color:#202724}.map-transaction-filter{display:flex;align-items:center;gap:7px;padding:10px 12px;background:#f8fffcdf;border:1px solid #fff;border-radius:24px;font-size:11px;min-height:40px;box-sizing:border-box}.unified-map-toolbar{z-index:6}.unified-map-toolbar .map-layer-panel{pointer-events:auto}.unified-map-toolbar .map-transaction-filter{white-space:nowrap}.unified-map-panel>details>summary{font-size:13px;font-weight:500;cursor:pointer}.unified-map-panel>details{margin-bottom:14px}.unified-map-panel .geo-region b{font-size:11px}
 @media(max-width:700px){.unified-map-toolbar{gap:6px}.map-layer-panel{left:auto;right:-20px;width:230px}.unified-map-panel{top:210px;max-height:calc(100% - 260px)}}
+
+/* Approved compact map hover: one type size, aligned values, neutral surface. */
+.maplibre-canvas .geo-map-tooltip{z-index:7;pointer-events:none}
+.maplibre-canvas .geo-map-tooltip .maplibregl-popup-content{box-sizing:border-box;width:min(320px,calc(100vw - 40px));max-width:100%;padding:14px 16px;background:#202924;color:#f6f8f7;border:1px solid #ffffff14;border-radius:15px;box-shadow:0 8px 22px #10271b26;font-family:Inter,system-ui,sans-serif;font-size:13px;line-height:1.5;pointer-events:none}
+.map-hover-card{min-width:0;font-size:inherit;line-height:inherit}
+.map-hover-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid #ffffff20}
+.map-hover-title{display:inline-flex;align-items:flex-start;gap:7px;min-width:0;font-size:inherit;font-weight:500}
+.map-hover-title span{min-width:0;overflow-wrap:anywhere}
+.map-hover-title svg{width:15px;height:15px;flex:none;margin-top:2px;color:#c1cac5}
+.map-hover-period{font-size:inherit;color:#c1cac5;white-space:nowrap}
+.map-hover-facts{display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:6px 12px;margin:0;font-size:inherit}
+.map-hover-facts dt{min-width:0;margin:0;color:#c1cac5;font-size:inherit;overflow-wrap:anywhere}
+.map-hover-facts dd{max-width:13rem;margin:0;color:#f6f8f7;text-align:right;font-size:inherit;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.maplibre-canvas .geo-map-tooltip .maplibregl-popup-tip{border-color:transparent}
+.geo-map-tooltip.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,.geo-map-tooltip.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,.geo-map-tooltip.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip{border-top-color:#202924}
+.geo-map-tooltip.maplibregl-popup-anchor-top .maplibregl-popup-tip,.geo-map-tooltip.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,.geo-map-tooltip.maplibregl-popup-anchor-top-right .maplibregl-popup-tip{border-bottom-color:#202924}
+.geo-map-tooltip.maplibregl-popup-anchor-left .maplibregl-popup-tip{border-right-color:#202924}
+.geo-map-tooltip.maplibregl-popup-anchor-right .maplibregl-popup-tip{border-left-color:#202924}
+@media(max-width:340px){.maplibre-canvas .geo-map-tooltip .maplibregl-popup-content{padding:12px}.map-hover-facts{column-gap:10px}}
