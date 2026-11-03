@@ -85,3 +85,13 @@ Bukti privat: BEFORE_500_BACKUP_20261031.json, CLOUD_500_RECONCILED_20261031.jso
 Sumber tambahan diproses secara incremental menurut Google Place ID; seluruh identitas pada sumber lama dikecualikan, termasuk titik yang masih ditahan. CSV dan JSON dicocokkan pada identitas serta atribut inti, dengan dukungan baris Place ID berulang dan serialisasi list yang berbeda. Konflik inti dan kandidat nama sama dalam jarak 25 meter ditahan. Label wilayah tetap belum terverifikasi polygon.
 
 Format objek privat `nyales-reference-points-2` memisahkan indeks pin dari detail ke 32 partisi berdasarkan byte pertama hash external code modulo 32. Tiap partisi memiliki checksum, jumlah, ukuran, namespace organisasi/dataset, serta identitas internal sendiri; endpoint detail hanya membaca partisi yang diperlukan dan tetap memeriksa scope/membership. Format lama tetap didukung. Tidak ada pembukaan endpoint publik atau penyalinan data pelanggan ke Git.
+
+### Hasil penerapan tambahan 4 November 2026
+
+Sebanyak 63.757 baris CSV mewakili 61.033 identitas sumber unik. Setelah melewati 16.074 identitas pada sumber sebelumnya dan menggabungkan pengulangan identitas baru, terdapat 44.959 titik tambahan: **33.850 master customer baru**, **8.105 referensi peta baru**, serta **3.004 titik ditahan**. Pemeriksaan inti pasangan CSV/JSON tidak menemukan konflik. Rekap wilayah tidak diimpor sebagai titik.
+
+Deployment GitHub Actions `41689906637` pada commit `8882970` berhasil. Seluruh 66 objek R2 cocok hash readback. Impor 170 batch customer selesai; rekonsiliasi cloud mempertahankan 13.120 customer sebelumnya dan tabel invoice, line/source event, user/role, assignment/reporting, activity/visit, target serta insentif. Foreign key error 0. Tidak menambahkan penugasan sales, invoice, kunjungan, atau izin kontak. Seluruh koordinat tambahan tetap unverified dan riwayat transaksinya belum dinyatakan lengkap.
+
+Indeks ringan menggantikan metadata objek lama sambil mempertahankan 2.638 referensi dan 16.074 detail lama; objek R2 lama disimpan untuk pemulihan. Total referensi siap tampil menjadi 10.743. Saldo 524 customer dari sumber lama tetap mengikuti receipt lama dan tidak dijalankan ulang pada impor incremental ini.
+
+Bukti dan sumber privat: `.nyales-agent/customer-source-20261104/IMPORT_REPORT_FINAL.json`, `CLOUD_RECONCILED.json`, `CLOUD_PROGRESS.json`, `clean/source-dedup-audit.csv`, serta `clean/review-points.csv`. Tidak ada sumber, detail kontak, SQL berisi customer, atau backup yang dikirim ke Git. Pengujian tampilan tetap diserahkan kepada pengguna.
