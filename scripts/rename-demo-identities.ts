@@ -33,7 +33,7 @@ function main(){
  const users=query(`SELECT * FROM app_user WHERE organization_id=${o} AND id IN(${Object.keys(names).map(q).join(',')}) ORDER BY id`);if(users.length!==10||users.some((u:any)=>u.status!=='active'))throw Error('EXACT_10_ACTIVE_SALES_REQUIRED');
  const protectedCustomer=(rs:any[])=>rs.map(r=>{if(!changes.some(c=>c.id===r.id))return r;const {name,version,...rest}=r;return rest});
  const businessSnapshot=()=>Object.fromEntries(Object.entries({
-  invoices:`SELECT id,outlet_id,rep_id,net_minor,invoice_date,source_invoice_id,version FROM invoice WHERE organization_id=${o} ORDER BY id`,
+  invoices:`SELECT id,outlet_id,rep_id,net_minor,invoice_date,source_invoice_id,revision_no FROM invoice WHERE organization_id=${o} ORDER BY id`,
   activities:`SELECT id,outlet_id,user_id,metadata_json FROM activity WHERE organization_id=${o} ORDER BY id`,
   targets:`SELECT id,target_minor,rep_id_snapshot,outlet_id FROM target_item WHERE organization_id=${o} ORDER BY id`,
   assignments:`SELECT id,outlet_id,rep_id,effective_from_date,effective_to_date FROM customer_assignment WHERE organization_id=${o} ORDER BY id`,
