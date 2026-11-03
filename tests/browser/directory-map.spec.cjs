@@ -40,14 +40,14 @@ async function detailFixture(page,{failedPhoto=false}={}){
   }else await route.fulfill({json:{data:{}}});
  });
  await page.route('**/fixture-photo.svg',route=>route.fulfill(failedPhoto?{status:404,body:''}:{contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="240" height="116"><rect width="240" height="116" fill="#168e85"/></svg>'}));
- await page.goto(origin+'/?details=1');await expect(page.locator('.maplibre-marker.customer')).toHaveCount(2);return calls;
+ await page.goto(origin+'/?details=1');await expect(page.locator('.maplibre-marker.customer')).toHaveCount(2);await expect(page.locator('.maplibre-marker.demo')).toHaveCount(0);await expect(page.getByText('Overlay DEMO · 1')).toBeVisible();return calls;
 }
 test('small maps fetch details only on open, retain loaded popup and show source photo and facts',async({page})=>{
  const calls=await detailFixture(page);expect(calls).toEqual([]);
  const pin=page.getByRole('button',{name:'Warung Foto, Unknown',exact:true});await pin.click();
  const card=page.locator('.map-popup-card');await expect(card.getByText('Jalan Contoh 12, Bekasi')).toBeVisible();await expect(card.getByText('4.8 · 25 ulasan')).toBeVisible();
  await expect.poll(()=>card.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
- await expect(card.getByRole('link',{name:'+6281234567890'})).toHaveAttribute('href','tel:+6281234567890');expect(calls).toEqual(['/api/customers/photo-customer/directory-details']);await expect(card.locator('.map-popup-heading')).not.toContainText('Unknown');await expect(card.locator('.map-popup-facts')).toContainText('Status pelangganUnknown');await expect(card.locator('.map-popup-facts')).toContainText('Sales / PICBelum ditugaskan');await expect(card.getByRole('button',{name:'Street View',exact:true})).toBeVisible();await card.getByRole('button',{name:'Street View',exact:true}).click();expect(await page.evaluate(()=>window.__streetViewItem)).toBe('photo-customer');
+ await expect(card.getByRole('link',{name:'+6281234567890'})).toHaveAttribute('href','tel:+6281234567890');expect(calls).toEqual(['/api/customers/photo-customer/directory-details']);await expect(card.locator('.map-popup-heading')).not.toContainText('Unknown');await expect(card.locator('.map-popup-source-facts')).toContainText('Status pelangganUnknown');await expect(card.locator('.map-popup-source-facts')).toContainText('Sales / PICBelum ditugaskan');await expect(card.getByRole('button',{name:'Street View',exact:true})).toBeVisible();await card.getByRole('button',{name:'Street View',exact:true}).click();expect(await page.evaluate(()=>window.__streetViewItem)).toBe('photo-customer');
  expect(await card.locator('.map-popup-body').evaluate(el=>el.scrollHeight>el.clientHeight)).toBe(true);
  await page.locator('.maplibregl-popup-close-button').click();await pin.click();await expect(card.locator('img')).toBeVisible();expect(calls).toHaveLength(1);
  await expect.poll(async()=>{const a=await card.boundingBox(),b=await page.locator('.maplibre-canvas').boundingBox();return a.y>=b.y&&a.y+a.height<=b.y+b.height}).toBe(true);
@@ -86,4 +86,32 @@ test('popup actions remain visible above long content on a short map',async({pag
   const r=await action.boundingBox();expect(r.height).toBeGreaterThanOrEqual(44);expect(r.y).toBeGreaterThanOrEqual(bounds.y);expect(r.y+r.height).toBeLessThanOrEqual(bounds.y+bounds.height);
  }
  await expect(card.getByRole('link',{name:'Buka di Google Maps'})).toHaveAttribute('rel','noopener noreferrer');
+});
+
+test('embedded DEMO overlay keeps source marker and source identity',async({page})=>{
+ await detailFixture(page);
+ await expect(page.locator('.maplibre-marker.customer')).toHaveCount(2);
+ await expect(page.locator('.maplibre-marker.demo')).toHaveCount(0);
+ await page.getByRole('button',{name:'Warung Foto, Unknown',exact:true}).click();
+ const card=page.locator('.map-popup-card');
+ await expect(card.getByText('Warung Foto',{exact:true})).toBeVisible();
+ await expect(card.getByText('Operasi DEMO · overlay referensi',{exact:true})).toBeVisible();
+ await expect(card.getByText('Rina DEMO',{exact:true})).toBeVisible();
+ await expect(card.getByText('12',{exact:true})).toBeVisible();
+ await expect(card.getByText(/^Rp\s*12\.500\.000$/)).toBeVisible();
+ await expect(card.getByText(/bukan transaksi, kunjungan, atau histori nyata/)).toBeVisible();
+ await expect(card.getByRole('button',{name:'Buka operasi DEMO'})).toBeVisible();
+ await card.getByRole('button',{name:'Buka operasi DEMO'}).click();
+ await expect.poll(()=>page.evaluate(()=>location.hash)).toContain('customer_id=bekasi-demo-customer-001');
+ await expect(card.locator('img')).toHaveCount(1);
+});
+
+test('large embedded overlays do not add source points or a demo source',async({page})=>{
+ await page.goto(origin+'/?large-demo=1');
+ await expect.poll(()=>page.evaluate(()=>window.__directoryFixtureMap?.isSourceLoaded('nyales-directory-points'))).toBe(true);
+ await expect(page.getByRole('checkbox',{name:/Overlay DEMO/})).toBeChecked();
+ const pointState=()=>page.evaluate(()=>{const data=window.__directoryFixtureSourceData;if(!data?.features)return null;const customers=data.features.filter(f=>f.properties.kind==='customer');return {count:customers.length,unique:new Set(customers.map(f=>f.properties.id)).size,overlays:customers.filter(f=>f.properties.has_demo_overlay).length}});
+ await expect.poll(pointState,{timeout:25000}).toEqual({count:12624,unique:12624,overlays:200});
+ expect(await page.evaluate(()=>Boolean(window.__directoryFixtureMap?.getSource('nyales-demo-points')))).toBe(false);
+ const overlayPaint=()=>page.evaluate(()=>JSON.stringify(window.__directoryFixtureMap.getPaintProperty('nyales-directory-points-points','circle-color')).includes('#d18b2c'));const toggle=page.getByRole('checkbox',{name:/Overlay DEMO/});await toggle.uncheck();await expect.poll(pointState).toEqual({count:12624,unique:12624,overlays:200});await expect.poll(overlayPaint).toBe(false);await toggle.check();await expect.poll(pointState).toEqual({count:12624,unique:12624,overlays:200});await expect.poll(overlayPaint).toBe(true);
 });

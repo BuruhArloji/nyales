@@ -1,6 +1,6 @@
 # Simulasi Operasi Lapangan Bekasi · DEMO
 
-Dataset portofolio ini menggambarkan operasi lapangan sintetis selama tiga bulan lengkap, **1 Agustus–31 Oktober 2026**, di dua area terpisah: **Kota Bekasi · DEMO** dan **Kabupaten Bekasi · DEMO**. Seluruh nama, outlet, penugasan, aktivitas, order, invoice, dan target adalah rekaan untuk demo NYALES; dataset ini bukan rekaman kegiatan atau transaksi nyata.
+Dataset portofolio ini menggambarkan operasi lapangan sintetis selama tiga bulan lengkap, **1 Agustus–31 Oktober 2026**, di dua area terpisah: **Kota Bekasi · DEMO** dan **Kabupaten Bekasi · DEMO**. Seluruh nama, outlet DEMO, penugasan, aktivitas, order, invoice, dan target adalah rekaan untuk demo NYALES; dataset ini bukan rekaman kegiatan atau transaksi nyata.
 
 ## Angka skenario
 
@@ -12,9 +12,21 @@ Dataset portofolio ini menggambarkan operasi lapangan sintetis selama tiga bulan
 
 ## Batas kejujuran dan isolasi
 
-- Semua entitas baru memakai label atau ID DEMO dan sumber invoice `bekasi-demo-synthetic`. Status approved/validated pada record demo hanya status simulasi, bukan hasil approval stok/kredit atau validasi dokumen aktual.
-- Outlet hanya ditempatkan pada level area. Tidak ada koordinat, kontak, GPS, foto, atau bukti kunjungan yang direkayasa. Karena itu, titik outlet DEMO tidak ditampilkan sebagai lokasi pada peta.
-- Seed menambahkan record baru saja. Sebelum dan sesudah import, runner membandingkan jumlah pelanggan direktori, invoice non-DEMO, dan versi target aktif; jika salah satunya berubah, run dinyatakan gagal.
-- Dataset ditulis hanya melalui workflow `NYALES staging deploy` pada branch `main`, dengan input `seed_bekasi_demo` yang **default-nya false**. Runner menolak konfigurasi selain `nyales-staging` dengan `APP_ENV=staging`, menulis secara idempotent, dan memverifikasi jumlah record setelah import. Tidak ada jalur production.
+- Semua entitas skenario memakai label atau ID DEMO dan sumber invoice `bekasi-demo-synthetic`. Status approved/validated pada record demo hanya status simulasi, bukan hasil approval stok/kredit atau validasi dokumen aktual.
+- Outlet DEMO tetap tanpa koordinat fisik. Tidak ada koordinat, kontak, GPS, foto, atau bukti kunjungan yang direkayasa. Jika operasi DEMO ditampilkan pada peta, ia menempel sebagai overlay di titik customer direktori yang sudah ada, bukan pin DEMO baru atau lokasi fisik outlet rekaan.
+- Seed awal hanya menambah record DEMO. Overlay berikutnya hanya menambah relasi audit; seluruh record customer—termasuk 12.100 customer direktori dan 200 outlet DEMO—tetap identik. Transaksi, penugasan, versi target, serta riwayat asli tidak digabung atau ditulis ulang.
+- Workflow `NYALES staging deploy` pada branch `main` memiliki input terpisah `seed_bekasi_demo` dan `map_bekasi_demo_points`, keduanya **default false**. Runner overlay menolak akun/database di luar staging yang telah ditentukan. Tidak ada jalur production.
 
-Aplikasi menampilkan disclosure **DEMO** segera setelah marker pengisian awal tersimpan; selama import pesannya menyebut “sedang dimuat”, lalu setelah seluruh jumlah dan rekonsiliasi lulus berubah menjadi “Simulasi operasi Bekasi (Agu–Okt 2026)”. Import dibagi menjadi batch SQL kecil yang dapat dilanjutkan: jika satu batch gagal, retry melewati ID yang sudah ada, bukan memperbarui record lama.
+Aplikasi menampilkan disclosure **DEMO** yang jelas tetapi tidak mengganggu. Selama seed awal pesannya menyebut “sedang dimuat”; setelah jumlah dan rekonsiliasi lulus menjadi “Simulasi operasi Bekasi (Agu–Okt 2026)”. Record operasi tidak pernah diklaim sebagai kegiatan nyata.
+
+## Operasi DEMO tertanam pada titik customer existing
+
+Atas permintaan pengguna, `scripts/map-bekasi-demo-points.ts --apply --remote` memilih **ID titik existing**, bukan membuat atau menyalin koordinat: 100 titik direktori Kota Bekasi dan 100 Kabupaten Bekasi dari dataset `maps-warung-20261028`. Pemilihan deterministik memakai sebaran longitude/latitude per area. Relasi ini adalah penempatan skenario, bukan pencocokan identitas outlet DEMO dengan usaha nyata.
+
+Relasi satu-ke-satu disimpan sebagai sidecar `master_audit` bertipe `demo_operation_point_link`; payload menyimpan ID/versi/koordinat sumber dan before-image customer DEMO. Satu receipt keberhasilan `operation_point_overlay_applied` baru ditulis setelah tepat 200 relasi unik dan seluruh rekonsiliasi cocok. Runner tidak memiliki `UPDATE customer_outlet`: tidak ada salinan koordinat, perubahan alamat/nama/area/assignment, pin baru, atau perubahan riwayat sumber. Pengulangan melengkapi receipt yang belum ada dan menolak pilihan sumber atau baseline yang berubah.
+
+API staging melakukan join baca saja antara relasi tersebut, record DEMO, dan customer sumber yang sama-sama berada dalam scope. Identitas titik peta selalu ID customer sumber; koordinat, nama, alamat, foto dan detail sumber tetap milik titik aslinya. Popup menambahkan kotak **operasi DEMO** yang terpisah: sales skenario, periode, kunjungan, order, invoice dan nilai sintetis, beserta tautan ke record operasi DEMO. Angka tersebut bukan transaksi atau kunjungan milik tempat sumber. Koordinat direktori sendiri belum diverifikasi lapangan.
+
+Overlay dapat ditampilkan/disembunyikan tanpa menghilangkan titik existing. Filter area/sales dapat mencari keterkaitan skenario pada titik tersebut tanpa memindahkan customer sumber atau menambah penugasan pada direktori. Jumlah fitur peta tidak bertambah karena overlay. Pemetaan ini tidak mengesahkan polygon administrasi, GPS, rute, atau bukti kunjungan.
+
+Rekonsiliasi membandingkan SHA-256 **seluruh isi `customer_outlet`** sebelum/sesudah, signature bisnis, 200 relasi dengan sumber unik dan 100 per area. API tidak menampilkan relasi yang belum selesai, di luar scope, tidak valid, atau sudah stale; tidak pernah menggantinya dengan pin salinan.

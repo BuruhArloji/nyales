@@ -27,6 +27,7 @@ import {boundaries} from './boundaries';
 import {demoTerritoryFiles} from './demo-territory';
 import {distribution} from './distribution';
 import {createGeographyRoutes,filterGeoCustomers} from './geography';
+import {applyBekasiOverlay,loadBekasiPointOverlay} from './bekasi-point-overlay';
 
 import {products} from './products';
 
@@ -309,11 +310,22 @@ async function mapPayload(c:any){
 
  if(!['field','telesales'].includes(channel))throw new Error('Invalid channel');
 
+ const overlayRows=cachedCustomers.value.map(row=>({...row,organization_id:s.identity.organization_id}));
+ const overlay=await loadBekasiPointOverlay(c.env.DB,s.identity.organization_id,overlayRows,{areaId,repId,channel,status},c.env.APP_ENV);
+ const overlaid=overlay.enabled?applyBekasiOverlay(cachedCustomers.value,overlay.links,overlay.metrics,{areaId,repId,channel,status}):{allCustomers:cachedCustomers.value,linkedDemoCustomerCount:0};
+ const rawOverlaid=overlaid.allCustomers;
+
  if(areaId)customers=customers.filter(x=>x.area_id===areaId);
 
  if(repId)customers=customers.filter(x=>(channel==='field'?x.field_rep_id:x.telesales_rep_id)===repId);
 
  if(status)customers=customers.filter(x=>x.status===status);
+
+ const filteredAll=rawOverlaid.filter((x:any)=>(!areaId||x.area_id===areaId)&&(!repId||(channel==='field'?x.field_rep_id:x.telesales_rep_id)===repId)&&(!status||x.status===status));
+ const enrichedById=new Map(rawOverlaid.map((x:any)=>[x.id,x]));
+ const ordinaryMap=customers.filter((x:any)=>x.record_status!=='inactive'&&x.lat!==null&&x.lng!==null).map((x:any)=>enrichedById.get(x.id)||x);
+ const mapIds=new Set(ordinaryMap.map((x:any)=>x.id));
+ const mapCustomers=[...ordinaryMap,...rawOverlaid.filter((x:any)=>x.demo_operation_overlay&&!mapIds.has(x.id)&&x.record_status!=='inactive'&&x.lat!==null&&x.lng!==null)];
 
  let sql='p.organization_id=?';const args=[s.identity.organization_id];
 
@@ -334,7 +346,7 @@ async function mapPayload(c:any){
  const reference=await referencePoints(c);
  const positions=await (c.env.DB as D1Database).prepare(`SELECT p.user_id id,u.name,p.latitude_e7,p.longitude_e7,p.captured_at last_seen,p.source,p.accuracy_m FROM sales_last_position p JOIN app_user u ON u.id=p.user_id AND u.organization_id=p.organization_id WHERE ${sql} AND u.status='active'`).bind(...args).all<{id:string;name:string;latitude_e7:number;longitude_e7:number;last_seen:string;source:string;accuracy_m:number|null}>();
 
- return {data:{reference_points:reference.points,reference_point_count:reference.total,reference_scope_note:reference.scope_note,total_customer_count:customers.length,missing_coordinates_count:customers.filter(x=>x.record_status!=='inactive'&&(x.lat===null||x.lng===null)).length,inactive_customer_count:customers.filter(x=>x.record_status==='inactive').length,all_customers:customers,customers:customers.filter(x=>x.record_status!=='inactive'&&x.lat!==null&&x.lng!==null),sales:positions.results.map((r:any)=>{const seconds=Math.floor((Date.now()-Date.parse(r.last_seen))/1000);return {id:r.id,name:r.name,lat:r.latitude_e7/1e7,lng:r.longitude_e7/1e7,last_seen:r.last_seen,source:r.source,accuracy_m:r.accuracy_m,age_seconds:Number.isFinite(seconds)&&seconds>=0?seconds:null,clock_status:!Number.isFinite(seconds)?'invalid':seconds<0?'future':'valid',position_state:'last_received'}}),basemap:{provider:c.env.MAP_TILE_URL?'custom_raster':'openfreemap',style_url:c.env.MAP_TILE_URL?null:'https://tiles.openfreemap.org/styles/positron',tile_url:c.env.MAP_TILE_URL||'https://tile.openstreetmap.org/{z}/{x}/{y}.png',attribution:c.env.MAP_ATTRIBUTION||'Â© OpenStreetMap contributors',configured:Boolean(c.env.MAP_TILE_URL)}},meta:{...meta(),routing:false}};
+ return {data:{reference_points:reference.points,reference_point_count:reference.total,reference_scope_note:reference.scope_note,total_customer_count:customers.length,missing_coordinates_count:customers.filter(x=>x.record_status!=='inactive'&&(x.lat===null||x.lng===null)).length,inactive_customer_count:customers.filter(x=>x.record_status==='inactive').length,all_customers:filteredAll,customers:mapCustomers,demo_operation_overlay_count:mapCustomers.filter((x:any)=>x.demo_operation_overlay).length,linked_demo_customer_count:filteredAll.filter((x:any)=>x.demo_point_link&&(x.lat===null||x.lng===null)).length,demo_operation_overlay_note:overlay.enabled?'DEMO: operasi sintetis ditempel pada titik customer existing; tidak ada titik peta tambahan.':undefined,sales:positions.results.map((r:any)=>{const seconds=Math.floor((Date.now()-Date.parse(r.last_seen))/1000);return {id:r.id,name:r.name,lat:r.latitude_e7/1e7,lng:r.longitude_e7/1e7,last_seen:r.last_seen,source:r.source,accuracy_m:r.accuracy_m,age_seconds:Number.isFinite(seconds)&&seconds>=0?seconds:null,clock_status:!Number.isFinite(seconds)?'invalid':seconds<0?'future':'valid',position_state:'last_received'}}),basemap:{provider:c.env.MAP_TILE_URL?'custom_raster':'openfreemap',style_url:c.env.MAP_TILE_URL?null:'https://tiles.openfreemap.org/styles/positron',tile_url:c.env.MAP_TILE_URL||'https://tile.openstreetmap.org/{z}/{x}/{y}.png',attribution:c.env.MAP_ATTRIBUTION||'Â© OpenStreetMap contributors',configured:Boolean(c.env.MAP_TILE_URL)}},meta:{...meta(),routing:false}};
 
 }
 
@@ -415,4 +427,3 @@ export async function runScheduled(env:Bindings){
  if(failed)throw new Error('NYALES_SCHEDULED_CHECKPOINT_FAILED');
 }
 export default Object.assign(app,{scheduled:async(_event:ScheduledController,env:Bindings,ctx:ExecutionContext)=>{ctx.waitUntil(runScheduled(env))}});
-

@@ -11,6 +11,11 @@ on:
         required: false
         type: boolean
         default: false
+      map_bekasi_demo_points:
+        description: 'Embed DEMO operations on 200 existing customer point IDs; no customer/coordinate updates'
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -111,5 +116,8 @@ jobs:
       - name: Apply synthetic Bekasi portfolio dataset
         if: ${{ inputs.seed_bekasi_demo == true }}
         run: npx tsx scripts/seed-bekasi-portfolio.ts --apply --remote
+      - name: Embed Bekasi DEMO operations on existing customer points
+        if: ${{ inputs.map_bekasi_demo_points == true }}
+        run: npx tsx scripts/map-bekasi-demo-points.ts --apply --remote
       - name: Verify served staging and auth boundaries
         run: node scripts/staging-smoke.mjs "$NYALES_STAGING_URL" test-results/staging-smoke.json

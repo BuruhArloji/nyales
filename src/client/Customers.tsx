@@ -86,7 +86,7 @@ export function Customers(){
  // Filters and paging are resolved by the API; debounce keeps typing from spamming D1.
  useEffect(()=>{if(!serverPaged||kind!=='customers'){firstLoad.current=false;return}if(firstLoad.current){firstLoad.current=false;return}const timer=setTimeout(()=>{void load(page)},250);return()=>clearTimeout(timer)},[q,area,status,location,recordStatus,page,kind]);
  // Risk evidence opens the canonical customer through the existing scoped detail endpoint.
- useEffect(()=>{if(!context.risk_run_id||!context.customer_id)return;let active=true;apiFetch('/api/customers/'+encodeURIComponent(context.customer_id)).then(r=>r.json() as Promise<{data:Row}>).then(({data})=>{if(active){setEdit(data);setModal('detail')}}).catch(e=>active&&setError(e.message));return()=>{active=false}},[]);
+ useEffect(()=>{if(!context.customer_id)return;let active=true;apiFetch('/api/customers/'+encodeURIComponent(context.customer_id)).then(r=>r.json() as Promise<{data:Row}>).then(({data})=>{if(active){setEdit(data);setModal('detail')}}).catch(e=>active&&setError(e.message));return()=>{active=false}},[]);
 
  useEffect(()=>{if(modal!=='detail'||!edit)return;let active=true;setEvents([]);setTimelineError('');setTimelineLoading(true);apiFetch('/api/customers/'+edit.id+'/timeline').then(r=>r.json() as Promise<{data:any[];meta:{has_more:boolean}}>).then(result=>{if(active){setEvents(result.data);setMore(result.meta.has_more)}}).catch(e=>{if(active)setTimelineError(e.message)}).finally(()=>{if(active)setTimelineLoading(false)});return()=>{active=false}},[modal,edit?.id]);
 
