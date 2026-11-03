@@ -6,6 +6,11 @@ on:
         description: 'Exact https://nyales-staging.<account-subdomain>.workers.dev origin'
         required: true
         type: string
+      seed_bekasi_demo:
+        description: 'Apply the synthetic Bekasi portfolio dataset to staging D1 only'
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -103,5 +108,8 @@ jobs:
         run: npx wrangler d1 migrations apply nyales-staging --remote --config wrangler.staging.generated.json
       - name: Deploy staging Worker and assets
         run: npx wrangler deploy --config wrangler.staging.generated.json
+      - name: Apply synthetic Bekasi portfolio dataset
+        if: ${{ inputs.seed_bekasi_demo == true }}
+        run: npx tsx scripts/seed-bekasi-portfolio.ts --apply --remote
       - name: Verify served staging and auth boundaries
         run: node scripts/staging-smoke.mjs "$NYALES_STAGING_URL" test-results/staging-smoke.json

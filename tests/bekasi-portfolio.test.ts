@@ -1,0 +1,53 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {database} from './sqlite-helper';
+import {buildBekasiPortfolio,toInsertStatements} from '../scripts/bekasi-portfolio-data';
+
+test('Bekasi three-month portfolio fixture is synthetic, reconciled, isolated, and idempotent',()=>{
+ const {sqlite}=database();
+ try{
+  sqlite.exec('PRAGMA foreign_keys=ON');
+  sqlite.exec("INSERT INTO organization(id,name) VALUES('org-bekasi-test','Test organization');INSERT INTO app_user(id,organization_id,name,status,created_at) VALUES('management-bekasi-test','org-bekasi-test','Management Test','active','2026-01-01T00:00:00.000Z');INSERT INTO auth_role_assignment(id,organization_id,user_id,role_code,effective_from_date,channel) VALUES('management-role-bekasi-test','org-bekasi-test','management-bekasi-test','MANAGEMENT','2020-01-01',NULL);INSERT INTO area(id,organization_id,name) VALUES('existing-directory-area','org-bekasi-test','Existing directory area');INSERT INTO point_directory_dataset(id,organization_id,name,source_reference,source_sha256,storage_key,storage_sha256,byte_count,reference_count,customer_expected_count,held_count,created_by,created_at,status) VALUES('existing-directory-dataset','org-bekasi-test','Existing test directory','test fixture','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','test/existing-directory','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',1,1,1,0,'management-bekasi-test','2026-01-01T00:00:00.000Z','ready');INSERT INTO customer_outlet(id,organization_id,area_id,external_code,name,address,directory_dataset_id,transaction_history_unverified) VALUES('existing-directory-customer','org-bekasi-test','existing-directory-area','MAPS-0001','Existing Directory Outlet','Existing address','existing-directory-dataset',1);INSERT INTO target_plan(id,organization_id,name,method,period_start,period_end,status,channel,basis,created_by,created_at) VALUES('existing-october-plan','org-bekasi-test','Existing target','bottom_up','2026-10-01','2026-10-31','approved','field','invoice_net_idr','management-bekasi-test','2026-01-01T00:00:00.000Z');INSERT INTO target_version(id,organization_id,target_plan_id,revision_no,status,version,parent_minor,reserve_minor,created_by,created_at,submitted_by,approved_by,approved_at,reason,baseline_json) VALUES('existing-october-version','org-bekasi-test','existing-october-plan',1,'approved',1,100000000,0,'management-bekasi-test','2026-01-01T00:00:00.000Z','management-bekasi-test','management-bekasi-test','2026-01-01T00:00:00.000Z','Existing pilot target',NULL);");
+  const directoryBefore=sqlite.prepare("SELECT id,area_id,external_code,name,address,directory_dataset_id,transaction_history_unverified FROM customer_outlet WHERE id='existing-directory-customer'").get();
+  const activeTargetsBefore=(sqlite.prepare("SELECT COUNT(*) n FROM target_version WHERE status='approved'").get() as {n:number}).n;
+  const data=buildBekasiPortfolio({organizationId:'org-bekasi-test',managementId:'management-bekasi-test',createdAt:'2026-11-03T01:00:00.000Z'});
+  assert.equal(data.businessDays.length,65);
+  assert.equal(data.visits.length,5_200);
+  assert.equal(data.visits.filter(x=>x.outcome==='productive').length,3_640);
+  assert.equal(data.visits.filter(x=>x.outcome==='follow_up').length,780);
+  assert.equal(data.visits.filter(x=>x.outcome==='no_show').length,780);
+  assert.equal(data.rows.sales_order.length,1_274);
+  assert.equal(data.rows.invoice.length,1_147);
+  assert.equal(data.rows.sales_task.filter(x=>x.status==='open').length,312);
+  assert.equal(data.rows.sales_task.filter(x=>x.status==='done').length,468);
+  const statements=toInsertStatements(data);
+  for(const sql of statements.slice(0,5))sqlite.exec(sql);
+  for(const sql of statements)sqlite.exec(sql);
+  const count=(table:string,predicate='1=1')=>(sqlite.prepare(`SELECT COUNT(*) n FROM ${table} WHERE organization_id='org-bekasi-test' AND ${predicate}`).get() as {n:number}).n;
+  assert.equal(count('customer_outlet',"id LIKE 'bekasi-demo-customer-%'"),200);
+  assert.equal(count('customer_assignment',"id LIKE 'bekasi-demo-assignment-%'"),200);
+  assert.equal(count('work_plan',"id LIKE 'bekasi-demo-plan-%'"),5_200);
+  assert.equal(count('activity',"id LIKE 'bekasi-demo-activity-%'"),5_200);
+  assert.equal(count('sales_task',"id LIKE 'bekasi-demo-task-%'"),780);
+  assert.equal(count('sales_lead',"id LIKE 'bekasi-demo-lead-%'"),312);
+  assert.equal(count('sales_order',"id LIKE 'bekasi-demo-order-%'"),1_274);
+  assert.equal(count('invoice',"id LIKE 'bekasi-demo-invoice-%'"),1_147);
+  assert.equal(count('target_plan',"id LIKE 'bekasi-demo-target-plan-%'"),3);
+  assert.equal(count('target_version',"id LIKE 'bekasi-demo-target-version-%' AND status='draft'"),3);
+  assert.equal(count('target_item',"id LIKE 'bekasi-demo-target-item-%'"),12);
+  assert.equal(count('customer_outlet',"id LIKE 'bekasi-demo-customer-%' AND latitude_e7 IS NULL AND longitude_e7 IS NULL AND coordinate_status='missing'"),200);
+  assert.equal(count('work_plan',"status='done' AND kind='visit'"),5_200);
+  assert.equal(count('invoice',"status='validated' AND validation_state='validated' AND source_system='bekasi-demo-synthetic'"),1_147);
+  assert.equal(count('invoice','net_minor<>(SELECT COALESCE(SUM(l.net_minor),0) FROM invoice_line l WHERE l.organization_id=invoice.organization_id AND l.invoice_id=invoice.id)'),0);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) n FROM activity WHERE organization_id='org-bekasi-test' AND json_extract(metadata_json,'$.gps')<>'not_collected'").get() as {n:number}).n,0);
+  assert.equal((sqlite.prepare("SELECT after_json FROM master_audit WHERE resource_id='bekasi-field-sales-2026-08-10'").get() as {after_json:string}|undefined)?.after_json.includes('"synthetic":1'),true);
+  assert.deepEqual(sqlite.prepare("SELECT id,area_id,external_code,name,address,directory_dataset_id,transaction_history_unverified FROM customer_outlet WHERE id='existing-directory-customer'").get(),directoryBefore);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) n FROM target_version WHERE status='approved'").get() as {n:number}).n,activeTargetsBefore);
+  assert.equal(sqlite.prepare('PRAGMA foreign_key_check').all().length,0);
+  for(const sql of statements)sqlite.exec(sql);
+  assert.equal(count('work_plan',"id LIKE 'bekasi-demo-plan-%'"),5_200);
+  assert.equal(count('invoice',"id LIKE 'bekasi-demo-invoice-%'"),1_147);
+  assert.equal(count('customer_outlet',"id LIKE 'bekasi-demo-customer-%'"),200);
+  assert.equal((sqlite.prepare("SELECT COUNT(*) n FROM master_audit WHERE resource_id='bekasi-field-sales-2026-08-10'").get() as {n:number}).n,1);
+ }finally{sqlite.close()}
+});

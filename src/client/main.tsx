@@ -65,7 +65,7 @@ function Shell({page,setPage,children}:{page:Page;setPage:(p:Page)=>void;childre
   <header className="topbar"><LiquidNav key={group?.id} activeKey={page}>{navigation.filter(n=>group?.pages.includes(n.id)).sort((a,b)=>group.pages.indexOf(a.id)-group.pages.indexOf(b.id)).map(n=><WorkspaceNavButton key={n.id} active={page===n.id} label={n.label} onClick={()=>setPage(n.id)}><n.icon size={15} aria-hidden="true"/></WorkspaceNavButton>)}</LiquidNav>
    <div className="top-actions"><div className="profile"><span className="avatar" aria-hidden="true">{initials}</span><div><strong>{identity.name}</strong><small>{identity.role}</small></div></div><button className="button secondary logout-button" disabled={loggingOut} onClick={()=>void logout()}>{loggingOut?'Keluar…':'Keluar'}</button></div>
   </header>
-
+  {identity.bekasi_demo_data&&<details className="demo-data-banner"><summary>DEMO · Simulasi operasi Bekasi (Agu–Okt 2026)</summary><p>Tim sales, outlet, kunjungan, tindak lanjut, order, invoice, dan target Bekasi sepenuhnya sintetis untuk portofolio; tidak mewakili kegiatan atau transaksi nyata. Target masih draft. Lokasi outlet hanya level area—tanpa GPS atau bukti kunjungan.</p></details>}
 
   <div className="page-scene" key={page} data-page={page}>{children}</div>
  </main></div>
