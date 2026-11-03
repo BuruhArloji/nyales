@@ -310,3 +310,21 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 .demo-territory-card{margin:18px 0}.demo-territory-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.demo-territory-stats>div{min-width:0;padding:13px 15px;border:1px solid #d6e1dc;border-radius:14px;background:rgba(255,255,255,.58)}.demo-territory-stats small,.demo-territory-stats strong{display:block}.demo-territory-stats small{color:#53615f;font-size:11px}.demo-territory-stats strong{margin-top:5px;font-size:17px;overflow-wrap:anywhere}.demo-territory-layout{height:560px}.demo-territory-stage{overflow:hidden;border-radius:16px}.demo-territory-stage>.map-canvas{height:100%;min-height:0;max-height:none}.demo-map-loading{position:absolute;left:12px;top:12px;z-index:2;padding:8px 11px;border-radius:10px;background:#fff;color:#263a33;font-size:12px;box-shadow:0 2px 10px #172d291c}.demo-area-legend{display:grid;gap:7px;padding-bottom:10px;border-bottom:1px solid #d6dfdb}.demo-area-row{display:flex;align-items:center;gap:9px;min-width:0}.demo-area-row>span:last-child{min-width:0}.demo-area-row strong,.demo-area-row small{display:block}.demo-area-row strong{font-size:12px;line-height:1.4}.demo-area-row small{margin-top:2px;color:#53615f;font-size:10px}.demo-area-swatch{flex:0 0 14px;width:14px;height:14px;border-radius:4px;border:1px solid #263a3340}.demo-area-swatch.review{background:repeating-linear-gradient(135deg,#8a9691 0 3px,#d8dfdc 3px 5px)}.demo-area-summary{padding:9px 0;border-bottom:1px solid #e0e6e3}.demo-area-summary>div{display:flex;align-items:center;gap:8px}.demo-area-summary>div strong{font-size:12px}.demo-area-summary>small{display:block;margin:4px 0 0 22px;color:#53615f;font-size:10px;line-height:1.5}.demo-territory-detail dl{display:grid;gap:7px;margin:10px 0}.demo-territory-detail dl>div{display:flex;justify-content:space-between;gap:12px;font-size:11px}.demo-territory-detail dt{color:#53615f}.demo-territory-detail dd{margin:0;text-align:right;overflow-wrap:anywhere}.demo-territory-note{display:block;line-height:1.6;color:#53615f;font-size:10px}.demo-territory-card>.callout{line-height:1.6}.demo-territory-card .badge{white-space:nowrap}
 @media(max-width:800px){.demo-territory-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.demo-territory-layout{height:auto}.demo-territory-stage{height:420px;flex:none}.demo-territory-card .geo-panel{max-height:580px}.demo-territory-card>.card-header{align-items:flex-start;flex-wrap:wrap}}
 @media(max-width:420px){.demo-territory-stats>div{padding:11px}.demo-territory-stats strong{font-size:15px}.demo-territory-stage{height:360px}}
+
+
+/* The local/staging-only territory demo can switch between Area owners and density. */
+.demo-map-mode{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0 16px}
+.demo-map-mode>span{font-size:11px;color:var(--muted);margin-right:3px}
+.demo-map-mode .button{min-height:36px;padding:8px 14px}
+.demo-map-mode .button.secondary[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.demo-map-mode .button:disabled{opacity:.55;cursor:not-allowed}
+.demo-density-legend{display:grid;gap:8px;padding:2px 0 12px;border-bottom:1px solid #d6dfdb}
+.demo-density-legend h3{font-size:14px;font-weight:500;margin:0}
+.demo-density-legend>p{font-size:11px;color:var(--muted);margin:0 0 3px}
+.demo-density-row{display:flex;align-items:center;gap:10px;min-width:0}
+.demo-density-swatch{width:18px;height:18px;flex:none;border:1px solid #52646a55;border-radius:5px}
+.demo-density-row>span:last-child{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0;flex:1}
+.demo-density-row strong{font-size:11px;font-weight:500}
+.demo-density-row small{font-size:10px;color:var(--muted);white-space:nowrap}
+.demo-density-note{display:block;color:var(--muted);font-size:10px;line-height:1.55;margin-top:4px}
+@media(max-width:767px){.demo-map-mode{gap:7px}.demo-map-mode>span{width:100%}.demo-map-mode .button{flex:1;padding:8px 10px;font-size:10px}}

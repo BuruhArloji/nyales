@@ -67,6 +67,21 @@ class DemoTerritoryTests(unittest.TestCase):
                 {"assignment_status": "DEMO_SYNTHETIC", "is_synthetic": True, "admin_code_pum": "x", "effective_from": "2026-02-01", "effective_to": ""},
             ])
 
+    def test_population_density_summary_uses_linear_quintiles_and_tracks_missing_values(self):
+        rows = [{"pop_density_km2": value} for value in [0, 10, 20, 30, 40]]
+        rows.append({"pop_density_km2": None})
+        summary = module.population_density_summary(rows)
+        self.assertEqual(summary["field"], "population_density_km2")
+        self.assertEqual(summary["units"], "people/km²")
+        self.assertEqual(summary["quantile_percentiles"], [20, 40, 60, 80])
+        self.assertEqual(summary["quantile_breaks"], [8.0, 16.0, 24.0, 32.0])
+        self.assertEqual(summary["valid_feature_count"], 5)
+        self.assertEqual(summary["missing_feature_count"], 1)
+
+    def test_population_density_summary_rejects_all_missing_input(self):
+        with self.assertRaisesRegex(ValueError, "no valid population density"):
+            module.population_density_summary([{"pop_density_km2": None}])
+
     def test_every_operational_demo_assignment_must_be_marked_synthetic(self):
         with self.assertRaisesRegex(ValueError, "explicitly synthetic"):
             module.validate_assignment_intervals([

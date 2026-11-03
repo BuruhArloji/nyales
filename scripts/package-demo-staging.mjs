@@ -16,8 +16,14 @@ if(raw.tiles?.verified_by_pmtiles_cli!==true)fail('Refusing to package unverifie
 if(raw.tiles.sha256!==sha256(join(bundle,raw.tiles.path)))fail('PMTiles checksum mismatch');
 const strategies=JSON.parse(raw.tiles.metadata?.strategies||'[]');
 if(strategies.some(item=>item.dropped_as_needed))fail('Refusing to package PMTiles that drops source features due to tile limits');
+const vectorLayers=raw.tiles.metadata?.vector_layers||[];
+if(!vectorLayers.some(layer=>Object.hasOwn(layer.fields||{},'population_density_km2')))fail('PMTiles vector layer is missing population density values');
 if(raw.source_validation.feature_count!==raw.geometry_validation.tile_feature_count)fail('Source and tile feature counts do not reconcile');
 if(raw.assignment.assigned_code_count+raw.assignment.exception_feature_count!==raw.source_validation.feature_count)fail('Assignment plus review exceptions do not reconcile to source feature count');
+const density=raw.population_density;
+if(density?.field!=='population_density_km2'||density?.units!=='people/km²')fail('Population density metadata or units are missing');
+if(density.valid_feature_count+density.missing_feature_count!==raw.source_validation.feature_count)fail('Population density counts do not reconcile to source features');
+if(!Array.isArray(density.quantile_breaks)||density.quantile_breaks.length!==4||density.quantile_breaks.some((value,index)=>typeof value!=='number'||!Number.isFinite(value)||(index>0&&value<=density.quantile_breaks[index-1])))fail('Population density must have four increasing finite quintile breaks');
 if(raw.r2_uploaded!==false)fail('Expected a local source bundle, not an already uploaded bundle');
 const exceptionSource=join(bundle,'exceptions.csv'),exceptionText=readFileSync(exceptionSource,'utf8');
 const exceptionLines=exceptionText.trimEnd().split(/\r?\n/);
@@ -38,6 +44,7 @@ const publicManifest={
  source_validation:{feature_count:raw.source_validation.feature_count,pum_unique_code_count:raw.source_validation.pum_unique_code_count,pum_missing_feature_count:raw.source_validation.pum_missing_feature_count,pum_duplicate_code_count:raw.source_validation.pum_duplicate_code_count},
  geometry_validation:{valid_geometry_count:raw.geometry_validation.valid_geometry_count},
  assignment:{is_synthetic:true,basis:raw.assignment.basis,effective_from:raw.assignment.effective_from,assigned_code_count:raw.assignment.assigned_code_count,exception_feature_count:raw.assignment.exception_feature_count,exception_issue_rows:raw.assignment.exception_issue_rows},
+ population_density:density,
  exception_list:{file:'exceptions.csv',feature_count:raw.assignment.exception_feature_count,issue_rows:raw.assignment.exception_issue_rows},
  area_summary:areaSummary,
  tiles:{verified_by_pmtiles_cli:true,maxzoom:raw.tiles.maxzoom,size_bytes:raw.tiles.size_bytes,maximum_tile_bytes:raw.tiles.maximum_tile_bytes,sha256:raw.tiles.sha256},

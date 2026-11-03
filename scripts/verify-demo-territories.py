@@ -28,6 +28,14 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
+def linear_quantile(values: list[float], probability: float) -> float:
+    position = (len(values) - 1) * probability
+    lower = int(position)
+    upper = lower if position.is_integer() else lower + 1
+    fraction = position - lower
+    return round(values[lower] * (1 - fraction) + values[upper] * fraction, 6)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("bundle", type=Path, help="Folder containing manifest.json and bundle artifacts")
@@ -65,6 +73,27 @@ def main() -> int:
         assignment_rows = list(csv.DictReader(stream))
     require(len(assignment_rows) == source["feature_count"], "Every source feature must have one assignment/review row")
     require(len(assignment_rows) == assignment_meta["assignment_row_count"], "Assignment row count differs from manifest")
+
+    density_meta = manifest.get("population_density") or {}
+    require(density_meta.get("field") == "population_density_km2", "Density field is missing or unexpected")
+    require(density_meta.get("units") == "people/km²", "Density units must be people per square kilometre")
+    require(density_meta.get("quantile_percentiles") == [20, 40, 60, 80], "Density classification must be five quintiles")
+    density_values: list[float] = []
+    for row in assignment_rows:
+        raw_density = row.get("population_density_km2", "").strip()
+        if not raw_density:
+            continue
+        value = float(raw_density)
+        require(value >= 0, "Population density cannot be negative")
+        density_values.append(value)
+    require(bool(density_values), "No population density values were found")
+    density_values.sort()
+    require(density_meta.get("valid_feature_count") == len(density_values), "Density valid-feature count differs from assignments")
+    require(density_meta.get("missing_feature_count") == len(assignment_rows) - len(density_values), "Density missing-feature count differs from assignments")
+    expected_breaks = [linear_quantile(density_values, p) for p in (0.2, 0.4, 0.6, 0.8)]
+    require(density_meta.get("quantile_breaks") == expected_breaks, "Density quintile thresholds differ from source values")
+    require(density_meta.get("minimum") == round(density_values[0], 6), "Density minimum differs from source values")
+    require(density_meta.get("maximum") == round(density_values[-1], 6), "Density maximum differs from source values")
 
     assigned: list[dict[str, str]] = []
     review: list[dict[str, str]] = []
@@ -133,6 +162,8 @@ def main() -> int:
     tile = manifest.get("tiles")
     require(tile is not None and tile.get("verified_by_pmtiles_cli") is True, "PMTiles archive has not passed builder verification")
     require(tile.get("maximum_tile_bytes", 0) >= 4_000_000, "PMTiles was built with an unexpectedly small maximum tile budget")
+    vector_layers = tile.get("metadata", {}).get("vector_layers", [])
+    require(any("population_density_km2" in (layer.get("fields") or {}) for layer in vector_layers), "PMTiles vector tiles are missing population density values")
     strategies = json.loads(tile.get("metadata", {}).get("strategies", "[]"))
     require(not any(item.get("dropped_as_needed", 0) for item in strategies), "PMTiles drops source features in one or more zoom levels")
     pmtiles_path = bundle / tile["path"]
@@ -155,6 +186,9 @@ def main() -> int:
         "all_assignments_synthetic": all(row["is_synthetic"].lower() == "true" for row in assignment_rows),
         "all_review_exceptions_unassigned": all(not row["demo_owner_id"] and not row["effective_from"] for row in review),
         "effective_intervals_valid": True,
+        "density_valid_feature_count": len(density_values),
+        "density_missing_feature_count": len(assignment_rows) - len(density_values),
+        "density_quantile_breaks_people_per_km2": expected_breaks,
         "pmtiles_verified": True,
         "checksums_verified": len(artifacts),
         "cloud_writes": False,

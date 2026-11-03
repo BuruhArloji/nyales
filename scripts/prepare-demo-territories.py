@@ -122,6 +122,45 @@ def finite_number(value: Any) -> int | float | None:
     return int(number) if number.is_integer() else number
 
 
+def linear_quantile(values: list[float], probability: float) -> float:
+    """Compute a linearly interpolated quantile from an already sorted list."""
+    if not values:
+        raise ValueError("Cannot compute a density quantile without valid values")
+    if not 0 <= probability <= 1:
+        raise ValueError("Quantile probability must be between 0 and 1")
+    position = (len(values) - 1) * probability
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    fraction = position - lower
+    value = values[lower] * (1 - fraction) + values[upper] * fraction
+    return round(value, 6)
+
+
+def population_density_summary(records: list[dict[str, Any]]) -> dict[str, Any]:
+    """Describe source density and five equal-frequency classes for the demo map."""
+    values = [
+        float(value)
+        for row in records
+        if (value := finite_number(row.get("pop_density_km2"))) is not None
+    ]
+    if not values:
+        raise ValueError("Source has no valid population density values")
+    values.sort()
+    return {
+        "field": "population_density_km2",
+        "source_field": "pop_density_km2",
+        "units": "people/km²",
+        "method": "five equal-frequency quantile classes across valid village/kelurahan polygons; linear interpolation",
+        "quantile_percentiles": [20, 40, 60, 80],
+        "quantile_breaks": [linear_quantile(values, p) for p in (0.2, 0.4, 0.6, 0.8)],
+        "valid_feature_count": len(values),
+        "missing_feature_count": len(records) - len(values),
+        "minimum": round(values[0], 6),
+        "maximum": round(values[-1], 6),
+        "caveat": "WorldPop 2026 estimated population density per administrative polygon; modeled estimate, not census or observed population.",
+    }
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -550,6 +589,8 @@ def write_markdown(output: Path, manifest: dict[str, Any], area_counts: dict[str
     all_count = manifest["source_validation"]["feature_count"]
     assigned = assignment["assigned_code_count"]
     coverage = assigned / all_count * 100 if all_count else 0
+    density = manifest["population_density"]
+    density_cutoffs = ", ".join(f"{value:,.1f}" for value in density["quantile_breaks"])
     lines = [
         "# NYALES — Paket DEMO Territory Area",
         "",
@@ -557,6 +598,7 @@ def write_markdown(output: Path, manifest: dict[str, Any], area_counts: dict[str
         "",
         f"Sumber batas: {SOURCE_BOUNDARY_EDITION}. Jumlah fitur: {all_count:,}. CRS EPSG:{manifest['srs_id']}.",
         f"Estimasi populasi: {POPULATION_SOURCE}. Total yang dijumlahkan dari `pop_2026`: {manifest['population_2026_sum_estimate']:,.0f} (estimasi, bukan sensus).",
+        f"Kepadatan `population_density_km2`: orang/km²; lima kelas kuantil P20/P40/P60/P80 pada {density_cutoffs}. Nilainya estimasi WorldPop, bukan data sensus.",
         "",
         "## Ringkasan Area",
         "",
@@ -574,7 +616,8 @@ def write_markdown(output: Path, manifest: dict[str, Any], area_counts: dict[str
         "",
         "## Cara memakai berkas",
         "",
-        "- `territories-demo.pmtiles`: vector tiles untuk visualisasi DEMO; membawa atribut Area/owner sintetis dan estimasi populasi.",
+        "- `territories-demo.pmtiles`: vector tiles untuk visualisasi DEMO; membawa atribut Area/owner sintetis, estimasi populasi, dan kepadatan.",
+        "- Peta mendukung dua tema: Area DEMO atau kepadatan penduduk per km² dengan lima kelas kuantil yang dicatat di `manifest.json`.",
         "- `territory_assignments.csv.gz`: satu baris per fitur sumber, dengan tanggal efektif untuk assignment DEMO; fitur review tidak diberi owner.",
         "- `areas.csv`: empat Area DEMO, PIC placeholder, provinsi, jumlah unit, dan estimasi populasi.",
         "- `exceptions.csv`: satu baris per isu yang perlu review; semua unresolved.",
@@ -618,6 +661,7 @@ def main() -> int:
 
     print(f"Reading attributes read-only from {args.gpkg}…", flush=True)
     records, source = load_source_attributes(args.gpkg, args.layer)
+    density_metadata = population_density_summary(records)
     if source["srs_id"] != 4326:
         raise ValueError(f"Expected source SRS 4326; got {source['srs_id']}")
     if len(set(PROVINCE_TO_AREA)) != 38:
@@ -684,6 +728,7 @@ def main() -> int:
                 "recommended_doi": "10.5258/SOTON/WP00839",
                 "caveat": "WorldPop source notes label this R2025A product alpha; pop_2026 is a modeled estimate, not a census count.",
             },
+            "population_density": density_metadata,
             "input_geopackage": str(args.gpkg.resolve()),
             "input_geopackage_sha256": sha256_file(args.gpkg),
             "input_layer": args.layer,
