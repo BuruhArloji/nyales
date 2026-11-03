@@ -1,3 +1,4 @@
+import {createExpression} from '@maplibre/maplibre-gl-style-spec';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {database} from './sqlite-helper';
@@ -5,7 +6,7 @@ import {buildBekasiPortfolio,toInsertStatements} from '../scripts/bekasi-portfol
 import {analysisSql,buildBekasiAnalysis,demoRules} from '../scripts/bekasi-analysis-data';
 import {readMapMetrics,mapPeriod} from '../src/server/map-metrics';
 import {resolveScope} from '../src/server/scope';
-import {mapPointStyle,mapSummary,pointFacts} from '../src/shared/map-analysis';
+import {mapPointStyle,mapSummary,pointFacts,mapFeatureFacts,mapClusterStyle,mapClusterProperties} from '../src/shared/map-analysis';
 import {calculateIncentive} from '../src/server/incentive-engine';
 
 test('monthly map facts reconcile invoice and activity totals without double counting location overlays',async()=>{
@@ -76,4 +77,26 @@ test('existing synthetic monthly target is extended by immutable revision, prese
  assert.equal((sqlite.prepare('SELECT target_minor FROM target_item WHERE target_version_id=? AND user_id=?').get(current.id,'m') as any).target_minor,7770000);
  assert.equal((sqlite.prepare("SELECT COUNT(*) n FROM target_version WHERE status='approved'").get() as any).n,3);
  sqlite.close();
+});
+
+
+test('cluster analysis aggregates attached operations once and separates noncustomer references',()=>{
+ const demo={id:'location',status:'Unknown',metrics:{actual_minor:0},demo_operation_overlay:{actual_minor:10000000,invoice_count:2,activity_count:5,productive_count:2,follow_up_count:1}};
+ const facts=mapFeatureFacts(demo);assert.equal(facts.sales_total,10000000);assert.equal(facts.covered_total,1);assert.equal(facts.synthetic_total,1);assert.equal(facts.customer_total,1);
+ const reference=mapFeatureFacts(demo,true);assert.equal(reference.sales_total,0);assert.equal(reference.customer_total,0);assert.equal(reference.reference_total,1);assert.equal(reference.synthetic_total,0);
+ assert.equal(mapFeatureFacts({status:'Churn'}).churn_total,1);assert.equal(mapFeatureFacts({status:'Unknown'}).unknown_total,1);
+ for(const mode of ['scatter','performance','coverage','risk'])assert.ok(mapClusterStyle(mode).label);
+ assert.notDeepEqual(mapClusterStyle('performance').label,mapClusterStyle('scatter').label);
+ assert.notDeepEqual(mapClusterStyle('coverage').color,mapClusterStyle('risk').color);
+ for(const key of Object.keys(facts))assert.deepEqual(mapClusterProperties[key],['+',['get',key]]);
+});
+
+
+test('MapLibre evaluates cluster labels and colors from totals at every zoom mode',()=>{
+ const properties={customer_total:2,reference_total:1,sales_total:12000000,invoice_total:3,activity_total:8,covered_total:1,churn_total:1,unknown_total:1,point_count:3,point_count_abbreviated:'3'};
+ const evaluate=(value:any,p=properties)=>{const compiled=createExpression(value,"layers[0].paint.circle-color");assert.equal(compiled.result,'success',JSON.stringify(compiled.value));return (compiled.value as any).evaluate({zoom:8},{type:1,properties:p})};
+ assert.equal(evaluate(mapClusterStyle('scatter').label),'3');assert.equal(evaluate(mapClusterStyle('performance').label),'12 jt');assert.equal(evaluate(mapClusterStyle('coverage').label),'8 akt');assert.equal(evaluate(mapClusterStyle('risk').label),'1 churn');
+ assert.equal(evaluate(mapClusterStyle('risk').label,{...properties,churn_total:0}),'1 ?');
+ assert.equal(evaluate(mapClusterStyle('performance').label,{...properties,customer_total:0}),'1 ref');
+ for(const mode of ['scatter','performance','coverage','risk']){assert.ok(evaluate(mapClusterStyle(mode).color));assert.ok(evaluate(mapClusterStyle(mode).radius)>0)}
 });
