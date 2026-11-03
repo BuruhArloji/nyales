@@ -26,6 +26,11 @@ on:
         required: false
         type: boolean
         default: false
+      normalize_identity_names:
+        description: 'Use original linked shop names and common sales names; preserve IDs and business history'
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -135,5 +140,8 @@ jobs:
       - name: Apply connected beverage DEMO package
         if: ${{ inputs.expand_beverage_demo == true }}
         run: npx tsx scripts/apply-beverage-demo.ts --apply --remote
+      - name: Normalize linked customer and sales names
+        if: ${{ inputs.normalize_identity_names == true }}
+        run: npx tsx scripts/rename-demo-identities.ts --apply --remote
       - name: Verify served staging and auth boundaries
         run: node scripts/staging-smoke.mjs "$NYALES_STAGING_URL" test-results/staging-smoke.json

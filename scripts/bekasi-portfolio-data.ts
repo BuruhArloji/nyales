@@ -26,10 +26,10 @@ const MONTHS=[
   {key:'2026-10',start:'2026-10-01',end:'2026-10-31',label:'Okt'},
 ] as const;
 const REP_DEFS=[
-  {id:PREFIX+'sales-kota-01',name:'Sales DEMO Kota Bekasi 01',area:AREAS[0]},
-  {id:PREFIX+'sales-kota-02',name:'Sales DEMO Kota Bekasi 02',area:AREAS[0]},
-  {id:PREFIX+'sales-kab-01',name:'Sales DEMO Kabupaten Bekasi 01',area:AREAS[1]},
-  {id:PREFIX+'sales-kab-02',name:'Sales DEMO Kabupaten Bekasi 02',area:AREAS[1]},
+  {id:PREFIX+'sales-kota-01',name:'Raka Pratama',area:AREAS[0]},
+  {id:PREFIX+'sales-kota-02',name:'Nadia Putri',area:AREAS[0]},
+  {id:PREFIX+'sales-kab-01',name:'Dimas Saputra',area:AREAS[1]},
+  {id:PREFIX+'sales-kab-02',name:'Sari Wulandari',area:AREAS[1]},
 ] as const;
 const SUPERVISOR_ID=PREFIX+'supervisor-01';
 const PRODUCTS=[

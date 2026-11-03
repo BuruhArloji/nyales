@@ -28,7 +28,7 @@ export function buildBeverageDemo(org:string,actor:string,now:string,sourcePoint
  const areas=['bekasi-demo-area-kota','bekasi-demo-area-kabupaten'];
  const reps=base.rows.app_user.filter(r=>String(r.id).includes('sales-')).map(r=>({id:String(r.id),name:String(r.name),area:String(base.rows.customer_assignment.find(a=>a.rep_id===r.id)!.area_id)}));
  for(let n=0;n<6;n++){
-  const id=BEVERAGE_PREFIX+'sales-'+(n+1),area=areas[n<3?0:1],name=['Aulia','Bagas','Citra','Damar','Elsa','Fikri'][n]+' · Sales DEMO';
+  const id=BEVERAGE_PREFIX+'sales-'+(n+1),area=areas[n<3?0:1],name=['Aulia Rahma','Bagas Setiawan','Citra Lestari','Damar Prakoso','Elsa Maharani','Fikri Ramadhan'][n];
   add('app_user',{...template('app_user'),id,name});
   add('auth_role_assignment',{...template('auth_role_assignment'),id:id+'-role',user_id:id,role_code:'SALES_REP',effective_from_date:'2026-11-01'});
   add('user_area_scope',{user_id:id,area_id:area,effective_from_date:'2026-11-01',effective_to_date:null});
@@ -53,7 +53,7 @@ export function buildBeverageDemo(org:string,actor:string,now:string,sourcePoint
    const rep=team.find(r=>counts.get(r.id)!<(r.id.startsWith('bekasi-demo-')?50:100))!;counts.set(rep.id,counts.get(rep.id)!+1);
    const source=points[Math.floor(n*points.length/400)],id=BEVERAGE_PREFIX+'customer-'+(a*400+n+1),external=String(700001+a*400+n);
    used.add(source.id);
-   const customer=add('customer_outlet',{...template('customer_outlet'),id,area_id:areas[a],external_code:external,external_code_key:external,name:'Pelanggan Minuman DEMO '+String(a*400+n+1).padStart(3,'0'),created_at:now,service_frequency_days:7});newCustomers.push(customer);
+   const customer=add('customer_outlet',{...template('customer_outlet'),id,area_id:areas[a],external_code:external,external_code_key:external,name:source.name,created_at:now,service_frequency_days:7});newCustomers.push(customer);
    add('customer_assignment',{...template('customer_assignment'),id:id+'-assignment',outlet_id:id,rep_id:rep.id,area_id:rep.area,effective_from_date:'2026-11-01',reason});
    const link={mapping_id:BEVERAGE_DEMO,synthetic_activity:true,existing_point_overlay:true,demo_customer_id:id,demo_area_id:rep.area,source_customer_id:source.id,source_external_code:source.external_code,source_dataset_id:source.directory_dataset_id,source_area_id:source.area_id,source_name:source.name,source_address:source.address,source_latitude_e7:source.latitude_e7,source_longitude_e7:source.longitude_e7,source_version:source.version,source_coordinate_status:source.coordinate_status};links.push(link);
    add('master_audit',{id:BEVERAGE_PREFIX+'link-'+id,actor_id:actor,resource_type:'demo_operation_point_link',resource_id:id,action:'operation_point_link_selected',occurred_at:now,before_json:j(customer),after_json:j(link)});

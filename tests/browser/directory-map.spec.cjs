@@ -96,7 +96,7 @@ test('embedded DEMO overlay keeps source marker and source identity',async({page
  const card=page.locator('.map-popup-card');
  await expect(card.getByText('Warung Foto',{exact:true})).toBeVisible();
  await expect(card.getByText('Riwayat operasi · overlay referensi',{exact:true})).toBeVisible();
- await expect(card.locator('.map-popup-demo-section .map-popup-fact').first().locator('dt')).toHaveText('Customer terkait');
+ await expect(card.locator('.map-popup-demo-section .map-popup-fact').first().locator('dt')).toHaveText('Sales / rep');
  await expect(card.getByText('Rina DEMO',{exact:true})).toBeVisible();
  await expect(card.getByText('12',{exact:true})).toBeVisible();
  await expect(card.getByText(/^Rp\s*12\.500\.000$/)).toBeVisible();
