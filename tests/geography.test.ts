@@ -55,6 +55,16 @@ test('WEB-064 migration preserves existing immutable review history and backfill
  const before=sqlite.prepare('SELECT id,evidence_json,effective_from_date FROM customer_admin_location ORDER BY id').all();sqlite.exec(readFileSync('migrations/0036_customer_geography_review.sql','utf8'));assert.deepEqual(sqlite.prepare('SELECT id,evidence_json,effective_from_date FROM customer_admin_location ORDER BY id').all(),before);assert.deepEqual(sqlite.prepare('SELECT revision FROM customer_admin_location ORDER BY id').all().map(r=>r.revision),[1,2]);assert.throws(()=>sqlite.exec("UPDATE customer_admin_location SET evidence_json='changed'"),/NEW_REVISION/);sqlite.close();
 });
 
+test('geo map joins a DEMO-filtered logical customer to its existing source point by source ID',async()=>{
+ const f=fixture();f.sqlite.prepare("INSERT INTO customer_admin_location(id,organization_id,outlet_id,method,status,evidence_json,effective_from_date) VALUES('source-review','o','c','coordinate','needs_review','{}','2026-01-01')").run();
+ const demo={id:'bekasi-demo-customer-001',name:'DEMO customer 001',latitude_e7:null,longitude_e7:null,coordinate_status:'missing',record_status:'active'};
+ const source={id:'c',name:'Existing source customer',latitude_e7:-59500000,longitude_e7:1060500000,coordinate_status:'unverified',record_status:'active',lat:-5.95,lng:106.05,demo_operation_overlay:{demo_customer_id:demo.id,source_customer_id:'c'}};
+ const h=new Hono();h.use('*',async(c,next)=>{const identity={id:'mg',name:'Manager',role:'MANAGEMENT',organization_id:'o'} as any;c.set('identity' as never,identity);c.set('scope' as never,await resolveScope(f.adapter as any,identity) as never);await next()});
+ h.route('/',createGeographyRoutes(async()=>({data:{all_customers:[demo],customers:[source],sales:[]}})));
+ const response=await h.request('/api/geo/map?channel=field&area_id=bekasi-demo-area-kota',{}, {DB:f.adapter});assert.equal(response.status,200);const payload=(await response.json() as any).data;
+ assert.equal(payload.map.all_customers[0].id,demo.id);assert.equal(payload.map.customers.length,1);assert.equal(payload.map.customers[0].id,'c');assert.equal(payload.map.customers[0].geo_status,'needs_review');assert.equal(payload.map.customers[0].demo_operation_overlay.demo_customer_id,demo.id);assert.deepEqual([payload.map.customers[0].lat,payload.map.customers[0].lng],[-5.95,106.05]);
+});
+
 
 test('15k map points join by indexed identity without quadratic scans or missing customers',async()=>{
  const f=fixture();let idReads=0;
