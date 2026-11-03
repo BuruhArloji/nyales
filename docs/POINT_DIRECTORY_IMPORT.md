@@ -78,3 +78,10 @@ Atas instruksi pengguna, hanya 500 customer tambahan dimasukkan: batch59/60 masi
 Backup sebelum impor11.217.058byte diuji restore: quick_check ok, FK0. Rekonsiliasi sesudah impor membuktikan organisasi, user/role, invoice/retur, target, assignment, sesi, customer asli serta11.600 customer direktori sebelumnya tidak berubah; kode12.100 unik dan tidak ada assignment baru, FK0. Metadata eksekusi tiga file melaporkan3.006 reads dan6.512 writes. Ini pemakaian batch saja, di luar backup/verifikasi/operasi lain. Analytics sebelum impor2.597.649 reads/150 writes; sesudah impor masih menunjukkan angka sama karena lag, sehingga bukan bukti total akhir harian. Kuota tidak habis dan impor berhenti pada batas pengguna. Referensi peta2.638 dan review812 tidak berubah; tidak ada deploy kode/seed/penugasan baru.
 
 Bukti privat: BEFORE_500_BACKUP_20261031.json, CLOUD_500_RECONCILED_20261031.json, IMPORT_500_USAGE_20261031.json dan PARTIAL_BATCH_VALIDATION_20261031.json pada folder customer-source-20261028. Tidak ada resume otomatis. Runner privat terbaru `.git/directory-cloud.py` mendukung `--max-customers`; salinannya disimpan sebagai bounded-import-runner-20261031.py di folder bukti privat.
+
+
+## Tambahan folder Drive — 4 November 2026
+
+Sumber tambahan diproses secara incremental menurut Google Place ID; seluruh identitas pada sumber lama dikecualikan, termasuk titik yang masih ditahan. CSV dan JSON dicocokkan pada identitas serta atribut inti, dengan dukungan baris Place ID berulang dan serialisasi list yang berbeda. Konflik inti dan kandidat nama sama dalam jarak 25 meter ditahan. Label wilayah tetap belum terverifikasi polygon.
+
+Format objek privat `nyales-reference-points-2` memisahkan indeks pin dari detail ke 32 partisi berdasarkan byte pertama hash external code modulo 32. Tiap partisi memiliki checksum, jumlah, ukuran, namespace organisasi/dataset, serta identitas internal sendiri; endpoint detail hanya membaca partisi yang diperlukan dan tetap memeriksa scope/membership. Format lama tetap didukung. Tidak ada pembukaan endpoint publik atau penyalinan data pelanggan ke Git.
