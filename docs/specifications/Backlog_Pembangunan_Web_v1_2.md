@@ -2604,3 +2604,17 @@ Paket performa mencakup pemuatan halaman sesuai kebutuhan, deferred widget Overv
 ### Peta dan data terhubung — 3 November 2026
 
 Layer multi-select di sebelah Wilayah & rincian; prioritas cluster bertransaksi; pencarian customer bertransaksi, zoom ke kohort invoice dan filter titik. Katalog memiliki kolom SKU pendek, brand, flavour, ukuran ml dan kemasan (0049). Paket tambahan beverage-demo-v1 disediakan lewat expand_beverage_demo untuk 10 sales DEMO, 34 produk, 400 rangkaian agenda/visit/order/invoice November dan kalkulasi insentif prepared. Data dummy tetap bukan integrasi perusahaan nyata WEB-060. Rekonsiliasi paket wajib sebelum remote write; uji penggunaan UI dilakukan pengguna sesuai permintaannya.
+
+
+### Tambahan 4 November 2026 — WorldPop raster, jalan, dan prototipe ORS
+
+Lihat [kontrak implementasi dan batas cakupan](../ORS_WORLDPOP_LAYERS.md).
+Layer WorldPop Indonesia 2026 (~100 m) dan jalan OSM dapat ditoggle bersama
+pelanggan/batas wilayah. Raster jiwa/km² terpisah dari rata-rata kelurahan,
+file publik memakai R2 range tanpa D1.
+
+Rute ORS harian memakai Worker dengan secret server, host api.heigit.org,
+maksimal 10 pelanggan/3 sales/15 titik unik. Input dari snapshot kesiapan dan
+profil operasional yang ditinjau. Hasil berupa pratinjau, belum publish agenda
+atau PJP bulanan; WEB-070–074 tetap belum selesai. Provider/live acceptance
+terpisah dari keberhasilan build dan deployment.

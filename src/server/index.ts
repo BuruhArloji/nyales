@@ -3,6 +3,7 @@ import {visitOperationalProfiles} from './visit-operational-profiles';
 import {createFirstAdminRoutes} from './first-admin';
 import {hasBekasiDemoData,hasBekasiDemoReady,hasTrainingData} from './training-marker';
 import {visitPlanning} from './visit-planning';
+import {orsPlanning} from './ors-planning';
 import {agentQueueAdmin} from './visit-agent-queue';
 import {visitAgentGateway,visitAgentMaintenance} from './visit-agent-gateway';
 import {visitAgentRegistry} from './visit-agent-registry';
@@ -52,7 +53,7 @@ import {resolveScope,customerPredicate,invoicePredicate,type Scope} from './scop
 
 import {localAuthEnabled,verifyFirebaseClaims,mappedIdentity,type Identity} from './auth';
 
-type Bindings={DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string;IMPORT_FILES?:R2Bucket;MAP_TILE_URL?:string;MAP_ATTRIBUTION?:string;GOOGLE_MAPS_EMBED_API_KEY?:string;OBS_OWNER_ORGANIZATION_ID?:string};
+type Bindings={DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string;IMPORT_FILES?:R2Bucket;MAP_TILE_URL?:string;MAP_ATTRIBUTION?:string;GOOGLE_MAPS_EMBED_API_KEY?:string;ORS_API_KEY?:string;OBS_OWNER_ORGANIZATION_ID?:string};
 
 const app=new Hono<{Bindings:Bindings;Variables:{identity:Identity;scope:Scope;auth:SessionAuth;deviceSession:SessionEnv['Variables']['deviceSession']}}>();
 
@@ -419,6 +420,7 @@ scopedRoutes.route('/',workloadPolicies);
 scopedRoutes.route('/',visitAgentRegistry);
 scopedRoutes.route('/',agentQueueAdmin);
 scopedRoutes.route('/',visitPlanning);
+scopedRoutes.route('/',orsPlanning);
 scopedRoutes.route('/',visitOperationalProfiles);
 scopedRoutes.route('/',territoryScenarios);
 app.route('/',scopedRoutes);

@@ -1,0 +1,705 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES ORS daily route preview",
+    "version": "1.0.0",
+    "description": "Bounded one-day routing from readiness snapshots and reviewed operational profiles. No publication, automatic assignment or monthly PJP guarantee."
+  },
+  "paths": {
+    "/api/visit-generator/ors/status": {
+      "get": {
+        "operationId": "ors_get_status",
+        "summary": "Management/NSM only · ORS status",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Organization-scoped result; status configured is not a live connectivity test.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/status"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-generator/ors/previews": {
+      "get": {
+        "operationId": "ors_get_previews",
+        "summary": "Management/NSM only · ORS previews",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Organization-scoped result; status configured is not a live connectivity test.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/history"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "ors_post_previews",
+        "summary": "Management/NSM only · ORS previews",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/preview_input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Organization-scoped result; status configured is not a live connectivity test.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-generator/ors/previews/{id}": {
+      "get": {
+        "operationId": "ors_get_previews__id_",
+        "summary": "Management/NSM only · ORS previews/{id}",
+        "security": [
+          {
+            "BearerAuth": [],
+            "DeviceSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organization-scoped result; status configured is not a live connectivity test.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stable error code; provider bodies and credentials never reflected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "preview_input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "preflight_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "customer_ids": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "confirmed_external_processing": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "preflight_id",
+          "date",
+          "customer_ids",
+          "confirmed_external_processing"
+        ],
+        "additionalProperties": false,
+        "description": "Customer IDs must be unique and belong to the selected immutable readiness snapshot. Explicit one-day preview, no agenda publication."
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "status": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "configured": {
+                "type": "boolean"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "limits": {
+                "type": "object"
+              },
+              "profile": {
+                "const": "driving-car"
+              },
+              "traffic": {
+                "const": "none"
+              },
+              "mode": {
+                "const": "daily_preview"
+              },
+              "publishable": {
+                "const": false
+              }
+            },
+            "required": [
+              "configured",
+              "provider",
+              "limits",
+              "profile",
+              "traffic",
+              "mode",
+              "publishable"
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "history": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "previews": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "preflight_id": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "pending",
+                        "complete",
+                        "failed"
+                      ]
+                    },
+                    "error_code": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "preflight_id",
+                    "created_at",
+                    "status",
+                    "error_code"
+                  ]
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "previews",
+              "has_more"
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "preview": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "profile": {
+                "const": "driving-car"
+              },
+              "preview_only": {
+                "const": true
+              },
+              "publishable": {
+                "const": false
+              },
+              "current": {
+                "type": "boolean"
+              },
+              "routes": {
+                "type": "array",
+                "maxItems": 3,
+                "items": {
+                  "type": "object"
+                }
+              },
+              "unassigned": {
+                "type": "array",
+                "maxItems": 10,
+                "items": {
+                  "type": "object"
+                }
+              },
+              "geometry": {
+                "type": "object"
+              },
+              "geometry_available": {
+                "type": "boolean"
+              },
+              "notice": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "date",
+              "provider",
+              "profile",
+              "preview_only",
+              "publishable",
+              "current",
+              "routes",
+              "unassigned",
+              "geometry",
+              "geometry_available",
+              "notice"
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  },
+  "x-limits": {
+    "customers": 10,
+    "reps": 3,
+    "matrix_nodes": 15,
+    "previews_per_utc_day": 20,
+    "timeout_ms": 25000
+  },
+  "x-migration": "0050_ors_route_previews.sql",
+  "x-provider-host": "api.heigit.org",
+  "x-data-boundary": "Coordinates and timings only sent to ORS after explicit consent. No names, invoice data, frontend key, automatic retries or arbitrary routing proxy."
+}

@@ -1253,3 +1253,17 @@ Preflight paket mencocokkan relasi FK, jumlah/total, baris invoice, order dan ac
 ### Penamaan operasi simulasi — 4 November 2026
 
 Customer simulasi yang telah ditautkan memakai nama asli titik sumber, dengan satu nama pada popup; ID penghubung tetap. Sales memakai nama orang umum, tanpa awalan Sales DEMO atau wilayah dalam nama. Label DEMO tidak diulang pada titik, hover, atau daftar pencarian; penjelasan simulasi tetap pada catatan halaman. Nomor invoice simulasi ditampilkan sebagai INV/YYMM/NNNNNN; kunci sumber asli tetap dipakai untuk revisi, deduplikasi, dan rekonsiliasi.
+
+
+### Tambahan 4 November 2026 — WorldPop raster, jalan, dan prototipe ORS
+
+Lihat [kontrak implementasi dan batas cakupan](../ORS_WORLDPOP_LAYERS.md).
+Layer WorldPop Indonesia 2026 (~100 m) dan jalan OSM dapat ditoggle bersama
+pelanggan/batas wilayah. Raster jiwa/km² terpisah dari rata-rata kelurahan,
+file publik memakai R2 range tanpa D1.
+
+Rute ORS harian memakai Worker dengan secret server, host api.heigit.org,
+maksimal 10 pelanggan/3 sales/15 titik unik. Input dari snapshot kesiapan dan
+profil operasional yang ditinjau. Hasil berupa pratinjau, belum publish agenda
+atau PJP bulanan; WEB-070–074 tetap belum selesai. Provider/live acceptance
+terpisah dari keberhasilan build dan deployment.

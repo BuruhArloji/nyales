@@ -1,5 +1,5 @@
-export type MapLayers={customers:boolean;references:boolean;sales:boolean;boundary:boolean;density:boolean;operational:boolean};
-export const defaultMapLayers:MapLayers={customers:true,references:true,sales:true,boundary:true,density:false,operational:true};
+export type MapLayers={customers:boolean;references:boolean;sales:boolean;boundary:boolean;density:boolean;populationRaster:boolean;roads:boolean;operational:boolean};
+export const defaultMapLayers:MapLayers={customers:true,references:true,sales:true,boundary:true,density:false,populationRaster:false,roads:true,operational:true};
 export type MapAnalysisMode='scatter'|'performance'|'coverage'|'risk';
 export const mapColors={neutral:'#c6d0cb',low:'#49a894',mid:'#489d8b',high:'#08685f',covered:'#137f72',uncovered:'#c5ceca',risk:'#b8793f',unknown:'#9ca4a1'};
 export function pointFacts(customer:any){

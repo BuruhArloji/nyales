@@ -84,6 +84,7 @@ jobs:
       VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}
       VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.VITE_FIREBASE_AUTH_DOMAIN }}
       VITE_NYALES_DEMO_TERRITORY_URL: /demo/territories-demo.pmtiles
+      VITE_NYALES_POPULATION_RASTER_URL: /demo/worldpop-idn-2026-density.pmtiles
       NYALES_STAGING_URL: ${{ inputs.staging_url }}
       FIRST_ADMIN_EMAIL: ${{ vars.FIRST_ADMIN_EMAIL }}
       FIRST_ADMIN_ORGANIZATION_NAME: ${{ vars.FIRST_ADMIN_ORGANIZATION_NAME }}
@@ -126,6 +127,13 @@ jobs:
           npx wrangler r2 object put "$CF_R2_BUCKET/portfolio-demo/exceptions.csv" --file "$RUNNER_TEMP/portfolio-demo/exceptions.csv" --remote --config wrangler.staging.generated.json --content-type 'text/csv; charset=utf-8' --cache-control 'public, max-age=300' --force
       - name: Apply staging D1 migrations (no seed)
         run: npx wrangler d1 migrations apply nyales-staging --remote --config wrangler.staging.generated.json
+      - name: Configure ORS server secret
+        env:
+          ORS_API_KEY: ${{ secrets.ORS_API_KEY }}
+        run: |
+          if [ -n "$ORS_API_KEY" ]; then
+            printf '%s' "$ORS_API_KEY" | npx wrangler secret put ORS_API_KEY --config wrangler.staging.generated.json
+          fi
       - name: Deploy staging Worker and assets
         run: npx wrangler deploy --config wrangler.staging.generated.json
       - name: Apply synthetic Bekasi portfolio dataset

@@ -4,11 +4,12 @@ import * as maplibregl from 'maplibre-gl';
 import {Protocol} from 'pmtiles';
 
 let protocol:Protocol|undefined;
+export function ensurePMTilesProtocol(){if(!protocol){protocol=new Protocol();maplibregl.addProtocol('pmtiles',protocol.tile)}}
 export function useTerritoryLayer(map:maplibregl.Map|null,ready:boolean,url:string,layers:Pick<MapLayers,'boundary'|'density'>){
  const [error,setError]=useState(''),[detail,setDetail]=useState<Record<string,any>|null>(null);
  useEffect(()=>{
   if(!map||!ready||!url)return;
-  if(!protocol){protocol=new Protocol();maplibregl.addProtocol('pmtiles',protocol.tile)}
+  ensurePMTilesProtocol();
   if(!map.getSource('nyales-national')){
    map.addSource('nyales-national',{type:'vector',url:'pmtiles://'+new URL(url,window.location.origin).href});
    const before=map.getLayer('nyales-directory-points-clusters')?'nyales-directory-points-clusters':undefined;

@@ -5,6 +5,7 @@ type ParsedRange={offset:number;length:number;end:number};
 type DemoFile={key:string;contentType:string;range:boolean};
 const MAX_RANGE_BYTES=8_000_000;
 const files:Record<string,DemoFile>=Object.assign(Object.create(null),{
+ 'worldpop-idn-2026-density.pmtiles':{key:'public-maps/worldpop-idn-2026-density.pmtiles',contentType:'application/vnd.pmtiles',range:true},
  'territories-demo.pmtiles':{key:'portfolio-demo/territories-demo.pmtiles',contentType:'application/vnd.pmtiles',range:true},
  'manifest.json':{key:'portfolio-demo/manifest.json',contentType:'application/json; charset=utf-8',range:false},
  'area-summary.json':{key:'portfolio-demo/area-summary.json',contentType:'application/json; charset=utf-8',range:false},

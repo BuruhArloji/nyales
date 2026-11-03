@@ -3475,6 +3475,54 @@
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
     },
     {
+      "method": "GET",
+      "path": "/api/visit-generator/ors/previews/:id",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "ors-preview.openapi.json",
+          "path": "/api/visit-generator/ors/previews/{id}"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/ors/previews",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "ors-preview.openapi.json",
+          "path": "/api/visit-generator/ors/previews"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-generator/ors/previews",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "ors-preview.openapi.json",
+          "path": "/api/visit-generator/ors/previews"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-generator/ors/status",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "ors-preview.openapi.json",
+          "path": "/api/visit-generator/ors/status"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
       "method": "POST",
       "path": "/api/visit-generator/policies/:id/activate",
       "authentication": "bearer plus device session; scope checked server-side",
