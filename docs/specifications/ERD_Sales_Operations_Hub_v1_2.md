@@ -1235,3 +1235,10 @@ Total310 operasi runtime semuanya terhubung kontrak, 112 tabel aplikasi/114 term
 ## Addendum implementasi direktori — migration0046
 
 point_directory_dataset menyimpan metadata organisasi, provenance/hash dan objek R2 privat untuk referensi non-customer. customer_outlet menambah directory_dataset_id (relasi dijaga trigger lintas organisasi) serta transaction_history_unverified. Data referensi tidak menjadi assignment, transaksi atau coverage. [Detail implementasi dan batas data](../POINT_DIRECTORY_IMPORT.md).
+
+
+### Dimensi SKU — migrasi 0049 (3 November 2026)
+
+product tetap memiliki id internal yang stabil dan sku sebagai kode bisnis (contoh DEMO 1001–1034). Tambahan kolom nullable brand TEXT, flavour TEXT, size_ml INTEGER positif maksimal 1.000.000, packaging TEXT. Contoh: SKU 1001, brand Coca Kola, flavour Original, size_ml 250, packaging Kaleng. Nama penuh tetap tersimpan untuk kompatibilitas; invoice_line dan order memakai snapshot nama/SKU historis. Nilai produk lama tetap NULL sampai ditinjau, tidak ditebak dari nama. Indeks product_brand_lookup(organization_id,brand,status). Tidak ada tabel baru.
+
+Paket DEMO memakai relasi customer_assignment → user, work_session → user, work_plan → customer/user, activity → customer/user, visit_event → activity/user, sales_order → customer/user dan invoice → customer/rep dengan external_reference order ke external_invoice_id. Payload invoice_source_event menyimpan order_id/activity_id/work_plan_id sintetis. Tidak menambahkan koordinat kunjungan atau sales_last_position.

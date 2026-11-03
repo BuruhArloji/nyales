@@ -354,3 +354,8 @@ Tanpa endpoint impor publik baru: /api/me menambah directory_data; payload /api/
 ### Addendum peta terpadu — 3 November 2026
 
 `GET /api/geo/map` mempertahankan kontrak legacy. Parameter opsional `compact=1` mengembalikan `map.all_customers: []`, pin dengan field yang diperlukan UI, dan `summary` berisi customers, actual (IDR), invoices, activities, covered, churn. `summary` dihitung sebelum proyeksi compact sehingga identik dengan hasil full pada filter yang sama. Pin membawa `metrics` (period, actual_minor, invoice_count, activity_count, meaningful_count, last_activity), tanpa perubahan fakta sumber. Bulan divalidasi YYYY-MM; invoice memakai is_current, validated, IDR dan invoicePredicate; aktivitas memakai scope pengguna/area serta bulan Asia/Jakarta. Overlay DEMO juga mengikuti bulan yang dipilih dan diberi identitas sintetis. Ringkasan kanonis tidak menjumlahkan ulang overlay referensi. Endpoint analisis regional dan risiko lama tetap tersedia.
+
+
+### Dimensi produk — migrasi 0049
+
+POST/PUT /api/products menerima tambahan opsional nullable: brand (maks 80), flavour (maks 80), size_ml (integer 1..1000000), packaging (maks 40). Respons katalog dan detail mengembalikan kolom terpisah. SKU bisnis tetap immutable ketika edit; id internal bukan kode SKU pengguna. Input legacy tanpa kolom dimensi tetap berlaku dan update tidak menghapus dimensi yang tidak dikirim. Mutasi mempertahankan ETag, idempotency, scope, audit dan validasi kelompok produk. Nama/satuan/quantity_scale dan snapshot transaksi lama tetap berlaku.

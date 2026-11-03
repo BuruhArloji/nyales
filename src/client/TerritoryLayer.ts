@@ -1,9 +1,10 @@
+import type {MapLayers} from '../shared/map-analysis';
 import {useEffect,useState} from 'react';
 import * as maplibregl from 'maplibre-gl';
 import {Protocol} from 'pmtiles';
 
 let protocol:Protocol|undefined;
-export function useTerritoryLayer(map:maplibregl.Map|null,ready:boolean,url:string,layer:'off'|'boundary'|'density'){
+export function useTerritoryLayer(map:maplibregl.Map|null,ready:boolean,url:string,layers:Pick<MapLayers,'boundary'|'density'>){
  const [error,setError]=useState(''),[detail,setDetail]=useState<Record<string,any>|null>(null);
  useEffect(()=>{
   if(!map||!ready||!url)return;
@@ -19,6 +20,6 @@ export function useTerritoryLayer(map:maplibregl.Map|null,ready:boolean,url:stri
   map.on('click','nyales-national-fill',click);map.on('error',err);
   return()=>{map.off('click','nyales-national-fill',click);map.off('error',err)};
  },[map,ready,url]);
- useEffect(()=>{if(!map||!ready)return;for(const id of ['nyales-national-fill','nyales-national-line'])if(map.getLayer(id))map.setLayoutProperty(id,'visibility',layer==='off'?'none':'visible');if(map.getLayer('nyales-national-fill'))map.setPaintProperty('nyales-national-fill','fill-opacity',layer==='density'?.55:.015);setDetail(null)},[map,ready,layer]);
+ useEffect(()=>{if(!map||!ready)return;if(map.getLayer('nyales-national-line'))map.setLayoutProperty('nyales-national-line','visibility',layers.boundary?'visible':'none');if(map.getLayer('nyales-national-fill')){map.setLayoutProperty('nyales-national-fill','visibility',layers.boundary||layers.density?'visible':'none');map.setPaintProperty('nyales-national-fill','fill-opacity',layers.density?.55:.015)}setDetail(null)},[map,ready,layers.boundary,layers.density]);
  return {error,detail,close:()=>setDetail(null)};
 }

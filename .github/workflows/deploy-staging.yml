@@ -21,6 +21,11 @@ on:
         required: false
         type: boolean
         default: false
+      expand_beverage_demo:
+        description: 'Add connected November DEMO: 6 reps, 800 location links, beverage SKUs, 400 visits/orders/invoices and incentives'
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -127,5 +132,8 @@ jobs:
       - name: Complete synthetic Bekasi analysis
         if: ${{ inputs.complete_bekasi_analysis == true }}
         run: npx tsx scripts/complete-bekasi-analysis.ts --apply --remote
+      - name: Apply connected beverage DEMO package
+        if: ${{ inputs.expand_beverage_demo == true }}
+        run: npx tsx scripts/apply-beverage-demo.ts --apply --remote
       - name: Verify served staging and auth boundaries
         run: node scripts/staging-smoke.mjs "$NYALES_STAGING_URL" test-results/staging-smoke.json

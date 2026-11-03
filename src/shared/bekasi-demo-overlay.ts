@@ -1,4 +1,4 @@
 export const BEKASI_POINT_OVERLAY_ID='bekasi-demo-existing-point-overlay-v1';
 export const BEKASI_DIRECTORY_DATASET_ID='maps-warung-20261028';
-export const BEKASI_POINT_OVERLAY_DISCLAIMER='DEMO: operasi sintetis Agu–Okt 2026 ditempel pada titik customer existing sebagai referensi lokasi. Ini bukan transaksi, kunjungan, atau riwayat nyata milik tempat sumber; koordinat sumber belum diverifikasi lapangan.';
+export const BEKASI_POINT_OVERLAY_DISCLAIMER='DEMO: operasi sintetis ditempel pada titik customer existing sebagai referensi lokasi. Ini bukan transaksi, kunjungan, atau riwayat nyata milik tempat sumber; koordinat sumber belum diverifikasi lapangan.';
 export type BekasiOperationOverlay={mapping_id:string;demo_customer_id:string;demo_customer_name:string;demo_area_id:string;demo_area_name:string;demo_rep_id:string|null;demo_rep_name:string;period_start:string;period_end:string;activity_count:number;productive_count:number;follow_up_count:number;no_show_count:number;order_count:number;invoice_count:number;actual_minor:number;disclaimer:string;source_customer_id:string;source_dataset_id:string;coordinate_status:'unverified'};

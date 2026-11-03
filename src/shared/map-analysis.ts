@@ -1,5 +1,7 @@
+export type MapLayers={customers:boolean;references:boolean;sales:boolean;boundary:boolean;density:boolean;operational:boolean};
+export const defaultMapLayers:MapLayers={customers:true,references:true,sales:true,boundary:true,density:false,operational:true};
 export type MapAnalysisMode='scatter'|'performance'|'coverage'|'risk';
-export const mapColors={neutral:'#a5b8b3',low:'#a9d8cb',mid:'#489d8b',high:'#08685f',covered:'#137f72',uncovered:'#c5ceca',risk:'#b8793f',unknown:'#9ca4a1'};
+export const mapColors={neutral:'#c6d0cb',low:'#49a894',mid:'#489d8b',high:'#08685f',covered:'#137f72',uncovered:'#c5ceca',risk:'#b8793f',unknown:'#9ca4a1'};
 export function pointFacts(customer:any){
  const overlay=customer.demo_operation_overlay;
  return overlay?{...overlay,meaningful_count:Number(overlay.productive_count||0)+Number(overlay.follow_up_count||0),synthetic:true}:customer.metrics||null;
@@ -9,7 +11,7 @@ export function mapPointStyle(customer:any,mode:MapAnalysisMode){
  if(mode==='performance')return {color:!facts||!facts.invoice_count?mapColors.neutral:actual<=0?mapColors.risk:actual<1e6?mapColors.low:actual<5e6?mapColors.mid:mapColors.high,radius:!facts?.invoice_count?5:Math.min(18,6+Math.sqrt(Math.max(0,actual)/1e6)*2)};
  if(mode==='coverage')return {color:visits>0?mapColors.covered:mapColors.uncovered,radius:visits>0?8:5};
  if(mode==='risk')return {color:customer.status==='Churn'?mapColors.risk:customer.status==='Unknown'?mapColors.unknown:mapColors.covered,radius:customer.status==='Churn'?9:6};
- return {color:mapColors.covered,radius:6};
+ return {color:Number(facts?.invoice_count||0)>0?mapColors.high:mapColors.neutral,radius:Number(facts?.invoice_count||0)>0?8:5};
 }
 /** One location stays one feature; DEMO is attached metadata, never another pin. */
 export function mapFeatureFacts(customer:any,reference=false){
@@ -20,8 +22,8 @@ export const mapClusterProperties=Object.fromEntries(Object.keys(mapFeatureFacts
 export function mapClusterStyle(mode:string){
  const get=(key:string):any=>['coalesce',['get',key],0],format=(value:any):any=>['number-format',value,{'max-fraction-digits':1}];
  const sales=get('sales_total'),customers=get('customer_total'),references=get('reference_total');
- const color:any=mode==='performance'?['case',['==',get('invoice_total'),0],mapColors.neutral,['<=',sales,0],mapColors.risk,['step',sales,mapColors.low,1e6,mapColors.mid,5e6,mapColors.high]]:mode==='coverage'?['case',['>',get('covered_total'),0],mapColors.covered,mapColors.uncovered]:mode==='risk'?['case',['>',get('churn_total'),0],mapColors.risk,['==',get('unknown_total'),customers],mapColors.unknown,mapColors.covered]:mapColors.covered;
- const label:any=mode==='performance'?['concat',format(['/',sales,1e6]),' jt']:mode==='coverage'?['concat',format(get('activity_total')),' akt']:mode==='risk'?['case',['>',get('churn_total'),0],['concat',format(get('churn_total')),' churn'],['>',get('unknown_total'),0],['concat',format(get('unknown_total')),' ?'],'0 churn']:['get','point_count_abbreviated'];
+ const color:any=mode==='performance'?['case',['==',get('invoice_total'),0],mapColors.neutral,['<=',sales,0],mapColors.risk,['step',sales,mapColors.low,1e6,mapColors.mid,5e6,mapColors.high]]:mode==='coverage'?['case',['>',get('covered_total'),0],mapColors.covered,mapColors.uncovered]:mode==='risk'?['case',['>',get('churn_total'),0],mapColors.risk,['==',get('unknown_total'),customers],mapColors.unknown,mapColors.covered]:['case',['>',get('invoice_total'),0],mapColors.high,mapColors.neutral];
+ const label:any=mode==='performance'?['case',['==',get('invoice_total'),0],'0',['>=',['abs',sales],1e9],['concat',format(['/',sales,1e9]),' M'],['>=',['abs',sales],1e6],['concat',format(['/',sales,1e6]),' jt'],['>=',['abs',sales],1000],['concat',format(['/',sales,1000]),' rb'],format(sales)]:mode==='coverage'?['concat',format(get('activity_total')),' akt']:mode==='risk'?['case',['>',get('churn_total'),0],['concat',format(get('churn_total')),' churn'],['>',get('unknown_total'),0],['concat',format(get('unknown_total')),' ?'],'0 churn']:['get','point_count_abbreviated'];
  return {color:['case',['==',customers,0],'#777c80',color] as any,label:['case',['==',customers,0],['concat',format(references),' ref'],label] as any,radius:mode==='performance'?['interpolate',['linear'],['abs',sales],0,19,1e7,25,1e8,34,1e9,42] as any:['step',['get','point_count'],20,100,26,1000,34] as any};
 }
 export function mapSummary(customers:any[]){

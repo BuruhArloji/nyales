@@ -2599,3 +2599,8 @@ Implementasi peta terpadu menggantikan dua canvas terpisah: layer batas nasional
 Pelengkap data analisis DEMO disediakan oleh `scripts/complete-bekasi-analysis.ts` melalui workflow input `complete_bekasi_analysis`: 12 target bulanan, 3 skema, 12 statement prepared; operasi bisnis asli dilindungi preflight dan perbandingan pascapenerapan. Target latihan Oktober yang sudah aktif diperluas melalui versi baru dalam plan yang sama; nilai leaf lama disalin persis dan histori versi sebelumnya dipertahankan. Hanya target latihan sintetis terverifikasi yang boleh memakai jalur ini. Ini tidak menutup WEB-060 integrasi/rekonsiliasi transaksi perusahaan nyata. Routing tetap ditunda.
 
 Paket performa mencakup pemuatan halaman sesuai kebutuhan, deferred widget Overview, proyeksi compact, agregasi kanonis dan clustering WebGL. Cakupan lanjutan yang belum diklaim selesai: seluruh API legacy tanpa batas, pemuatan titik menurut viewport untuk volume jauh lebih besar, acceptance pengguna, dan SLO/p95 staging. Validasi lokal dan workflow staging dicatat terpisah.
+
+
+### Peta dan data terhubung — 3 November 2026
+
+Layer multi-select di sebelah Wilayah & rincian; prioritas cluster bertransaksi; pencarian customer bertransaksi, zoom ke kohort invoice dan filter titik. Katalog memiliki kolom SKU pendek, brand, flavour, ukuran ml dan kemasan (0049). Paket tambahan beverage-demo-v1 disediakan lewat expand_beverage_demo untuk 10 sales DEMO, 34 produk, 400 rangkaian agenda/visit/order/invoice November dan kalkulasi insentif prepared. Data dummy tetap bukan integrasi perusahaan nyata WEB-060. Rekonsiliasi paket wajib sebelum remote write; uji penggunaan UI dilakukan pengguna sesuai permintaannya.
