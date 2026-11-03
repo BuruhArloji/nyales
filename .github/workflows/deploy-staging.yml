@@ -16,6 +16,11 @@ on:
         required: false
         type: boolean
         default: false
+      complete_bekasi_analysis:
+        description: 'Add only synthetic Bekasi monthly targets and incentive previews; preserve existing invoices and targets'
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -119,5 +124,8 @@ jobs:
       - name: Embed Bekasi DEMO operations on existing customer points
         if: ${{ inputs.map_bekasi_demo_points == true }}
         run: npx tsx scripts/map-bekasi-demo-points.ts --apply --remote
+      - name: Complete synthetic Bekasi analysis
+        if: ${{ inputs.complete_bekasi_analysis == true }}
+        run: npx tsx scripts/complete-bekasi-analysis.ts --apply --remote
       - name: Verify served staging and auth boundaries
         run: node scripts/staging-smoke.mjs "$NYALES_STAGING_URL" test-results/staging-smoke.json

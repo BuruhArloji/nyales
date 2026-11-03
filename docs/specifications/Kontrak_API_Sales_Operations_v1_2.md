@@ -349,3 +349,8 @@ OR-Tools9.15.6755 benar-benar terpasang di venv lokal dan menghitung daily kerne
 ## Respons direktori — 28 Oktober 2026
 
 Tanpa endpoint impor publik baru: /api/me menambah directory_data; payload /api/map dan /api/geo/map menambah reference_points/reference_point_count/keterangan scope. Referensi hanya pada scope organisasi Management/NSM tanpa filter area, rep atau status customer. Customer impor tanpa bukti kelengkapan riwayat tetap Unknown/provisional. [Detail](../POINT_DIRECTORY_IMPORT.md).
+
+
+### Addendum peta terpadu — 3 November 2026
+
+`GET /api/geo/map` mempertahankan kontrak legacy. Parameter opsional `compact=1` mengembalikan `map.all_customers: []`, pin dengan field yang diperlukan UI, dan `summary` berisi customers, actual (IDR), invoices, activities, covered, churn. `summary` dihitung sebelum proyeksi compact sehingga identik dengan hasil full pada filter yang sama. Pin membawa `metrics` (period, actual_minor, invoice_count, activity_count, meaningful_count, last_activity), tanpa perubahan fakta sumber. Bulan divalidasi YYYY-MM; invoice memakai is_current, validated, IDR dan invoicePredicate; aktivitas memakai scope pengguna/area serta bulan Asia/Jakarta. Overlay DEMO juga mengikuti bulan yang dipilih dan diberi identitas sintetis. Ringkasan kanonis tidak menjumlahkan ulang overlay referensi. Endpoint analisis regional dan risiko lama tetap tersedia.

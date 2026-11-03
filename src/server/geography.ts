@@ -1,3 +1,5 @@
+import {mapSummary} from '../shared/map-analysis';
+import {readMapMetrics} from './map-metrics';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import GeoJSONReader from 'jsts/org/locationtech/jts/io/GeoJSONReader.js';
@@ -66,11 +68,15 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
   const mappings=(await c.env.DB.prepare('SELECT l.*,b.dataset_id FROM customer_admin_location l LEFT JOIN admin_boundary b ON b.organization_id=l.organization_id AND b.id=l.boundary_id WHERE l.organization_id=? AND l.outlet_id IN (SELECT value FROM json_each(?)) AND l.superseded_at IS NULL AND l.effective_from_date<=? AND (l.effective_to_date IS NULL OR l.effective_to_date>?) ORDER BY l.revision DESC').bind(org,JSON.stringify(mapRows.map((x:any)=>x.id)),date,date).all<any>()).results;
   const mappingByCustomer=new Map<string,any>();for(const row of mappings)if(!mappingByCustomer.has(row.outlet_id))mappingByCustomer.set(row.outlet_id,row);
   const enrich=(customer:any)=>{const row=mappingByCustomer.get(customer.id),state=mappingState(row,customer,d);return {...customer,geo_status:state,geo_boundary_id:state==='confirmed'?row.boundary_id:null}};
-  const all=base.data.all_customers.map(enrich);
-  const customerById=new Map<string,any>(mapRows.map((customer:any)=>[customer.id,enrich(customer)]));
+  const metrics=await readMapMetrics(c.env.DB,c.get('scope'),base.data.all_customers.map((x:any)=>x.id),period||date.slice(0,7),channel||'field',c.req.query('rep_id'),c.req.query('area_id'));
+  const all=base.data.all_customers.map((x:any)=>({...enrich(x),metrics:metrics.get(x.id)}));
+  const customerById=new Map<string,any>(mapRows.map((customer:any)=>[customer.id,{...enrich(customer),metrics:metrics.get(customer.id)}]));
   const areaMembership=(await c.env.DB.prepare('SELECT m.admin_unit_id,m.area_id,m.boundary_id,a.name area_name FROM area_admin_membership m JOIN area a ON a.organization_id=m.organization_id AND a.id=m.area_id WHERE m.organization_id=? AND m.admin_unit_id IN(SELECT value FROM json_each(?)) AND m.effective_from_date<=? AND (m.effective_to_date IS NULL OR m.effective_to_date>?)').bind(org,JSON.stringify(rows.map(b=>b.admin_unit_id)),date,date).all<any>()).results;
+  const counts=new Map<string,number>();for(const c of all)if(c.geo_boundary_id)counts.set(c.geo_boundary_id,(counts.get(c.geo_boundary_id)||0)+1);
+  const compact=c.req.query('compact')==='1';
+  const compactPin=(x:any)=>({id:x.id,name:x.name,area:x.area,area_id:x.area_id,owner:x.owner,status:x.status,lat:x.lat,lng:x.lng,directory_dataset_id:x.directory_dataset_id,geo_status:x.geo_status,geo_boundary_id:x.geo_boundary_id,metrics:x.metrics,demo_operation_overlay:x.demo_operation_overlay});
   const stats={total:all.length,confirmed:all.filter((x:any)=>x.geo_status==='confirmed').length,unmapped:all.filter((x:any)=>x.geo_status!=='confirmed').length};
-  return c.json({data:{map:{...base.data,all_customers:all,customers:base.data.customers.map((x:any)=>customerById.get(x.id))},dataset:d?{id:d.id,version:d.version,release_version:d.release_version,status:d.status,attribution:d.attribution,coverage:JSON.parse(d.coverage_json),code_namespace:d.code_namespace}:null,period_context:period||date.slice(0,7),mapping_date:date,stats,boundaries:rows.map(b=>({id:b.id,name:b.name_snapshot,unit_id:b.admin_unit_id,hierarchy:JSON.parse(b.hierarchy_json),bbox:[b.min_longitude_e7,b.min_latitude_e7,b.max_longitude_e7,b.max_latitude_e7].map((n:number)=>n/1e7),confirmed_customer_count:all.filter((x:any)=>x.geo_boundary_id===b.id).length,area_business:areaMembership.find(m=>m.admin_unit_id===b.admin_unit_id)||null})),preview:d?.status==='draft',geometry_display_limit:50,source_state:d?'available':'no_active_dataset'}});
+  return c.json({data:{summary:mapSummary(all),map:{...base.data,all_customers:compact?[]:all,customers:base.data.customers.map((x:any)=>customerById.get(x.id)).map((x:any)=>compact?compactPin(x):x)},dataset:d?{id:d.id,version:d.version,release_version:d.release_version,status:d.status,attribution:d.attribution,coverage:JSON.parse(d.coverage_json),code_namespace:d.code_namespace}:null,period_context:period||date.slice(0,7),mapping_date:date,stats,boundaries:rows.map(b=>({id:b.id,name:b.name_snapshot,unit_id:b.admin_unit_id,hierarchy:JSON.parse(b.hierarchy_json),bbox:[b.min_longitude_e7,b.min_latitude_e7,b.max_longitude_e7,b.max_latitude_e7].map((n:number)=>n/1e7),confirmed_customer_count:counts.get(b.id)||0,area_business:areaMembership.find(m=>m.admin_unit_id===b.admin_unit_id)||null})),preview:d?.status==='draft',geometry_display_limit:50,source_state:d?'available':'no_active_dataset'}});
  });
  routes.get('/api/geo/geometry',async c=>{
   const ids=(c.req.query('ids')||'').split(',').filter(Boolean);if(ids.length<1||ids.length>50||ids.some(id=>id.length>128))return c.json({code:'INVALID_BOUNDARY_IDS'},422);

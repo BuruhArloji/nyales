@@ -1,126 +1,45 @@
-import {FilterPanel} from './FilterPanel';
-import {CustomerRisk} from './CustomerRisk';
-import {RegionalAnalytics} from './RegionalAnalytics';
-import {LiquidTabs} from './LiquidNav';
-import {readBoundaryDatasets} from './boundary-data';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-
 import {MapLibreCanvas} from './MapView';
-import {DemoTerritoryMap} from './DemoTerritoryMap';
-
+import {LiquidTabs} from './LiquidNav';
 import {apiFetch,useIdentity} from './auth';
-
 import {Loading} from './Loading';
-
 import {StreetView} from './StreetView';
-
+import {readBoundaryDatasets} from './boundary-data';
 import {geoNavigate,readGeoContext,replaceGeoContext} from './geo-navigation';
+import {mapSummary,type MapAnalysisMode} from '../shared/map-analysis';
+import {compactNumber} from './numbers';
 
-import {geoStatusLabels,type GeoContext} from '../shared/geography';
-
-
-
-async function get(url:string){return (await(await apiFetch(url)).json() as {data:any}).data}
-
-const levels=['province','regency','district','village'] as const;
-
-const demoTerritoryUrl=String((import.meta as any).env?.VITE_NYALES_DEMO_TERRITORY_URL||'');
-
+const territoryUrl=String((import.meta as any).env?.VITE_NYALES_DEMO_TERRITORY_URL||'');
+async function get(url:string,signal?:AbortSignal){const response=await apiFetch(url,{signal});const json=await response.json() as any;if(!response.ok)throw Error(json.code||'Data belum tersedia');return json.data}
+const modes=[['scatter','Sebaran'],['performance','Penjualan'],['coverage','Kunjungan'],['risk','Status']] as const;
 export function GeographyPage(){
-
  const initial=useRef(readGeoContext()).current,camera=useRef(initial.camera);
-
- const {identity}=useIdentity(),canManage=identity.capabilities.includes('settings:manage');
-
- const [riskRunId,setRiskRunId]=useState(initial.risk_run_id);
- const [mode,setMode]=useState(initial.mode||'scatter'),[branchTeam,setBranchTeam]=useState({branch_id:initial.branch_id||'',team_id:initial.team_id||''});
- const [area,setArea]=useState(initial.area_id||''),[rep,setRep]=useState(initial.rep_id||''),[channel,setChannel]=useState(initial.channel??(initial.mode&&initial.mode!=='scatter'?'':'field')),[status,setStatus]=useState(initial.customer_status||''),[period,setPeriod]=useState(initial.period||new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'}).slice(0,7));
-
- const [areas,setAreas]=useState<any[]>([]),[users,setUsers]=useState<any[]>([]),[datasets,setDatasets]=useState<any[]>([]),[datasetId,setDatasetId]=useState(initial.dataset_id||''),[data,setData]=useState<any>(null),[geometry,setGeometry]=useState<any>(null),[selected,setSelected]=useState(initial.boundary_id||''),[search,setSearch]=useState(''),[hierarchy,setHierarchy]=useState<Record<string,string>>({}),[error,setError]=useState(''),[geometryError,setGeometryError]=useState(''),[retry,setRetry]=useState(0),[focus,setFocus]=useState<any>(null),[street,setStreet]=useState<any>(null);
-
- useEffect(()=>{let active=true;Promise.all([get('/api/areas'),get('/api/users'),canManage?readBoundaryDatasets():Promise.resolve([])]).then(([a,u,d])=>{if(active){setAreas(a);setUsers(u);setDatasets(d)}}).catch(e=>active&&setError(e.message));return()=>{active=false}},[canManage,retry]);
-
- const query=new URLSearchParams({period});if(channel)query.set('channel',channel);if(area)query.set('area_id',area);if(rep)query.set('rep_id',rep);if(status)query.set('customer_status',status);if(datasetId)query.set('dataset_id',datasetId);
-
- const queryString=query.toString();
-
- useEffect(()=>{let active=true;setData(null);setGeometry(null);setError('');get('/api/geo/map?'+queryString).then(d=>{if(active){setData(d);if(selected&&!d.boundaries.some((b:any)=>b.id===selected))setSelected('')}}).catch(e=>active&&setError(e.message));return()=>{active=false}},[queryString,retry]);
-
- const boundaries:any[]=data?.boundaries||[];
-
- const visible=useMemo(()=>boundaries.filter(b=>levels.every(l=>!hierarchy[l]||b.hierarchy[l].code===hierarchy[l])&&[b.name,...levels.flatMap(l=>[b.hierarchy[l].name,b.hierarchy[l].code])].join(' ').toLowerCase().includes(search.toLowerCase())),[data,hierarchy,search]);
-
- const ids=visible.slice(0,50).map(b=>b.id);if(selected&&!ids.includes(selected))ids.splice(49,1,selected);const geometryKey=ids.join(',');
-
- useEffect(()=>{let active=true;setGeometry(null);setGeometryError('');if(data?.dataset&&geometryKey)void get('/api/geo/geometry?'+new URLSearchParams({dataset_id:data.dataset.id,ids:geometryKey})).then(g=>active&&setGeometry(g)).catch(e=>active&&setGeometryError(e.message));return()=>{active=false}},[data?.dataset?.id,data?.dataset?.version,geometryKey,retry]);
-
- const riskFilterKey=JSON.stringify([branchTeam,area,rep,channel,period,datasetId]),previousRiskFilter=useRef(riskFilterKey);
- useEffect(()=>{if(previousRiskFilter.current!==riskFilterKey){setRiskRunId(undefined);previousRiskFilter.current=riskFilterKey}},[riskFilterKey]);
- const chosen=boundaries.find(b=>b.id===selected),customers=selected?data?.map.all_customers.filter((c:any)=>c.geo_boundary_id===selected)||[]:[];
-
- function context(extra:GeoContext={}):GeoContext{return {risk_run_id:mode==='risk'?riskRunId:undefined,mode,...branchTeam,area_id:area,rep_id:rep,channel,customer_status:mode==='scatter'?status:undefined,period,dataset_id:data?.dataset?.id,boundary_id:selected,camera:camera.current,...extra}}
-
- useEffect(()=>{if(data)replaceGeoContext(context())},[riskRunId,mode,branchTeam,area,rep,channel,status,period,selected,data?.dataset?.id]);
-
- function select(id:string){const b=boundaries.find(x=>x.id===id);setSelected(id);if(b)setFocus({bbox:b.bbox});}
-
- function hierarchyOptions(level:typeof levels[number]){const index=levels.indexOf(level);return [...new Map(boundaries.filter(b=>levels.slice(0,index).every(l=>!hierarchy[l]||b.hierarchy[l].code===hierarchy[l])).map(b=>[b.hierarchy[level].code,b.hierarchy[level]])).values()].sort((a:any,b:any)=>a.name.localeCompare(b.name));}
-
- async function showStreet(c:any){if(document.fullscreenElement)await document.exitFullscreen().catch(()=>{});setStreet(c)}
-
- return <><div className="page-heading"><div><h1>Peta & Wilayah</h1></div></div>
-
- {canManage&&demoTerritoryUrl&&<DemoTerritoryMap tilesUrl={demoTerritoryUrl}/>}
-
- <FilterPanel count={[area,rep,status,datasetId,channel!=='field'?channel||'combined':''].filter(Boolean).length} onReset={()=>{setArea('');setRep('');setStatus('');setDatasetId('');setChannel('field');setSelected('');setHierarchy({})}} className="geo-filters" label="Filter peta dan wilayah" summary={[channel==='telesales'?'Telesales':channel?'Lapangan':'Semua kanal',area?areas.find(a=>a.id===area)?.name:'Semua area',rep?users.find(u=>u.id===rep)?.name:null,status||null,period].filter(Boolean).join(' · ')}><div className="assignment-filters">
-
- <label>Area peta<select aria-label="Area peta" value={area} onChange={e=>{setArea(e.target.value);setSelected('')}}><option value="">Semua area dalam scope</option>{areas.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
-
- <label>Kanal peta<select aria-label="Kanal peta" value={channel} onChange={e=>{setChannel(e.target.value);setRep('');setSelected('')}}>{mode!=='scatter'&&<option value="">Gabungan kanal</option>}<option value="field">Sales lapangan</option><option value="telesales">Telesales</option></select></label>
-
- <label>Sales peta<select aria-label="Sales peta" value={rep} onChange={e=>setRep(e.target.value)}><option value="">Semua sales dalam scope</option>{users.filter(u=>(!channel||u.channel===channel)&&['SALES_REP','TELESALES'].includes(u.role_code)).map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</select></label>
-
- {mode==='scatter'&&<label>Status customer<select aria-label="Status customer" value={status} onChange={e=>setStatus(e.target.value)}><option value="">Semua status</option>{['Aktif','Churn','New','Unknown'].map(x=><option key={x}>{x}</option>)}</select></label>}
-
- <label>Periode laporan<input type="month" value={period} onChange={e=>setPeriod(e.target.value)}/></label>
-
- {canManage&&<label>Rilis batas<select aria-label="Rilis batas" value={datasetId} onChange={e=>{setDatasetId(e.target.value);setSelected('');setHierarchy({})}}><option value="">Rilis aktif</option>{datasets.filter(d=>d.status==='active'||d.status==='draft'&&d.uploaded_features===d.expected_features&&d.uploaded_chunks===d.expected_chunks).map(d=><option key={d.id} value={d.id}>{d.release_version} · {d.status==='draft'?'Draft (pratinjau)':'Aktif'}</option>)}</select></label>}
-
- </div><small>Pemetaan dan posisi menunjukkan data terkini. Mode Kinerja / Coverage membaca periode laporan; snapshot mapping yang sama dipakai pada periode pembanding.</small></FilterPanel>
-
- {error&&<p className="notice danger" role="alert">{error}<button className="button secondary" onClick={()=>setRetry(n=>n+1)}>Coba lagi</button></p>}
-
- {!data&&!error&&<Loading>Memuat wilayah sesuai scope…</Loading>}
-
- <div className="page-toolbar geo-mode-toolbar"><LiquidTabs role="group" aria-label="Mode analisis wilayah">{[['scatter','Sebaran'],['performance','Kinerja'],['coverage','Coverage'],['risk','Risiko']].map(([key,label])=><button key={key} type="button" className={'button '+(mode===key?'':'secondary')} aria-pressed={mode===key} onClick={()=>{setMode(key);setStatus('');if(key==='scatter'){setBranchTeam({branch_id:'',team_id:''});if(!channel)setChannel('field')}}}>{label}</button>)}</LiquidTabs></div>
- {mode!=='scatter'&&(branchTeam.branch_id||branchTeam.team_id)&&<p className="callout">Filter cabang / tim dari Monitoring dipertahankan.<button className="text-button" onClick={()=>setBranchTeam({branch_id:'',team_id:''})}>Hapus filter cabang / tim</button></p>}
- {data&&mode!=='scatter'&&(data.preview||!data.dataset?<section className="card geo-analysis-empty" role="status"><h2>Analisis wilayah belum siap</h2><p>{data.preview?'Rilis ini masih draft. Aktifkan batas wilayah untuk menggunakan analisis.':'Tambahkan dan aktifkan batas kelurahan untuk menggunakan Kinerja, Coverage, dan Risiko.'}</p><div className="data-actions"><button type="button" className="button secondary" onClick={()=>setMode('scatter')}>Kembali ke Sebaran</button>{canManage&&<button type="button" className="button" onClick={()=>geoNavigate('settings',{settings_section:'boundaries'})}>Kelola batas wilayah</button>}</div></section>:mode==='risk'?<CustomerRisk filters={{...branchTeam,area_id:area,rep_id:rep,channel,period,dataset_id:data.dataset.id}} baseMap={data.map} context={context()} selected={selected} onSelect={setSelected} camera={camera.current} onCameraChange={c=>{camera.current=c;replaceGeoContext(context())}} runId={riskRunId} onRunChange={setRiskRunId}/>:<RegionalAnalytics mode={mode} filters={{...branchTeam,area_id:area,rep_id:rep,channel,period,dataset_id:data.dataset.id}} baseMap={data.map} context={context()} selected={selected} onSelect={setSelected} camera={camera.current} onCameraChange={c=>{camera.current=c;replaceGeoContext(context())}}/>)}
- {data&&mode==='scatter'&&<section className="card geo-map"><div className="card-header"><div><h2>Sebaran pelanggan</h2><small>{data.stats.total} pelanggan · {data.map.customers.length} pin · {data.preview?'—':data.stats.confirmed} terpetakan · {data.stats.unmapped} belum terpetakan / perlu review</small></div><button className="button secondary" onClick={()=>setRetry(n=>n+1)}>Muat ulang peta</button></div>
-
- {data.preview&&<p className="callout" role="status">Pratinjau draft · batas belum aktif. Jumlah terkonfirmasi pada draft belum tersedia. Hasil belum boleh dipublikasikan.</p>}
-
- {!data.dataset&&<p className="callout">Belum ada rilis batas aktif. Pin dan total pelanggan tetap tersedia.{canManage&&' Pilih draft untuk meninjau batas, atau kelola rilis di Pengaturan.'}</p>}
-
- {geometryError&&<p className="notice danger" role="alert">Polygon belum tersedia: {geometryError}. Daftar wilayah tetap dapat digunakan. Persempit pilihan atau muat ulang.</p>}
-
- <div className="geo-legend" aria-label="Legenda peta"><span><i className="geo-legend-region"/>Batas wilayah</span><span><i className="geo-legend-confirmed"/>Pelanggan terpetakan</span><span><i className="geo-legend-unknown"/>Belum terpetakan / perlu review</span></div><div className="geo-layout"><div className="geo-stage"><MapLibreCanvas mapData={data.map} focus={focus} onStreetView={showStreet} geometry={geometry} selectedBoundary={selected} selectedName={chosen?chosen.name+' · '+chosen.hierarchy.village.code:undefined} onBoundarySelect={select} initialCamera={initial.camera} onCameraChange={c=>{camera.current=c;replaceGeoContext(context())}}/></div>
-
- <aside className="geo-panel" aria-label="Wilayah dan pelanggan"><label>Cari wilayah<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nama atau kode wilayah…"/></label><div className="geo-hierarchy">{levels.map((l,i)=><label key={l}>{['Provinsi','Kabupaten / kota','Kecamatan','Desa / kelurahan'][i]}<select value={hierarchy[l]||''} onChange={e=>setHierarchy(h=>({...Object.fromEntries(levels.slice(0,i).map(k=>[k,h[k]||''])),[l]:e.target.value}))}><option value="">Semua</option>{hierarchyOptions(l).map((v:any)=><option key={v.code} value={v.code}>{v.name}</option>)}</select></label>)}</div>
-
- <small>{visible.length} wilayah dalam scope{visible.length>50?' · maksimal 50 polygon ditampilkan; persempit pencarian':''}</small>
-
- <div className="geo-region-list" role="group" aria-label="Pilih wilayah">{visible.map(b=><button key={b.id} className="geo-region" aria-pressed={selected===b.id} onClick={()=>select(b.id)}><span><strong>{b.name}</strong><small>{b.hierarchy.village.code} · {b.hierarchy.district.name}</small></span><b>{data.preview?'—':b.confirmed_customer_count}</b></button>)}{!visible.length&&<p className="muted">Tidak ada batas tersedia untuk pilihan ini.</p>}</div>
-
- <section className="geo-detail" aria-label="Rincian wilayah" onKeyDown={e=>{if(e.key==='Escape')setSelected('')}}>{chosen?<><h3>{chosen.name}</h3>{!data.preview&&<small>Area bisnis: {chosen.area_business?.area_name||'Belum dibagi'}{chosen.area_business&&chosen.area_business.boundary_id!==chosen.id?' · basis rilis sebelumnya':''}</small>}<small>{levels.map(l=>chosen.hierarchy[l].name).join(' / ')}</small><p>{data.preview?'Jumlah pelanggan belum tersedia untuk draft.':`${customers.length} pelanggan terkonfirmasi dalam filter saat ini.`}</p><div className="data-actions"><button className="button secondary" onClick={()=>setSelected('')}>Hapus pilihan</button><button className="button" disabled={data.preview} onClick={()=>geoNavigate('customers',context())}>Lihat pelanggan wilayah</button>{canManage&&<button className="button secondary" disabled={data.preview} onClick={()=>geoNavigate('assignments',context())}>Atur pembagian wilayah</button>}</div>{customers.slice(0,8).map((c:any)=><div className="geo-customer" key={c.id}><span>{c.name}<small>{geoStatusLabels[c.geo_status]}</small></span>{canManage&&<button className="text-button" onClick={()=>geoNavigate('settings',context({customer_id:c.id}))}>Review</button>}</div>)}</>:<p className="muted">Klik polygon atau pilih wilayah dari daftar. Daftar dapat digunakan dengan keyboard.</p>}</section>
-
- <button className="button secondary" disabled={data.preview} onClick={()=>geoNavigate('customers',context({boundary_id:undefined,mapping_bucket:'unmapped'}))}>Belum terpetakan / perlu review · {data.stats.unmapped}</button>
-
- {canManage&&<button className="text-button" onClick={()=>geoNavigate('settings',{customer_id:data.map.all_customers[0]?.id,dataset_id:data.dataset?.id})}>Kelola review pemetaan</button>}
-
- <details className="geo-sales"><summary>Posisi sales terakhir · {data.map.sales.length}</summary><div className="geo-sales-list">{data.map.sales.map((s:any)=><div className="geo-customer" key={s.id}><span><strong>{s.name}</strong><small>{s.last_seen} · {s.source}</small><small>Akurasi {s.accuracy_m===null?'belum tersedia':s.accuracy_m+' m'}</small></span><button className="text-button" onClick={()=>setFocus({...s})}>Lihat posisi</button></div>)}{!data.map.sales.length&&<p className="muted">Belum ada posisi diterima pada filter ini.</p>}</div></details></aside></div>
-
- <footer className="geo-source"><small>{data.dataset?`${data.dataset.release_version} · ${data.dataset.code_namespace} · ${data.dataset.attribution||'Atribusi sedang direview'}`:'Batas administrasi belum aktif.'}</small><small>Lokasi sales bertimestamp, bukan tracking langsung. Garis GPS menunggu Android. Tanpa rute / ETA.</small></footer>
-
- </section>}{street&&<StreetView customer={street} onClose={()=>setStreet(null)}/>}</>;
-
+ const {identity}=useIdentity(),manage=identity.capabilities.includes('settings:manage');
+ const [mode,setMode]=useState<MapAnalysisMode>(['scatter','performance','coverage','risk'].includes(initial.mode||'')?initial.mode as MapAnalysisMode:'scatter'),[area,setArea]=useState(initial.area_id||''),[rep,setRep]=useState(initial.rep_id||''),[channel,setChannel]=useState(initial.channel||'field'),[period,setPeriod]=useState(initial.period||new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'}).slice(0,7));
+ const [areas,setAreas]=useState<any[]>([]),[users,setUsers]=useState<any[]>([]),[datasets,setDatasets]=useState<any[]>([]),[dataset,setDataset]=useState(initial.dataset_id||''),[data,setData]=useState<any>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[refresh,setRefresh]=useState(0),[selected,setSelected]=useState(initial.boundary_id||''),[search,setSearch]=useState(''),[geometry,setGeometry]=useState<any>(null),[geometryError,setGeometryError]=useState(''),[focus,setFocus]=useState<any>(null),[street,setStreet]=useState<any>(null),[panel,setPanel]=useState(false);
+ useEffect(()=>{let active=true;Promise.all([get('/api/areas'),get('/api/users'),manage?readBoundaryDatasets():Promise.resolve([])]).then(([a,u,d])=>{if(active){setAreas(a);setUsers(u);setDatasets(d)}}).catch(e=>active&&setError(e.message));return()=>{active=false}},[manage]);
+ const query=new URLSearchParams({period,channel,compact:'1'});if(area)query.set('area_id',area);if(rep)query.set('rep_id',rep);if(dataset)query.set('dataset_id',dataset);const key=query.toString();
+ useEffect(()=>{const controller=new AbortController();setBusy(true);setError('');get('/api/geo/map?'+key,controller.signal).then(d=>{setData(d);if(selected&&!d.boundaries.some((b:any)=>b.id===selected))setSelected('')}).catch(e=>{if(!controller.signal.aborted)setError(e.message)}).finally(()=>{if(!controller.signal.aborted)setBusy(false)});return()=>controller.abort()},[key,refresh]);
+ const boundaries:any[]=data?.boundaries||[],visible=useMemo(()=>boundaries.filter(b=>[b.name,b.hierarchy?.district?.name,b.hierarchy?.village?.code].join(' ').toLowerCase().includes(search.toLowerCase())),[boundaries,search]);
+ const ids=visible.slice(0,40).map(b=>b.id);if(selected&&!ids.includes(selected))ids.push(selected);const geometryKey=ids.join(',');
+ useEffect(()=>{const controller=new AbortController();setGeometry(null);setGeometryError('');if(data?.dataset&&geometryKey)get('/api/geo/geometry?'+new URLSearchParams({dataset_id:data.dataset.id,ids:geometryKey}),controller.signal).then(setGeometry).catch(e=>{if(!controller.signal.aborted)setGeometryError(e.message)});return()=>controller.abort()},[data?.dataset?.id,data?.dataset?.version,geometryKey,refresh]);
+ function context(){return {mode,area_id:area,rep_id:rep,channel,period,dataset_id:data?.dataset?.id,boundary_id:selected,camera:camera.current}}
+ useEffect(()=>{if(data)replaceGeoContext(context())},[mode,area,rep,channel,period,selected,data?.dataset?.id]);
+ const chosen=boundaries.find(b=>b.id===selected),all=data?.map.all_customers||[];
+ const summary=useMemo(()=>data?.summary||mapSummary(all),[data]);
+ const map=useMemo(()=>data?{...data.map,analysis_mode:mode}:null,[data,mode]);
+ function select(id:string){setSelected(id);const b=boundaries.find(x=>x.id===id);if(b)setFocus({bbox:b.bbox})}
+ async function showStreet(customer:any){if(document.fullscreenElement)await document.exitFullscreen().catch(()=>{});setStreet(customer)}
+ return <><div className="page-heading"><h1>Peta</h1><button className="button secondary" onClick={()=>setRefresh(n=>n+1)} disabled={busy}>Muat ulang</button></div>
+ <section className="card unified-map-filters" aria-label="Filter peta"><label>Periode<input type="month" aria-label="Periode peta" value={period} onChange={e=>setPeriod(e.target.value)}/></label><label>Kanal<select aria-label="Kanal peta" value={channel} onChange={e=>{setChannel(e.target.value);setRep('')}}><option value="field">Sales lapangan</option><option value="telesales">Telesales</option></select></label><label>Area<select aria-label="Area peta" value={area} onChange={e=>{setArea(e.target.value);setSelected('')}}><option value="">Semua area</option>{areas.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label><label>Sales<select aria-label="Sales peta" value={rep} onChange={e=>setRep(e.target.value)}><option value="">Semua sales</option>{users.filter(u=>u.channel===channel&&['SALES_REP','TELESALES'].includes(u.role_code)).map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</select></label>{manage&&datasets.length>0&&<label>Batas operasional<select aria-label="Rilis batas" value={dataset} onChange={e=>{setDataset(e.target.value);setSelected('')}}><option value="">Rilis aktif</option>{datasets.filter(d=>d.status==='active').map(d=><option key={d.id} value={d.id}>{d.release_version}</option>)}</select></label>}</section>
+ {error&&<p className="notice danger" role="alert">{error}</p>}{!data&&!error&&<Loading>Memuat peta…</Loading>}
+ {data&&<><section className="unified-map-stats" aria-label="Ringkasan peta"><div><small>Pelanggan dalam scope</small><strong>{summary.customers.toLocaleString('id-ID')}</strong><small>{data.map.customers.length.toLocaleString('id-ID')} titik ditampilkan</small></div><div><small>Invoice net teramati</small><strong title={compactNumber(summary.actual,true).full}>{compactNumber(summary.actual,true).short}</strong><small>{summary.invoices.toLocaleString('id-ID')} invoice · {data.period_context}</small></div><div><small>Pelanggan dengan aktivitas bermakna</small><strong>{summary.covered.toLocaleString('id-ID')}</strong><small>{summary.activities.toLocaleString('id-ID')} aktivitas · {data.period_context}</small></div><div><small>Churn</small><strong>{summary.churn.toLocaleString('id-ID')}</strong><small>Status berdasarkan histori invoice</small></div></section>
+ <section className="card unified-map-card" aria-label="Peta terpadu" aria-busy={busy}><MapLibreCanvas mapData={map} focus={focus} geometry={geometry} selectedBoundary={selected} selectedName={chosen?.name} onBoundarySelect={select} onStreetView={showStreet} initialCamera={initial.camera} onCameraChange={value=>{camera.current=value;replaceGeoContext(context())}} territoryUrl={manage?territoryUrl:''}>
+ <div className="unified-map-toolbar"><LiquidTabs role="group" aria-label="Mode analisis peta">{modes.map(([key,label])=><button key={key} type="button" className={'button '+(mode===key?'':'secondary')} aria-pressed={mode===key} onClick={()=>setMode(key)}>{label}</button>)}</LiquidTabs><button className="button secondary" aria-expanded={panel} onClick={()=>setPanel(!panel)}>Wilayah & rincian</button></div>
+ {busy&&<div className="unified-map-busy" role="status">Memperbarui data…</div>}
+ {panel&&<aside className="unified-map-panel" aria-label="Wilayah dan pelanggan"><label>Cari wilayah<input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nama / kode kelurahan"/></label><small>{visible.length} wilayah operasional; {Math.min(40,visible.length)} ditampilkan</small><div className="unified-region-scroll">{visible.slice(0,40).map(b=><button className="geo-region" key={b.id} aria-pressed={selected===b.id} onClick={()=>select(b.id)}><span>{b.name}<small>{b.hierarchy?.district?.name}</small></span><b>{b.confirmed_customer_count}</b></button>)}</div>{!boundaries.length&&<p>Belum ada batas operasional aktif. Batas nasional tetap dapat dilihat melalui layer wilayah.</p>}{chosen&&<section><h3>{chosen.name}</h3><p>{chosen.confirmed_customer_count} pelanggan terpetakan</p><button className="button" onClick={()=>geoNavigate('customers',context())}>Lihat pelanggan</button><button className="button secondary" onClick={()=>setSelected('')}>Hapus pilihan</button></section>}<p>{data.stats.unmapped.toLocaleString('id-ID')} pelanggan belum terpetakan ke batas operasional.</p><button className="button secondary" onClick={()=>geoNavigate('monitoring',context())}>Analisis sales</button>{manage&&<button className="button secondary" onClick={()=>geoNavigate('settings',{settings_section:'boundaries'})}>Kelola batas</button>}</aside>}
+ </MapLibreCanvas></section>
+ {geometryError&&<p className="notice">Batas operasional: {geometryError}. Titik pelanggan tetap tersedia.</p>}
+ <details className="unified-map-method"><summary>Dasar pembacaan & sumber</summary><p>Warna dan ukuran pin mengikuti mode yang dipilih. Invoice memakai atribusi historis; posisi sales adalah lokasi terakhir bertimestamp. Aktivitas dan invoice pada bulan yang sama menunjukkan hubungan observasi, bukan bukti kunjungan menyebabkan penjualan.</p><p>Overlay DEMO berisi operasi sintetis yang terhubung ke lokasi referensi. Tidak mengganti identitas atau histori pelanggan sumber. Angka ringkasan hanya menghitung customer kanonis sekali; tanpa invoice berarti belum ada invoice teramati, bukan sumber dipastikan lengkap.</p><p>Churn mengikuti status invoice rolling 90 hari, bukan skor risiko prediktif. Batas nasional BIG 2022-based dan estimasi WorldPop 2026 bukan pembagian area sales. {data.dataset?.attribution}</p></details></>}
+ {street&&<StreetView customer={street} onClose={()=>setStreet(null)}/>}</>;
 }

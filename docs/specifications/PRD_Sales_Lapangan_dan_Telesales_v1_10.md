@@ -1219,3 +1219,16 @@ WEB-057 dilanjutkan dengan opsi pemeriksaan isi berkas pada restore drill: lampi
 ## Addendum direktori customer — 28 Oktober 2026
 
 Sumber direktori eksternal harus dideduplikasi menurut identitas sumber yang pasti. Warung yang lolos validasi masuk master tanpa penugasan/transaksi/izin kontak rekaan; non-warung menjadi referensi peta privat. Konflik tetap ditahan untuk review. Riwayat belum lengkap berstatus Unknown/provisional, sedangkan koordinat dan penempatan administratif sumber belum terverifikasi. [Spesifikasi, rekonsiliasi dan tahapan impor](../POINT_DIRECTORY_IMPORT.md).
+
+
+## Perombakan peta dan analisis terhubung — 3 November 2026
+
+Halaman Peta menggunakan satu canvas MapLibre untuk titik customer, posisi sales terakhir, batas operasional aktif, dan layer batas nasional PMTiles. Canvas terpisah serta pembagian owner nasional placeholder dihapus dari halaman. Batas nasional dan estimasi kepadatan penduduk adalah konteks geografis, bukan bukti pembagian area operasional atau lokasi kunjungan.
+
+Mode UI: Sebaran, Penjualan (warna kelas rupiah dan ukuran simbol), Kunjungan (ada/belum ada aktivitas bermakna pada bulan dipilih), dan Status pelanggan (status invoice, termasuk Unknown). Status pelanggan menggantikan pilihan Risiko pada halaman ini; mesin analisis risiko dan API historis tetap tersedia untuk kompatibilitas. Legenda hanya menjelaskan layer aktif; panel, tooltip, dan kontrol berada di dalam canvas termasuk fullscreen.
+
+Invoice dan aktivitas dikelompokkan per customer kanonis, bulan, kanal, dan scope. Invoice memakai rep/area historis; filter pemilik customer tidak memindahkan atribusi invoice. Ringkasan tidak menjumlahkan kembali salinan operasi pada titik referensi. Hubungan invoice/kunjungan pada periode yang sama adalah observasi, bukan klaim kausal. Unknown, belum ada invoice, dan sumber lengkap adalah kondisi berbeda.
+
+Pelengkap DEMO Bekasi dibatasi Agu–Okt 2026: target bulanan empat sales, tiga skema insentif threshold-progressive, dan 12 statement prepared untuk review. Bonus asumsi Rp500.000 pada achievement 80%; bagian penjualan 80–100% mendapat tarif marginal 1%, bagian di atas 100% tarif 2%; pembulatan half-up rupiah. Semua record bernama DEMO dan audit synthetic; tidak ada pembayaran, perubahan invoice/customer/kunjungan sumber, maupun pengesahan target bisnis asli. Penerapan melalui input workflow staging yang eksplisit, preflight overlap, dan rekonsiliasi.
+
+Performa: halaman analitik, insentif, distribusi, dan peta dimuat sesuai kebutuhan; widget peta Overview baru dipasang dekat viewport. Peta memakai WebGL clustering, ringkasan server, payload compact tanpa duplikasi seluruh master customer, daftar wilayah terbatas 40 hasil, serta pembatalan request filter lama. Ini bukan pernyataan bahwa seluruh jalur legacy atau volume nasional sudah memenuhi SLO; ukur payload, query metadata, dan UX pada data staging.

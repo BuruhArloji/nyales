@@ -1,3 +1,4 @@
+import {mapPeriod} from './map-metrics';
 import {BEKASI_DIRECTORY_DATASET_ID,BEKASI_POINT_OVERLAY_DISCLAIMER,BEKASI_POINT_OVERLAY_ID,type BekasiOperationOverlay} from '../shared/bekasi-demo-overlay';
 
 export const BEKASI_DEMO_PREFIX='bekasi-demo-customer-';
@@ -9,7 +10,7 @@ const GROUPS=[
 
 type Customer=Record<string,any>&{id:string;organization_id?:string;area_id:string;name:string;address:string|null;latitude_e7:number|null;longitude_e7:number|null;coordinate_status:string;directory_dataset_id:string|null;version:number;record_status:string;merged_into_id?:string|null;field_rep_id?:string|null;telesales_rep_id?:string|null;owner?:string;status?:string;lat:number|null;lng:number|null};
 type Link= {mapping_id:string;synthetic_activity:true;existing_point_overlay:true;demo_customer_id:string;demo_area_id:string;source_customer_id:string;source_external_code:string|null;source_dataset_id:string;source_area_id:string;source_name:string;source_address:string|null;source_latitude_e7:number;source_longitude_e7:number;source_version:number;source_coordinate_status:string;before:Customer};
-type Filters={areaId?:string|null;repId?:string|null;channel:'field'|'telesales';status?:string|null};
+type Filters={areaId?:string|null;repId?:string|null;channel:'field'|'telesales';status?:string|null;period?:string|null};
 
 function demoNumber(id:string){const n=Number(id.slice(BEKASI_DEMO_PREFIX.length));return Number.isInteger(n)&&n>=1&&n<=200?n:null}
 function expectedGroup(id:string){const n=demoNumber(id);return n===null?null:n<=100?GROUPS[0]:GROUPS[1]}
@@ -44,19 +45,20 @@ export function applyBekasiOverlay(rows:Customer[],links:Link[],metrics:Map<stri
  const byId=new Map(rows.map(r=>[r.id,r]));const out=rows.map(r=>({...r}));const outById=new Map(out.map(r=>[r.id,r]));let linked=0;
  for(const link of links){const demo=byId.get(link.demo_customer_id),source=byId.get(link.source_customer_id);if(!demo||!source||!matches(link,demo,source,filters))continue;linked++;
   const m=metrics.get(demo.id)||{activity_count:0,productive_count:0,follow_up_count:0,no_show_count:0,order_count:0,invoice_count:0,actual_minor:0};
-  const overlay:BekasiOperationOverlay={mapping_id:BEKASI_POINT_OVERLAY_ID,demo_customer_id:demo.id,demo_customer_name:demo.name,demo_area_id:demo.area_id,demo_area_name:demo.area||demo.area_id,demo_rep_id:demo.field_rep_id||null,demo_rep_name:demo.owner||'Belum assigned',period_start:'2026-08-01',period_end:'2026-10-31',...m,disclaimer:BEKASI_POINT_OVERLAY_DISCLAIMER,source_customer_id:source.id,source_dataset_id:BEKASI_DIRECTORY_DATASET_ID,coordinate_status:'unverified'};
+  const overlay:BekasiOperationOverlay={mapping_id:BEKASI_POINT_OVERLAY_ID,demo_customer_id:demo.id,demo_customer_name:demo.name,demo_area_id:demo.area_id,demo_area_name:demo.area||demo.area_id,demo_rep_id:demo.field_rep_id||null,demo_rep_name:demo.owner||'Belum assigned',period_start:filters.period?mapPeriod(filters.period).start:'2026-08-01',period_end:filters.period?new Date(Date.parse(mapPeriod(filters.period).end)-86400000).toISOString().slice(0,10):'2026-10-31',...m,disclaimer:BEKASI_POINT_OVERLAY_DISCLAIMER,source_customer_id:source.id,source_dataset_id:BEKASI_DIRECTORY_DATASET_ID,coordinate_status:'unverified'};
   outById.get(source.id)!.demo_operation_overlay=overlay;
   outById.get(demo.id)!.demo_point_link={source_customer_id:source.id,source_customer_name:source.name,lat:source.lat,lng:source.lng};
  }
  return {allCustomers:out,linkedDemoCustomerCount:linked};
 }
 
-async function metricMap(db:D1Database,organizationId:string,ids:string[]){
+async function metricMap(db:D1Database,organizationId:string,ids:string[],period?:string|null){
+ const range=period?mapPeriod(period):{start:'2026-08-01',end:'2026-11-01'};
  const map=new Map<string,any>();if(!ids.length)return map;const jsonIds=JSON.stringify(ids),q='SELECT value FROM json_each(?)';
  const base={activity_count:0,productive_count:0,follow_up_count:0,no_show_count:0,order_count:0,invoice_count:0,actual_minor:0};
- const acts=await db.prepare(`SELECT outlet_id,COUNT(*) activity_count,SUM(CASE WHEN json_extract(metadata_json,'$.outcome')='productive' THEN 1 ELSE 0 END) productive_count,SUM(CASE WHEN json_extract(metadata_json,'$.outcome')='follow_up' THEN 1 ELSE 0 END) follow_up_count,SUM(CASE WHEN json_extract(metadata_json,'$.outcome')='no_show' THEN 1 ELSE 0 END) no_show_count FROM activity WHERE organization_id=? AND outlet_id IN (${q}) AND occurred_at>=? AND occurred_at<? GROUP BY outlet_id`).bind(organizationId,jsonIds,'2026-08-01','2026-11-01').all<any>();
- const orders=await db.prepare(`SELECT customer_id,COUNT(*) order_count FROM sales_order WHERE organization_id=? AND customer_id IN (${q}) AND created_at>=? AND created_at<? GROUP BY customer_id`).bind(organizationId,jsonIds,'2026-08-01','2026-11-01').all<any>();
- const invoices=await db.prepare(`SELECT outlet_id,COUNT(*) invoice_count,COALESCE(SUM(net_minor),0) actual_minor FROM invoice WHERE organization_id=? AND outlet_id IN (${q}) AND source_system='bekasi-demo-synthetic' AND status='validated' AND validation_state='validated' AND invoice_date BETWEEN '2026-08-01' AND '2026-10-31' GROUP BY outlet_id`).bind(organizationId,jsonIds).all<any>();
+ const acts=await db.prepare(`SELECT outlet_id,COUNT(*) activity_count,SUM(CASE WHEN json_extract(metadata_json,'$.outcome')='productive' THEN 1 ELSE 0 END) productive_count,SUM(CASE WHEN json_extract(metadata_json,'$.outcome')='follow_up' THEN 1 ELSE 0 END) follow_up_count,SUM(CASE WHEN json_extract(metadata_json,'$.outcome')='no_show' THEN 1 ELSE 0 END) no_show_count FROM activity WHERE organization_id=? AND outlet_id IN (${q}) AND occurred_at>=? AND occurred_at<? GROUP BY outlet_id`).bind(organizationId,jsonIds,range.start,range.end).all<any>();
+ const orders=await db.prepare(`SELECT customer_id,COUNT(*) order_count FROM sales_order WHERE organization_id=? AND customer_id IN (${q}) AND created_at>=? AND created_at<? GROUP BY customer_id`).bind(organizationId,jsonIds,range.start,range.end).all<any>();
+ const invoices=await db.prepare(`SELECT outlet_id,COUNT(*) invoice_count,COALESCE(SUM(net_minor),0) actual_minor FROM invoice WHERE organization_id=? AND outlet_id IN (${q}) AND is_current=1 AND source_system='bekasi-demo-synthetic' AND status='validated' AND validation_state='validated' AND invoice_date>=? AND invoice_date<? GROUP BY outlet_id`).bind(organizationId,jsonIds,range.start,range.end).all<any>();
  for(const id of ids)map.set(id,{...base,...acts.results.find(x=>x.outlet_id===id),...orders.results.find(x=>x.customer_id===id),...invoices.results.find(x=>x.outlet_id===id)});return map;
 }
 
@@ -66,5 +68,5 @@ export async function loadBekasiPointOverlay(db:D1Database,organizationId:string
  if(!receipt)return {links:[] as Link[],metrics:new Map(),enabled:false,reason:'receipt-incomplete'};
  const audits=(await db.prepare("SELECT organization_id,resource_id,resource_type,action,before_json,after_json FROM master_audit WHERE organization_id=? AND resource_type='demo_operation_point_link' AND action='operation_point_link_selected' AND id LIKE ? ORDER BY id").bind(organizationId,`${BEKASI_POINT_OVERLAY_ID}:%`).all()).results;
  const links=validBekasiOverlayLinks(rows,audits,organizationId);if(links.length!==200)return {links:[] as Link[],metrics:new Map(),enabled:false,reason:'links-incomplete'};
- return {links,metrics:await metricMap(db,organizationId,links.map(x=>x.demo_customer_id)),enabled:true,reason:null};
+ return {links,metrics:await metricMap(db,organizationId,links.map(x=>x.demo_customer_id),filters.period),enabled:true,reason:null};
 }

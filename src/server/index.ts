@@ -315,8 +315,8 @@ async function mapPayload(c:any){
  if(!['field','telesales'].includes(channel))throw new Error('Invalid channel');
 
  const overlayRows=cachedCustomers.value.map(row=>({...row,organization_id:s.identity.organization_id}));
- const overlay=await loadBekasiPointOverlay(c.env.DB,s.identity.organization_id,overlayRows,{areaId,repId,channel,status},c.env.APP_ENV);
- const overlaid=overlay.enabled?applyBekasiOverlay(cachedCustomers.value,overlay.links,overlay.metrics,{areaId,repId,channel,status}):{allCustomers:cachedCustomers.value,linkedDemoCustomerCount:0};
+ const overlay=await loadBekasiPointOverlay(c.env.DB,s.identity.organization_id,overlayRows,{areaId,repId,channel:channel as 'field'|'telesales',status,period:c.req.query('period')},c.env.APP_ENV);
+ const overlaid=overlay.enabled?applyBekasiOverlay(cachedCustomers.value,overlay.links,overlay.metrics,{areaId,repId,channel:channel as 'field'|'telesales',status,period:c.req.query('period')}):{allCustomers:cachedCustomers.value,linkedDemoCustomerCount:0};
  const rawOverlaid=overlaid.allCustomers;
 
  if(areaId)customers=customers.filter(x=>x.area_id===areaId);

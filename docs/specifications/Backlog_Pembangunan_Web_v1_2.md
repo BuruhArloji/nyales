@@ -2590,3 +2590,12 @@ WEB-057 dilanjutkan dengan opsi pemeriksaan isi berkas pada restore drill: lampi
 ## Direktori warung — 28 Oktober 2026
 
 [Implementasi dan impor bertahap](../POINT_DIRECTORY_IMPORT.md) tersedia di staging: deduplikasi sumber, customer tanpa penugasan/riwayat rekaan, referensi non-warung privat dan peta WebGL untuk koleksi besar. Impor master dibatasi kuota gratis D1; jumlah cloud aktual dan batch tersisa ada pada STAGING_STATUS.json. Review812titik, penempatan area/koordinat, konfirmasi UI login, dan integrasi transaksi nyata tetap terbuka. Tidak menutup gate migrasi transaksi atau acceptance produksi. Routing tetap ditunda sesuai keputusan pengguna.
+
+
+## Perombakan terarah — 3 November 2026
+
+Implementasi peta terpadu menggantikan dua canvas terpisah: layer batas nasional/operasional + titik customer, simbol penjualan bulanan, aktivitas bermakna, status pelanggan, legenda dinamis, panel in-map, dan tooltip berbasis fakta. Artefak uji: `tests/map-analysis.test.ts`, `tests/browser/unified-map.spec.cjs`, `test-results/unified-map/`. API regional/risiko lama dipertahankan; perubahan navigasi tidak menghapus histori.
+
+Pelengkap data analisis DEMO disediakan oleh `scripts/complete-bekasi-analysis.ts` melalui workflow input `complete_bekasi_analysis`: 12 target bulanan, 3 skema, 12 statement prepared; operasi bisnis asli dilindungi preflight dan perbandingan pascapenerapan. Ini tidak menutup WEB-060 integrasi/rekonsiliasi transaksi perusahaan nyata. Routing tetap ditunda.
+
+Paket performa mencakup pemuatan halaman sesuai kebutuhan, deferred widget Overview, proyeksi compact, agregasi kanonis dan clustering WebGL. Cakupan lanjutan yang belum diklaim selesai: seluruh API legacy tanpa batas, pemuatan titik menurut viewport untuk volume jauh lebih besar, acceptance pengguna, dan SLO/p95 staging. Validasi lokal dan workflow staging dicatat terpisah.
