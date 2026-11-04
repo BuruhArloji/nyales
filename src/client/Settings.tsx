@@ -10,11 +10,14 @@ import {LiquidTabs} from './LiquidNav';
 import{Loading}from'./Loading';
 import React,{useEffect,useRef,useState} from 'react';
 import {Modal} from './Modal';
-import {apiFetch} from './auth';
+import {apiFetch,useIdentity} from './auth';
+import {PortfolioVisitors} from './PortfolioVisitors';
 type Row={id:string;name:string;version:number;timezone?:string;branch_id?:string;status?:string;weekdays?:number[];start_time?:string;end_time?:string;holidays?:string[]};
 type Kind='organization'|'branches'|'areas'|'calendars';
 const labels:Record<Kind,string>={organization:'Organisasi',branches:'Cabang',areas:'Area',calendars:'Kalender kerja'};
 export function Settings(){
+ const {identity}=useIdentity();
+ const [showVisitors,setShowVisitors]=useState(false);
  const [showPlanning,setShowPlanning]=useState(()=>readGeoContext().settings_section==='planning');
  const [showAgents,setShowAgents]=useState(()=>readGeoContext().settings_section==='agents');
  const [showWorkload,setShowWorkload]=useState(()=>readGeoContext().settings_section==='workload');
@@ -41,7 +44,7 @@ export function Settings(){
  async function archiveRow(){if(!archive||busy)return;setBusy(true);setError('');try{await send(`/api/${kind}/${archive.id}/archive`,'POST',{},archive);retryKey.current=null;setArchive(null);fill(null);await load();setMessage('Record diarsipkan. Riwayat tetap disimpan.')}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
  function closeForm(){if(busy)return;setFormOpen(false);setError('');fill(null)}
  function openForm(row:Row|null){fill(row);setError('');setMessage('');setFormOpen(true)}
- return <><div className="page-heading"><div><h1>Pengaturan organisasi</h1></div></div>
+ return <><div className="page-heading"><div><h1>Pengaturan organisasi</h1></div>{identity.portfolio_owner&&<button type="button" className="button secondary" onClick={()=>setShowVisitors(true)}><ActionIcon name="people"/>Pengunjung</button>}</div>{showVisitors&&identity.portfolio_owner&&<PortfolioVisitors onClose={()=>setShowVisitors(false)}/>}
  <div className="page-toolbar"><LiquidTabs className="settings-tabs" role="group" aria-label="Bagian pengaturan">{(Object.keys(labels) as Kind[]).map(k=><button key={k} className={'button '+(!showBoundaries&&!showRisk&&!showWorkload&&!showAgents&&!showPlanning&&kind===k?'':'secondary')} onClick={()=>change(k)} disabled={busy} aria-pressed={!showBoundaries&&!showRisk&&!showWorkload&&!showAgents&&!showPlanning&&kind===k}>{labels[k]}</button>)}<button className={'button '+(showBoundaries?'':'secondary')} aria-pressed={showBoundaries} disabled={busy} onClick={()=>{setShowPlanning(false);setShowAgents(false);setShowWorkload(false);setShowRisk(false);setShowBoundaries(true);setFormOpen(false);setArchive(null)}}>Batas wilayah</button><button className={'button '+(showRisk?'':'secondary')} aria-pressed={showRisk} disabled={busy} onClick={()=>{setShowPlanning(false);setShowAgents(false);setShowWorkload(false);setShowBoundaries(false);setShowRisk(true);setFormOpen(false);setArchive(null)}}>Risiko pelanggan</button><button className={'button '+(showWorkload?'':'secondary')} aria-pressed={showWorkload} disabled={busy} onClick={()=>{setShowPlanning(false);setShowAgents(false);setShowWorkload(true);setShowRisk(false);setShowBoundaries(false);setFormOpen(false);setArchive(null)}}>Beban & kapasitas</button><button className={'button '+(showAgents?'':'secondary')} aria-pressed={showAgents} disabled={busy} onClick={()=>{setShowPlanning(false);setShowAgents(true);setShowWorkload(false);setShowRisk(false);setShowBoundaries(false);setFormOpen(false);setArchive(null)}}>Komputer penghitung</button><button className={'button '+(showPlanning?'':'secondary')} aria-pressed={showPlanning} disabled={busy} onClick={()=>{setShowPlanning(true);setShowAgents(false);setShowWorkload(false);setShowRisk(false);setShowBoundaries(false);setFormOpen(false);setArchive(null)}}>Perencanaan kunjungan</button></LiquidTabs>{!showBoundaries&&!showRisk&&!showWorkload&&!showAgents&&!showPlanning&&<button className="button page-add" disabled={loading||busy||(kind==='organization'&&!records.organization[0])} onClick={()=>openForm(kind==='organization'?records.organization[0]:null)}>{kind==='organization'?'Edit organisasi':<><span aria-hidden="true">＋</span>Tambah {labels[kind].toLowerCase()}</>}</button>}</div>
  {showPlanning?<VisitPlanningSettings/>:showAgents?<VisitAgentSettings/>:showWorkload?<WorkloadSettings/>:showRisk?<RiskSettings/>:showBoundaries?<BoundarySettings/>:<>
  {error&&!formOpen&&!archive&&<div className="notice danger" role="alert">{error}<button className="button secondary" onClick={()=>void load()}><ActionIcon name="refresh"/>Muat ulang data</button></div>}{message&&<p role="status" className="callout success">{message}</p>}

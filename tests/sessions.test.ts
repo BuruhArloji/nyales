@@ -8,7 +8,7 @@ function fixture(){
  const {sqlite,adapter}=database();sqlite.exec("INSERT INTO organization(id,name) VALUES('o','Org'),('x','Other');INSERT INTO app_user(id,organization_id,name,auth_subject) VALUES('mg','o','Management','uid-mg'),('sr','o','Rep','uid-sr'),('sr2','o','Rep2','uid-sr2'),('other','x','Other','uid-other');INSERT INTO auth_role_assignment(id,organization_id,user_id,role_code,channel,effective_from_date) VALUES('r','o','sr','SALES_REP','field','2020-01-01');");
  const user=(id='sr'):Identity=>({id,name:id,organization_id:id==='other'?'x':'o',role:id==='mg'?'MANAGEMENT':'SALES_REP'});
  const now=Math.floor(Date.now()/1000);
- const req=(id:string,method:string,path:string,body?:object,token?:string,extra:Record<string,string>={},auth:Partial<SessionAuth>={},production=false)=>{const h=new Hono<SessionEnv>();h.use('*',async(c,next)=>{c.set('identity',user(id));c.set('auth',{subject:'uid-'+id,authTime:now,mfa:false,...auth});await next()});h.use('*',sessionGate);h.route('/',sessions);h.get('/api/protected',c=>c.json({ok:true}));return h.request(path,{method,headers:{'Content-Type':'application/json',...(token?{'X-Device-Session':token}:{}),...extra},...(body?{body:JSON.stringify(body)}:{})},{DB:adapter,APP_ENV:production?'production':'local',LOCAL_AUTH:'true',FIREBASE_PROJECT_ID:'test'})};
+ const req=(id:string,method:string,path:string,body?:object,token?:string,extra:Record<string,string>={},auth:Partial<SessionAuth>={},production=false,portfolio=false)=>{const h=new Hono<SessionEnv>();h.use('*',async(c,next)=>{c.set('identity',user(id));c.set('auth',{subject:'uid-'+id,authTime:now,mfa:false,...auth});await next()});h.use('*',sessionGate);h.route('/',sessions);h.get('/api/protected',c=>c.json({ok:true}));return h.request(path,{method,headers:{'Content-Type':'application/json',...(token?{'X-Device-Session':token}:{}),...extra},...(body?{body:JSON.stringify(body)}:{})},{DB:adapter,APP_ENV:production?'production':'local',LOCAL_AUTH:'true',FIREBASE_PROJECT_ID:'test',PORTFOLIO_ENABLED:portfolio?'true':'false'})};
  const create=async(id='sr',auth:Partial<SessionAuth>={})=>{const r=await req(id,'POST','/api/device-sessions',{device_id:crypto.randomUUID()},undefined,{},auth);assert.equal(r.status,201,await r.clone().text());return (await r.json() as any).data};
  return {sqlite,adapter,req,create,now};
 }
@@ -36,4 +36,14 @@ test('expired sessions fail closed, activity writes are throttled, rate limit en
  const secret='e'.repeat(64);sqlite.prepare('INSERT INTO device_session(id,organization_id,user_id,auth_subject,device_id,device_label,token_hash,auth_time,created_at,last_seen_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)').run('expired','o','sr','uid-sr','expired','Test',await hashSession(secret),1,old,old,old);assert.equal((await req('sr','GET','/api/protected',undefined,secret)).status,401);
  for(let i=1;i<20;i++)await create();assert.equal((await req('sr','POST','/api/device-sessions',{device_id:'too-many'})).status,429);assert.ok(await mappedIdentity(adapter,'uid-sr'));sqlite.exec("UPDATE app_user SET status='inactive' WHERE id='sr'");assert.equal(await mappedIdentity(adapter,'uid-sr'),null);
  adapter.prepare=()=>{throw new Error('Store offline')};assert.equal((await req('sr','GET','/api/protected',undefined,s.session_token)).status,503);
+});
+
+
+test('portfolio mapped admin without MFA retains device-bound session and nonportfolio still requires MFA',async()=>{
+ const {req,sqlite}=fixture();
+ const created=await req('mg','POST','/api/device-sessions',{device_id:'google-only-owner'},undefined,{}, {mfa:false},true,true);assert.equal(created.status,201,await created.clone().text());const session=(await created.json() as any).data;
+ assert.equal((await req('mg','GET','/api/protected',undefined,session.session_token,{}, {mfa:false},true,true)).status,200);
+ assert.equal((await req('mg','GET','/api/protected',undefined,undefined,{}, {mfa:false},true,true)).status,401);
+ assert.equal((await req('mg','GET','/api/protected',undefined,session.session_token,{}, {mfa:false},true,false)).status,403);
+ const listed=await req('mg','GET','/api/device-sessions',undefined,session.session_token,{}, {mfa:false},true,true),body=await listed.json() as any;assert.equal(body.meta.security.admin_mfa,'google_only');assert.equal(body.meta.security.device_binding,'required');assert.equal(body.meta.security.session_hours,12);sqlite.close();
 });

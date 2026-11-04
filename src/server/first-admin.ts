@@ -1,7 +1,7 @@
 import {Hono} from 'hono';
 import {verifyFirebaseClaims} from './auth';
 
-type Env={Bindings:{DB:D1Database;APP_ENV:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string}};
+type Env={Bindings:{DB:D1Database;APP_ENV:string;FIREBASE_PROJECT_ID:string;PORTFOLIO_ENABLED?:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string}};
 type Claims=Awaited<ReturnType<typeof verifyFirebaseClaims>>;
 
 /** Explicit operator-selected identity only, staging only. Never a general signup route. */
@@ -17,7 +17,7 @@ export function createFirstAdminRoutes(verify:(token:string,project:string)=>Pro
   let claims:Claims;
   try{claims=await verify(token,c.env.FIREBASE_PROJECT_ID)}catch{return c.json({code:'INVALID_ID_TOKEN'},401)}
   if(!claims.emailVerified||claims.provider!=='google.com'||claims.email?.trim().toLowerCase()!==selected)return c.json({code:'BOOTSTRAP_IDENTITY_DENIED',detail:'Akun ini belum memiliki akses NYALES. Hubungi administrator.'},403);
-  if(!claims.mfa)return c.json({code:'MFA_REQUIRED',detail:'Aktifkan Authenticator lalu masuk kembali untuk mengaktifkan akun Management pertama.'},403);
+  if(c.env.PORTFOLIO_ENABLED!=='true'&&!claims.mfa)return c.json({code:'MFA_REQUIRED',detail:'Aktifkan Authenticator lalu masuk kembali untuk mengaktifkan akun Management pertama.'},403);
   if(claims.authTime<Math.floor(Date.now()/1000)-300)return c.json({code:'REAUTH_REQUIRED',detail:'Masuk kembali untuk melanjutkan aktivasi akun pertama.'},401);
   const db=c.env.DB;
   try{
@@ -32,7 +32,7 @@ export function createFirstAdminRoutes(verify:(token:string,project:string)=>Pro
     db.prepare('INSERT INTO organization(id,name,timezone) VALUES(?,?,?)').bind(org,name,'Asia/Jakarta'),
     db.prepare("INSERT INTO app_user(id,organization_id,auth_subject,name,status) VALUES(?,?,?,?,'active')").bind(user,org,claims.subject,claims.displayName?.trim()||'Management'),
     db.prepare("INSERT INTO auth_role_assignment(id,organization_id,user_id,role_code,channel,effective_from_date) VALUES(?,?,?,'MANAGEMENT',NULL,?)").bind(crypto.randomUUID(),org,user,date),
-    db.prepare("INSERT INTO master_audit(id,organization_id,actor_id,resource_type,resource_id,action,occurred_at,before_json,after_json) VALUES(?,?,?,'organization',?,'bootstrap_first_admin',?,NULL,?)").bind(crypto.randomUUID(),org,user,org,now,JSON.stringify({organization_name:name,user_id:user,auth_subject:claims.subject,email:claims.email,role:'MANAGEMENT',mfa_verified:true})),
+    db.prepare("INSERT INTO master_audit(id,organization_id,actor_id,resource_type,resource_id,action,occurred_at,before_json,after_json) VALUES(?,?,?,'organization',?,'bootstrap_first_admin',?,NULL,?)").bind(crypto.randomUUID(),org,user,org,now,JSON.stringify({organization_name:name,user_id:user,auth_subject:claims.subject,email:claims.email,role:'MANAGEMENT',mfa_verified:claims.mfa,authentication_policy:c.env.PORTFOLIO_ENABLED==='true'?'google_only':'google_mfa'})),
     db.prepare('DELETE FROM master_mutation_guard')
    ]);
    return c.json({data:{id:user,organization_id:org,role:'MANAGEMENT',already_initialized:false}},201);

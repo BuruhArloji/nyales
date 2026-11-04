@@ -2,16 +2,16 @@ import {Hono,type MiddlewareHandler} from 'hono';
 import {z} from 'zod';
 import {localAuthEnabled,type Identity} from './auth';
 export type SessionAuth={subject:string;authTime:number;mfa:boolean};
-export type SessionEnv={Bindings:{DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string};Variables:{identity:Identity;auth:SessionAuth;deviceSession:SessionRow}};
+export type SessionEnv={Bindings:{DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;PORTFOLIO_ENABLED?:string};Variables:{identity:Identity;auth:SessionAuth;deviceSession:SessionRow}};
 type SessionRow={id:string;organization_id:string;user_id:string;auth_subject:string;device_id:string;device_label:string;token_hash:string;auth_time:number;created_at:string;last_seen_at:string;expires_at:string;revoked_at:string|null;revoked_by:string|null;revoke_reason:string|null;version:number};
 export const sessions=new Hono<SessionEnv>();
 export async function hashSession(value:string){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value))),x=>x.toString(16).padStart(2,'0')).join('')}
 const privileged=(i:Identity)=>['MANAGEMENT','NSM'].includes(i.role);
 const recent=(auth:SessionAuth)=>auth.authTime>=Math.floor(Date.now()/1000)-300;
-export function securityPolicy(local:boolean){return {device_binding:'required',session_hours:12,admin_mfa:local?'local_demo_bypass':'required',mfa_provider:'Firebase Identity Platform',mfa_rollout_gate:'pending_project_verification',reauth_minutes:5}}
+export function securityPolicy(local:boolean,portfolio=false){return {device_binding:'required',session_hours:12,admin_mfa:portfolio?'google_only':local?'local_demo_bypass':'required',mfa_provider:portfolio?null:'Firebase Identity Platform',mfa_rollout_gate:portfolio?'not_required_google_only':'pending_project_verification',reauth_minutes:5}}
 export const sessionGate:MiddlewareHandler<SessionEnv>=async(c,next)=>{
  const identity=c.get('identity'),auth=c.get('auth');
- if(privileged(identity)&&!localAuthEnabled(c.env)&&!auth.mfa)return c.json({code:'MFA_REQUIRED',detail:'Akun admin memerlukan MFA. Konfigurasi provider dan enrollment belum diverifikasi; rollout admin masih ditahan.'},403);
+ if(privileged(identity)&&c.env.PORTFOLIO_ENABLED!=='true'&&!localAuthEnabled(c.env)&&!auth.mfa)return c.json({code:'MFA_REQUIRED',detail:'Akun admin memerlukan MFA. Konfigurasi provider dan enrollment belum diverifikasi; rollout admin masih ditahan.'},403);
  if(c.req.path==='/api/device-sessions'&&c.req.method==='POST'){await next();return}
  const token=c.req.header('X-Device-Session');
  if(!token||!/^[a-f0-9]{64}$/.test(token))return c.json({code:'DEVICE_SESSION_REQUIRED',detail:'Sesi perangkat diperlukan. Silakan masuk kembali.'},401);
@@ -43,7 +43,7 @@ sessions.post('/api/device-sessions',async c=>{
   c.header('ETag','"1"');return c.json({data:{...summary(row),session_token:token}},201);
  }catch{return c.json({code:'SESSION_CREATE_FAILED',detail:'Sesi belum dapat dibuat. Coba login kembali.'},503)}
 });
-sessions.get('/api/device-sessions',async c=>{const i=c.get('identity');const rows=await c.env.DB.prepare(`SELECT * FROM device_session WHERE organization_id=?${privileged(i)?'':' AND user_id=?'} ORDER BY created_at DESC LIMIT 201`).bind(i.organization_id,...(privileged(i)?[]:[i.id])).all<SessionRow>();const names=await c.env.DB.prepare(`SELECT id,name FROM app_user WHERE organization_id=?${privileged(i)?'':' AND id=?'}`).bind(i.organization_id,...(privileged(i)?[]:[i.id])).all<{id:string;name:string}>();return c.json({data:rows.results.slice(0,200).map(r=>({...summary(r,c.get('deviceSession').id),user_name:names.results.find(u=>u.id===r.user_id)?.name||r.user_id})),meta:{has_more:rows.results.length>200,security:securityPolicy(localAuthEnabled(c.env))}})});
+sessions.get('/api/device-sessions',async c=>{const i=c.get('identity');const rows=await c.env.DB.prepare(`SELECT * FROM device_session WHERE organization_id=?${privileged(i)?'':' AND user_id=?'} ORDER BY created_at DESC LIMIT 201`).bind(i.organization_id,...(privileged(i)?[]:[i.id])).all<SessionRow>();const names=await c.env.DB.prepare(`SELECT id,name FROM app_user WHERE organization_id=?${privileged(i)?'':' AND id=?'}`).bind(i.organization_id,...(privileged(i)?[]:[i.id])).all<{id:string;name:string}>();return c.json({data:rows.results.slice(0,200).map(r=>({...summary(r,c.get('deviceSession').id),user_name:names.results.find(u=>u.id===r.user_id)?.name||r.user_id})),meta:{has_more:rows.results.length>200,security:securityPolicy(localAuthEnabled(c.env),c.env.PORTFOLIO_ENABLED==='true')}})});
 sessions.get('/api/device-sessions/:id',async c=>{const row=await target(c);if(!row)return c.json({code:'NOT_FOUND'},404);c.header('ETag',`"${row.version}"`);return c.json({data:summary(row,c.get('deviceSession').id)})});
 sessions.post('/api/device-sessions/:id/revoke',async c=>{
  const i=c.get('identity'),row=await target(c);if(!row)return c.json({code:'NOT_FOUND'},404);

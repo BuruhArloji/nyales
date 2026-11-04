@@ -84,7 +84,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/areas/{id}": {
@@ -127,7 +127,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "put": {
         "operationId": "core_put__api_areas__id_",
@@ -200,7 +200,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/areas": {
@@ -234,7 +234,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "post": {
         "operationId": "core_post__api_areas",
@@ -290,7 +290,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/auth/config": {
@@ -325,7 +325,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/branches/{id}/archive": {
@@ -400,7 +400,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/branches/{id}": {
@@ -443,7 +443,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "put": {
         "operationId": "core_put__api_branches__id_",
@@ -516,7 +516,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/branches": {
@@ -550,7 +550,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "post": {
         "operationId": "core_post__api_branches",
@@ -606,7 +606,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/calendars/{id}/archive": {
@@ -681,7 +681,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/calendars/{id}/clock": {
@@ -724,7 +724,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/calendars/{id}": {
@@ -767,7 +767,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "put": {
         "operationId": "core_put__api_calendars__id_",
@@ -840,7 +840,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/calendars": {
@@ -874,7 +874,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "post": {
         "operationId": "core_post__api_calendars",
@@ -930,7 +930,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/customers/{id}/directory-details": {
@@ -973,7 +973,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/customers/{id}/street-view": {
@@ -1016,7 +1016,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/dashboard": {
@@ -1090,7 +1090,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/device-sessions/{id}/revoke": {
@@ -1155,7 +1155,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/device-sessions/{id}": {
@@ -1198,7 +1198,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/device-sessions": {
@@ -1232,7 +1232,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "post": {
         "operationId": "core_post__api_device_sessions",
@@ -1282,7 +1282,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/health": {
@@ -1317,7 +1317,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/hierarchy-assignments/{id}/end": {
@@ -1392,7 +1392,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/hierarchy-assignments/{id}": {
@@ -1435,7 +1435,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/hierarchy-assignments": {
@@ -1469,7 +1469,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "post": {
         "operationId": "core_post__api_hierarchy_assignments",
@@ -1525,7 +1525,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/me": {
@@ -1559,7 +1559,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/organization": {
@@ -1593,7 +1593,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "put": {
         "operationId": "core_put__api_organization",
@@ -1658,7 +1658,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/point-directory/{dataset}/details/{external_code}": {
@@ -1709,7 +1709,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/telesales/queue": {
@@ -1743,7 +1743,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/users/{id}/deactivate": {
@@ -1818,7 +1818,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/users/{id}/roles": {
@@ -1893,7 +1893,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/users/{id}": {
@@ -1936,7 +1936,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "put": {
         "operationId": "core_put__api_users__id_",
@@ -2009,7 +2009,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/users": {
@@ -2043,7 +2043,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       },
       "post": {
         "operationId": "core_post__api_users",
@@ -2099,7 +2099,7 @@
             "description": "If-Match required"
           }
         },
-        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
+        "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
     "/api/auth/first-admin": {
@@ -2126,7 +2126,7 @@
             "description": "Missing/invalid Firebase bearer or recent sign-in required"
           },
           "403": {
-            "description": "Google provider, verified email allowlist or signed MFA claim not satisfied"
+            "description": "Google provider, verified email allowlist or required MFA claim not satisfied"
           },
           "404": {
             "description": "Disabled unless staging and both operator bootstrap variables are configured"
@@ -2138,7 +2138,7 @@
             "description": "Request body is forbidden"
           }
         },
-        "x-access-policy": "Staging only; exact operator-selected verified Google email, signed second-factor claim, auth_time at most five minutes; no role/UID/email supplied by client",
+        "x-access-policy": "Staging only; exact operator-selected verified Google email, signed second-factor claim outside explicit Google-only portfolio mode, auth_time at most five minutes; no role/UID/email supplied by client",
         "x-constraints": "No general signup. Database must have zero organizations, users and roles. A failed D1 batch rolls back every new record. Same original active administrator can replay without duplicate audit. Remove bootstrap variables after activation."
       }
     }

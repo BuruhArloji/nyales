@@ -1,4 +1,5 @@
 import {apiBodyLimit} from './http-security';
+import {recordPortfolioVisit} from './portfolio-visitors';
 import {Hono,type MiddlewareHandler} from 'hono';
 import {verifyFirebaseClaims,type Identity} from './auth';
 import {hashSession} from './sessions';
@@ -10,7 +11,7 @@ export function portfolioAuthConfig(env:{PORTFOLIO_ENABLED?:string;LOCAL_AUTH?:s
 }
 type Claims=Awaited<ReturnType<typeof verifyFirebaseClaims>>;
 type Bindings={DB:D1Database;PORTFOLIO_ORGANIZATION_ID?:string;PORTFOLIO_ENABLED?:string;FIREBASE_PROJECT_ID:string;APP_ENV:string;LOCAL_AUTH:string};
-type Env={Bindings:Bindings;Variables:{identity:Identity;auth:{subject:string;authTime:number;mfa:boolean}}};
+type Env={Bindings:Bindings;Variables:{identity:Identity;portfolioOwner:boolean;auth:{subject:string;authTime:number;mfa:boolean}}};
 export function googleAccessClass(claims:Claims):'owner'|'visitor'{
  if(claims.provider!=='google.com'||!claims.emailVerified||!claims.email||!claims.subject)throw Error('VERIFIED_GOOGLE_REQUIRED');
  return claims.email.trim().toLowerCase()===PORTFOLIO_OWNER_EMAIL?'owner':'visitor';
@@ -37,7 +38,7 @@ export function redactPortfolio(value:unknown):unknown{
 export function portfolioReadAllowed(method:string,path:string){
  if(method!=='GET')return false;
  if(!path.startsWith('/api/'))return false;
- return !/(?:\/export(?:s)?(?:\/|$)|\/sources$|\/street-view$|\/directory-details$|\/details\/|\/auth\/|\/audit-events(?:\/|$)|\/sensitive-access(?:\/|$)|\/visit-agent(?:\/|$)|\/visit-generator\/(?:agents|queue-jobs|credentials|nonces)(?:\/|$)|\/recovery(?:\/|$)|\/observability(?:\/|$)|\/device-sessions(?:\/|$))/.test(path);
+ return !/(?:\/portfolio-visitors(?:\/|$)|\/export(?:s)?(?:\/|$)|\/sources$|\/street-view$|\/directory-details$|\/details\/|\/auth\/|\/audit-events(?:\/|$)|\/sensitive-access(?:\/|$)|\/visit-agent(?:\/|$)|\/visit-generator\/(?:agents|queue-jobs|credentials|nonces)(?:\/|$)|\/recovery(?:\/|$)|\/observability(?:\/|$)|\/device-sessions(?:\/|$))/.test(path);
 }
 /** Install before identity/session gates. Visitors share data but never inherit owner identity or write rights. */
 export function createPortfolioGate(scopedRoutes:Hono<any>|(()=>Hono<any>),verify:(token:string,project:string)=>Promise<Claims>=verifyFirebaseClaims,clock=()=>Date.now()):MiddlewareHandler<Env>{
@@ -46,7 +47,11 @@ export function createPortfolioGate(scopedRoutes:Hono<any>|(()=>Hono<any>),verif
   if(c.env.LOCAL_AUTH==='true')return c.json({code:'PORTFOLIO_LOCAL_BYPASS_FORBIDDEN'},503);
   const token=c.req.header('Authorization')?.match(/^Bearer (.+)$/)?.[1];if(!token)return c.json({code:'UNAUTHENTICATED'},401);
   let claims:Claims,kind:'owner'|'visitor';try{claims=await verify(token,c.env.FIREBASE_PROJECT_ID);kind=googleAccessClass(claims);}catch{return c.json({code:'VERIFIED_GOOGLE_REQUIRED',detail:'Gunakan akun Google dengan email terverifikasi.'},401);}
-  if(kind==='owner'){await next();return;}
+  if(kind==='owner'){
+   c.set('portfolioOwner',true);
+   if(c.req.path==='/api/me'&&c.req.method==='GET'&&c.env.PORTFOLIO_ORGANIZATION_ID){try{await recordPortfolioVisit(c.env.DB,c.env.FIREBASE_PROJECT_ID,c.env.PORTFOLIO_ORGANIZATION_ID,{...claims,email:claims.email!},kind,clock());}catch{return c.json({code:'PORTFOLIO_HISTORY_UNAVAILABLE'},503);}}
+   await next();return;
+  }
   const db=c.env.DB,org=c.env.PORTFOLIO_ORGANIZATION_ID;if(!org||!await db.prepare('SELECT id FROM organization WHERE id=?').bind(org).first())return c.json({code:'PORTFOLIO_DATA_NOT_CONFIGURED'},503);
   // Verified Google email survives Firebase user deletion/recreation; a new Firebase UID is not a new allowance.
   let admission:Awaited<ReturnType<typeof admitPortfolio>>;try{admission=await admitPortfolio(c.env.DB,c.env.FIREBASE_PROJECT_ID,claims.email!.trim().toLowerCase(),clock());}catch{return c.json({code:'PORTFOLIO_ACCESS_UNAVAILABLE'},503);}
@@ -61,7 +66,10 @@ export function createPortfolioGate(scopedRoutes:Hono<any>|(()=>Hono<any>),verif
   const preview=c.req.method==='POST'&&portfolioPreviewPaths.has(c.req.path);
   if(!preview&&!portfolioReadAllowed(c.req.method,c.req.path))return c.json({code:'PORTFOLIO_READ_ONLY',detail:'Mode portofolio hanya untuk melihat dan mencoba perhitungan rute; perubahan data tidak diizinkan.'},403);
   if(preview&&!await reservePortfolioPreview(db,admission.subject_hash))return c.json({code:'PORTFOLIO_PREVIEW_LIMIT',detail:'Batas 5 percobaan perhitungan rute untuk akun ini telah tercapai.'},429);
-  if(c.req.path==='/api/me')return c.json({data:{...actor,capabilities:['customers:read','dashboard:read','map:read','telesales:read','settings:manage'],area_ids:[],scope:'organization',...access}});
+  if(c.req.path==='/api/me'){
+   try{await recordPortfolioVisit(db,c.env.FIREBASE_PROJECT_ID,org,{...claims,email:claims.email!},kind,clock());}catch{return c.json({code:'PORTFOLIO_HISTORY_UNAVAILABLE'},503);}
+   return c.json({data:{...actor,capabilities:['customers:read','dashboard:read','map:read','telesales:read','settings:manage'],area_ids:[],scope:'organization',...access}});
+  }
   const wrapper=new Hono<Env>();wrapper.use('/api/*',apiBodyLimit);wrapper.use('*',async(x,n)=>{x.set('identity',actor);x.set('auth',{subject:'portfolio-readonly',authTime:claims.authTime,mfa:false});await n();});wrapper.route('/',typeof scopedRoutes==='function'?scopedRoutes():scopedRoutes);
   const response=await wrapper.fetch(c.req.raw,{...c.env,DB:db,GOOGLE_MAPS_EMBED_API_KEY:undefined,PORTFOLIO_ENABLED:'false'} as any);
   if(!response.headers.get('Content-Type')?.includes('application/json'))return c.json({code:'PORTFOLIO_DOWNLOAD_DISABLED'},403);

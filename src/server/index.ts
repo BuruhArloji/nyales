@@ -1,3 +1,4 @@
+import {listPortfolioVisitors} from './portfolio-visitors';
 import {createPortfolioGate} from './portfolio-access';
 import {dailyVisit} from './daily-visit';
 import {readDirectoryFacts} from './directory-facts';
@@ -61,7 +62,7 @@ import {localAuthEnabled,verifyFirebaseClaims,mappedIdentity,type Identity} from
 
 type Bindings={PORTFOLIO_ENABLED?:string;PORTFOLIO_ORGANIZATION_ID?:string;DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string;IMPORT_FILES?:R2Bucket;MAP_TILE_URL?:string;MAP_ATTRIBUTION?:string;GOOGLE_MAPS_EMBED_API_KEY?:string;ORS_API_KEY?:string;OBS_OWNER_ORGANIZATION_ID?:string};
 
-const app=new Hono<{Bindings:Bindings;Variables:{identity:Identity;scope:Scope;auth:SessionAuth;deviceSession:SessionEnv['Variables']['deviceSession']}}>();
+const app=new Hono<{Bindings:Bindings;Variables:{identity:Identity;portfolioOwner:boolean;scope:Scope;auth:SessionAuth;deviceSession:SessionEnv['Variables']['deviceSession']}}>();
 
 app.onError((_err,c)=>{console.error('NYALES_API_UNHANDLED');return c.json({code:'INTERNAL_ERROR',request_id:c.res.headers.get('X-Request-ID')||null},500)});
 app.route('/',demoTerritoryFiles);
@@ -70,7 +71,7 @@ app.use('/api/*',httpSecurity);
 
 app.get('/api/health',(c)=>c.json({name:'NYALES',status:'ok',environment:c.env.APP_ENV||'local',version:'0.1.0'}));
 
-app.get('/api/auth/config',c=>c.json({mode:c.env.PORTFOLIO_ENABLED==='true'?'firebase':localAuthEnabled(c.env)?'local':'firebase',configured:Boolean(c.env.FIREBASE_PROJECT_ID)||localAuthEnabled(c.env),google_only:true,portfolio_enabled:c.env.PORTFOLIO_ENABLED==='true',security:securityPolicy(localAuthEnabled(c.env))}));
+app.get('/api/auth/config',c=>c.json({mode:c.env.PORTFOLIO_ENABLED==='true'?'firebase':localAuthEnabled(c.env)?'local':'firebase',configured:Boolean(c.env.FIREBASE_PROJECT_ID)||localAuthEnabled(c.env),google_only:true,portfolio_enabled:c.env.PORTFOLIO_ENABLED==='true',security:securityPolicy(localAuthEnabled(c.env),c.env.PORTFOLIO_ENABLED==='true')}));
 
 // First-admin activation verifies its own Google identity and MFA before mapping exists.
 app.route('/',createFirstAdminRoutes());
@@ -117,7 +118,7 @@ app.use('/api/*',apiBodyLimit);
 
 app.route('/',sessions);
 
-export const scopedRoutes=new Hono<{Bindings:Bindings;Variables:{identity:Identity;scope:Scope}}>();
+export const scopedRoutes=new Hono<{Bindings:Bindings;Variables:{identity:Identity;portfolioOwner:boolean;scope:Scope}}>();
 
 scopedRoutes.use('/api/*',async(c,next)=>{
 
@@ -184,7 +185,9 @@ scopedRoutes.onError((err,c)=>{console.error('NYALES request failed',err.name,St
 
 function meta(){return {request_id:crypto.randomUUID(),server_time:new Date().toISOString(),source:'d1',validation_state:'provisional',freshness_state:'manual'}}
 
-scopedRoutes.get('/api/me',async c=>{const s=c.get('scope');const demoData=localAuthEnabled(c.env)&&Boolean(await c.env.DB.prepare("SELECT id FROM master_audit WHERE organization_id=? AND resource_type='demo_fixture' AND resource_id='showcase-v1-' LIMIT 1").bind(s.identity.organization_id).first());const trainingData=c.env.APP_ENV==='staging'&&await hasTrainingData(c.env.DB,s.identity.organization_id);const bekasiDemoData=c.env.APP_ENV==='staging'&&await hasBekasiDemoData(c.env.DB,s.identity.organization_id);const bekasiDemoReady=c.env.APP_ENV==='staging'&&await hasBekasiDemoReady(c.env.DB,s.identity.organization_id);const directoryData=Boolean(await c.env.DB.prepare("SELECT id FROM point_directory_dataset WHERE organization_id=? AND status='ready' LIMIT 1").bind(s.identity.organization_id).first());return c.json({data:{...c.get('identity'),demo_data:demoData,training_data:trainingData,bekasi_demo_data:bekasiDemoData,bekasi_demo_ready:bekasiDemoReady,directory_data:directoryData,capabilities:s.capabilities,area_ids:s.areaIds,scope:s.orgWide?'organization':s.allRepsInArea?'area':'assigned'},meta:meta()})});
+scopedRoutes.get('/api/portfolio-visitors',listPortfolioVisitors);
+
+scopedRoutes.get('/api/me',async c=>{const s=c.get('scope');const demoData=localAuthEnabled(c.env)&&Boolean(await c.env.DB.prepare("SELECT id FROM master_audit WHERE organization_id=? AND resource_type='demo_fixture' AND resource_id='showcase-v1-' LIMIT 1").bind(s.identity.organization_id).first());const trainingData=c.env.APP_ENV==='staging'&&await hasTrainingData(c.env.DB,s.identity.organization_id);const bekasiDemoData=c.env.APP_ENV==='staging'&&await hasBekasiDemoData(c.env.DB,s.identity.organization_id);const bekasiDemoReady=c.env.APP_ENV==='staging'&&await hasBekasiDemoReady(c.env.DB,s.identity.organization_id);const directoryData=Boolean(await c.env.DB.prepare("SELECT id FROM point_directory_dataset WHERE organization_id=? AND status='ready' LIMIT 1").bind(s.identity.organization_id).first());return c.json({data:{...c.get('identity'),portfolio_owner:c.get('portfolioOwner')===true,demo_data:demoData,training_data:trainingData,bekasi_demo_data:bekasiDemoData,bekasi_demo_ready:bekasiDemoReady,directory_data:directoryData,capabilities:s.capabilities,area_ids:s.areaIds,scope:s.orgWide?'organization':s.allRepsInArea?'area':'assigned'},meta:meta()})});
 
 async function readCustomers(db:D1Database,s:Scope,customerId?:string){
 

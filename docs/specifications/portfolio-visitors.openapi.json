@@ -1,0 +1,52 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES owner visitor history",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/portfolio-visitors": {
+      "get": {
+        "operationId": "listPortfolioVisitors",
+        "summary": "Read verified Google visitor history, owner only",
+        "x-access-policy": "Verified Google owner in PORTFOLIO_ENABLED mode, mapped active identity and valid device session, explicit pilot organization. Portfolio visitors and all other roles denied. No raw tokens, IP or internal hashes returned.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                50,
+                100
+              ],
+              "default": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data contains email, display_name, account_kind, first_seen_at, last_seen_at and visit_count; meta contains limit, has_more and next_cursor. Keyset order last_seen_at descending, private no-store."
+          },
+          "401": {
+            "description": "Google/device authentication required"
+          },
+          "403": {
+            "description": "Owner only"
+          },
+          "422": {
+            "description": "Invalid pagination"
+          }
+        }
+      }
+    }
+  }
+}

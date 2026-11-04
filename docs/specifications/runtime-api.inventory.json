@@ -2343,6 +2343,18 @@
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
     },
     {
+      "method": "GET",
+      "path": "/api/portfolio-visitors",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "portfolio-visitors.openapi.json",
+          "path": "/api/portfolio-visitors"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
       "method": "POST",
       "path": "/api/product-groups/:id/archive",
       "authentication": "bearer plus device session; scope checked server-side",

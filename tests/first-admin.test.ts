@@ -36,6 +36,11 @@ test('First admin atomically creates one organization and scoped Management iden
  f.setClaims({subject:'replacement-uid'});assert.equal((await f.request()).status,409);assert.equal(f.count('app_user'),1);
  f.setClaims({subject:base.subject});f.sqlite.exec("UPDATE app_user SET status='inactive'");assert.equal((await f.request()).status,409);assert.equal(f.count('app_user'),1);
 });
+
+test('portfolio Google-only first admin accepts verified Google without MFA and audit reports actual assurance',async()=>{
+ const f=fixture({mfa:false},{PORTFOLIO_ENABLED:'true'}),response=await f.request();assert.equal(response.status,201,await response.clone().text());const audit=JSON.parse(String((f.sqlite.prepare('SELECT after_json FROM master_audit').get() as any).after_json));assert.equal(audit.mfa_verified,false);assert.equal(audit.authentication_policy,'google_only');
+ for(const claims of [{emailVerified:false},{provider:'password'},{email:'wrong@example.test'},{authTime:1}]){const denied=fixture({mfa:false,...claims},{PORTFOLIO_ENABLED:'true'});assert.ok([401,403].includes((await denied.request()).status));assert.equal(denied.count('organization'),0);}
+});
 test('Existing tenant or concurrent initialization cannot be adopted; failed bootstrap batch rolls back all new records',async()=>{
  const f=fixture();f.sqlite.exec("INSERT INTO organization(id,name) VALUES('existing','Existing')");assert.equal((await f.request()).status,409);assert.equal(f.count('organization'),1);assert.equal(f.count('app_user'),0);
  const race=fixture();const batch=race.adapter.batch.bind(race.adapter);race.adapter.batch=async statements=>{race.sqlite.exec("INSERT INTO organization(id,name) VALUES('raced','Raced')");return batch(statements)};
