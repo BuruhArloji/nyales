@@ -35,3 +35,7 @@ test('Staging mutation is explicit; only the verified demo package crosses jobs 
  assert.ok(deployJob.includes('permissions:\n      contents: read'));
  assert.ok(deployJob.includes('actions/download-artifact@v4'));
 });
+
+test('Google portfolio rollout disables local bypass and pins the explicit shared pilot organization',async()=>{
+ const {stagingConfig}=await load(),org='3994b80a-d473-476e-97cb-f864f7708000',config=stagingConfig({...values,PORTFOLIO_ENABLED:'true',PORTFOLIO_ORGANIZATION_ID:org});assert.equal(config.vars.LOCAL_AUTH,'false');assert.equal(config.vars.PORTFOLIO_ENABLED,'true');assert.equal(config.vars.PORTFOLIO_ORGANIZATION_ID,org);assert.equal(config.d1_databases.length,1);assert.throws(()=>stagingConfig({...values,PORTFOLIO_ENABLED:'true'}),/PORTFOLIO_ORGANIZATION/);
+});

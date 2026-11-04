@@ -1,14 +1,15 @@
 import{Loading}from'./Loading';
 import React,{createContext,useContext,useEffect,useRef,useState} from 'react';
 import {initializeApp,getApps} from 'firebase/app';
-import {getAuth,onIdTokenChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut,browserSessionPersistence,setPersistence,getMultiFactorResolver,type MultiFactorError,type MultiFactorResolver,type User,type Auth} from 'firebase/auth';
+import {getAuth,onIdTokenChanged,signInWithPopup,GoogleAuthProvider,signOut,browserSessionPersistence,setPersistence,getMultiFactorResolver,type MultiFactorError,type MultiFactorResolver,type User,type Auth} from 'firebase/auth';
 import {AuthApiError,loginProblem,shouldExpireSession}from'./auth-errors';
 import {TotpChallenge,TotpEnrollment}from'./auth-mfa';
 import {createReadRequests,identityHeartbeat} from './read-requests';
-type Identity={demo_data?:boolean;training_data?:boolean;bekasi_demo_data?:boolean;bekasi_demo_ready?:boolean;directory_data?:boolean;id:string;name:string;organization_id:string;role:string;capabilities:string[];area_ids:string[];scope:string};
-type Config={mode:'local'|'firebase';configured:boolean};
+type Identity={read_only?:boolean;portfolio_read_only?:boolean;can_preview_routes?:boolean;portfolio_expires_at?:string;portfolio_remaining_seconds?:number;demo_data?:boolean;training_data?:boolean;bekasi_demo_data?:boolean;bekasi_demo_ready?:boolean;directory_data?:boolean;id:string;name:string;organization_id:string;role:string;capabilities:string[];area_ids:string[];scope:string};
+type Config={mode:'local'|'firebase';configured:boolean;google_only?:boolean;portfolio_enabled?:boolean};
 let firebaseAuth:Auth|undefined;
 let demo=false;
+let portfolioReadOnly=false;
 type BoundSession={id:string;session_token:string;subject:string;version:number};
 const sessionKey='nyales-device-session';
 const readRequests=createReadRequests();
@@ -17,6 +18,8 @@ export function currentDeviceSession(){try{const value=JSON.parse(sessionStorage
 function clearSession(){readRequests.clear();sessionStorage.removeItem(sessionKey)}
 export async function apiFetch(url:string,init:RequestInit={}){
  if(new URL(url,location.origin).origin!==location.origin)throw new Error('API harus berasal dari NYALES.');
+ const method=(init.method||'GET').toUpperCase(),path=new URL(url,location.origin).pathname;
+ if(portfolioReadOnly&&!['GET','HEAD'].includes(method)&&path!=='/api/device-sessions'&&path!=='/api/device-sessions/portfolio-visitor/revoke'&&!(method==='POST'&&['/api/visit-generator/daily/runs','/api/visit-generator/ors/previews'].includes(path)))throw new AuthApiError('PORTFOLIO_READ_ONLY',403,'Mode portofolio hanya untuk melihat fitur.');
  const headers=new Headers(init.headers),before=subject();
  if(demo)headers.set('Authorization','Bearer nyales-local-demo');
  else if(firebaseAuth?.currentUser)headers.set('Authorization',`Bearer ${await firebaseAuth.currentUser.getIdToken()}`);
@@ -41,7 +44,7 @@ const Context=createContext<{identity:Identity;logout:()=>Promise<void>;loggingO
 export function useIdentity(){const value=useContext(Context);if(!value)throw new Error('Missing auth context');return value}
 export function AuthGate({children}:{children:React.ReactNode}){
  const [config,setConfig]=useState<Config|null>(null),[identity,setIdentity]=useState<Identity|null>(null),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
- const [email,setEmail]=useState(''),[password,setPassword]=useState(''),[loggingOut,setLoggingOut]=useState(false);
+ const [loggingOut,setLoggingOut]=useState(false);
  const [account,setAccount]=useState<User|null>(null),[pending,setPending]=useState<'activation'|'mfa'|null>(null),[resolver,setResolver]=useState<MultiFactorResolver|null>(null);
  const alive=useRef(true),attempt=useRef(0);
  function clearPending(){setPending(null);setResolver(null);setAccount(null)}
@@ -58,7 +61,7 @@ export function AuthGate({children}:{children:React.ReactNode}){
     if(!current())return;await ensureDeviceSession();
    }
    const response=await apiFetch('/api/me'),result=await response.json() as {data:Identity};
-   if(current()){setIdentity(result.data);setPending(null);setResolver(null);setError('');setNotice('')}
+   if(current()){portfolioReadOnly=Boolean(result.data.read_only);setIdentity(result.data);setPending(null);setResolver(null);setError('');setNotice('')}
   }catch(e){
    if(!current())return;setIdentity(null);
    if(e instanceof AuthApiError&&['USER_NOT_PROVISIONED_OR_INACTIVE','MFA_REQUIRED'].includes(e.code)){
@@ -80,7 +83,7 @@ export function AuthGate({children}:{children:React.ReactNode}){
     if(user)await loadMe();else{attempt.current++;setIdentity(null);setPending(null);clearSession();setLoading(false)}
    });
   }).catch(e=>{if(active&&e.name!=='AbortError'){setIdentity(null);setError('Tidak dapat memuat konfigurasi login. Muat ulang halaman untuk mencoba lagi.');setLoading(false)}});
-  const expired=()=>{attempt.current++;setIdentity(null);clearPending();clearSession();demo=false;sessionStorage.removeItem('nyales-demo');setError('Sesi perangkat berakhir atau dicabut. Silakan masuk kembali.');if(firebaseAuth)void signOut(firebaseAuth)};
+  const expired=()=>{const wasPortfolio=portfolioReadOnly;attempt.current++;setIdentity(null);clearPending();clearSession();demo=false;portfolioReadOnly=false;sessionStorage.removeItem('nyales-demo');setError(wasPortfolio?'Waktu eksplorasi 20 menit untuk akun ini telah berakhir.':'Sesi perangkat berakhir. Silakan masuk kembali.');if(firebaseAuth)void signOut(firebaseAuth)};
   window.addEventListener('nyales-session-expired',expired);
   return()=>{active=false;alive.current=false;attempt.current++;abort.abort();unsubscribe();window.removeEventListener('nyales-session-expired',expired)};
  },[]);
@@ -90,35 +93,40 @@ export function AuthGate({children}:{children:React.ReactNode}){
   const visible=()=>{void check(document.visibilityState==='visible')},timer=window.setInterval(visible,30000);window.addEventListener('focus',visible);document.addEventListener('visibilitychange',visible);
   return()=>{active=false;clearInterval(timer);window.removeEventListener('focus',visible);document.removeEventListener('visibilitychange',visible)};
  },[identity?.id]);
- async function login(kind:'demo'|'email'|'google'){
+
+ useEffect(()=>{
+  const expires=identity?.portfolio_expires_at;if(!expires)return;
+  const remaining=Date.parse(expires)-Date.now();if(remaining<=0){window.dispatchEvent(new Event('nyales-session-expired'));return;}
+  const timer=window.setTimeout(()=>window.dispatchEvent(new Event('nyales-session-expired')),Math.min(remaining,2147483647));return()=>clearTimeout(timer);
+ },[identity?.portfolio_expires_at]);
+ async function login(kind:'demo'|'google'){
   setBusy(true);setError('');setNotice('');clearSession();setResolver(null);
   try{
    if(kind==='demo'){demo=true;await loadMe();if(subject()==='local:demo-management')sessionStorage.setItem('nyales-demo','1')}
    else if(firebaseAuth){
-    if(kind==='google'){const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});await signInWithPopup(firebaseAuth,provider)}
-    else await signInWithEmailAndPassword(firebaseAuth,email,password);
+    const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});await signInWithPopup(firebaseAuth,provider);
    }
   }catch(e){
    demo=false;clearSession();
    if((e as {code?:string}).code==='auth/multi-factor-auth-required'&&firebaseAuth){setPending(null);setResolver(getMultiFactorResolver(firebaseAuth,e as MultiFactorError));setError('')}
    else setError(loginProblem(e));
-  }finally{setPassword('');setBusy(false)}
+  }finally{setBusy(false)}
  }
  async function logout(){
   if(loggingOut)return;setLoggingOut(true);attempt.current++;
   let failed=false;const session=currentDeviceSession();
-  try{if(session)await apiFetch('/api/device-sessions/'+session.id+'/revoke',{method:'POST',headers:{'Content-Type':'application/json','If-Match':`"${session.version}"`},body:JSON.stringify({reason:'Logout dari perangkat ini'})})}catch{failed=true}
-  finally{clearSession();demo=false;sessionStorage.removeItem('nyales-demo');setIdentity(null);clearPending();setPassword('');try{if(firebaseAuth)await signOut(firebaseAuth)}catch{failed=true}finally{setLoggingOut(false)}}
+  try{if(session)await apiFetch('/api/device-sessions/'+session.id+'/revoke',{method:'POST',headers:{'Content-Type':'application/json','If-Match':`"${session.version}"`},body:JSON.stringify({reason:'Logout dari perangkat ini'})})}catch(e){failed=!(e instanceof AuthApiError&&e.code==='PORTFOLIO_ACCESS_EXPIRED')}
+  finally{clearSession();demo=false;portfolioReadOnly=false;sessionStorage.removeItem('nyales-demo');setIdentity(null);clearPending();try{if(firebaseAuth)await signOut(firebaseAuth)}catch{failed=true}finally{setLoggingOut(false)}}
   if(failed)setError('Sudah keluar dari browser ini. Pencabutan sesi server belum terkonfirmasi.');
  }
  async function retry(){setLoading(true);setError('');await loadMe()}
  async function enrolled(){await logout();setError('');setNotice('Authenticator ditambahkan. Masuk kembali lalu verifikasi kode untuk membuka NYALES.')}
  if(loading)return <main className="login-page"><Loading>Memeriksa sesi NYALES…</Loading></main>;
- if(identity)return <Context.Provider key={identity.organization_id+':'+identity.id+':'+identity.role+':'+identity.area_ids.join(',')+':'+currentDeviceSession()?.id} value={{identity,logout,loggingOut}}>{children}</Context.Provider>;
+ if(identity)return <Context.Provider key={identity.organization_id+':'+identity.id+':'+identity.role+':'+identity.area_ids.join(',')+':'+currentDeviceSession()?.id} value={{identity,logout,loggingOut}}>{identity.read_only&&<aside role="status" className="portfolio-access-notice">Portofolio / Hanya lihat / Berakhir {identity.portfolio_expires_at?new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit'}).format(new Date(identity.portfolio_expires_at)):''}</aside>}{children}</Context.Provider>;
  return <main className="login-page"><section className="login-card"><div className="brand"><img src="/brand/nyales-mark.svg" alt=""/><span>NYALES</span></div>
   {resolver?<TotpChallenge resolver={resolver} onComplete={()=>setResolver(null)} onCancel={logout}/>:pending==='mfa'&&account?<TotpEnrollment key={account.uid} user={account} onEnrolled={enrolled} onRetry={retry} onSignOut={logout}/>:pending==='activation'&&account?<>
    <h1>Akun menunggu aktivasi.</h1><p>Anda berhasil masuk dengan Google/Firebase. Administrator perlu menghubungkan akun ini ke organisasi dan role NYALES.</p><p className="muted">{account.email}</p><label className="full-field">ID akun<input className="auth-uid" readOnly value={account.uid} onFocus={e=>e.target.select()}/></label><p className="muted">ID ini dapat dibagikan kepada administrator. Jangan membagikan password atau kode Authenticator.</p>
    {error&&<p role="alert" className="notice danger">{error}</p>}<button className="button" disabled={busy} onClick={()=>void retry()}>Periksa akses kembali</button><button className="button secondary" disabled={loggingOut} onClick={()=>void logout()}>Gunakan akun lain</button>
-  </>:<><h1>Masuk ke NYALES.</h1><p className="muted">Kelola customer, aktivitas sales, dan pencapaian tim Anda.</p>{error&&<p role="alert" className="notice danger">{error}</p>}{notice&&<p role="status" className="notice">{notice}</p>}{config?.mode==='local'?<><button className="button login-primary" disabled={busy} onClick={()=>void login('demo')}>{busy?'Menyiapkan sesi…':'Masuk sebagai Management'}</button></>:config?.configured?<form onSubmit={e=>{e.preventDefault();void login('email')}}><label className="full-field">Email<input type="email" autoComplete="username" required value={email} onChange={e=>setEmail(e.target.value)}/></label><label className="full-field">Password<input type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button className="button" disabled={busy} type="submit">{busy?'Memeriksa akses…':'Masuk'}</button><button type="button" className="button secondary" disabled={busy} onClick={()=>void login('google')}>Masuk dengan Google</button></form>:<p className="notice">Login belum dikonfigurasi. Hubungi administrator NYALES.</p>}</>}
+  </>:<><h1>Masuk ke NYALES.</h1><p className="muted">Kelola customer, aktivitas sales, dan pencapaian tim Anda.</p>{error&&<p role="alert" className="notice danger">{error}</p>}{notice&&<p role="status" className="notice">{notice}</p>}{config?.mode==='local'?<><button className="button login-primary" disabled={busy} onClick={()=>void login('demo')}>{busy?'Menyiapkan sesi…':'Masuk sebagai Management'}</button></>:config?.configured?<><button type="button" className="button login-primary" disabled={busy} onClick={()=>void login('google')}>{busy?'Memeriksa akun…':'Masuk dengan Google'}</button>{config.portfolio_enabled&&<p className="muted">Jelajahi seluruh tampilan portofolio selama 20 menit. Mode pengunjung hanya untuk melihat.</p>}</>:<p className="notice">Login belum dikonfigurasi. Hubungi administrator NYALES.</p>}</>}
  </section></main>;
 }

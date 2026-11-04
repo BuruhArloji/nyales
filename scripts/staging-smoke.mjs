@@ -31,7 +31,7 @@ export async function inspectStaging(raw,{fetcher=fetch}={}){
  const jsonType=r=>(r.headers.get('content-type')||'').includes('application/json');
  await inspect('HTML_ENTRY','/',{},(r,s)=>r.status===200&&(r.headers.get('content-type')||'').includes('text/html')&&/id=["']root["']/.test(s)&&s.includes('/assets/'));
  await inspect('HEALTH_STAGING','/api/health',{},(r,d)=>r.status===200&&jsonType(r)&&d.name==='NYALES'&&d.status==='ok'&&d.environment==='staging');
- await inspect('LOCAL_PILOT_MODE','/api/auth/config',{},(r,d)=>r.status===200&&jsonType(r)&&d.mode==='local'&&d.configured===true);
+ await inspect('AUTH_MODE','/api/auth/config',{},(r,d)=>r.status===200&&jsonType(r)&&d.configured===true&&(d.mode==='local'||d.mode==='firebase'&&d.google_only===true&&d.portfolio_enabled===true));
  await inspect('NO_AUTH_DENIED','/api/me',{},(r,d)=>r.status===401&&jsonType(r)&&d.code==='UNAUTHENTICATED'&&(r.headers.get('cache-control')||'').includes('no-store')&&r.headers.get('x-content-type-options')==='nosniff');
  await inspect('LOCAL_DEMO_REQUIRES_SESSION','/api/me',{headers:{Authorization:'Bearer nyales-local-demo'}},(r,d)=>r.status===401&&jsonType(r));
  await inspect('CUSTOMERS_UNAUTHENTICATED','/api/customers',{},(r,d)=>r.status===401&&jsonType(r)&&d.code==='UNAUTHENTICATED');

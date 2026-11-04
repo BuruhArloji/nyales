@@ -1,3 +1,5 @@
+import {createPortfolioGate} from './portfolio-access';
+import {dailyVisit} from './daily-visit';
 import {readDirectoryFacts} from './directory-facts';
 import {mapDisplayPayload} from '../shared/map-payload';
 import {customerWallet} from './customer-wallet';
@@ -57,7 +59,7 @@ import {resolveScope,customerPredicate,invoicePredicate,type Scope} from './scop
 
 import {localAuthEnabled,verifyFirebaseClaims,mappedIdentity,type Identity} from './auth';
 
-type Bindings={DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string;IMPORT_FILES?:R2Bucket;MAP_TILE_URL?:string;MAP_ATTRIBUTION?:string;GOOGLE_MAPS_EMBED_API_KEY?:string;ORS_API_KEY?:string;OBS_OWNER_ORGANIZATION_ID?:string};
+type Bindings={PORTFOLIO_ENABLED?:string;PORTFOLIO_ORGANIZATION_ID?:string;DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string;IMPORT_FILES?:R2Bucket;MAP_TILE_URL?:string;MAP_ATTRIBUTION?:string;GOOGLE_MAPS_EMBED_API_KEY?:string;ORS_API_KEY?:string;OBS_OWNER_ORGANIZATION_ID?:string};
 
 const app=new Hono<{Bindings:Bindings;Variables:{identity:Identity;scope:Scope;auth:SessionAuth;deviceSession:SessionEnv['Variables']['deviceSession']}}>();
 
@@ -68,13 +70,14 @@ app.use('/api/*',httpSecurity);
 
 app.get('/api/health',(c)=>c.json({name:'NYALES',status:'ok',environment:c.env.APP_ENV||'local',version:'0.1.0'}));
 
-app.get('/api/auth/config',c=>c.json({mode:localAuthEnabled(c.env)?'local':'firebase',configured:localAuthEnabled(c.env)||Boolean(c.env.FIREBASE_PROJECT_ID),security:securityPolicy(localAuthEnabled(c.env))}));
+app.get('/api/auth/config',c=>c.json({mode:c.env.PORTFOLIO_ENABLED==='true'?'firebase':localAuthEnabled(c.env)?'local':'firebase',configured:Boolean(c.env.FIREBASE_PROJECT_ID)||localAuthEnabled(c.env),google_only:true,portfolio_enabled:c.env.PORTFOLIO_ENABLED==='true',security:securityPolicy(localAuthEnabled(c.env))}));
 
 // First-admin activation verifies its own Google identity and MFA before mapping exists.
 app.route('/',createFirstAdminRoutes());
 
 // Machine endpoints verify their own PoP identity before the user bearer/session gate.
 app.route('/',visitAgentGateway);
+app.use('/api/*',createPortfolioGate(()=>scopedRoutes));
 
 app.use('/api/*',async(c,next)=>{
 
@@ -125,6 +128,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
  if(c.req.path.startsWith('/api/geo/')){if(c.req.method!=='GET'&&!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(/^\/api\/customer-risk-policies(\/|$)/.test(c.req.path)){if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(/^\/api\/(workload-policies|territory-scenarios)(\/|$)/.test(c.req.path)){if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
+ if(c.req.path.startsWith('/api/visit-generator/daily/')){await next();return}
  if(/^\/api\/visit-generator\/(agents|queue-jobs|policies|graphs|preflights|rep-profiles|customer-profiles)(\/|$)/.test(c.req.path)){if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(c.req.path.startsWith('/api/workload/')){await next();return}
  if(c.req.path.startsWith('/api/risks/')){await next();return}
@@ -370,6 +374,8 @@ scopedRoutes.get('/api/map',async c=>{const payload=await mapPayload(c);return c
 
 scopedRoutes.get('/api/sales/last-positions',async c=>{const result=await mapPayload(c);return c.json({data:result.data.sales,meta:result.meta})});
 
+// Daily self-service has its own scope checks; mount before legacy admin-only planning middleware.
+scopedRoutes.route('/',dailyVisit);
 scopedRoutes.route('/',customerWallet);
 scopedRoutes.route('/',invoices);
 

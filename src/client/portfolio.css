@@ -1,0 +1,3 @@
+.portfolio-access-notice{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:40;padding:8px 16px;border-radius:999px;background:#f0f8f2ed;border:1px solid #fff;color:#28594b;font:12px/1.4 Inter,system-ui,sans-serif;box-shadow:0 4px 20px #173d2918;backdrop-filter:blur(14px);max-width:calc(100vw - 32px);white-space:nowrap;pointer-events:none}
+body:has(.portfolio-access-notice) .app-shell{padding-top:38px}
+@media(max-width:600px){.portfolio-access-notice{top:8px;font-size:11px;padding:7px 12px}body:has(.portfolio-access-notice) .app-shell{padding-top:34px}}

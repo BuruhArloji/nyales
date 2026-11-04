@@ -1,0 +1,70 @@
+import React,{useEffect,useState} from 'react';
+import {apiFetch} from './auth';
+import {ActionIcon} from './ActionIcon';
+import {Modal} from './Modal';
+import {MapLibreCanvas} from './MapView';
+import {StreetView} from './StreetView';
+import {dailyMessages,defaultDailyPolicy} from '../shared/daily-visit';
+import {orsMessages} from '../shared/ors-planning';
+
+async function request(path:string,init?:RequestInit){const response=await apiFetch('/api/visit-generator/daily/'+path,init),body=await response.json()as any;if(!response.ok)throw Error(body.code||'DAILY_OPERATION_FAILED');return body.data;}
+const write=(path:string,body:any,method='POST',version?:number)=>request(path,{method,headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID(),...(version!==undefined?{'If-Match':`"${version}"`}:{})},body:JSON.stringify(body)});
+const formatError=(error:unknown)=>dailyMessages[(error as Error).message]||orsMessages[(error as Error).message]||({INVALID_DAILY_POLICY:'Periksa pengaturan dan total bobot 100%.',INVALID_DAILY_REQUEST:'Periksa titik awal dan jam kerja.',DAILY_OPERATION_FAILED:'Operasi belum berhasil. Muat ulang dan periksa data.',SCOPE_DENIED:'Akses tidak diizinkan.',VERSION_CONFLICT:'Pengaturan berubah. Muat ulang dahulu.'}as any)[(error as Error).message]||(error as Error).message;
+const clock=(seconds:number,timezone:string)=>new Intl.DateTimeFormat('id-ID',{timeZone:timezone,hour:'2-digit',minute:'2-digit'}).format(new Date(seconds*1000));
+export function DailyVisitGenerator({users,identity,sessions,onApplied}:{users:any[];identity:any;sessions:any[];onApplied:()=>void}){
+ const [setup,setSetup]=useState<any>(null),[modal,setModal]=useState<'route'|'policy'|null>(null),[draft,setDraft]=useState<any>(defaultDailyPolicy),[rep,setRep]=useState(identity.role==='SALES_REP'?identity.id:''),[lat,setLat]=useState(''),[lng,setLng]=useState(''),[consent,setConsent]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[result,setResult]=useState<any>(null),[history,setHistory]=useState<any[]>([]),[street,setStreet]=useState<any>(null),[message,setMessage]=useState('');
+ const reps=users.filter(u=>u.role_code==='SALES_REP'&&u.channel==='field'),manage=Boolean(setup?.manage);
+ async function loadSetup(){try{const value=await request('setup');setSetup(value);setDraft(value.policy?.config||{...defaultDailyPolicy,calendar_id:value.calendars[0]?.id||''})}catch(e){setError(formatError(e))}}
+ useEffect(()=>{void loadSetup()},[]);
+ useEffect(()=>{if(!rep&&reps.length)setRep(reps[0].id)},[users]);
+ async function loadHistory(){if(!rep)return;try{setHistory((await request('runs?rep_id='+encodeURIComponent(rep))).runs)}catch(e){setError(formatError(e))}}
+ useEffect(()=>{setResult(null);if(modal==='route')void loadHistory()},[rep,modal]);
+ async function locate(){setError('');setBusy(true);try{const point=await new Promise<GeolocationPosition>((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:15000}));setLat(String(point.coords.latitude));setLng(String(point.coords.longitude))}catch{setError('Lokasi belum tersedia. Izinkan akses lokasi atau isi titik awal secara manual.')}finally{setBusy(false)}}
+ async function savePolicy(){setBusy(true);setError('');try{await write('policy',draft,'PUT',setup.policy?.version??0);await loadSetup();setModal(null);setMessage('Pengaturan generator disimpan.')}catch(e){setError(formatError(e))}finally{setBusy(false)}}
+ async function generate(){setBusy(true);setError('');setMessage('');try{
+  if(rep===identity.id&&!sessions.some(s=>s.user_id===identity.id&&!s.ended_at&&s.kind==='work')){
+   await apiFetch('/api/work-sessions',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({kind:'work',reason:'Mulai hari melalui generator kunjungan'})});onApplied();
+  }
+  const startAt=new Date(Math.max(Date.now()+120000,Date.parse(setup.work_window.start_at))).toISOString(),previous=history.find(h=>h.status==='applied');
+  const value=await write('runs',{rep_id:rep,start:{latitude:Number(lat),longitude:Number(lng)},start_at:startAt,end_at:setup.work_window.end_at,confirmed_external_processing:true,...(previous?{replace_run_id:previous.id}:{})});setResult(value);await loadHistory();
+ }catch(e){setError(formatError(e))}finally{setBusy(false)}}
+ async function apply(){setBusy(true);setError('');try{const value=await write('runs/'+result.id+'/apply',{confirmed:true});setResult({...result,status:'applied',current:false});setMessage(`${value.created??0} kunjungan masuk agenda hari ini.`);await loadHistory();onApplied()}catch(e){setError(formatError(e))}finally{setBusy(false)}}
+ async function openRun(id:string){setBusy(true);setError('');try{setResult(await request('runs/'+id))}catch(e){setError(formatError(e))}finally{setBusy(false)}}
+ if(identity.channel==='telesales'||identity.role==='TELESALES')return null;
+ const hasApplied=history.some(h=>h.status==='applied'),weightTotal=Object.values(draft.weights as Record<string,number>).reduce((a,b)=>a+b,0);
+ const map=result?.route?{customers:result.route.steps.filter((s:any)=>s.type==='job').map((s:any)=>({id:s.customer_id,name:s.customer_name,lng:s.location[0],lat:s.location[1],owner:result.rep.name,status:'Unknown'})),sales:[],reference_points:[],basemap:{style_url:'https://tiles.openfreemap.org/styles/positron'},analysis_period:result.date.slice(0,7),analysis_channel:'field'}:null;
+ return <>
+  <div className="daily-visit-launch"><div><strong>Rencana kunjungan hari ini</strong>{setup?.policy&&<small>Target {setup.policy.config.target_visits} kunjungan · {setup.calendar?.name}</small>}</div><div className="data-actions">{manage&&<button type="button" className="button secondary" onClick={()=>{setModal('policy');setError('')}}><ActionIcon name="settings"/>Pengaturan</button>}<button type="button" className="button" onClick={()=>{setModal('route');setError('');setMessage('')}}><ActionIcon name="calendar"/>{identity.role==='SALES_REP'?'Mulai hari':'Susun rute harian'}</button></div></div>
+  {message&&!modal&&<p role="status" className="notice">{message}</p>}
+  {error&&!modal&&<p role="alert" className="notice danger">{error}</p>}
+  {modal&&<Modal title={modal==='policy'?'Pengaturan generator harian':'Rencana kunjungan hari ini'} busy={busy} onClose={()=>!busy&&setModal(null)} className="daily-visit-dialog">
+   {error&&<p role="alert" className="notice danger">{error}</p>}{message&&<p role="status" className="notice">{message}</p>}
+   {modal==='policy'?<form onSubmit={e=>{e.preventDefault();void savePolicy()}}><fieldset disabled={busy||identity.read_only} className="settings-fields"><div className="daily-visit-fields">
+    <label>Kalender kerja<select required value={draft.calendar_id} onChange={e=>setDraft({...draft,calendar_id:e.target.value})}><option value="">Pilih kalender</option>{setup?.calendars.map((cal:any)=><option key={cal.id} value={cal.id}>{cal.name} · {cal.start_time}–{cal.end_time}</option>)}</select></label>
+    {([['target_visits','Target visit / hari',1,20],['service_minutes','Slot kunjungan (menit)',30,120],['minimum_gap_days','Jarak minimum kunjungan (hari)',0,90],['break_minutes','Istirahat (menit)',0,120]]as const).map(([key,label,min,max])=><label key={key}>{label}<input type="number" required min={min} max={max} value={draft[key]} onChange={e=>setDraft({...draft,[key]:Number(e.target.value)})}/></label>)}
+    <label>Mulai istirahat<input type="time" required value={draft.break_start} onChange={e=>setDraft({...draft,break_start:e.target.value})}/></label>
+   </div><h3>Bobot prioritas · {weightTotal}%</h3><div className="daily-visit-fields">{Object.entries({wallet:'Wallet Size',last_visit:'Last Visit / keterlambatan',sales:'Penjualan 90 hari',follow_up:'Tindak lanjut jatuh tempo',proximity:'Kedekatan lokasi'}).map(([key,label])=><label key={key}>{label}<input type="number" required min="0" max="100" value={draft.weights[key]} onChange={e=>setDraft({...draft,weights:{...draft.weights,[key]:Number(e.target.value)}})}/></label>)}</div>
+    <label className="inline-check"><input type="checkbox" checked={draft.allow_unverified_coordinates} onChange={e=>setDraft({...draft,allow_unverified_coordinates:e.target.checked})}/>Izinkan koordinat pelanggan yang belum diverifikasi</label>
+    <label className="inline-check"><input type="checkbox" checked={draft.use_shift_as_opening_window} onChange={e=>setDraft({...draft,use_shift_as_opening_window:e.target.checked})}/>Jika jam buka belum dicatat, gunakan jam kerja sebagai asumsi layanan</label>
+    <label className="inline-check"><input type="checkbox" checked={draft.allow_rep_publish} onChange={e=>setDraft({...draft,allow_rep_publish:e.target.checked})}/>Izinkan Sales Rep menggunakan hasil rute langsung ke agenda</label>
+    <small>Slot minimum 30 menit mengikuti aturan benturan agenda. Frekuensi pelanggan dipakai jika tersedia; bobot total harus 100%.</small><button className="button" disabled={weightTotal!==100}><ActionIcon name="save"/>Simpan pengaturan</button>
+   </fieldset></form>:<>
+    {!setup?.policy?<p>Management perlu menyimpan pengaturan generator terlebih dahulu.</p>:!setup.configured?<p role="alert">Koneksi ORS belum tersedia di server.</p>:<>
+     <div className="daily-visit-fields"><label>Sales<select value={rep} disabled={busy||identity.role==='SALES_REP'} onChange={e=>setRep(e.target.value)}><option value="">Pilih sales</option>{reps.map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</select></label><label>Latitude awal<input type="number" step="any" min="-90" max="90" value={lat} onChange={e=>setLat(e.target.value)}/></label><label>Longitude awal<input type="number" step="any" min="-180" max="180" value={lng} onChange={e=>setLng(e.target.value)}/></label></div>
+     <div className="daily-visit-options"><button className="button secondary" disabled={busy} onClick={()=>void locate()}><ActionIcon name="location"/>Gunakan lokasi saya</button><span>{setup.calendar?.start_time}–{setup.calendar?.end_time} · {setup.calendar?.timezone} · kembali ke titik awal</span></div>
+     <label className="inline-check"><input type="checkbox" checked={consent} disabled={busy} onChange={e=>setConsent(e.target.checked)}/>Izinkan titik dan jadwal dikirim ke ORS. Nama pelanggan tidak dikirim.</label>
+     <button className="button" disabled={busy||!rep||!consent||lat===''||lng===''||!Number.isFinite(Number(lat))||!Number.isFinite(Number(lng))} onClick={()=>void generate()}><ActionIcon name="start"/>{busy?'Menghitung…':hasApplied?'Atur ulang sisa rute':'Buat usulan rute'}</button>
+    </>}
+    {result&&<section className="daily-visit-result"><div className="card-header"><h3>{result.rep.name}</h3><span className="badge neutral">{result.status==='applied'?'Masuk agenda':'Pratinjau'}</span></div><div className="daily-visit-summary"><span>Rencana <strong>{result.planned}/{result.target}</strong></span><span>Selesai hari ini <strong>{result.completed_today}</strong></span><span>Belum terisi <strong>{result.shortfall}</strong></span>{result.route&&<span>{(result.route.distance/1000).toLocaleString('id-ID',{maximumFractionDigits:1})} km · {Math.round(result.route.duration/60)} menit perjalanan</span>}</div>
+     {map&&<MapLibreCanvas key={result.id} mapData={map} focus={null} onStreetView={setStreet} routeGeometry={result.geometry}/>}
+     {result.route&&<div className="table-wrap"><table><thead><tr><th>Pelanggan</th><th>Layanan</th><th>Prioritas</th></tr></thead><tbody>{result.route.steps.filter((s:any)=>s.type==='job').map((step:any,index:number)=><tr key={step.customer_id}><td>{index+1}. {step.customer_name}{step.fixed_plan_id&&<small>Janji tetap</small>}</td><td>{clock(step.arrival+step.waiting_time,result.timezone)}</td><td>{step.score}<small>{step.reasons.join(' · ')}</small></td></tr>)}</tbody></table></div>}
+     {!result.current&&result.status==='complete'&&<p className="notice">Data berubah atau rute kedaluwarsa. Buat usulan baru.</p>}
+     {result.status==='complete'&&<button className="button" disabled={busy||identity.read_only||!result.current||!result.planned} onClick={()=>void apply()}><ActionIcon name="approve"/>Gunakan rencana</button>}
+     <details className="daily-visit-exclusions"><summary>Belum dijadwalkan / dikecualikan · {result.unassigned.length+result.skipped.length}</summary>{result.not_shortlisted_count>0&&<p>{result.not_shortlisted_count} pelanggan layak lainnya berada di luar shortlist hari ini.</p>}{result.unassigned.map((c:any)=><p key={c.customer_id}>{c.customer_name}<small>{c.reason}</small></p>)}{result.skipped.slice(0,50).map((c:any)=><p key={c.id}>{c.name}<small>{({missing_coordinates:'Koordinat belum ada',unverified_coordinates:'Koordinat belum diverifikasi',visited_today:'Sudah dikunjungi hari ini',existing_agenda:'Sudah memiliki agenda',minimum_gap:'Belum waktunya dikunjungi kembali',missing_opening_hours:'Jam buka belum tersedia',closed_or_short_window:'Jam layanan tidak mencukupi'}as any)[c.reason]||c.reason}</small></p>)}{result.skipped.length>50&&<small>50 dari {result.skipped.length} pengecualian ditampilkan.</small>}</details>
+     <small>{result.notice}</small>
+    </section>}
+    {history.length>0&&<details className="daily-visit-history"><summary>Riwayat hari ini</summary>{history.map(h=><div className="card-header" key={h.id}><span>{new Date(h.created_at).toLocaleTimeString('id-ID')} · {h.status}</span>{['complete','applied','superseded'].includes(h.status)&&<button type="button" className="button secondary" disabled={busy} onClick={()=>void openRun(h.id)}><ActionIcon name="detail"/>Lihat</button>}</div>)}</details>}
+   </>}
+  </Modal>}{street&&<StreetView customer={street} onClose={()=>setStreet(null)}/>}
+ </>;
+}

@@ -58,6 +58,7 @@
 .customer-wallet-detail .map-popup-wallet { padding: 0 0 18px; }
 .customer-wallet-detail .map-wallet-values>div { font-size: 13px; }
 .map-wallet-loading { font-size: 11px; }
+.map-popup-body>.map-popup-wallet { padding: 0 0 16px; margin-bottom: 16px; flex: none; }
 @media (max-width: 700px) {
   .maplibre-canvas .map-utility-controls {
     right: 12px;

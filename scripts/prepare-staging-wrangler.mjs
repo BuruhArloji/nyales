@@ -12,17 +12,20 @@ export function stagingConfig(env){
  if(!/^[a-z0-9.-]+$/.test(env.VITE_FIREBASE_AUTH_DOMAIN)||!env.VITE_FIREBASE_AUTH_DOMAIN.includes('.'))throw Error('FIREBASE_AUTH_DOMAIN_INVALID');
  const firstAdmin=env.FIRST_ADMIN_EMAIL?.trim(),organization=env.FIRST_ADMIN_ORGANIZATION_NAME?.trim();
  if(Boolean(firstAdmin)!==Boolean(organization)||firstAdmin&&(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(firstAdmin)||firstAdmin.length>254||organization.length>120))throw Error('FIRST_ADMIN_CONFIG_INVALID');
+ const portfolio=env.PORTFOLIO_ENABLED==='true';
+ if(env.PORTFOLIO_ENABLED&&!['true','false'].includes(env.PORTFOLIO_ENABLED))throw Error('PORTFOLIO_ENABLED_INVALID');
+ if(portfolio&&!/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(env.PORTFOLIO_ORGANIZATION_ID||''))throw Error('PORTFOLIO_ORGANIZATION_REQUIRED');
  return {$schema:'node_modules/wrangler/config-schema.json',name:'nyales-staging',account_id:env.CF_ACCOUNT_ID,
   main:'dist/nyales/index.js',no_bundle:true,compatibility_date:'2026-10-17',compatibility_flags:['nodejs_compat'],
   // Cron disabled during initial staging bootstrap; enable after source/account capacity review.
   triggers:{crons:[]},observability:{enabled:true,head_sampling_rate:0.1},
   assets:{directory:'./dist/client',not_found_handling:'single-page-application',run_worker_first:['/api/*','/demo/*']},
-  vars:{APP_ENV:'staging',LOCAL_AUTH:'true',FIREBASE_PROJECT_ID:env.FIREBASE_PROJECT_ID,...(firstAdmin?{FIRST_ADMIN_EMAIL:firstAdmin,FIRST_ADMIN_ORGANIZATION_NAME:organization}:{})},
+  vars:{APP_ENV:'staging',LOCAL_AUTH:portfolio?'false':'true',PORTFOLIO_ENABLED:portfolio?'true':'false',...(portfolio?{PORTFOLIO_ORGANIZATION_ID:env.PORTFOLIO_ORGANIZATION_ID}:{}),FIREBASE_PROJECT_ID:env.FIREBASE_PROJECT_ID,...(firstAdmin?{FIRST_ADMIN_EMAIL:firstAdmin,FIRST_ADMIN_ORGANIZATION_NAME:organization}:{})},
   r2_buckets:[{binding:'IMPORT_FILES',bucket_name:env.CF_R2_BUCKET}],
   d1_databases:[{binding:'DB',database_name:'nyales-staging',database_id:env.CF_D1_DATABASE_ID,migrations_dir:'migrations'}]};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
  const config=stagingConfig(process.env),root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
  await writeFile(join(root,'wrangler.staging.generated.json'),JSON.stringify(config,null,2)+'\n',{flag:'w'});
- console.log(JSON.stringify({worker:config.name,local_auth:true,cron_enabled:false,config:'wrangler.staging.generated.json'}));
+ console.log(JSON.stringify({worker:config.name,local_auth:config.vars.LOCAL_AUTH==='true',portfolio_enabled:config.vars.PORTFOLIO_ENABLED==='true',cron_enabled:false,config:'wrangler.staging.generated.json'}));
 }

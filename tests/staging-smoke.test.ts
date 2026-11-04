@@ -27,3 +27,7 @@ test('Staging smoke detects local mode, public customer leakage, incorrect heade
   }});assert.equal(r.status,'failed',broken);
  }
 });
+
+test('staging smoke accepts explicitly enabled Google-only portfolio mode while preserving unauthenticated boundaries',async()=>{
+ const {inspectStaging}=await load(),f=fixture();const result=await inspectStaging('https://nyales-staging.authored.workers.dev',{fetcher:async(url:string,init:any)=>new URL(url).pathname==='/api/auth/config'?Response.json({mode:'firebase',configured:true,google_only:true,portfolio_enabled:true}):f.fetcher(url,init)});assert.equal(result.status,'passed');
+});

@@ -1,0 +1,373 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES daily visit generator",
+    "version": "1.0.0",
+    "description": "Same-day ORS generation from assigned customers, explicit policy, immutable preview and explicit atomic agenda application. Fixed hosts and header-only provider key. No monthly planning guarantee. Runtime Zod and domain tests authoritative."
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/visit-generator/daily/setup": {
+      "get": {
+        "operationId": "daily_get__api_visit-generator_daily_setup",
+        "summary": "GET /api/visit-generator/daily/setup",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped response or applied route"
+          },
+          "201": {
+            "description": "ORS preview created without agenda changes"
+          },
+          "400": {
+            "description": "Missing idempotency key"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only or scope denied"
+          },
+          "404": {
+            "description": "Missing or outside scope"
+          },
+          "409": {
+            "description": "Stale source, active visit or agenda conflict"
+          },
+          "412": {
+            "description": "Stale policy version"
+          },
+          "422": {
+            "description": "Invalid policy, calendar, customer or time window"
+          },
+          "503": {
+            "description": "Provider or storage unavailable; agenda unchanged"
+          }
+        }
+      }
+    },
+    "/api/visit-generator/daily/policy": {
+      "put": {
+        "operationId": "daily_put__api_visit-generator_daily_policy",
+        "summary": "PUT /api/visit-generator/daily/policy",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Quoted policy version; \"0\" for first configuration."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped response or applied route"
+          },
+          "201": {
+            "description": "ORS preview created without agenda changes"
+          },
+          "400": {
+            "description": "Missing idempotency key"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only or scope denied"
+          },
+          "404": {
+            "description": "Missing or outside scope"
+          },
+          "409": {
+            "description": "Stale source, active visit or agenda conflict"
+          },
+          "412": {
+            "description": "Stale policy version"
+          },
+          "422": {
+            "description": "Invalid policy, calendar, customer or time window"
+          },
+          "503": {
+            "description": "Provider or storage unavailable; agenda unchanged"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "examples": {
+                "contract": {
+                  "value": {
+                    "description": "Validated by runtime dailyPolicy or dailyRequest; see docs/DAILY_VISIT_GENERATOR.md"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-generator/daily/runs": {
+      "get": {
+        "operationId": "daily_get__api_visit-generator_daily_runs",
+        "summary": "GET /api/visit-generator/daily/runs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped response or applied route"
+          },
+          "201": {
+            "description": "ORS preview created without agenda changes"
+          },
+          "400": {
+            "description": "Missing idempotency key"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only or scope denied"
+          },
+          "404": {
+            "description": "Missing or outside scope"
+          },
+          "409": {
+            "description": "Stale source, active visit or agenda conflict"
+          },
+          "412": {
+            "description": "Stale policy version"
+          },
+          "422": {
+            "description": "Invalid policy, calendar, customer or time window"
+          },
+          "503": {
+            "description": "Provider or storage unavailable; agenda unchanged"
+          }
+        }
+      },
+      "post": {
+        "operationId": "daily_post__api_visit-generator_daily_runs",
+        "summary": "POST /api/visit-generator/daily/runs",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped response or applied route"
+          },
+          "201": {
+            "description": "ORS preview created without agenda changes"
+          },
+          "400": {
+            "description": "Missing idempotency key"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only or scope denied"
+          },
+          "404": {
+            "description": "Missing or outside scope"
+          },
+          "409": {
+            "description": "Stale source, active visit or agenda conflict"
+          },
+          "412": {
+            "description": "Stale policy version"
+          },
+          "422": {
+            "description": "Invalid policy, calendar, customer or time window"
+          },
+          "503": {
+            "description": "Provider or storage unavailable; agenda unchanged"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "examples": {
+                "contract": {
+                  "value": {
+                    "description": "Validated by runtime dailyPolicy or dailyRequest; see docs/DAILY_VISIT_GENERATOR.md"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-generator/daily/runs/{id}": {
+      "get": {
+        "operationId": "daily_get__api_visit-generator_daily_runs_id",
+        "summary": "GET /api/visit-generator/daily/runs/{id}",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped response or applied route"
+          },
+          "201": {
+            "description": "ORS preview created without agenda changes"
+          },
+          "400": {
+            "description": "Missing idempotency key"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only or scope denied"
+          },
+          "404": {
+            "description": "Missing or outside scope"
+          },
+          "409": {
+            "description": "Stale source, active visit or agenda conflict"
+          },
+          "412": {
+            "description": "Stale policy version"
+          },
+          "422": {
+            "description": "Invalid policy, calendar, customer or time window"
+          },
+          "503": {
+            "description": "Provider or storage unavailable; agenda unchanged"
+          }
+        }
+      }
+    },
+    "/api/visit-generator/daily/runs/{id}/apply": {
+      "post": {
+        "operationId": "daily_post__api_visit-generator_daily_runs_id_apply",
+        "summary": "POST /api/visit-generator/daily/runs/{id}/apply",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped response or applied route"
+          },
+          "201": {
+            "description": "ORS preview created without agenda changes"
+          },
+          "400": {
+            "description": "Missing idempotency key"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only or scope denied"
+          },
+          "404": {
+            "description": "Missing or outside scope"
+          },
+          "409": {
+            "description": "Stale source, active visit or agenda conflict"
+          },
+          "412": {
+            "description": "Stale policy version"
+          },
+          "422": {
+            "description": "Invalid policy, calendar, customer or time window"
+          },
+          "503": {
+            "description": "Provider or storage unavailable; agenda unchanged"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "confirmed": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "confirmed"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  }
+}
