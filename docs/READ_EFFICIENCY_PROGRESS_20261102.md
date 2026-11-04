@@ -60,3 +60,8 @@ node node_modules/tsx/dist/cli.mjs scripts/read-efficiency-local.ts after 1000
 ```
 
 Python dipakai untuk replay query SELECT pada database sintetis dengan mode read-only dan menghitung instruksi SQLite. Runner tidak membaca kredensial Cloudflare, tidak memakai Wrangler, dan tidak menghubungi D1 remote. Gunakan label berbeda untuk mempertahankan beberapa hasil. Membuat baseline baru dari source yang sudah dioptimalkan tidak menggantikan baseline sebelum perubahan.
+
+
+## Pembaruan 4 November 2026
+
+Lihat [perbaikan query halaman, count/cache dan request bersamaan](READ_EFFICIENCY_PROGRESS_20261104.md). Bukti provider terbaru tersedia untuk satu query invoice pada cohort tetap; pengukuran lokal di atas tetap dicatat sebagai proxy, bukan rows_read provider.

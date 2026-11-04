@@ -8,7 +8,7 @@ function fakeRuntime(){
     store,
     caches:{
       default:{
-        match:async(request:Request)=>store.get(request.url),
+        match:async(request:Request)=>store.get(request.url)?.clone(),
         put:async(request:Request,response:Response)=>{store.set(request.url,response)},
       },
     },
@@ -35,7 +35,9 @@ test('cache key is stable and scope-specific',()=>{
   assert.notEqual(scopeCacheKey(base,'customers'),scopeCacheKey(scope({identity:{organization_id:'other',role:'MANAGEMENT'}}),'customers'));
   assert.notEqual(scopeCacheKey(base,'customers'),scopeCacheKey(scope({identity:{organization_id:'o',role:'AREA_MANAGER'},orgWide:false}),'customers'));
   assert.notEqual(scopeCacheKey(base,'customers'),scopeCacheKey(scope({date:'2026-11-01'}),'customers'));
-  assert.notEqual(scopeCacheKey(base,'customers'),scopeCacheKey(scope({repIds:['u2']}),'customers'));
+  assert.equal(scopeCacheKey(base,'customers'),scopeCacheKey(scope({repIds:['u2']}),'customers'),'Organization-wide users share authorized nonpersonal data');
+  assert.notEqual(scopeCacheKey(scope({orgWide:false,repIds:['u1']}),'customers'),scopeCacheKey(scope({orgWide:false,repIds:['u2']}),'customers'));
+  assert.notEqual(scopeCacheKey(base,'customers'),scopeCacheKey(scope({capabilities:['extra']}),'customers'));
   // Array order must not split one scope into two entries.
   assert.equal(
     scopeCacheKey(scope({repIds:['b','a'],areaIds:['y','x']}),'customers'),

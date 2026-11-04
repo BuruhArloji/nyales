@@ -7,6 +7,7 @@
 import type {Scope} from './scope';
 import {customerPredicate, invoicePredicate} from './scope';
 import {segmentationSnapshot} from './segmentation';
+import {cachedJson,scopeCacheKey,readModelRevision} from './cache';
 
 const MAX_PAGE=200;
 
@@ -29,7 +30,7 @@ export type CustomerPage={rows:any[];total:number;limit:number;offset:number};
 const ACTIVE_ASSIGNMENT=`ca.channel=? AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)`;
 const assignmentExists=(extra='')=>`EXISTS (SELECT 1 FROM customer_assignment ca WHERE ca.organization_id=co.organization_id AND ca.outlet_id IN (SELECT co.id UNION SELECT f.id FROM customer_outlet f WHERE f.organization_id=co.organization_id AND f.merged_into_id=co.id) AND ${ACTIVE_ASSIGNMENT}${extra})`;
 
-export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery):Promise<CustomerPage>{
+export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery,context?:any):Promise<CustomerPage>{
   const org=s.identity.organization_id;
   const limit=Math.min(MAX_PAGE,Math.max(1,Math.floor(q.limit??100)));
   const offset=Math.max(0,Math.floor(q.offset??0));
@@ -65,7 +66,10 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
     WHERE ${where.join(' AND ')}`;
 
   const fromParams=[...(run?[run.id]:[]),...params];
-  const total=(await db.prepare(`SELECT COUNT(*) n ${from}`).bind(...fromParams).first<{n:number}>())?.n||0;
+  const count=async()=>(await db.prepare(`SELECT COUNT(*) n ${from}`).bind(...fromParams).first<{n:number}>())?.n||0;
+  // One exact total per filter/revision, shared across pages; authorization was
+  // resolved for this request before looking up the cache. No cached page rows.
+  const total=context?(await cachedJson(context,scopeCacheKey(s,'customer-count',JSON.stringify([await readModelRevision(context),from,fromParams])),30,count)).value:await count();
   const columns=assignmentOnly?'co.id,co.name,a.name area,co.area_id,co.external_code,co.version,co.record_status':'co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified';
   const page=await db.prepare(`SELECT ${columns} ${from} ORDER BY co.name COLLATE NOCASE,co.id LIMIT ? OFFSET ?`).bind(...fromParams,limit,offset).all<any>();
 
@@ -89,8 +93,10 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
              SUM(i.net_minor) actual
       FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id
       WHERE ${inv.sql} AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date<=?
+        AND i.outlet_id IN (SELECT value FROM json_each(?) UNION
+          SELECT f.id FROM customer_outlet f INDEXED BY customer_family WHERE f.organization_id=? AND f.merged_into_id IN (SELECT value FROM json_each(?)))
       GROUP BY COALESCE(child.merged_into_id,child.id)
-    ) SELECT customer_id,last,actual FROM facts WHERE customer_id IN (SELECT value FROM json_each(?))`).bind(...inv.params,s.date,JSON.stringify(ids)).all<any>()).results;
+    ) SELECT customer_id,last,actual FROM facts WHERE customer_id IN (SELECT value FROM json_each(?))`).bind(...inv.params,s.date,JSON.stringify(ids),org,JSON.stringify(ids),JSON.stringify(ids)).all<any>()).results;
 
   const segments=new Map(segmentRows.map((row:any)=>[row.customer_id,row]));
   const facts=new Map(factRows.map((row:any)=>[row.customer_id,row]));

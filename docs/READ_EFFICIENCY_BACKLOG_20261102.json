@@ -98,7 +98,7 @@
       "id": "READ-004",
       "priority": "P0",
       "title": "Page-first enrichment count dan geo pagination",
-      "status": "Planned",
+      "status": "In progress",
       "conditional": false,
       "owner_role": "Backend Engineer",
       "assignee": null,
@@ -118,7 +118,8 @@
         "Query plans",
         "Paged API contract"
       ],
-      "remote_execution_requires_budget_preflight": true
+      "remote_execution_requires_budget_preflight": true,
+      "latest_progress": "2026-11-04: page-first indexed invoice facts, revisioned scoped cache/count/map aggregates and in-flight frontend deduplication implemented. Provider invoice query sample 4886 -> 649 rows_read with equal results. Full scope and multi-user acceptance remain pending; see READ_EFFICIENCY_PROGRESS_20261104.md."
     },
     {
       "id": "READ-005",
@@ -173,13 +174,14 @@
         "Browser tests"
       ],
       "remote_execution_requires_budget_preflight": true,
-      "progress": "Customer references reused within mounted page and refreshed after writes; Monitoring customer choices load on form open. Six local browser checks pass. Global browser request deduplication and bounded lookups remain pending."
+      "progress": "Customer references reused within mounted page and refreshed after writes; Monitoring customer choices load on form open. Six local browser checks pass. Global browser request deduplication and bounded lookups remain pending.",
+      "latest_progress": "2026-11-04: page-first indexed invoice facts, revisioned scoped cache/count/map aggregates and in-flight frontend deduplication implemented. Provider invoice query sample 4886 -> 649 rows_read with equal results. Full scope and multi-user acceptance remain pending; see READ_EFFICIENCY_PROGRESS_20261104.md."
     },
     {
       "id": "READ-007",
       "priority": "P0",
       "title": "Cache consistency dan revision authority",
-      "status": "Planned",
+      "status": "In progress",
       "conditional": false,
       "owner_role": "Engineering Lead",
       "assignee": null,
@@ -201,7 +203,8 @@
         "Invalidation matrix",
         "Security tests"
       ],
-      "remote_execution_requires_budget_preflight": true
+      "remote_execution_requires_budget_preflight": true,
+      "latest_progress": "2026-11-04: page-first indexed invoice facts, revisioned scoped cache/count/map aggregates and in-flight frontend deduplication implemented. Provider invoice query sample 4886 -> 649 rows_read with equal results. Full scope and multi-user acceptance remain pending; see READ_EFFICIENCY_PROGRESS_20261104.md."
     },
     {
       "id": "READ-008",
@@ -462,5 +465,7 @@
     "READ-001",
     "READ-002"
   ],
-  "frontend_progress_report": "READ_FRONTEND_PROGRESS_20261102.md"
+  "frontend_progress_report": "READ_FRONTEND_PROGRESS_20261102.md",
+  "latest_progress_document": "READ_EFFICIENCY_PROGRESS_20261104.md",
+  "latest_update": "2026-11-04"
 }

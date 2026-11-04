@@ -4,22 +4,24 @@ import {initializeApp,getApps} from 'firebase/app';
 import {getAuth,onIdTokenChanged,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut,browserSessionPersistence,setPersistence,getMultiFactorResolver,type MultiFactorError,type MultiFactorResolver,type User,type Auth} from 'firebase/auth';
 import {AuthApiError,loginProblem,shouldExpireSession}from'./auth-errors';
 import {TotpChallenge,TotpEnrollment}from'./auth-mfa';
+import {createReadRequests,identityHeartbeat} from './read-requests';
 type Identity={demo_data?:boolean;training_data?:boolean;bekasi_demo_data?:boolean;bekasi_demo_ready?:boolean;directory_data?:boolean;id:string;name:string;organization_id:string;role:string;capabilities:string[];area_ids:string[];scope:string};
 type Config={mode:'local'|'firebase';configured:boolean};
 let firebaseAuth:Auth|undefined;
 let demo=false;
 type BoundSession={id:string;session_token:string;subject:string;version:number};
 const sessionKey='nyales-device-session';
+const readRequests=createReadRequests();
 function subject(){return demo?'local:demo-management':firebaseAuth?.currentUser?.uid||null}
 export function currentDeviceSession(){try{const value=JSON.parse(sessionStorage.getItem(sessionKey)||'null') as BoundSession|null;return value?.subject===subject()?value:null}catch{return null}}
-function clearSession(){sessionStorage.removeItem(sessionKey)}
+function clearSession(){readRequests.clear();sessionStorage.removeItem(sessionKey)}
 export async function apiFetch(url:string,init:RequestInit={}){
  if(new URL(url,location.origin).origin!==location.origin)throw new Error('API harus berasal dari NYALES.');
  const headers=new Headers(init.headers),before=subject();
  if(demo)headers.set('Authorization','Bearer nyales-local-demo');
  else if(firebaseAuth?.currentUser)headers.set('Authorization',`Bearer ${await firebaseAuth.currentUser.getIdToken()}`);
  const session=currentDeviceSession();if(session)headers.set('X-Device-Session',session.session_token);
- const response=await fetch(url,{...init,headers,cache:'no-store'});
+ const response=await readRequests.request(url,{...init,headers,cache:'no-store'},JSON.stringify([before,session?.id||'']));
  if(before!==subject())throw new Error('Akun telah berubah. Muat ulang data untuk akun aktif.');
  if(!response.ok){const problem=await response.clone().json().catch(()=>({})) as {detail?:string;code?:string};
   if(shouldExpireSession(response.status,problem.code||'',Boolean(currentDeviceSession())))window.dispatchEvent(new Event('nyales-session-expired'));
@@ -84,8 +86,8 @@ export function AuthGate({children}:{children:React.ReactNode}){
  },[]);
  useEffect(()=>{
   if(!identity)return;let active=true;
-  const check=async()=>{if(document.visibilityState!=='visible')return;try{const response=await apiFetch('/api/me'),result=await response.json() as {data:Identity};if(active)setIdentity(result.data)}catch{/* Access failures expire the context; temporary network failures preserve the screen. */}};
-  const visible=()=>{void check()},timer=window.setInterval(visible,30000);window.addEventListener('focus',visible);document.addEventListener('visibilitychange',visible);
+  const check=identityHeartbeat(async()=>{try{const response=await apiFetch('/api/me'),result=await response.json() as {data:Identity};if(active)setIdentity(result.data)}catch{/* Access failures expire the context; temporary network failures preserve the screen. */}});
+  const visible=()=>{void check(document.visibilityState==='visible')},timer=window.setInterval(visible,30000);window.addEventListener('focus',visible);document.addEventListener('visibilitychange',visible);
   return()=>{active=false;clearInterval(timer);window.removeEventListener('focus',visible);document.removeEventListener('visibilitychange',visible)};
  },[identity?.id]);
  async function login(kind:'demo'|'email'|'google'){

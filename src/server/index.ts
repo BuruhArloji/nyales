@@ -13,7 +13,7 @@ import {regionalAnalytics} from './geography-analytics';
 import {customerRisk} from './customer-risk';
 import {riskEvaluations} from './risk-evaluations';
 import{observability}from'./observability';
-import{cachedJson,cacheStatus,scopeCacheKey,READ_MODEL_TTL_SECONDS,DASHBOARD_TTL_SECONDS}from'./cache';
+import{cachedJson,cacheStatus,scopeCacheKey,readModelRevision,READ_MODEL_TTL_SECONDS,DASHBOARD_TTL_SECONDS}from'./cache';
 import{readCustomerPage}from'./customer-page';
 import{telemetry,measuredJob}from'./telemetry';
 import{monitoring,notificationMaintenance,operationalReminders,reportMaintenance}from'./monitoring';
@@ -222,7 +222,7 @@ async function readCustomers(db:D1Database,s:Scope,customerId?:string){
 /** Cached per authorization scope: dashboard, customer list, map and queue all read the same model. */
 async function loadCustomers(c:any){
  const s=c.get('scope') as Scope;
- return cachedJson(c,scopeCacheKey(s,'customers'),READ_MODEL_TTL_SECONDS,()=>readCustomers(c.env.DB,s));
+ return cachedJson(c,scopeCacheKey(s,'customers',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,()=>readCustomers(c.env.DB,s));
  }
 
 scopedRoutes.get('/api/customers',async c=>{
@@ -244,7 +244,7 @@ scopedRoutes.get('/api/customers',async c=>{
      channel:channel as 'field'|'telesales',assignmentStatus:assignmentStatus as 'assigned'|'unassigned'|undefined,
      status:c.req.query('status')||'',recordStatus:c.req.query('record_status')||'',location:c.req.query('location')||'',
      projection:projection as 'assignment'|undefined,
-   });
+   },c);
    return c.json({data:page.rows,meta:{...meta(),total:page.total,limit:page.limit,offset:page.offset}});
  }
 
@@ -273,7 +273,7 @@ scopedRoutes.get('/api/customers/:id',async c=>{const requested=c.req.param('id'
 
 scopedRoutes.get('/api/dashboard',async c=>{
  const s=c.get('scope') as Scope;
- const cached=await cachedJson(c,scopeCacheKey(s,'dashboard'),DASHBOARD_TTL_SECONDS,()=>buildDashboard(c,s));
+ const cached=await cachedJson(c,scopeCacheKey(s,'dashboard',await readModelRevision(c)),DASHBOARD_TTL_SECONDS,()=>buildDashboard(c,s));
  c.header('X-NYALES-Cache',cacheStatus(cached));
  return c.json({data:cached.value,meta:meta()});
 });

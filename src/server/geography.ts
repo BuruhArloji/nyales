@@ -1,4 +1,5 @@
 import {mapSummary} from '../shared/map-analysis';
+import {cachedJson,scopeCacheKey,readModelRevision} from './cache';
 import {readMapMetrics} from './map-metrics';
 import {Hono} from 'hono';
 import {z} from 'zod';
@@ -68,7 +69,11 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
   const mappings=(await c.env.DB.prepare('SELECT l.*,b.dataset_id FROM customer_admin_location l LEFT JOIN admin_boundary b ON b.organization_id=l.organization_id AND b.id=l.boundary_id WHERE l.organization_id=? AND l.outlet_id IN (SELECT value FROM json_each(?)) AND l.superseded_at IS NULL AND l.effective_from_date<=? AND (l.effective_to_date IS NULL OR l.effective_to_date>?) ORDER BY l.revision DESC').bind(org,JSON.stringify(mapRows.map((x:any)=>x.id)),date,date).all<any>()).results;
   const mappingByCustomer=new Map<string,any>();for(const row of mappings)if(!mappingByCustomer.has(row.outlet_id))mappingByCustomer.set(row.outlet_id,row);
   const enrich=(customer:any)=>{const row=mappingByCustomer.get(customer.id),state=mappingState(row,customer,d);return {...customer,geo_status:state,geo_boundary_id:state==='confirmed'?row.boundary_id:null}};
-  const metrics=await readMapMetrics(c.env.DB,c.get('scope'),base.data.all_customers.map((x:any)=>x.id),period||date.slice(0,7),channel||'field',c.req.query('rep_id'),c.req.query('area_id'));
+  const metricIds=base.data.all_customers.map((x:any)=>x.id);
+  const metricKey=scopeCacheKey(c.get('scope'),'map-metrics',JSON.stringify([await readModelRevision(c),period||date.slice(0,7),channel||'field',c.req.query('rep_id')||'',c.req.query('area_id')||'',await digest(JSON.stringify([...metricIds].sort()))]));
+  const metricCache=await cachedJson(c,metricKey,60,async()=>[...await readMapMetrics(c.env.DB,c.get('scope'),metricIds,period||date.slice(0,7),channel||'field',c.req.query('rep_id'),c.req.query('area_id'))]);
+  c.header('X-NYALES-Metrics-Cache',metricCache.enabled?(metricCache.hit?'HIT':'MISS'):'OFF');
+  const metrics=new Map<string,any>(metricCache.value as [string,any][]);
   const all=base.data.all_customers.map((x:any)=>({...enrich(x),metrics:metrics.get(x.id)}));
   const customerById=new Map<string,any>(mapRows.map((customer:any)=>[customer.id,{...enrich(customer),metrics:metrics.get(customer.id)}]));
   const areaMembership=(await c.env.DB.prepare('SELECT m.admin_unit_id,m.area_id,m.boundary_id,a.name area_name FROM area_admin_membership m JOIN area a ON a.organization_id=m.organization_id AND a.id=m.area_id WHERE m.organization_id=? AND m.admin_unit_id IN(SELECT value FROM json_each(?)) AND m.effective_from_date<=? AND (m.effective_to_date IS NULL OR m.effective_to_date>?)').bind(org,JSON.stringify(rows.map(b=>b.admin_unit_id)),date,date).all<any>()).results;
