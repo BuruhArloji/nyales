@@ -175,8 +175,12 @@ Agregat invoice dan pemilik lapangan kini dibaca sekali, lalu dicocokkan lewat
 Map berindeks ID pada Worker. Filter invoice historis, canonical merge, urutan
 pemilik, cutoff dan hasil directory tetap sama. Rekonsiliasi lokal pada seluruh
 58.331 pelanggan memastikan actual, last invoice, dan owner identik. Query
-keluarga pelanggan untuk pembuatan segmentation snapshot juga memakai UNION
-agar identity dan merged-family masing-masing dapat memakai index seek.
+keluarga pelanggan untuk pembuatan segmentation snapshot semula dicoba memakai
+UNION. Pemeriksaan staging masih menemukan CPU timeout pada agregasi tersebut.
+Perbaikan lanjut mengagregasi invoice sekali per canonical ID lalu mencocokkan
+cohort pelanggan melalui Map. Seluruh 1.020 anggota cohort pada snapshot lokal
+memiliki input segmentasi identik; satu sampel lokal turun dari 59.199 ms menjadi
+86 ms. Angka tersebut bukan latency provider atau kapasitas multiuser.
 
 Pemeriksaan API setelah deployment diperlukan untuk membuktikan pemulihan;
 hasil rekonsiliasi lokal bukan bukti latency staging atau kapasitas multiuser.
