@@ -25,8 +25,8 @@ export async function readCustomerOptions(db:D1Database,s:Scope,q:Query){
  if(q.q){
   // Keep both branches bounded before UNION. Name and ERP code have separate
   // indexes; LIKE wildcards supplied by the caller are escaped literally.
-  sql=`WITH names AS (SELECT ${columns} ${from} AND co.name LIKE ? ESCAPE '\\' COLLATE NOCASE ORDER BY co.name COLLATE NOCASE,co.id LIMIT ?),
-   codes AS (SELECT ${columns} ${from.replace('INDEXED BY customer_options_name','INDEXED BY customer_options_code')} AND co.external_code LIKE ? ESCAPE '\\' COLLATE NOCASE ORDER BY co.name COLLATE NOCASE,co.id LIMIT ?)
+  sql=`WITH names AS (SELECT ${columns} ${from} AND co.name COLLATE NOCASE LIKE ? ESCAPE '\\' ORDER BY co.name COLLATE NOCASE,co.id LIMIT ?),
+   codes AS (SELECT ${columns} ${from.replace('INDEXED BY customer_options_name','INDEXED BY customer_options_code')} AND co.external_code COLLATE NOCASE LIKE ? ESCAPE '\\' ORDER BY co.name COLLATE NOCASE,co.id LIMIT ?)
    SELECT ${resultColumns} FROM(SELECT ${resultColumns} FROM names UNION SELECT ${resultColumns} FROM codes) ORDER BY name COLLATE NOCASE,id LIMIT ?`;
   const branch=[...params,prefix(q.q),q.limit+1];params.splice(0,params.length,...branch,...branch,q.limit+1);
  }else{sql=`SELECT ${columns} ${from} ORDER BY co.name COLLATE NOCASE,co.id LIMIT ?`;params.push(q.id?1:q.limit+1)}

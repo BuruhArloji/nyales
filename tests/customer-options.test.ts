@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {Hono} from 'hono';
 import {database} from './sqlite-helper';
-import {customerOptions} from '../src/server/customer-options';
+import {customerOptions,readCustomerOptions,customerOptionsQuery} from '../src/server/customer-options';
 import type {Scope} from '../src/server/scope';
 
 function fixture(){
@@ -45,4 +45,14 @@ test('six organization roles retain their customer scope before paging and hydra
   assert.equal((await(await f.get('id=foreign',s)).json() as any).data.length,0);
  }
  const foreign=await(await f.get('',f.scope('MANAGEMENT',[],['other'],'x'))).json() as any;assert.deepEqual(foreign.data.map((r:any)=>r.id),['foreign']);f.sqlite.close();
+});
+
+test('prefix predicates seek both indexed ranges rather than scanning the organization',async()=>{
+ const f=fixture();let sql='',params:any[]=[];
+ const capture={prepare(query:string){sql=query;return{bind(...bindings:any[]){params=bindings;return{all:async()=>({results:[]})}}}}} as unknown as D1Database;
+ await readCustomerOptions(capture,f.scope(),customerOptionsQuery.parse({q:'warung'}));
+ const plan=f.sqlite.prepare('EXPLAIN QUERY PLAN '+sql).all(...params).map((r:any)=>r.detail).join('\n');
+ assert.match(plan,/customer_options_name \(organization_id=\? AND name>\? AND name<\?\)/);
+ assert.match(plan,/customer_options_code \(organization_id=\? AND external_code>\? AND external_code<\?\)/);
+ f.sqlite.close();
 });

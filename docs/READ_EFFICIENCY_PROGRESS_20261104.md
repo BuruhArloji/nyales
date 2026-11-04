@@ -145,3 +145,19 @@ pemeriksaan sebelum integrasi commit 68105c0. Pemeriksaan gabungan menambah
 suite audit dari pekerjaan lain; satu test workflow diperbaiki agar normalisasi
 CRLF Windows tidak mengubah pemeriksaan isolasi audit. Status CI gabungan
 menjadi bukti akhir release, tanpa menimpa workflow/data pekerjaan lain.
+
+
+### Bukti query selector setelah indeks dan koreksi predicate
+
+Posisi `COLLATE NOCASE` pada kolom (sebelum LIKE), bukan pada ekspresi ESCAPE,
+memungkinkan planner memakai rentang `name > / name <` dan `external_code > /
+external_code <`. Regression test memeriksa EXPLAIN kedua rentang sekaligus.
+Query provider yang diambil langsung dari implementasi baru, prefix `warung`,
+Management, limit 20 + sentinel, menghasilkan 21 baris yang **identik dan dalam
+urutan yang sama** sebelum/sesudah. Rows read: **75.288 → 67**, rows written 0,
+satu sampel SQL **1.208,97 ms → 1,72 ms**. Pengurangan sekitar **99,91% untuk
+query selector ini**; bukan endpoint directory lama, request lengkap, latency
+p95, penghematan harian, atau kapasitas concurrent pengguna. Query sebelum
+belum memakai indeks baru/koreksi predicate; query setelah memakai keduanya.
+Receipt tanpa isi pelanggan tersedia di direktori privat operator:
+`customer-options-comparison-20261104.json`. Raw hasil tetap tidak dikomit.
