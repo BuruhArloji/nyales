@@ -167,7 +167,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
 
  if(isMaster){if(c.req.method!=='GET'&&!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
 
- const paths=['/api/customer-options','/api/me','/api/customers','/api/dashboard','/api/map','/api/telesales/queue','/api/sales/last-positions'];
+ const paths=['/api/portfolio-visitors','/api/customer-options','/api/me','/api/customers','/api/dashboard','/api/map','/api/telesales/queue','/api/sales/last-positions'];
 
  if(/^\/api\/telesales\/queue\/(claim|[^/]+\/(renew|complete))$/.test(c.req.path)){if(!c.get('scope').capabilities.includes('telesales:read'))return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(c.req.path==='/api/telesales/workbench'&&c.req.method==='GET'){await next();return}

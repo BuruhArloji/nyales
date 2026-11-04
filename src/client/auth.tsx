@@ -2,7 +2,7 @@ import{Loading}from'./Loading';
 import React,{createContext,useContext,useEffect,useRef,useState} from 'react';
 import {initializeApp,getApps} from 'firebase/app';
 import {getAuth,onIdTokenChanged,signInWithPopup,GoogleAuthProvider,signOut,browserSessionPersistence,setPersistence,getMultiFactorResolver,type MultiFactorError,type MultiFactorResolver,type User,type Auth} from 'firebase/auth';
-import {AuthApiError,loginProblem,shouldExpireSession}from'./auth-errors';
+import {AuthApiError,loginProblem,shouldExpireSession,sessionExpiredMessage}from'./auth-errors';
 import {TotpChallenge,TotpEnrollment}from'./auth-mfa';
 import {createReadRequests,identityHeartbeat} from './read-requests';
 type Identity={portfolio_owner?:boolean;read_only?:boolean;portfolio_read_only?:boolean;can_preview_routes?:boolean;portfolio_expires_at?:string;portfolio_remaining_seconds?:number;demo_data?:boolean;training_data?:boolean;bekasi_demo_data?:boolean;bekasi_demo_ready?:boolean;directory_data?:boolean;id:string;name:string;organization_id:string;role:string;capabilities:string[];area_ids:string[];scope:string};
@@ -27,7 +27,7 @@ export async function apiFetch(url:string,init:RequestInit={}){
  const response=await readRequests.request(url,{...init,headers,cache:'no-store'},JSON.stringify([before,session?.id||'']));
  if(before!==subject())throw new Error('Akun telah berubah. Muat ulang data untuk akun aktif.');
  if(!response.ok){const problem=await response.clone().json().catch(()=>({})) as {detail?:string;code?:string};
-  if(shouldExpireSession(response.status,problem.code||'',Boolean(currentDeviceSession())))window.dispatchEvent(new Event('nyales-session-expired'));
+  if(shouldExpireSession(response.status,problem.code||'',Boolean(currentDeviceSession())))window.dispatchEvent(new CustomEvent('nyales-session-expired',{detail:{code:problem.code}}));
   throw new AuthApiError(problem.code||'REQUEST_FAILED',response.status,problem.detail||problem.code||(response.status===403?'Aksi ini tidak diizinkan untuk akun Anda.':response.status===401?'Sesi berakhir. Silakan masuk kembali.':'Layanan belum tersedia. Silakan coba lagi.'));
  }
  return response;
@@ -83,7 +83,7 @@ export function AuthGate({children}:{children:React.ReactNode}){
     if(user)await loadMe();else{attempt.current++;setIdentity(null);setPending(null);clearSession();setLoading(false)}
    });
   }).catch(e=>{if(active&&e.name!=='AbortError'){setIdentity(null);setError('Tidak dapat memuat konfigurasi login. Muat ulang halaman untuk mencoba lagi.');setLoading(false)}});
-  const expired=()=>{const wasPortfolio=portfolioReadOnly;attempt.current++;setIdentity(null);clearPending();clearSession();demo=false;portfolioReadOnly=false;sessionStorage.removeItem('nyales-demo');setError(wasPortfolio?'Waktu eksplorasi 20 menit untuk akun ini telah berakhir.':'Sesi perangkat berakhir. Silakan masuk kembali.');if(firebaseAuth)void signOut(firebaseAuth)};
+  const expired=(event:Event)=>{const code=(event as CustomEvent<{code?:string}>).detail?.code;const wasPortfolio=portfolioReadOnly;attempt.current++;setIdentity(null);clearPending();clearSession();demo=false;portfolioReadOnly=false;sessionStorage.removeItem('nyales-demo');setError(sessionExpiredMessage(code,wasPortfolio));if(firebaseAuth)void signOut(firebaseAuth)};
   window.addEventListener('nyales-session-expired',expired);
   return()=>{active=false;alive.current=false;attempt.current++;abort.abort();unsubscribe();window.removeEventListener('nyales-session-expired',expired)};
  },[]);

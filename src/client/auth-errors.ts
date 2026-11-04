@@ -4,6 +4,9 @@ export class AuthApiError extends Error{
 export function shouldExpireSession(status:number,code:string,hasDeviceSession:boolean){
  return status===401&&code!=='REAUTH_REQUIRED'||hasDeviceSession&&['USER_NOT_PROVISIONED_OR_INACTIVE','MFA_REQUIRED'].includes(code);
 }
+export function sessionExpiredMessage(code:string|undefined,wasPortfolio:boolean){
+ return code==='PORTFOLIO_ACCESS_EXPIRED'||wasPortfolio?'Waktu eksplorasi 20 menit untuk akun ini telah berakhir.':'Sesi perangkat berakhir. Silakan masuk kembali.';
+}
 export function loginProblem(error:unknown){
  const code=(error as {code?:string})?.code;
  const messages:Record<string,string>={

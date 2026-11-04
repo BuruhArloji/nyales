@@ -4,6 +4,7 @@ import {Hono} from 'hono';
 import {database} from './sqlite-helper';
 import {listPortfolioVisitors,recordPortfolioVisit} from '../src/server/portfolio-visitors';
 import {createPortfolioGate} from '../src/server/portfolio-access';
+import {scopedRoutes} from '../src/server/index';
 
 test('verified visitor presence is throttled, login count ignores heartbeat and older tokens, and emails normalize',async()=>{
  const {sqlite,adapter}=database();sqlite.exec("INSERT INTO organization(id,name) VALUES('pilot','Pilot')");
@@ -53,4 +54,12 @@ test('portfolio gate records only verified signed-in visits, preserves expiry an
   assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM portfolio_visitor_history').get()!.n,2);assert.equal(sqlite.prepare("SELECT visit_count FROM portfolio_visitor_history WHERE email='guest@example.test'").get()!.visit_count,1);
   time+=20*60*1000;assert.equal((await request('/api/me')).status,401);assert.equal(sqlite.prepare("SELECT visit_count FROM portfolio_visitor_history WHERE email='guest@example.test'").get()!.visit_count,1);
  }finally{sqlite.close()}
+});
+
+test('verified owner visitor history reaches the full scoped router while another Google account is denied',async()=>{
+ const {sqlite,adapter}=database();sqlite.exec("INSERT INTO organization(id,name) VALUES('pilot','Pilot');INSERT INTO app_user(id,organization_id,name) VALUES('owner','pilot','Owner')");
+ const app=new Hono<any>();app.use('/api/*',createPortfolioGate(()=>scopedRoutes,async token=>({subject:'uid',email:token==='owner'?'didikpriyoutomo05@gmail.com':'guest@example.test',displayName:'Google account',authTime:100,mfa:false,emailVerified:true,provider:'google.com'}),()=>1000000));
+ app.use('/api/*',async(c,next)=>{c.set('identity',{id:'owner',organization_id:'pilot',name:'Owner',role:'MANAGEMENT'});await next()});app.route('/',scopedRoutes);
+ const env={DB:adapter,PORTFOLIO_ORGANIZATION_ID:'pilot',PORTFOLIO_ENABLED:'true',LOCAL_AUTH:'false',FIREBASE_PROJECT_ID:'test',APP_ENV:'staging'};
+ try{const owner=await app.request('/api/portfolio-visitors',{headers:{Authorization:'Bearer owner'}},env);assert.equal(owner.status,200);assert.deepEqual((await owner.json() as any).data,[]);assert.equal((await app.request('/api/portfolio-visitors',{headers:{Authorization:'Bearer guest'}},env)).status,403);}finally{sqlite.close()}
 });
