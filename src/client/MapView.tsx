@@ -47,7 +47,7 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   let map:MapLibreMap;
   try{map=new maplibregl.Map({container:container.current,
    style:undefined,
-   center:initialCamera?.center||[106.823,-6.216],zoom:initialCamera?.zoom??12.3,pitch:initialCamera?.pitch??0,bearing:initialCamera?.bearing??0,attributionControl:false,dragRotate:false,locale:{'FullscreenControl.Enter':'Layar penuh','FullscreenControl.Exit':'Keluar layar penuh'}})
+   center:initialCamera?.center||[106.823,-6.216],zoom:initialCamera?.zoom??12.3,pitch:initialCamera?.pitch??0,bearing:initialCamera?.bearing??0,attributionControl:false,dragRotate:false,locale:{'FullscreenControl.Enter':'Layar penuh','FullscreenControl.Exit':'Keluar layar penuh','AttributionControl.ToggleAttribution':'Informasi dan sumber peta'}})
   }catch{setBasemapState('Peta interaktif tidak tersedia; gunakan tabel koordinat.');return}
   instance.current=map;
   map.on('moveend',()=>{const p=map.getCenter();callbacks.current.onCameraChange?.({center:[p.lng,p.lat],zoom:map.getZoom(),pitch:map.getPitch(),bearing:map.getBearing()})});
@@ -66,7 +66,7 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   map.addControl(new maplibregl.NavigationControl({showCompass:true}),'top-right');
   map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-right');
   const attribution=map.getContainer().querySelector<HTMLElement>('.maplibregl-ctrl-attrib');
-  if(attribution&&attributionHost.current)attributionHost.current.appendChild(attribution);
+  if(attribution&&attributionHost.current){attributionHost.current.appendChild(attribution);attribution.classList.remove('maplibregl-compact-show');attribution.removeAttribute('open');}
   map.setStyle(mapData.basemap?.style_url||{version:8,glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',sources:{osm:{type:'raster',tiles:[mapData.basemap?.tile_url||'https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:mapData.basemap?.attribution||'© OpenStreetMap contributors'}},layers:[{id:'osm',type:'raster',source:'osm'}]},{transformStyle:(_previous,next)=>normalizeBasemapStyle(next)});
   return()=>{markers.current.forEach(m=>m.remove());popups.current.forEach(p=>p.remove());map.remove();instance.current=null};
  },[]);

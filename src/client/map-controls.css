@@ -16,26 +16,62 @@
   inset: auto;
   flex: none;
 }
-.map-attribution-host { min-width: 0; }
+.map-attribution-host { min-width: 0; width: 44px; height: 44px; flex: none; }
 .map-attribution-host .maplibregl-ctrl-attrib {
   float: none;
   margin: 0;
   max-width: 100%;
   box-sizing: border-box;
 }
-.map-attribution-host .maplibregl-ctrl-attrib-inner { white-space: normal; }
+.map-attribution-host .maplibregl-ctrl-attrib-inner {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  width: max-content;
+  max-width: min(360px, calc(100vw - 48px));
+  max-height: 180px;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 16px;
+  background: rgba(249,253,251,.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 5px 18px #163c2926;
+  color: #30483f;
+  font: 12px/1.6 Inter,system-ui,sans-serif;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .maplibre-canvas .unified-map-legend { left: 16px; bottom: 16px; max-width: min(250px,calc(100% - 200px)); }
 .map-attribution-host .maplibregl-ctrl-attrib.maplibregl-compact {
   min-width: 44px;
   min-height: 44px;
+  width: 44px;
+  height: 44px;
+  position: static;
   padding: 0;
   border-radius: 22px;
   background: rgba(249,253,251,.85);
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   box-shadow: 0 3px 12px #163c2920;
 }
-.map-attribution-host .maplibregl-ctrl-attrib-button { width: 44px; height: 44px; }
-.map-attribution-host .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 10px 44px 10px 14px; }
+.map-attribution-host .maplibregl-ctrl-attrib-button {
+  position: relative;
+  top: auto;
+  right: auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 24px 24px;
+}
+.map-attribution-host .maplibregl-ctrl-attrib-button:focus-visible { outline: 2px solid #087d70; outline-offset: 3px; }
+.map-attribution-host .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 0; }
 .map-utility-controls .map-mode-toggle { height: 44px; min-height: 44px; padding: 3px; box-sizing: border-box; }
 .map-utility-controls .map-mode-toggle button { min-width: 44px; min-height: 36px; }
 .unified-map-toolbar .map-transaction-toggle[aria-pressed=true] { background: #e0f0e9cc; border-color: #63998c; }
