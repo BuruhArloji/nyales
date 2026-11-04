@@ -90,3 +90,10 @@ export async function referencePoints(c:any){
  }
  return {points,total:points.length,source:'Direktori titik dari Google Drive; bukan customer, transaksi atau kunjungan.'};
 }
+
+/** Optional reference POIs must never prevent customer pins and DEMO overlays from loading. */
+type OptionalReferencePoints={points:any[];total:number;scope_note?:string;source?:string;warning?:string};
+export async function loadOptionalReferencePoints(c:any):Promise<OptionalReferencePoints>{
+ try{return await referencePoints(c)}
+ catch{return {points:[],total:0,warning:'Titik referensi tambahan belum tersedia. Titik pelanggan dan overlay DEMO tetap ditampilkan.'}}
+}

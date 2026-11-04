@@ -63,3 +63,12 @@ test('Directory cache retries storage failures, expires, and does not retain eve
  await directoryDetails(c,'next','c');await directoryDetails(c,'retry','c');assert.equal(reads,5);
  f.sqlite.exec("UPDATE point_directory_dataset SET status='retired' WHERE id='retry'");assert.equal(await directoryDetails(c,'retry','c'),null);
 });
+
+test('Map keeps customer pins available when optional reference storage is missing',async()=>{
+ const f=setup(),key='o/point-directories/optional-map/reference-points.json',bytes=new TextEncoder().encode('missing reference object'),before={...f.sqlite.prepare("INSERT INTO customer_outlet(id,organization_id,area_id,name,latitude_e7,longitude_e7,coordinate_status) VALUES('source','o','a','Source customer',-62000000,1068000000,'unverified') RETURNING id,latitude_e7,longitude_e7").get()as any};
+ f.sqlite.prepare("INSERT INTO point_directory_dataset VALUES('optional-map','o','Optional directory','Drive',?,?,?,?,1,1,0,'mg','2026-10-28','ready')").run('a'.repeat(64),key,await digest(bytes.buffer),bytes.length);
+ const app=new Hono();app.use('*',async(c,next)=>{c.set('identity'as never,{id:'mg',name:'Management',organization_id:'o',role:'MANAGEMENT'}as never);await next()});app.route('/',scopedRoutes);
+ const response=await app.request('/api/map',{}, {DB:f.adapter,APP_ENV:'staging',LOCAL_AUTH:'false',FIREBASE_PROJECT_ID:'fixture',IMPORT_FILES:{get:async()=>null}});assert.equal(response.status,200,await response.clone().text());
+ const data=(await response.json()as any).data;assert.equal(data.customers.length,1);assert.equal(data.customers[0].id,'source');assert.deepEqual(data.reference_points,[]);assert.equal(data.reference_points_warning,'Titik referensi tambahan belum tersedia. Titik pelanggan dan overlay DEMO tetap ditampilkan.');
+ const after=f.sqlite.prepare("SELECT id,latitude_e7,longitude_e7 FROM customer_outlet WHERE id='source'").get()as any;assert.equal(after.id,before.id);assert.equal(after.latitude_e7,before.latitude_e7);assert.equal(after.longitude_e7,before.longitude_e7);assert.equal((f.sqlite.prepare('SELECT COUNT(*) n FROM invoice').get()as any).n,0);
+});
