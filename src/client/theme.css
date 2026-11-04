@@ -450,3 +450,16 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){
  .unified-map-toolbar>.liquid-tabs,.unified-map-toolbar>.button,.unified-map-toolbar>.map-layer-anchor>.button,.unified-map-toolbar>.map-transaction-filter{background:#f0f7f3;border-color:#758d82;backdrop-filter:none;-webkit-backdrop-filter:none}
 }
+
+/* Bounded customer lookup; shares the form's typography and neutral surfaces. */
+.customer-picker{position:relative;min-width:0;display:grid;gap:6px}
+.customer-picker-control{position:relative}.customer-picker-control input{width:100%;min-height:44px;padding-right:42px}
+.customer-picker-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:32px;height:32px;min-height:32px;border:0;border-radius:50%;background:transparent;color:var(--ink);font-size:22px}
+.customer-picker-status:empty{display:none}.customer-picker-status{font-size:12px;color:var(--muted)}
+.customer-picker-popup{position:absolute;left:0;right:0;top:100%;z-index:15;padding:6px;border:1px solid #ffffffd9;border-radius:18px;background:#f6faf7f5;box-shadow:0 14px 36px #17382a26;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.customer-picker-popup [role=listbox]{max-height:230px;overflow:auto;overscroll-behavior:contain}
+.customer-picker-option{display:grid;gap:3px;padding:11px 12px;border-radius:12px;cursor:pointer;color:var(--ink)}
+.customer-picker-option strong{font-size:13px;font-weight:500}.customer-picker-option small{font-size:11px;color:var(--muted)}
+.customer-picker-option.is-highlighted{background:#dceee7}.customer-picker-option[aria-selected=true]{background:#202724;color:#fff}.customer-picker-option[aria-selected=true] small{color:#dce9e2}
+.customer-picker-popup p{margin:8px 12px;font-size:12px}.customer-picker-pages{display:flex;justify-content:space-between;gap:8px;padding:6px}.customer-picker-pages .button{min-height:36px;padding:6px 12px;font-size:11px}
+@media(prefers-reduced-transparency:reduce){.customer-picker-popup{background:#f6faf7;backdrop-filter:none;-webkit-backdrop-filter:none}}

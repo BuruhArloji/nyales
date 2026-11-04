@@ -667,6 +667,18 @@
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
     },
     {
+      "method": "GET",
+      "path": "/api/customer-options",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-options.openapi.json",
+          "path": "/api/customer-options"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
       "method": "POST",
       "path": "/api/customer-risk-policies/:id/activate",
       "authentication": "bearer plus device session; scope checked server-side",

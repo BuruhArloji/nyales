@@ -71,7 +71,7 @@
       "id": "READ-003",
       "priority": "P0",
       "title": "Scoped customer lookup dan migrasi consumer",
-      "status": "Planned",
+      "status": "In progress",
       "conditional": false,
       "owner_role": "Frontend and Backend Engineers",
       "assignee": null,
@@ -92,7 +92,8 @@
         "Options API contract",
         "Consumer inventory"
       ],
-      "remote_execution_requires_budget_preflight": true
+      "remote_execution_requires_budget_preflight": true,
+      "latest_progress": "2026-11-04: scoped prefix lookup with bounded projection and keyset cursor implemented; Monitoring, Data Tools merge, mapping review and Field Work migrated. Planning/Pipeline and other consumers pending. Domain tests pass; deployment reported separately."
     },
     {
       "id": "READ-004",
@@ -259,7 +260,8 @@
         "Map API ADR",
         "Large spatial fixture report"
       ],
-      "remote_execution_requires_budget_preflight": true
+      "remote_execution_requires_budget_preflight": true,
+      "latest_progress": "2026-11-04: revisioned map boundary/mapping/membership cache and hidden-layer geometry gating implemented. Full viewport pin/dynamic cluster read model remains pending."
     },
     {
       "id": "READ-010",

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 test('existing Beverage audit is explicit, staging-only and isolated from all deployments and mutations',()=>{
- const workflow=readFileSync('.github/workflows/deploy-staging.yml','utf8');
+ const workflow=readFileSync('.github/workflows/deploy-staging.yml','utf8').replaceAll('\r\n','\n');
  assert.match(workflow,/audit_beverage_overlay:\n\s+description:[^\n]+\n\s+required: false\n\s+type: boolean\n\s+default: false/);
  const start=workflow.indexOf('\n  beverage_overlay_audit:\n');
  assert.ok(start>0);

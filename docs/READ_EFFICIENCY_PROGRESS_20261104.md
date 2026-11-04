@@ -83,3 +83,65 @@ Masih memerlukan pekerjaan lanjutan, sehingga program read efficiency tetap
 Rollback kode dapat memakai deployment sebelumnya tanpa menghapus indeks atau
 data. Tidak rollback schema/history secara destruktif. Cache lama terpisah oleh
 key version/revision dan kedaluwarsa menurut TTL; mutasi tidak memakai cache ini.
+
+
+## Tahap lanjutan — pemilih pelanggan dan metadata peta
+
+- Endpoint `GET /api/customer-options` menyajikan proyeksi ID/nama/kode ERP/area/
+  record status/jam visit. Default 20, maksimum 50, satu baris tambahan untuk
+  `has_more`; tanpa exact COUNT, invoice, segmentasi atau pemuatan directory.
+- Pencarian memakai prefix nama atau kode ERP dengan wildcard literal yang
+  di-escape. Dua cabang pencarian dibatasi sebelum UNION; identitas yang cocok
+  di kedua cabang tetap muncul sekali. `0052_customer_option_indexes.sql`
+  menambah indeks nama dan kode terpisah; setiap cabang memakai indeksnya secara eksplisit agar ORDER BY tidak memicu scan seluruh organisasi. Tidak ada indeks JSON atau trigger
+  invalidasi baru.
+- Cursor keyset membandingkan tuple nama NOCASE + ID. Cursor terikat query,
+  record-status, tanggal bisnis dan scope/capabilities. Cursor bukan credential;
+  predicate akses diterapkan lagi pada setiap halaman dan hydration ID.
+- Mode active mempertahankan perilaku form yang memerlukan pelanggan aktif;
+  mode all hanya untuk form yang sebelumnya juga menampilkan pelanggan nonaktif.
+  Alias merge tidak ditawarkan sebagai pilihan baru. Pelanggan terpilih di luar
+  halaman pertama diambil lewat satu query ID, tidak dengan memuat semua halaman.
+- Picker digunakan pada **Monitoring (coaching/exception), Data Tools (merge),
+  review pemetaan lokasi, serta form aktivitas lapangan/agenda/task/handoff**.
+  Field Work tidak lagi memuat seluruh master saat awal; nama exception dikirim
+  oleh JOIN yang sudah ada. Data terpilih dan jam layanan tetap dipulihkan saat
+  membuka draft. Rute mutasi dan validasi bisnis tetap authoritative di server.
+- Komponen hanya menampilkan 20 pilihan sekaligus, debounce 250 ms, abort hasil
+  lama, navigasi keyboard, status loading/error/retry, pagination sebelumnya/
+  berikutnya dan validasi pemilihan. Data tidak disimpan di localStorage.
+- Metadata batas operasional, pemetaan pelanggan dan membership peta menggunakan
+  cache 60 detik dengan revision + scope + dataset/cohort. Ringkasan dan hasil
+  tetap sama; posisi sales tidak dimasukkan ke cache metadata ini. Pembacaan
+  geometri operasional dihentikan saat layer dimatikan.
+- Empat tes domain baru mencakup enam role, organisasi lain, prefix/wildcard,
+  cursor/filter mismatch, hydration pelanggan nonaktif/asing, deduplikasi,
+  urutan nama identik, pemisahan cache scope dan invalidasi bukti koordinat.
+  Suite aplikasi: 390 tes, 382 lulus, 8 dilewati, 0 gagal. Build/typecheck lulus.
+  Pemeriksaan UI tetap dilakukan pengguna sesuai instruksinya.
+- Kontrak API dan inventory runtime bertambah menjadi 326 operasi, seluruhnya
+  memiliki tautan kontrak. Lihat `customer-options.openapi.json`.
+
+Pengukuran provider sebelum migration untuk query selector baru (prefix
+`warung`, 20 opsi + 1 sentinel): 75.288 rows read, 0 rows written, satu sampel
+SQL 1.208,97 ms. Ini **bukan** baseline endpoint customer lama, biaya auth atau
+latency aplikasi. Receipt privat:
+`.nyales-agent/staging/customer-options-provider-before-20261104.json`.
+Hasil setelah migration akan dilaporkan terpisah; tidak ada asumsi bahwa indeks
+pasti dipilih planner sebelum diperiksa.
+
+Batas sebelumnya tetap berlaku: belum ada viewport/server cluster peta, sebagian
+consumer Planning/Pipeline masih memakai directory penuh, tidak ada klaim
+kapasitas concurrency/p95 atau materialisasi segmentasi terjadwal. Keyset lookup
+adalah daftar live untuk memilih pelanggan, bukan snapshot export; perubahan nama
+oleh pengguna lain dapat mengubah urutan antarhalaman. Mutasi tetap memvalidasi
+ID/scope/version saat disimpan.
+
+
+Integrasi source terbaru mempertahankan `chunkMapIds` (batas parameter JSON D1
+512 KiB) di dalam producer cache pemetaan serta fallback layer referensi opsional.
+Tes cohort besar dan fallback tetap dipertahankan. Angka 390 tes di atas adalah
+pemeriksaan sebelum integrasi commit 68105c0. Pemeriksaan gabungan menambah
+suite audit dari pekerjaan lain; satu test workflow diperbaiki agar normalisasi
+CRLF Windows tidak mengubah pemeriksaan isolasi audit. Status CI gabungan
+menjadi bukti akhir release, tanpa menimpa workflow/data pekerjaan lain.

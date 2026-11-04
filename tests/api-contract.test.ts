@@ -1,3 +1,4 @@
+import {generateCustomerOptionsContract} from '../scripts/generate-customer-options-contract';
 import {generateOperationalProfileContract} from '../scripts/generate-visit-operational-contract';
 import {generateVisitPlanningContract} from '../scripts/generate-visit-planning-contract';
 import {generateAgentQueueContract} from '../scripts/generate-visit-agent-queue-contract';
@@ -15,6 +16,7 @@ import {generateGeographyContract} from '../scripts/generate-geography-contract'
 import {generateBoundaryContract} from '../scripts/generate-boundary-contract';
 
 test('WEB-058 runtime route inventory and recovery request contract stay synchronized',()=>{
+ assert.deepEqual(JSON.parse(readFileSync('docs/specifications/customer-options.openapi.json','utf8')),generateCustomerOptionsContract());
  assert.deepEqual(JSON.parse(readFileSync('docs/specifications/runtime-api.inventory.json','utf8')),generateInventory());
  assert.deepEqual(JSON.parse(readFileSync('docs/specifications/m4-recovery-api.openapi.json','utf8')),generateRecoveryContract());
  assert.deepEqual(JSON.parse(readFileSync('docs/specifications/core-api.openapi.json','utf8')),generateCoreContract());

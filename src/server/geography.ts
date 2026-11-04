@@ -64,9 +64,18 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
  routes.onError((e,c)=>{const match=/^(403|404|409|412|422|428|503):(.+)$/.exec(e.message);return c.json({code:match?.[2]||'GEOGRAPHY_UNAVAILABLE'},(match?Number(match[1]):503) as any)});
  routes.get('/api/geo/map',async c=>{
   const channel=c.req.query('channel');if(channel&&!['field','telesales'].includes(channel))return c.json({code:'INVALID_CHANNEL'},422);const period=c.req.query('period');if(period&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(period))return c.json({code:'INVALID_PERIOD'},422);
-  const base=await mapPayload(c),d=await dataset(c,c.req.query('dataset_id')),rows=await boundaryRows(c,d),org=c.get('identity').organization_id,date=c.get('scope').date;
+  const base=await mapPayload(c),d=await dataset(c,c.req.query('dataset_id')),org=c.get('identity').organization_id,date=c.get('scope').date;
+  const revision=await readModelRevision(c),scope=c.get('scope');
+  const boundaries=await cachedJson(c,scopeCacheKey(scope,'geo-boundary-rows',JSON.stringify([revision,d?.id,d?.version,d?.status])),60,()=>boundaryRows(c,d));
+  const rows=boundaries.value;
   const mapRows=[...new Map([...base.data.all_customers,...base.data.customers].map((customer:any)=>[customer.id,customer])).values()];
-  const mappings:any[]=[];for(const ids of chunkMapIds(mapRows.map((x:any)=>x.id)))mappings.push(...(await c.env.DB.prepare('SELECT l.*,b.dataset_id FROM customer_admin_location l LEFT JOIN admin_boundary b ON b.organization_id=l.organization_id AND b.id=l.boundary_id WHERE l.organization_id=? AND l.outlet_id IN (SELECT value FROM json_each(?)) AND l.superseded_at IS NULL AND l.effective_from_date<=? AND (l.effective_to_date IS NULL OR l.effective_to_date>?) ORDER BY l.revision DESC').bind(org,JSON.stringify(ids),date,date).all<any>()).results);
+  const cohortIds=JSON.stringify(mapRows.map((x:any)=>x.id));
+  const mappingCache=await cachedJson(c,scopeCacheKey(scope,'geo-map-mappings',JSON.stringify([revision,await digest(cohortIds)])),60,async()=>{
+   const result:any[]=[];
+   for(const ids of chunkMapIds(mapRows.map((x:any)=>x.id)))result.push(...(await c.env.DB.prepare('SELECT l.outlet_id,l.boundary_id,b.dataset_id,l.status,l.evidence_json,l.revision FROM customer_admin_location l LEFT JOIN admin_boundary b ON b.organization_id=l.organization_id AND b.id=l.boundary_id WHERE l.organization_id=? AND l.outlet_id IN (SELECT value FROM json_each(?)) AND l.superseded_at IS NULL AND l.effective_from_date<=? AND (l.effective_to_date IS NULL OR l.effective_to_date>?) ORDER BY l.revision DESC').bind(org,JSON.stringify(ids),date,date).all<any>()).results);
+   return result;
+  });
+  const mappings=mappingCache.value;
   const mappingByCustomer=new Map<string,any>();for(const row of mappings)if(!mappingByCustomer.has(row.outlet_id))mappingByCustomer.set(row.outlet_id,row);
   const enrich=(customer:any)=>{const row=mappingByCustomer.get(customer.id),state=mappingState(row,customer,d);return {...customer,geo_status:state,geo_boundary_id:state==='confirmed'?row.boundary_id:null}};
   const metricIds=base.data.all_customers.map((x:any)=>x.id);
@@ -76,7 +85,9 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
   const metrics=new Map<string,any>(metricCache.value as [string,any][]);
   const all=base.data.all_customers.map((x:any)=>({...enrich(x),metrics:metrics.get(x.id)}));
   const customerById=new Map<string,any>(mapRows.map((customer:any)=>[customer.id,{...enrich(customer),metrics:metrics.get(customer.id)}]));
-  const areaMembership=(await c.env.DB.prepare('SELECT m.admin_unit_id,m.area_id,m.boundary_id,a.name area_name FROM area_admin_membership m JOIN area a ON a.organization_id=m.organization_id AND a.id=m.area_id WHERE m.organization_id=? AND m.admin_unit_id IN(SELECT value FROM json_each(?)) AND m.effective_from_date<=? AND (m.effective_to_date IS NULL OR m.effective_to_date>?)').bind(org,JSON.stringify(rows.map(b=>b.admin_unit_id)),date,date).all<any>()).results;
+  const membershipCache=await cachedJson(c,scopeCacheKey(scope,'geo-map-memberships',JSON.stringify([revision,d?.id,d?.version])),60,async()=>(await c.env.DB.prepare('SELECT m.admin_unit_id,m.area_id,m.boundary_id,a.name area_name FROM area_admin_membership m JOIN area a ON a.organization_id=m.organization_id AND a.id=m.area_id WHERE m.organization_id=? AND m.admin_unit_id IN(SELECT value FROM json_each(?)) AND m.effective_from_date<=? AND (m.effective_to_date IS NULL OR m.effective_to_date>?)').bind(org,JSON.stringify(rows.map(b=>b.admin_unit_id)),date,date).all<any>()).results);
+  const areaMembership=membershipCache.value;
+  c.header('X-NYALES-Geography-Cache',boundaries.enabled&&mappingCache.enabled&&membershipCache.enabled?(boundaries.hit&&mappingCache.hit&&membershipCache.hit?'HIT':'MISS'):'OFF');
   const counts=new Map<string,number>();for(const c of all)if(c.geo_boundary_id)counts.set(c.geo_boundary_id,(counts.get(c.geo_boundary_id)||0)+1);
   const compact=c.req.query('compact')==='1';
   const compactPin=(x:any)=>({id:x.id,name:x.name,area:x.area,area_id:x.area_id,owner:x.owner,status:x.status,lat:x.lat,lng:x.lng,directory_dataset_id:x.directory_dataset_id,geo_status:x.geo_status,geo_boundary_id:x.geo_boundary_id,metrics:x.metrics,demo_operation_overlay:x.demo_operation_overlay});

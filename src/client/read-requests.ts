@@ -1,7 +1,7 @@
 /** In-flight GET deduplication only. Never persists customer responses, never
  * reuses a completed response, and never coalesces writes or file downloads. */
 type PendingRead={controller:AbortController;promise:Promise<Response>;users:number};
-const eligible=/^\/api\/(?:areas|users|branches|me|dashboard|customers|geo\/map)(?:$|\/|\?)/;
+const eligible=/^\/api\/(?:areas|users|branches|me|dashboard|customers|customer-options|geo\/map)(?:$|\/|\?)/;
 export function createReadRequests(send:typeof fetch=fetch){
  const pending=new Map<string,PendingRead>();let generation=0;
  function clear(){generation++;for(const read of pending.values())read.controller.abort();pending.clear()}

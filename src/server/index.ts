@@ -1,3 +1,4 @@
+import {customerOptions} from './customer-options';
 import {directoryDetails,loadOptionalReferencePoints} from './point-directory';
 import {visitOperationalProfiles} from './visit-operational-profiles';
 import {createFirstAdminRoutes} from './first-admin';
@@ -158,7 +159,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
 
  if(isMaster){if(c.req.method!=='GET'&&!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
 
- const paths=['/api/me','/api/customers','/api/dashboard','/api/map','/api/telesales/queue','/api/sales/last-positions'];
+ const paths=['/api/customer-options','/api/me','/api/customers','/api/dashboard','/api/map','/api/telesales/queue','/api/sales/last-positions'];
 
  if(/^\/api\/telesales\/queue\/(claim|[^/]+\/(renew|complete))$/.test(c.req.path)){if(!c.get('scope').capabilities.includes('telesales:read'))return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(c.req.path==='/api/telesales/workbench'&&c.req.method==='GET'){await next();return}
@@ -419,6 +420,7 @@ scopedRoutes.route('/',riskEvaluations);
 scopedRoutes.route('/',workloadPolicies);
 scopedRoutes.route('/',visitAgentRegistry);
 scopedRoutes.route('/',agentQueueAdmin);
+scopedRoutes.route('/',customerOptions);
 scopedRoutes.route('/',visitPlanning);
 scopedRoutes.route('/',orsPlanning);
 scopedRoutes.route('/',visitOperationalProfiles);
