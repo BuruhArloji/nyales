@@ -20,9 +20,9 @@ test('Staging mutation is explicit; only the verified demo package crosses jobs 
  assert.ok(workflow.indexOf('--dry-run')<workflow.indexOf('migrations apply'));
  assert.ok(workflow.indexOf('stagingOrigin(process.env.NYALES_STAGING_URL)')<workflow.indexOf('migrations apply'));
  assert.ok(!workflow.includes('seed.sql'));assert.ok(workflow.includes('test "$GITHUB_REF" = refs/heads/main'));
- const packageStart=workflow.indexOf('\n  package:\n'),deployStart=workflow.indexOf('\n  deploy:\n',packageStart);
- assert.ok(packageStart>=0&&deployStart>packageStart);
- const packageJob=workflow.slice(packageStart,deployStart);
+ const packageStart=workflow.indexOf('\n  package:\n'),candidateStart=workflow.indexOf('\n  candidate_overlay:\n'),deployStart=workflow.indexOf('\n  deploy:\n',candidateStart);
+ assert.ok(packageStart>=0&&candidateStart>packageStart&&deployStart>candidateStart);
+ const packageJob=workflow.slice(packageStart,candidateStart);
  assert.ok(packageJob.includes('permissions:\n      contents: write'));
  assert.ok(packageJob.includes('actions/upload-artifact@v4'));
  assert.ok(packageJob.includes('path: ${{ runner.temp }}/portfolio-demo/'));

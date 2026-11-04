@@ -22,8 +22,12 @@ export function assertRoleStaging(config:any,env:NodeJS.ProcessEnv,remote:boolea
  if(config.name!=='nyales-staging'||config.vars?.APP_ENV!=='staging'||config.account_id!==ROLE_STAGING_ACCOUNT||env.CF_ACCOUNT_ID!==ROLE_STAGING_ACCOUNT||env.CF_D1_DATABASE_ID!==ROLE_STAGING_DATABASE||!config.d1_databases?.some((d:any)=>d.database_name==='nyales-staging'&&d.database_id===ROLE_STAGING_DATABASE))throw Error('EXACT_STAGING_TARGET_REQUIRED');
  if(!env.CLOUDFLARE_API_TOKEN)throw Error('STAGING_CREDENTIAL_REQUIRED');
 }
+export function assertRoleReadOnlySql(sql:string){
+ const text=sql.trim();
+ if(!/^SELECT\b/i.test(text)||/[;]|--|\/\*/.test(text)||/\b(?:INSERT|UPDATE|DELETE|REPLACE|CREATE|ALTER|DROP|PRAGMA|ATTACH|DETACH|VACUUM)\b/i.test(text))throw Error('READ_ONLY_AUDIT_QUERY_REQUIRED');
+}
 export function roleD1Query(sql:string){
- if(!/^\s*SELECT\b/i.test(sql))throw Error('READ_ONLY_AUDIT_QUERY_REQUIRED');
+ assertRoleReadOnlySql(sql);
  let text:string;
  try{text=execFileSync('npx',['wrangler','d1','execute','nyales-staging','--remote','--yes','--config','wrangler.staging.generated.json','--json','--command',sql],{encoding:'utf8',stdio:['ignore','pipe','pipe'],maxBuffer:64*1024*1024})}
  catch(error){const e=error as {status?:number;stdout?:string;stderr?:string};const detail=String(e.stdout||'')+'\n'+String(e.stderr||'');throw Error('STAGING_AUDIT_QUERY_FAILED_'+String(e.status??'UNKNOWN')+(/quota|limit has been reached/i.test(detail)?'_PROVIDER_LIMIT_REJECTION':''))}
