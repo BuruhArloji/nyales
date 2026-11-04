@@ -1,0 +1,61 @@
+name: NYALES connected training data
+on:
+  workflow_dispatch:
+    inputs:
+      month:
+        description: 'Training month (YYYY-MM)'
+        required: true
+        type: string
+      as_of:
+        description: 'Training cutoff (YYYY-MM-DD)'
+        required: true
+        type: string
+      apply:
+        description: 'Add linked synthetic operations to unused imported staging customer points'
+        required: true
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: nyales-staging
+  cancel-in-progress: false
+jobs:
+  training:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 25
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      CF_D1_DATABASE_ID: ${{ secrets.CF_D1_DATABASE_ID }}
+      TRAINING_MONTH: ${{ inputs.month }}
+      TRAINING_AS_OF: ${{ inputs.as_of }}
+      TRAINING_APPLY: ${{ inputs.apply }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 24, cache: npm}
+      - run: npm ci
+      - name: Prepare D1-only staging configuration
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const account=process.env.CF_ACCOUNT_ID, database=process.env.CF_D1_DATABASE_ID;
+          if(account!=='54386b392928d9dcd226ad9e7fff5d79'||database!=='6fc9dcea-c6a9-446c-a2f4-44ec3a12bdfe')throw Error('EXACT_STAGING_ACCOUNT_AND_DATABASE_REQUIRED');
+          fs.writeFileSync('wrangler.staging.generated.json',JSON.stringify({name:'nyales-staging',account_id:account,compatibility_date:'2026-10-17',vars:{APP_ENV:'staging'},d1_databases:[{binding:'DB',database_name:'nyales-staging',database_id:database,migrations_dir:'migrations'}]}));
+          JS
+      - name: Validate connected training package
+        run: npx tsx --test tests/training-data-package.test.ts tests/training-staging.test.ts
+      - name: Prepare or apply reviewed additive training operations
+        run: npx tsx scripts/apply-training-staging.ts --remote
+      - name: Retain aggregate reconciliation receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: connected-training-receipt
+          path: test-results/training-staging-receipt.json
+          if-no-files-found: ignore
+          retention-days: 7
