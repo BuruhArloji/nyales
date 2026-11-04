@@ -41,7 +41,7 @@ test('source point names and coordinates remain untouched and provenance is reta
 });
 
 test('local read APIs expose linked data for Management and scope each rep to their own channel and customers',async()=>{
- const month=new Date().toISOString().slice(0,7),points=Array.from({length:50},(_,n)=>({id:'point'+n,name:'Warung '+n,latitude_e7:-62000000+n,longitude_e7:1070000000+n})),bundle=buildTrainingPackage({month,customerCount:50,points}),f=database();f.sqlite.exec(bundle.sql);
+ const asOf=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()),month=asOf.slice(0,7),points=Array.from({length:50},(_,n)=>({id:'point'+n,name:'Warung '+n,latitude_e7:-62000000+n,longitude_e7:1070000000+n})),bundle=buildTrainingPackage({month,asOf,customerCount:50,points}),f=database();f.sqlite.exec(bundle.sql);
  const request=async(path:string,actor='demo-management')=>{
   const role=bundle.rows.auth_role_assignment.find(r=>r.user_id===actor)!;
   const h=new Hono();h.use('*',async(c,next)=>{c.set('identity' as never,{id:actor,name:actor,role:role.role_code,channel:role.channel,organization_id:'demo-org'} as never);await next()});h.route('/',scopedRoutes);
