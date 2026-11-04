@@ -1,3 +1,4 @@
+import {readDirectoryFacts} from './directory-facts';
 import {customerOptions} from './customer-options';
 import {directoryDetails,loadOptionalReferencePoints} from './point-directory';
 import {visitOperationalProfiles} from './visit-operational-profiles';
@@ -181,42 +182,22 @@ scopedRoutes.get('/api/me',async c=>{const s=c.get('scope');const demoData=local
 
 async function readCustomers(db:D1Database,s:Scope,customerId?:string){
 
- const filter=customerPredicate(s);const inv=invoicePredicate(s);
+ const filter=customerPredicate(s);
  const detail=customerId!==undefined;
  // Reject absent/out-of-scope details before loading any invoice or snapshot.
  // Keep the same scope and area join as the directory, including merged aliases.
  if(detail&&!await db.prepare(`SELECT co.id FROM customer_outlet co JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id WHERE ${filter.sql} AND co.merged_into_id IS NULL AND co.id=?`).bind(...filter.params,customerId).first())return [];
- // UNION lets the identity and merged-family indexes each seek a bounded set.
- const familySql=detail?' AND child.id IN (SELECT f.id FROM customer_outlet f WHERE f.organization_id=? AND f.id=? UNION SELECT f.id FROM customer_outlet f WHERE f.organization_id=? AND f.merged_into_id=?)':'';
- const familyParams=detail?[s.identity.organization_id,customerId,s.identity.organization_id,customerId]:[];
-
- // Invoice aggregates use invoice ownership, not present-day customer owner; no duplicate join on assignments.
-
- const rows=await db.prepare(`WITH invoice_facts AS (
- SELECT COALESCE(child.merged_into_id,child.id) customer_id,MAX(i.invoice_date) last,
- SUM(CASE WHEN i.invoice_date>=? AND i.invoice_date<=? AND ${inv.sql} THEN i.net_minor ELSE 0 END) actual
- FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id
- WHERE i.organization_id=? AND i.is_current=1 AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date<=? ${familySql}
- GROUP BY COALESCE(child.merged_into_id,child.id)
- ), field_owners AS (
- SELECT COALESCE(child.merged_into_id,child.id) customer_id,u.name,
- ROW_NUMBER() OVER(PARTITION BY COALESCE(child.merged_into_id,child.id) ORDER BY ca.effective_from_date DESC,ca.id) rank
- FROM customer_assignment ca JOIN customer_outlet child ON child.organization_id=ca.organization_id AND child.id=ca.outlet_id
- JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id
- WHERE ca.organization_id=? AND ca.channel='field' AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?) ${familySql}
- ) SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified,
- owner.name owner,facts.last,COALESCE(facts.actual,0) actual FROM customer_outlet co
+ const facts=await readDirectoryFacts(db,s,customerId);
+ const rows=await db.prepare(`SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified FROM customer_outlet co
  JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id
- LEFT JOIN invoice_facts facts ON facts.customer_id=co.id
- LEFT JOIN field_owners owner ON owner.customer_id=co.id AND owner.rank=1
- WHERE ${filter.sql} AND co.merged_into_id IS NULL ${detail?'AND co.id=?':''} ORDER BY co.name`).bind(s.date.slice(0,7)+'-01',s.date,...inv.params,s.identity.organization_id,s.date,...familyParams,s.identity.organization_id,s.date,s.date,...familyParams,...filter.params,...(detail?[customerId]:[])).all<{id:string;name:string;area:string;latitude_e7:number|null;longitude_e7:number|null;owner:string|null;last:string|null;actual:number;area_id:string;address:string|null;external_code:string|null;external_code_review:number;version:number;record_status:string;coordinate_status:string;location_note:string;outlet_type:string;service_frequency_days:number|null;visit_window:string;directory_dataset_id:string|null;transaction_history_unverified:number}>();
+ WHERE ${filter.sql} AND co.merged_into_id IS NULL ${detail?'AND co.id=?':''} ORDER BY co.name`).bind(...filter.params,...(detail?[customerId]:[])).all<any>();
 
  const segmentRun=await segmentationSnapshot(db,s.identity.organization_id,s.date);const segmentRows=(await db.prepare('SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=?'+(detail?' AND customer_id=?':'')).bind(segmentRun.id,...(detail?[customerId]:[])).all<any>()).results;
  const segmentsByCustomer=new Map(segmentRows.map(r=>[r.customer_id,r]));
  const current=(await db.prepare(`SELECT COALESCE(al.canonical_id,ca.outlet_id) customer_id,ca.rep_id,ca.channel,u.name FROM customer_assignment ca LEFT JOIN customer_alias al ON al.organization_id=ca.organization_id AND al.source_id=ca.outlet_id JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id WHERE ca.organization_id=? AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?) ${detail?'AND ca.outlet_id IN (SELECT ? UNION SELECT source_id FROM customer_alias WHERE organization_id=? AND canonical_id=?) AND COALESCE(al.canonical_id,ca.outlet_id)=?':''}`).bind(s.identity.organization_id,s.date,s.date,...(detail?[customerId,s.identity.organization_id,customerId,customerId]:[])).all<any>()).results;
 
  const ownersByCustomer=new Map<string,any[]>();for(const assignment of current){const list=ownersByCustomer.get(assignment.customer_id)||[];list.push(assignment);ownersByCustomer.set(assignment.customer_id,list)}
- return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,directory_dataset_id:r.directory_dataset_id,transaction_history_unverified:Boolean(r.transaction_history_unverified),area:r.area.replace(/^Area /,''),field_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='field')?.rep_id||null,telesales_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.rep_id||null,telesales_owner:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.name||'Belum assigned',owner:r.owner||'Belum assigned',status:segmentsByCustomer.get(r.id)?.status||'Unknown',tier:segmentsByCustomer.get(r.id)?.tier||'Belum tersedia',segmentation:segmentsByCustomer.get(r.id)||null,actual:r.actual/1000000,actual_minor:r.actual,last:r.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
+ return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,directory_dataset_id:r.directory_dataset_id,transaction_history_unverified:Boolean(r.transaction_history_unverified),area:r.area.replace(/^Area /,''),field_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='field')?.rep_id||null,telesales_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.rep_id||null,telesales_owner:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.name||'Belum assigned',owner:facts.owners.get(r.id)||'Belum assigned',status:segmentsByCustomer.get(r.id)?.status||'Unknown',tier:segmentsByCustomer.get(r.id)?.tier||'Belum tersedia',segmentation:segmentsByCustomer.get(r.id)||null,actual:(facts.invoices.get(r.id)?.actual||0)/1000000,actual_minor:facts.invoices.get(r.id)?.actual||0,last:facts.invoices.get(r.id)?.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
 
 }
 

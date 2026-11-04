@@ -161,3 +161,22 @@ p95, penghematan harian, atau kapasitas concurrent pengguna. Query sebelum
 belum memakai indeks baru/koreksi predicate; query setelah memakai keduanya.
 Receipt tanpa isi pelanggan tersedia di direktori privat operator:
 `customer-options-comparison-20261104.json`. Raw hasil tetap tidak dikomit.
+
+### Insiden 503 setelah impor tambahan titik
+
+Setelah direktori menjadi 58.331 pelanggan, log staging menunjukkan penolakan
+`D1 DB is overloaded. Too many resources consumed within a 10 second window`.
+Satu GET peta mencatat 87.337.175 rows read sebelum gagal. Ini batas beban
+database, bukan bukti kuota harian habis. EXPLAIN pada snapshot menemukan
+`SCAN facts LEFT-JOIN` dan `SCAN owner LEFT-JOIN`: dua agregat materialized
+dipindai ulang untuk setiap pelanggan.
+
+Agregat invoice dan pemilik lapangan kini dibaca sekali, lalu dicocokkan lewat
+Map berindeks ID pada Worker. Filter invoice historis, canonical merge, urutan
+pemilik, cutoff dan hasil directory tetap sama. Rekonsiliasi lokal pada seluruh
+58.331 pelanggan memastikan actual, last invoice, dan owner identik. Query
+keluarga pelanggan untuk pembuatan segmentation snapshot juga memakai UNION
+agar identity dan merged-family masing-masing dapat memakai index seek.
+
+Pemeriksaan API setelah deployment diperlukan untuk membuktikan pemulihan;
+hasil rekonsiliasi lokal bukan bukti latency staging atau kapasitas multiuser.
