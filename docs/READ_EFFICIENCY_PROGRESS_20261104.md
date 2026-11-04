@@ -210,3 +210,28 @@ dengan angka meskipun sebagian feature tidak mempunyai nilai numerik. Transform
 style sebelum tile worker dimuat menambahkan numeric fallback di atas ambang,
 sehingga feature tanpa panjang valid tetap tidak diberi shield. Filter jaringan,
 geometri dan layer lain tidak berubah; tidak ada penekanan console error global.
+
+### Revamp navigasi daftar dan target
+
+Pagination pelanggan, distribusi, source drill dan customer picker memakai satu
+komponen responsif. Agenda, kunjungan, task, handoff dan exception hanya meminta
+tab aktif dengan `limit=25`, offset dan sentinel untuk halaman selanjutnya.
+Scope/filter diterapkan sebelum SQL LIMIT; legacy GET tetap kompatibel. Sesi
+kerja aktif diambil terpisah agar status mulai/akhiri kerja tidak bergantung pada
+halaman histori. Kontrak M2 mendokumentasikan live-offset dan batas 100 baris.
+Tes rekonsiliasi memastikan halaman tidak duplikat, data di luar 200 aktivitas
+pertama dapat dijangkau, scope dan filter tetap berlaku. Tidak ada COUNT seluruh
+daftar atau pengukuran load multiuser/provider baru dalam slice ini.
+
+Target dipisah menjadi Kelola target dan Pencapaian, dengan alur bulanan, basis
+pelanggan/sales, pembagian manual atau histori, serta status pengajuan/pengesahan
+yang jelas. Pencarian customer target tidak lagi mengambil seluruh master.
+Pagination target dan status/tier membatasi baris DOM, tetapi endpoint target
+dan segmentasi masih mengambil response lengkap; bukan pagination server.
+
+Spacing card sekarang berlaku pada `.page-scene`. Invoice memakai aksi Detail
+tanpa nomor dan menghapus paragraf teknis yang diminta. Banner Bekasi global
+dihapus. Penanda DEMO dibersihkan pada label presentasi; source IDs, histori,
+klasifikasi sintetis, payload API dan nilai bisnis tetap asli. Pengujian visual
+diserahkan kepada pengguna sesuai instruksinya; perubahan tidak menyatakan data
+sintetis menjadi transaksi nyata.

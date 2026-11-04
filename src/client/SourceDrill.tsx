@@ -1,4 +1,5 @@
-import {invoiceLabel} from '../shared/business-labels';
+import {Pagination} from './Pagination';
+import {invoiceLabel,presentationLabel} from '../shared/business-labels';
 import React,{useEffect,useState} from 'react';
 import {apiFetch} from './auth';
 import {Loading} from './Loading';
@@ -24,16 +25,14 @@ export function SourceDrill({filters,source}:{filters:Record<string,string>;sour
  return <div className="source-drill">
 
   {error?<p role="alert" className="notice danger">{error} <button className="button secondary" onClick={()=>setRetry(x=>x+1)}>Coba lagi</button></p>:!data?<Loading>Memuat rincian…</Loading>:<>
-   <p className="muted">{data.cutoff} · Halaman {cursors.length} · {data.rows.length} baris</p>
+   <p className="muted">{data.cutoff} · {data.rows.length} baris</p>
    <div className="table-wrap"><table><thead><tr><th>Record</th><th>Basis / nilai</th><th>Waktu / status</th></tr></thead><tbody>
-    {data.rows.map(r=><tr key={r.id+(r.channel||'')}><td>{r.name||r.customer_name||invoiceLabel(r.source_invoice_id)||r.activity_kind||r.id}</td><td>{r.net_minor!==undefined?money(r.net_minor):r.target_minor!==undefined?'Target '+money(r.target_minor)+(r.actual_minor!==undefined?' · Actual '+money(r.actual_minor):''):r.observed_actual_minor!==undefined?money(r.observed_actual_minor):r.channel||r.area_id||'—'}</td><td>{r.invoice_date||r.occurred_at||r.status||r.period_start||'Master saat ini'}</td></tr>)}
+    {data.rows.map(r=><tr key={r.id+(r.channel||'')}><td>{presentationLabel(r.name||r.customer_name)||invoiceLabel(r.source_invoice_id)||r.activity_kind||r.id}</td><td>{r.net_minor!==undefined?money(r.net_minor):r.target_minor!==undefined?'Target '+money(r.target_minor)+(r.actual_minor!==undefined?' · Actual '+money(r.actual_minor):''):r.observed_actual_minor!==undefined?money(r.observed_actual_minor):r.channel||r.area_id||'—'}</td><td>{r.invoice_date||r.occurred_at||r.status||r.period_start||'Master saat ini'}</td></tr>)}
     {!data.rows.length&&<tr><td colSpan={3}>Belum ada record sesuai pilihan.</td></tr>}
    </tbody></table></div>
   </>}
-  <div className="source-pagination" aria-label="Navigasi halaman rincian">
-   <button className="button secondary" disabled={cursors.length===1||!data} onClick={()=>setCursors(x=>x.slice(0,-1))}>Sebelumnya</button>
+  <Pagination label="Navigasi halaman rincian" page={cursors.length-1} hasPrevious={cursors.length>1} hasNext={Boolean(data?.pagination.has_more)} busy={!data} onPrevious={()=>setCursors(x=>x.slice(0,-1))} onNext={()=>{if(data?.pagination.next_cursor)setCursors(x=>[...x,data.pagination.next_cursor])}}>
    <label>Record per halaman<select aria-label="Record per halaman" value={pageSize} onChange={e=>{setPageSize(Number(e.target.value));setCursors([null])}}>{[10,25,50,100].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
-   <button className="button" disabled={!data?.pagination.has_more} onClick={()=>{if(data?.pagination.next_cursor)setCursors(x=>[...x,data.pagination.next_cursor])}}>Berikutnya</button>
-  </div>
+  </Pagination>
  </div>;
 }

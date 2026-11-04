@@ -1,4 +1,9 @@
 /** Presentation only: source keys remain intact for reconciliation and revisions. */
+export function presentationLabel(value:unknown):string {
+ return String(value??'').replace(/(?:\s*[·•|—–\uFFFD]\s*)?\bDEMO\b(?:\s*[·•|—–\uFFFD]\s*)?/gi,' ')
+  .replace(/\s{2,}/g,' ').replace(/^[\s·•|—–]+|[\s·•|—–]+$/g,'').trim();
+}
+
 export function invoiceLabel(value:unknown):string {
  const text=String(value??'');
  const beverage=/^beverage-demo-v1-sale-(\d+)$/.exec(text);

@@ -359,3 +359,29 @@ Tanpa endpoint impor publik baru: /api/me menambah directory_data; payload /api/
 ### Dimensi produk — migrasi 0049
 
 POST/PUT /api/products menerima tambahan opsional nullable: brand (maks 80), flavour (maks 80), size_ml (integer 1..1000000), packaging (maks 40). Respons katalog dan detail mengembalikan kolom terpisah. SKU bisnis tetap immutable ketika edit; id internal bukan kode SKU pengguna. Input legacy tanpa kolom dimensi tetap berlaku dan update tidak menghapus dimensi yang tidak dikirim. Mutasi mempertahankan ETag, idempotency, scope, audit dan validasi kelompok produk. Nama/satuan/quantity_scale dan snapshot transaksi lama tetap berlaku.
+
+
+### Pagination pekerjaan web — 4 November 2026
+
+GET `/api/activities`, `/api/work-plans`, `/api/tasks`, `/api/handoffs`,
+`/api/exceptions`, dan `/api/work-sessions` menerima pagination opt-in
+`limit=1..100&offset=0..1000000`. FieldWork memakai 25 baris per halaman dan hanya
+mengambil tab aktif. Scope organisasi/area/hirarki/pemilik tetap diterapkan sebelum
+SQL `LIMIT limit+1 OFFSET offset`; satu baris sentinel menentukan `has_more`, tanpa
+COUNT seluruh hasil. Respons tetap `{data:[...]}`, ditambah
+`meta.pagination:{limit,offset,has_more,consistency:"live_offset"}`. Tanpa limit,
+respons legacy dipertahankan. Offset/status/channel/activity_kind hanya berlaku
+pada permintaan paged; offset tanpa limit ditolak 422.
+
+`status` harus sesuai status resource. `channel` didukung pada agenda, aktivitas,
+task dan handoff; agenda menerjemahkan field→visit dan telesales→call.
+`activity_kind=visit|call` hanya untuk aktivitas. Kunjungan memakai filter visit
+sebelum pagination, sehingga hasil panggilan tidak mencampuri halaman kunjungan.
+Sesi kerja memakai `status=active|ended`, hanya milik pengguna yang sedang login.
+FieldWork mengambil sesi aktif secara terpisah agar tombol mulai/akhiri sesi tidak
+bergantung pada halaman histori yang sedang terlihat.
+
+Urutan stabil memakai waktu dan ID sebagai tie-breaker. Pagination adalah live
+offset; perubahan data di sela navigasi dapat menggeser baris, bukan snapshot
+ekspor. Data lama di luar 200 aktivitas pertama tetap dapat dijangkau lewat page
+berikutnya. Tidak ada seed atau mutasi data bisnis dalam perubahan ini.

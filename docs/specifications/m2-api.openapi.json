@@ -1179,10 +1179,71 @@
           "workflows"
         ],
         "summary": "GET /api/work-plans",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "description": "Zero-based row offset; requires limit."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "activity_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "visit",
+                "call"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Legacy data array when limit is omitted. With limit: data contains at most limit rows; meta.pagination={limit,offset,has_more,consistency:\"live_offset\"}. One sentinel row is read; no exact count. Activities order occurred_at DESC,id DESC; plans/tasks/handoffs by scheduled/due time,id; sessions/exceptions by time DESC,id DESC. Mutation during traversal may shift offsets; not an immutable export.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1210,7 +1271,8 @@
             "description": "Payload or business rule invalid"
           }
         },
-        "x-source": "src/server/workflows.ts"
+        "x-source": "src/server/workflows.ts",
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
       },
       "post": {
         "operationId": "m2_post__api_work_plans",
@@ -1412,10 +1474,71 @@
           "workflows"
         ],
         "summary": "GET /api/work-sessions",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "description": "Zero-based row offset; requires limit."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "activity_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "visit",
+                "call"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Legacy data array when limit is omitted. With limit: data contains at most limit rows; meta.pagination={limit,offset,has_more,consistency:\"live_offset\"}. One sentinel row is read; no exact count. Activities order occurred_at DESC,id DESC; plans/tasks/handoffs by scheduled/due time,id; sessions/exceptions by time DESC,id DESC. Mutation during traversal may shift offsets; not an immutable export.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1443,7 +1566,8 @@
             "description": "Payload or business rule invalid"
           }
         },
-        "x-source": "src/server/workflows.ts"
+        "x-source": "src/server/workflows.ts",
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
       },
       "post": {
         "operationId": "m2_post__api_work_sessions",
@@ -1659,10 +1783,71 @@
           "workflows"
         ],
         "summary": "GET /api/activities",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "description": "Zero-based row offset; requires limit."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "activity_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "visit",
+                "call"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Legacy data array when limit is omitted. With limit: data contains at most limit rows; meta.pagination={limit,offset,has_more,consistency:\"live_offset\"}. One sentinel row is read; no exact count. Activities order occurred_at DESC,id DESC; plans/tasks/handoffs by scheduled/due time,id; sessions/exceptions by time DESC,id DESC. Mutation during traversal may shift offsets; not an immutable export.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1690,7 +1875,8 @@
             "description": "Payload or business rule invalid"
           }
         },
-        "x-source": "src/server/workflows.ts"
+        "x-source": "src/server/workflows.ts",
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
       }
     },
     "/api/visits/{id}/check-in": {
@@ -1864,10 +2050,71 @@
           "workflows"
         ],
         "summary": "GET /api/tasks",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "description": "Zero-based row offset; requires limit."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "activity_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "visit",
+                "call"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Legacy data array when limit is omitted. With limit: data contains at most limit rows; meta.pagination={limit,offset,has_more,consistency:\"live_offset\"}. One sentinel row is read; no exact count. Activities order occurred_at DESC,id DESC; plans/tasks/handoffs by scheduled/due time,id; sessions/exceptions by time DESC,id DESC. Mutation during traversal may shift offsets; not an immutable export.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1895,7 +2142,8 @@
             "description": "Payload or business rule invalid"
           }
         },
-        "x-source": "src/server/workflows.ts"
+        "x-source": "src/server/workflows.ts",
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
       },
       "post": {
         "operationId": "m2_post__api_tasks",
@@ -2049,10 +2297,71 @@
           "workflows"
         ],
         "summary": "GET /api/handoffs",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "description": "Zero-based row offset; requires limit."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "activity_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "visit",
+                "call"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Legacy data array when limit is omitted. With limit: data contains at most limit rows; meta.pagination={limit,offset,has_more,consistency:\"live_offset\"}. One sentinel row is read; no exact count. Activities order occurred_at DESC,id DESC; plans/tasks/handoffs by scheduled/due time,id; sessions/exceptions by time DESC,id DESC. Mutation during traversal may shift offsets; not an immutable export.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2080,7 +2389,8 @@
             "description": "Payload or business rule invalid"
           }
         },
-        "x-source": "src/server/workflows.ts"
+        "x-source": "src/server/workflows.ts",
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
       },
       "post": {
         "operationId": "m2_post__api_handoffs",
@@ -3078,10 +3388,71 @@
           "workflows"
         ],
         "summary": "GET /api/exceptions",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "description": "Zero-based row offset; requires limit."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          },
+          {
+            "name": "activity_kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "visit",
+                "call"
+              ]
+            },
+            "description": "Resource-specific filter applied before pagination; requires limit. Unsupported combinations return 422."
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Legacy data array when limit is omitted. With limit: data contains at most limit rows; meta.pagination={limit,offset,has_more,consistency:\"live_offset\"}. One sentinel row is read; no exact count. Activities order occurred_at DESC,id DESC; plans/tasks/handoffs by scheduled/due time,id; sessions/exceptions by time DESC,id DESC. Mutation during traversal may shift offsets; not an immutable export.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3109,7 +3480,8 @@
             "description": "Payload or business rule invalid"
           }
         },
-        "x-source": "src/server/workflows.ts"
+        "x-source": "src/server/workflows.ts",
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
       }
     },
     "/api/attachment-intents": {
@@ -7599,6 +7971,46 @@
           "reason",
           "next_action",
           "next_due_at"
+        ],
+        "additionalProperties": false
+      },
+      "workflows_page_query": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "field",
+              "telesales"
+            ]
+          },
+          "activity_kind": {
+            "type": "string",
+            "enum": [
+              "visit",
+              "call"
+            ]
+          }
+        },
+        "required": [
+          "limit"
         ],
         "additionalProperties": false
       },
