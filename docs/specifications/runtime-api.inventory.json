@@ -920,6 +920,18 @@
     },
     {
       "method": "GET",
+      "path": "/api/customers/:id/wallet",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "customer-wallet.openapi.json",
+          "path": "/api/customers/{id}/wallet"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
       "path": "/api/customers/:id",
       "authentication": "bearer plus device session; scope checked server-side",
       "contracts": [

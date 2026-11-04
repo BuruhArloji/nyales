@@ -1,3 +1,4 @@
+import {renderMapWallet} from './map-wallet';
 import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
 import {mapPointStyle,pointFacts,mapFeatureFacts,mapClusterProperties,mapClusterStyle,defaultMapLayers,type MapLayers} from '../shared/map-analysis';
@@ -120,9 +121,18 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
     if(compact)tip.addClassName('map-source-popup-compact');else tip.removeClassName('map-source-popup-compact');
     content.style.maxHeight='min('+Math.max(80,Math.min(560,compact?height-48:Math.max(y,height-y)-48))+'px,72dvh)';tip.setMaxWidth(Math.min(400,map.getContainer().clientWidth-24)+'px');
    };
+   let walletController:AbortController|null=null;
+   const loadWallet=()=>{
+    if(kind!=='customer')return;
+    content.querySelector('.map-popup-wallet')?.remove();const host=document.createElement('section');host.className='map-popup-wallet map-wallet-loading';host.setAttribute('aria-label','Perbandingan wallet pelanggan');host.setAttribute('aria-busy','true');host.textContent='Memuat wallet…';content.querySelector('.map-popup-heading')!.insertAdjacentElement('afterend',host);
+    walletController=new AbortController();
+    const period=mapData.analysis_period||new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).format(new Date());
+    const params=new URLSearchParams({period});if(mapData.analysis_channel)params.set('channel',mapData.analysis_channel);
+    void apiFetch('/api/customers/'+encodeURIComponent(item.demo_operation_overlay?.demo_customer_id||item.id)+'/wallet?'+params,{signal:walletController.signal}).then(async response=>{if(!response.ok)throw Error('WALLET_UNAVAILABLE');const result=await response.json()as any;if(walletController?.signal.aborted)return;renderMapWallet(host,result.data);host.removeAttribute('aria-busy')}).catch(()=>{if(!walletController?.signal.aborted){host.removeAttribute('aria-busy');host.textContent='Wallet belum tersedia.'}});
+   };
    const observer=new ResizeObserver(fit);
-   tip.on('open',()=>{fit();observer.observe(content);map.on('resize',fit);map.on('move',fit);if(!requested&&(kind==='customer'||kind==='reference')){requested=true;loadDetail(content,item,kind)}});
-   tip.on('close',()=>{if(sheet){sheet.close();sheet.remove();sheet=null;if(previousFocus instanceof HTMLElement&&previousFocus.isConnected)previousFocus.focus()}observer.disconnect();map.off('resize',fit);map.off('move',fit)});
+   tip.on('open',()=>{fit();observer.observe(content);map.on('resize',fit);map.on('move',fit);if(!requested&&(kind==='customer'||kind==='reference')){requested=true;loadDetail(content,item,kind)}if(!walletController||walletController.signal.aborted)loadWallet()});
+   tip.on('close',()=>{walletController?.abort();if(sheet){sheet.close();sheet.remove();sheet=null;if(previousFocus instanceof HTMLElement&&previousFocus.isConnected)previousFocus.focus()}observer.disconnect();map.off('resize',fit);map.off('move',fit)});
    return tip;
   };
   // Large customer collections use WebGL clusters, avoiding thousands of DOM buttons.
@@ -191,7 +201,7 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   {children}
   <div className="map-render-host" ref={container} role="application" aria-label="Peta distribusi customer dan posisi terakhir sales"/>
   {selectedName&&<span className="geo-selection-badge">{selectedName}</span>}
-  {mapData.analysis_mode&&<MapLegend mode={analysisMode} references={showReferences&&Boolean(mapData.reference_points?.length)} customers={layers.customers} sales={layers.sales&&Boolean(mapData.sales?.length)} boundary={Boolean(territoryUrl)&&layers.boundary} density={Boolean(territoryUrl)&&layers.density} populationRaster={Boolean(populationRasterUrl)&&layers.populationRaster} roads={Boolean(mapData.basemap?.style_url)&&layers.roads} operational={layers.operational&&Boolean(geometry?.features?.length)}/>}
+  {<MapLegend mode={analysisMode} references={showReferences&&Boolean(mapData.reference_points?.length)} customers={layers.customers} sales={layers.sales&&Boolean(mapData.sales?.length)} boundary={Boolean(territoryUrl)&&layers.boundary} density={Boolean(territoryUrl)&&layers.density} populationRaster={Boolean(populationRasterUrl)&&layers.populationRaster} roads={Boolean(mapData.basemap?.style_url)&&layers.roads} operational={layers.operational&&Boolean(geometry?.features?.length)}/>}
 
   {populationError&&layers.populationRaster&&<p className="map-fallback-label" role="status">{populationError}</p>}
   {national.error&&<small className="map-fallback-label" role="status">{national.error}</small>}

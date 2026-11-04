@@ -1,5 +1,6 @@
 import {readDirectoryFacts} from './directory-facts';
 import {mapDisplayPayload} from '../shared/map-payload';
+import {customerWallet} from './customer-wallet';
 import {customerOptions} from './customer-options';
 import {directoryDetails,loadOptionalReferencePoints} from './point-directory';
 import {visitOperationalProfiles} from './visit-operational-profiles';
@@ -167,7 +168,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
  if(c.req.path==='/api/telesales/workbench'&&c.req.method==='GET'){await next();return}
  if(c.req.method!=='GET')return c.json({code:'ACTION_NOT_IMPLEMENTED'},403);
 
- if(!paths.includes(c.req.path)&&!/^\/api\/customers\/[^/]+(?:\/directory-details)?$/.test(c.req.path)&&!/^\/api\/point-directory\/[^/]+\/details\/[^/]+$/.test(c.req.path))return c.json({code:'NOT_FOUND'},404);
+ if(!paths.includes(c.req.path)&&!/^\/api\/customers\/[^/]+(?:\/(?:directory-details|wallet))?$/.test(c.req.path)&&!/^\/api\/point-directory\/[^/]+\/details\/[^/]+$/.test(c.req.path))return c.json({code:'NOT_FOUND'},404);
 
  if(c.req.path==='/api/telesales/queue'&&!c.get('scope').capabilities.includes('telesales:read'))return c.json({code:'SCOPE_DENIED'},403);
 
@@ -369,6 +370,7 @@ scopedRoutes.get('/api/map',async c=>{const payload=await mapPayload(c);return c
 
 scopedRoutes.get('/api/sales/last-positions',async c=>{const result=await mapPayload(c);return c.json({data:result.data.sales,meta:result.meta})});
 
+scopedRoutes.route('/',customerWallet);
 scopedRoutes.route('/',invoices);
 
 scopedRoutes.route('/',products);

@@ -1,0 +1,158 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES customer wallet comparison",
+    "version": "1.0.0"
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/customers/{id}/wallet": {
+      "get": {
+        "summary": "Read one authorized customer wallet and monthly purchase comparison",
+        "description": "Alias resolved before customer scope. Without channel, users limited to one channel retain that scope; authorized management reads combine channels per calendar month. Highest uses the preceding 12 completed months, excluding the selected month. Null means wallet/history unavailable; current actual may be zero or negative. IDR integer rupiah. Fetched on demand; private no-store.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "field",
+                "telesales"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized wallet comparison",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "customer_id": {
+                          "type": "string"
+                        },
+                        "channel": {
+                          "enum": [
+                            "field",
+                            "telesales",
+                            "all"
+                          ]
+                        },
+                        "comparison_period": {
+                          "type": "string",
+                          "pattern": "^\\d{4}-\\d{2}$"
+                        },
+                        "hierarchy1": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "retail",
+                            "wholesale",
+                            "agen_grosir",
+                            null
+                          ]
+                        },
+                        "wallet_size_minor": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 0
+                        },
+                        "current_month_actual_minor": {
+                          "type": "integer"
+                        },
+                        "highest_month_actual_minor": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "highest_month_period": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "wallet_size_source": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "customer_id",
+                        "channel",
+                        "comparison_period",
+                        "wallet_size_minor",
+                        "current_month_actual_minor",
+                        "highest_month_actual_minor"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Channel outside authorized scope"
+          },
+          "404": {
+            "description": "Customer missing or outside scope"
+          },
+          "422": {
+            "description": "Invalid query"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  }
+}

@@ -31,6 +31,11 @@ on:
         required: false
         type: boolean
         default: false
+      populate_customer_wallets:
+        description: 'Add missing synthetic wallet profiles for existing simulated sales customers; preserve customer and invoice masters'
+        required: false
+        type: boolean
+        default: false
       audit_outlet_role_candidates:
         description: 'Read-only source-label audit for all 46970 current staging customer points; no customer or candidate writes'
         required: false
@@ -211,6 +216,19 @@ jobs:
           npx wrangler r2 object put "$CF_R2_BUCKET/portfolio-demo/exceptions.csv" --file "$RUNNER_TEMP/portfolio-demo/exceptions.csv" --remote --config wrangler.staging.generated.json --content-type 'text/csv; charset=utf-8' --cache-control 'public, max-age=300' --force
       - name: Apply staging D1 migrations (no seed)
         run: npx wrangler d1 migrations apply nyales-staging --remote --config wrangler.staging.generated.json
+      - name: Populate missing simulated customer wallet profiles
+        if: inputs.populate_customer_wallets == true
+        env:
+          WALLET_APPLY: 'true'
+        run: npx tsx scripts/apply-customer-wallet.ts --remote
+      - name: Retain aggregate customer wallet receipt
+        if: inputs.populate_customer_wallets == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: customer-wallet-receipt
+          path: test-results/customer-wallet-receipt.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Configure ORS server secret
         env:
           ORS_API_KEY: ${{ secrets.ORS_API_KEY }}

@@ -2,7 +2,7 @@
 .maplibre-canvas .map-utility-controls {
   position: absolute;
   right: 16px;
-  bottom: 35px;
+  bottom: 16px;
   z-index: 3;
   display: flex;
   align-items: center;
@@ -24,11 +24,46 @@
   box-sizing: border-box;
 }
 .map-attribution-host .maplibregl-ctrl-attrib-inner { white-space: normal; }
+.maplibre-canvas .unified-map-legend { left: 16px; bottom: 16px; max-width: min(250px,calc(100% - 200px)); }
+.map-attribution-host .maplibregl-ctrl-attrib.maplibregl-compact {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 22px;
+  background: rgba(249,253,251,.85);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 3px 12px #163c2920;
+}
+.map-attribution-host .maplibregl-ctrl-attrib-button { width: 44px; height: 44px; }
+.map-attribution-host .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 10px 44px 10px 14px; }
+.map-utility-controls .map-mode-toggle { height: 44px; min-height: 44px; padding: 3px; box-sizing: border-box; }
+.map-utility-controls .map-mode-toggle button { min-width: 44px; min-height: 36px; }
+.unified-map-toolbar .map-transaction-toggle[aria-pressed=true] { background: #e0f0e9cc; border-color: #63998c; }
+.map-popup-wallet { display: flex; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #dce7e1; color: #30483f; }
+.map-wallet-icon { flex: 0 0 28px; display: inline-flex; align-items: center; justify-content: center; align-self: center; height: 32px; border-radius: 8px; }
+.map-wallet-icon:focus-visible { outline: 2px solid #087d70; outline-offset: 2px; }
+.map-wallet-content { flex: 1; min-width: 0; }
+.map-wallet-category { display: block; margin-bottom: 7px; font-size: 11px; line-height: 1.4; color: #5e7169; }
+.map-wallet-track { position: relative; isolation: isolate; height: 12px; border-radius: 5px; overflow: hidden; background: #eef2ef; }
+.map-wallet-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: inherit; }
+.map-wallet-fill--0 { background: #d3d8d5; }
+.map-wallet-fill--1 { background: #69736e; }
+.map-wallet-fill--2 { background: #18896e; }
+.map-wallet-values { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; margin-top: 8px; }
+.map-wallet-values>div { min-width: 0; font-size: 11px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.map-wallet-values small { display: flex; align-items: center; gap: 4px; margin: 0 0 2px; font-size: inherit; color: #5e7169; }
+.map-wallet-key { display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex: none; }
+.map-wallet-values span { display: block; font-size: inherit; font-weight: 500; white-space: nowrap; }
+.customer-wallet-detail { margin: 0 0 20px; }
+.customer-wallet-detail .map-popup-wallet { padding: 0 0 18px; }
+.customer-wallet-detail .map-wallet-values>div { font-size: 13px; }
+.map-wallet-loading { font-size: 11px; }
 @media (max-width: 700px) {
   .maplibre-canvas .map-utility-controls {
     right: 12px;
-    bottom: 35px;
+    bottom: 12px;
     max-width: calc(100% - 24px);
     gap: 8px;
   }
+  .maplibre-canvas .unified-map-legend { left: 12px; bottom: 12px; max-width: min(205px,calc(100% - 176px)); }
 }
