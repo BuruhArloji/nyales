@@ -1,6 +1,6 @@
 import {mapSummary} from '../shared/map-analysis';
 import {cachedJson,scopeCacheKey,readModelRevision} from './cache';
-import {readMapMetrics} from './map-metrics';
+import {chunkMapIds,readMapMetrics} from './map-metrics';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import GeoJSONReader from 'jsts/org/locationtech/jts/io/GeoJSONReader.js';
@@ -66,7 +66,7 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
   const channel=c.req.query('channel');if(channel&&!['field','telesales'].includes(channel))return c.json({code:'INVALID_CHANNEL'},422);const period=c.req.query('period');if(period&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(period))return c.json({code:'INVALID_PERIOD'},422);
   const base=await mapPayload(c),d=await dataset(c,c.req.query('dataset_id')),rows=await boundaryRows(c,d),org=c.get('identity').organization_id,date=c.get('scope').date;
   const mapRows=[...new Map([...base.data.all_customers,...base.data.customers].map((customer:any)=>[customer.id,customer])).values()];
-  const mappings=(await c.env.DB.prepare('SELECT l.*,b.dataset_id FROM customer_admin_location l LEFT JOIN admin_boundary b ON b.organization_id=l.organization_id AND b.id=l.boundary_id WHERE l.organization_id=? AND l.outlet_id IN (SELECT value FROM json_each(?)) AND l.superseded_at IS NULL AND l.effective_from_date<=? AND (l.effective_to_date IS NULL OR l.effective_to_date>?) ORDER BY l.revision DESC').bind(org,JSON.stringify(mapRows.map((x:any)=>x.id)),date,date).all<any>()).results;
+  const mappings:any[]=[];for(const ids of chunkMapIds(mapRows.map((x:any)=>x.id)))mappings.push(...(await c.env.DB.prepare('SELECT l.*,b.dataset_id FROM customer_admin_location l LEFT JOIN admin_boundary b ON b.organization_id=l.organization_id AND b.id=l.boundary_id WHERE l.organization_id=? AND l.outlet_id IN (SELECT value FROM json_each(?)) AND l.superseded_at IS NULL AND l.effective_from_date<=? AND (l.effective_to_date IS NULL OR l.effective_to_date>?) ORDER BY l.revision DESC').bind(org,JSON.stringify(ids),date,date).all<any>()).results);
   const mappingByCustomer=new Map<string,any>();for(const row of mappings)if(!mappingByCustomer.has(row.outlet_id))mappingByCustomer.set(row.outlet_id,row);
   const enrich=(customer:any)=>{const row=mappingByCustomer.get(customer.id),state=mappingState(row,customer,d);return {...customer,geo_status:state,geo_boundary_id:state==='confirmed'?row.boundary_id:null}};
   const metricIds=base.data.all_customers.map((x:any)=>x.id);

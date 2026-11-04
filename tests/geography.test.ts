@@ -9,6 +9,7 @@ import {fixture} from './sales-fixture';
 import {digest} from '../src/server/operations';
 import {canonicalJson,manifestJson,type BoundaryCollection,type Geometry} from '../src/shared/boundaries';
 import {locateGeometry} from '../src/server/geography';
+import {MAP_ID_JSON_CHUNK_BYTES} from '../src/server/map-metrics';
 const square=(x=106,y=-6):Geometry=>({type:'Polygon',coordinates:[[[x,y],[x+.1,y],[x+.1,y+.1],[x,y+.1],[x,y]]]});
 const collection=(geometries:Geometry[]=[square()]):BoundaryCollection=>({type:'FeatureCollection',features:geometries.map((geometry,i)=>({type:'Feature',properties:{source_id:'v'+i,province:{code:'31',name:'Province'},regency:{code:'31.71',name:'City'},district:{code:'31.71.01',name:'District'},village:{code:'v'+i,name:'Village '+i,type:'kelurahan'}},geometry}))});
 function harness(){const f=fixture();const req=(m:string,p:string,b?:any,v?:number,key=crypto.randomUUID(),actor='mg',role=actor==='mg'?'MANAGEMENT':actor==='tele'?'TELESALES':'SALES_REP',org='o')=>f.req(m,p,b,v,actor,role,org,key,v===0?{'If-Match':'"0"'}:{});return {...f,req,
@@ -65,6 +66,30 @@ test('geo map joins a DEMO-filtered logical customer to its existing source poin
  assert.equal(payload.map.all_customers[0].id,demo.id);assert.equal(payload.map.customers.length,1);assert.equal(payload.map.customers[0].id,'c');assert.equal(payload.map.customers[0].geo_status,'needs_review');assert.equal(payload.map.customers[0].demo_operation_overlay.demo_customer_id,demo.id);assert.deepEqual([payload.map.customers[0].lat,payload.map.customers[0].lng],[-5.95,106.05]);
 });
 
+
+test('46,970-customer geography batches D1 IDs and preserves 1,000 DEMO overlays on source pins',async()=>{
+ const f=fixture();let maxJsonBytes=0,mappingChunks=0,invoiceChunks=0,activityChunks=0;
+ const isCountedDemo=(id:string)=>id.startsWith('bekasi-demo-customer-')?Number(id.slice('bekasi-demo-customer-'.length))<=200:id.startsWith('beverage-demo-v1-customer-')?Number(id.slice('beverage-demo-v1-customer-'.length))<=200:false;
+ const guardedDb={prepare(sql:string){const statement=f.adapter.prepare(sql);return{
+  bind(...args:any[]){for(const value of args)if(typeof value==='string'&&value.startsWith('[')&&value.endsWith(']')){const parsed=JSON.parse(value);if(Array.isArray(parsed)){const bytes=new TextEncoder().encode(value).byteLength;maxJsonBytes=Math.max(maxJsonBytes,bytes);assert.ok(bytes<=MAP_ID_JSON_CHUNK_BYTES,`D1 JSON parameter exceeded safe chunk size: ${bytes}`)}}
+   const json=[...args].reverse().find((value:any)=>typeof value==='string'&&value.startsWith('[')&&value.endsWith(']')),ids=json?JSON.parse(json):[];
+   if(sql.includes('FROM customer_admin_location l LEFT JOIN admin_boundary b'))mappingChunks++;
+   if(sql.includes('FROM invoice i JOIN customer_outlet co')){invoiceChunks++;return{all:async()=>({results:ids.filter(isCountedDemo).map((id:string)=>({id,invoice_count:1,actual_minor:926310}))}),first:async()=>null,run:async()=>({success:true})} as any}
+   if(sql.includes('FROM activity a JOIN customer_outlet co')){activityChunks++;return{all:async()=>({results:ids.filter(isCountedDemo).map((id:string)=>({id,activity_count:1,meaningful_count:1,last_activity:'2026-11-05T03:00:00.000Z'}))}),first:async()=>null,run:async()=>({success:true})} as any}
+   const bound=(statement as any).bind(...args);return{all:()=>bound.all(),first:()=>bound.first(),run:()=>bound.run()} as any
+  },all:()=> (statement as any).all(),first:()=> (statement as any).first(),run:()=> (statement as any).run()
+ }}} as any;
+ const sourcePoints=Array.from({length:45970},(_,i)=>{const id=`src-point-${String(i+1).padStart(5,'0')}`,demoId=i<200?`bekasi-demo-customer-${String(i+1).padStart(3,'0')}`:i<1000?`beverage-demo-v1-customer-${String(i-199).padStart(4,'0')}`:null,counted=Boolean(demoId&&isCountedDemo(demoId));return{id,name:`Source point ${i+1}`,area:'Bekasi',area_id:i<200?'bekasi-demo-area-kota':'bekasi-demo-area-kabupaten',owner:demoId?`DEMO Rep ${(i%10)+1}`:'Sales rep',status:'Aktif',lat:-6.2+(i%100)*.0001,lng:106.8+Math.floor(i/100)*.0001,latitude_e7:-62000000,longitude_e7:1068000000,coordinate_status:'unverified',demo_operation_overlay:demoId?{demo_customer_id:demoId,source_customer_id:id,demo_rep_name:`DEMO Rep ${(i%10)+1}`,invoice_count:counted?1:0,actual_minor:counted?926310:0,activity_count:counted?1:0,productive_count:counted?1:0}:undefined}});
+ const demoRows=[...Array.from({length:200},(_,i)=>({id:`bekasi-demo-customer-${String(i+1).padStart(3,'0')}`})),...Array.from({length:800},(_,i)=>({id:`beverage-demo-v1-customer-${String(i+1).padStart(4,'0')}`}))].map(demo=>({...demo,name:`DEMO ${demo.id}`,latitude_e7:null,longitude_e7:null,coordinate_status:'missing',record_status:'active',status:'Unknown'}));
+ const sales=Array.from({length:10},(_,i)=>({id:`rep-${i+1}`,name:`DEMO Rep ${i+1}`}));
+ const h=new Hono();h.use('*',async(c,next)=>{const identity={id:'mg',name:'Manager',role:'MANAGEMENT',organization_id:'o'} as any;c.set('identity' as never,identity);c.set('scope' as never,await resolveScope(f.adapter as any,identity) as never);await next()});
+ h.route('/',createGeographyRoutes(async()=>({data:{all_customers:[...sourcePoints,...demoRows],customers:sourcePoints,sales,reference_points:[],demo_operation_overlay_count:1000}})));
+ const response=await h.request('/api/geo/map?period=2026-11&channel=field&compact=1',{}, {DB:guardedDb});assert.equal(response.status,200,await response.clone().text());const payload=(await response.json() as any).data,pins=payload.map.customers,overlays=pins.filter((pin:any)=>pin.demo_operation_overlay);
+ assert.equal(payload.summary.customers,46970);assert.equal(payload.summary.invoices,400);assert.equal(payload.summary.activities,400);assert.equal(payload.summary.actual,370524000);
+ assert.equal(pins.length,45970);assert.equal(new Set(pins.map((pin:any)=>pin.id)).size,45970);assert.equal(payload.map.all_customers.length,0);assert.equal(overlays.length,1000);assert.equal(new Set(overlays.map((pin:any)=>pin.demo_operation_overlay.source_customer_id)).size,1000);
+ assert.equal(overlays.filter((pin:any)=>pin.demo_operation_overlay.demo_customer_id.startsWith('bekasi-demo-customer-')).length,200);assert.equal(overlays.filter((pin:any)=>pin.demo_operation_overlay.demo_customer_id.startsWith('beverage-demo-v1-customer-')).length,800);assert.ok(overlays.every((pin:any)=>pin.demo_operation_overlay.source_customer_id===pin.id));assert.equal(new Set(overlays.map((pin:any)=>pin.demo_operation_overlay.demo_rep_name)).size,10);assert.equal(payload.map.sales.length,10);
+ assert.ok(mappingChunks>1&&invoiceChunks>1&&activityChunks>1);assert.ok(maxJsonBytes<=MAP_ID_JSON_CHUNK_BYTES);
+});
 
 test('15k map points join by indexed identity without quadratic scans or missing customers',async()=>{
  const f=fixture();let idReads=0;
