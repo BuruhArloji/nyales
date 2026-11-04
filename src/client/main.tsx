@@ -1,3 +1,4 @@
+import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
 import {DeferredSection} from './DeferredSection';
 import {MetricCorner,type MetricKind} from './MetricCorner';
@@ -27,6 +28,7 @@ import '@fontsource/inter/latin-500.css';
 import '@fontsource/inter/latin-600.css';
 import './styles.css';
 import './theme.css';
+import './action-icons.css';
 import './select.css';
 import './mobile.css';
 import {compactNumber} from './numbers';
@@ -39,7 +41,7 @@ import {AuthGate,apiFetch,useIdentity} from './auth';
 type Page='recovery'|'observability'|'incentives'|'monitoring'|'work'|'commercial'|'segmentation'|'targets'|'overview'|'customers'|'telesales'|'settings'|'people'|'sessions'|'data'|'assignments'|'map'|'products'|'invoices';
 type Customer={id:string;name:string;area:string;owner:string;status:string;tier:string;actual:number;last:string;dnc?:boolean|null;contact_permission?:string};
 function useData<T>(url:string){const [data,setData]=useState<T|null>(null),[error,setError]=useState(''),[retry,setRetry]=useState(0);useEffect(()=>{let active=true;setData(null);setError('');apiFetch(url).then(r=>r.json() as Promise<{data:T}>).then(r=>{if(active)setData(r.data)}).catch(e=>{if(active)setError(e.message)});return()=>{active=false}},[url,retry]);return {data,error,reload:()=>setRetry(x=>x+1)}}
-function Feedback({error,reload}:{error:string;reload:()=>void}){return error?<div role="alert" className="notice danger">{error} <button className="button secondary" onClick={reload}>Coba lagi</button></div>:<Loading>Memuat data sesuai scope…</Loading>}
+function Feedback({error,reload}:{error:string;reload:()=>void}){return error?<div role="alert" className="notice danger">{error} <button className="button secondary" onClick={reload}><ActionIcon name="refresh"/>Coba lagi</button></div>:<Loading>Memuat data sesuai scope…</Loading>}
 function formatRp(v:number){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(v)}
 function PageHeading({title,period}:{title:string;period?:string}){return <div className="page-heading"><div><h1>{title}</h1></div>{period&&<span className="overview-period">{new Intl.DateTimeFormat('id-ID',{month:'long',year:'numeric'}).format(new Date(period+'-01T00:00:00Z'))}</span>}</div>}
 function Metric({label,value,note,featured=false,currency=false,kind,onDetail,detailLabel}:{label:string;value:string|number;note:string;featured?:boolean;currency?:boolean;kind:MetricKind;onDetail:()=>void;detailLabel?:string}){const [open,setOpen]=useState(false);const tip=React.useId();const display=typeof value==='number'?compactNumber(value,currency):null;return <article className={'card metric '+(featured?'featured':'')}><MetricCorner kind={kind} onClick={onDetail} label={detailLabel||'Lihat rincian '+label}/><span>{label}</span>{display?<div className="metric-number" data-open={open}><button type="button" className="metric-value" aria-label={label+': '+display.short+' ('+display.full+')'} aria-describedby={tip} aria-expanded={open} onClick={()=>setOpen(x=>!x)} onKeyDown={e=>{if(e.key==='Escape')setOpen(false)}}><strong>{display.short}</strong></button><span id={tip} className="metric-full" role="tooltip">{display.full}</span></div>:<strong className="metric-placeholder">{value}</strong>}<small>{note}</small></article>}

@@ -1131,6 +1131,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Opt in to SQL paging. UI defaults to 50 with 50/100 choice; omitted retains legacy first 200."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000,
+              "default": 0
+            },
+            "description": "Requires limit. Filters apply before pagination; live offsets may shift under writes."
           }
         ],
         "responses": {
@@ -1167,6 +1190,11 @@
           "503": {
             "description": "Data/source unavailable"
           }
+        },
+        "x-pagination": {
+          "response": "meta.pagination {limit,offset,total,has_more,consistency:live_offset}",
+          "ordering": "invoice_date DESC,id",
+          "totals": "All filtered results, independent of page. CSV exports all filtered results within existing export cap."
         }
       }
     },

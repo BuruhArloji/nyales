@@ -7,6 +7,10 @@ type PaginationProps={
  children?:React.ReactNode;compact?:boolean;
 };
 
+export function PageSizeSelect({value,onChange,label='Baris per halaman'}:{value:number;onChange:(value:number)=>void;label?:string}){
+ return <label>{label}<select aria-label={label} value={value} onChange={event=>onChange(Number(event.target.value))}>{[50,100].map(size=><option key={size} value={size}>{size}</option>)}</select></label>;
+}
+
 /** One layout for indexed and cursor-backed lists. The parent owns page data. */
 export function Pagination({label='Navigasi halaman',page,pageCount,total,pageSize,itemLabel='data',busy=false,hasPrevious,hasNext,onPrevious,onNext,children,compact=false}:PaginationProps){
  const current=Math.max(0,page),pages=pageCount===undefined?undefined:Math.max(1,pageCount);

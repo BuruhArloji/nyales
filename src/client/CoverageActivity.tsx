@@ -1,3 +1,4 @@
+import {ActionIcon} from './ActionIcon';
 import type {SourceSelection} from './SourceDrill';
 import React, {useId} from 'react';
 
@@ -16,7 +17,7 @@ export function CoverageActivity({data:d,onDrill}:Props){
   const max=Math.max(1,...d.activity_channels.map(c=>c.activity_count));
   const customers=(state:boolean)=>onDrill(state?'Pelanggan tercakup':'Pelanggan belum tercakup',{kind:'customers',covered:state});
   return <section className="card coverage-card" aria-labelledby={gradient+'-title'}>
-    <header className="coverage-heading"><div><h2 id={gradient+'-title'}>Coverage dan aktivitas</h2></div><button className="text-button" onClick={()=>onDrill('Seluruh aktivitas',{kind:'activities'})}>Lihat {d.activity_count} aktivitas ↗</button></header>
+    <header className="coverage-heading"><div><h2 id={gradient+'-title'}>Coverage dan aktivitas</h2></div><button className="text-button" onClick={()=>onDrill('Seluruh aktivitas',{kind:'activities'})}><ActionIcon name="detail"/>Lihat {d.activity_count} aktivitas ↗</button></header>
     <div className="coverage-body">
       <div className="coverage-customers">
         <div className="coverage-donut" role="img" aria-label={total?`${covered} dari ${total} pelanggan unik tercakup, ${percent!.toLocaleString('id-ID',{maximumFractionDigits:2})} persen`:'Belum ada pelanggan dalam scope'}>

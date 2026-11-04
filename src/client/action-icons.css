@@ -1,0 +1,6 @@
+/* One monochrome action vocabulary; retain text, hit regions and existing pill surfaces. */
+.action-icon{display:inline-block;flex:none;width:16px;height:16px;color:inherit;vertical-align:-.18em;pointer-events:none}
+button:has(>.action-icon),a:has(>.action-icon){display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.row-actions>button:has(>.action-icon){white-space:nowrap}
+.button:has(>.action-icon){column-gap:7px}
+@media(forced-colors:active){.action-icon{color:ButtonText}}

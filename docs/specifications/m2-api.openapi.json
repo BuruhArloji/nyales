@@ -4784,10 +4784,42 @@
           "pipeline"
         ],
         "summary": "GET /api/leads",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Without query: legacy bounded data array. With limit 1..100, offset 0..1000000 and optional customer_id: bounded data plus meta.pagination {limit,offset,has_more,consistency:live_offset}. Stable created_at DESC,id order. Forecast review aggregates are independent of the displayed page.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4969,10 +5001,42 @@
           "pipeline"
         ],
         "summary": "GET /api/opportunities",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Without query: legacy bounded data array. With limit 1..100, offset 0..1000000 and optional customer_id: bounded data plus meta.pagination {limit,offset,has_more,consistency:live_offset}. Stable created_at DESC,id order. Forecast review aggregates are independent of the displayed page.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5154,10 +5218,42 @@
           "pipeline"
         ],
         "summary": "GET /api/orders",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Without query: legacy bounded data array. With limit 1..100, offset 0..1000000 and optional customer_id: bounded data plus meta.pagination {limit,offset,has_more,consistency:live_offset}. Stable created_at DESC,id order. Forecast review aggregates are independent of the displayed page.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5852,10 +5948,42 @@
           "pipeline"
         ],
         "summary": "GET /api/forecast-contributions",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Scoped read/action result. data fields vary by resource; runtime field projections depend on role.",
+            "description": "Without query: legacy bounded data array. With limit 1..100, offset 0..1000000 and optional customer_id: bounded data plus meta.pagination {limit,offset,has_more,consistency:live_offset}. Stable created_at DESC,id order. Forecast review aggregates are independent of the displayed page.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7971,6 +8099,32 @@
           "reason",
           "next_action",
           "next_due_at"
+        ],
+        "additionalProperties": false
+      },
+      "commercial_page_query": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "customer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "limit"
         ],
         "additionalProperties": false
       },

@@ -235,3 +235,36 @@ dihapus. Penanda DEMO dibersihkan pada label presentasi; source IDs, histori,
 klasifikasi sintetis, payload API dan nilai bisnis tetap asli. Pengujian visual
 diserahkan kepada pengguna sesuai instruksinya; perubahan tidak menyatakan data
 sintetis menjadi transaksi nyata.
+
+### Penyederhanaan copy dan pagination 50/100
+
+Panduan empat box pada halaman target dihapus sesuai review pengguna; alur tetap
+tersedia melalui aksi dan popup. Tab target memakai class settings-tabs agar
+teks berada di atas indikator bergerak. Kotak sinkronisasi tidak dirender jika
+antrean kosong/sudah synced; pending tetap menampilkan jumlah serta aksi, dan
+review/rejected tetap terlihat. Kotak teknis/informasional yang tidak perlu pada
+invoice, forecast dan sejumlah pengaturan dihapus. Error, konflik, konfirmasi
+mutasi dan kondisi yang membutuhkan keputusan tetap dipertahankan.
+
+Daftar pelanggan, distribusi, source drill, aktivitas, target, status/tier memakai
+default 50 dengan pilihan 50/100. CustomerPicker tetap bounded 20 untuk pencarian.
+Pipeline/order/forecast mendapat pagination SQL opt-in dengan sentinel; invoice
+memakai LIMIT/OFFSET dan total existing, tanpa COUNT tambahan. Totals invoice,
+CSV dan financial scope tetap mencakup semua filter, bukan halaman. Forecast
+review kini membaca seluruh kontribusi pada periode terkait, terpisah dari
+halaman tabel. Preview next-actions tetap legacy bounded 200. Riwayat import
+invoice masih bounded legacy 100, bukan paging SQL baru. Target/status-tier
+masih membatasi rendering client; batasan endpoint itu tidak diubah di sini.
+
+Pengujian domain memeriksa traversal invoice 237 dan commercial 251 record,
+halaman 50/100, scope, filter, validasi query, totals/CSV serta full forecast.
+Tidak ada benchmark rows_read provider atau uji kapasitas multiuser; tidak ada
+query staging untuk pengujian aplikasi sesuai permintaan pengguna.
+
+Ikon aksi memakai komponen ActionIcon (Lucide, 16px, stroke 1.8) pada 40
+komponen, dengan label teks yang tetap menjadi accessible name dan SVG dekoratif
+aria-hidden. CSS dimuat pada entrypoint agar komponen dapat dirender di server
+untuk tes. Penerapan mengikuti skill apple-hig-review: icons/Best practices,
+buttons/Content, sf-symbols/Rendering modes dan app-icons/Design, diterjemahkan
+ke web melalui cross-platform. Logo/app icon NYALES tetap menggunakan aset merek
+yang sudah ada; perubahan ini fokus pada simbol aksi.
