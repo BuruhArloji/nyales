@@ -100,6 +100,15 @@
               "type": "string",
               "const": "unmapped"
             }
+          },
+          {
+            "in": "query",
+            "name": "optional",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "const": "1"
+            }
           }
         ],
         "responses": {
@@ -679,6 +688,10 @@
           "mapping_bucket": {
             "type": "string",
             "const": "unmapped"
+          },
+          "optional": {
+            "type": "string",
+            "const": "1"
           }
         },
         "additionalProperties": false,
@@ -1414,16 +1427,45 @@
         "additionalProperties": true
       },
       "summary_response": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "$ref": "#/components/schemas/summary_data"
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/summary_data"
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "additionalProperties": true
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "meta": {
+                "type": "object",
+                "properties": {
+                  "availability": {
+                    "const": "no_active_dataset"
+                  }
+                },
+                "required": [
+                  "availability"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "data",
+              "meta"
+            ],
+            "additionalProperties": true
           }
-        },
-        "required": [
-          "data"
-        ],
-        "additionalProperties": true
+        ]
       },
       "error": {
         "type": "object",

@@ -184,3 +184,29 @@ memiliki input segmentasi identik; satu sampel lokal turun dari 59.199 ms menjad
 
 Pemeriksaan API setelah deployment diperlukan untuk membuktikan pemulihan;
 hasil rekonsiliasi lokal bukan bukti latency staging atau kapasitas multiuser.
+
+### Console Overview / peta sesudah pemulihan D1
+
+Pemeriksaan lanjutan menemukan GET `/api/dashboard` dan monitoring summary 200,
+tetapi peta Overview `/api/map` masih gagal dengan `RangeError: Invalid string
+length` saat serialisasi JSON. Peta tersebut mengirim dua daftar customer penuh.
+Endpoint display kini memakai projection pin; Overview memakai `compact=1` dan
+`all_customers: []`. Default API tetap mempertahankan daftar all_customers dalam
+projection pin untuk kompatibilitas, termasuk pelanggan tanpa koordinat. ID pin,
+koordinat, owner/status, tautan directory dan overlay/metrik operasi dipertahankan.
+Detail formulir dan evidence tetap tersedia dari endpoint customer/detail.
+Geo-map internal yang memerlukan cohort untuk summary tidak diubah oleh projection
+display ini. Viewport pagination dan pengurangan payload geo-map masih pekerjaan
+lanjut, bukan klaim sudah selesai.
+
+409 pada ringkasan regional disebabkan belum adanya dataset boundary operasional
+aktif. Query `optional=1` khusus ringkasan boleh mengembalikan `data:null` dengan
+`meta.availability=no_active_dataset`. Query eksplisit, draft/retired, sources dan
+export tetap fail-closed. Batas nasional PMTiles tidak otomatis dianggap rilis
+boundary terverifikasi. Kontrak regional diperbarui mengikuti response tersebut.
+
+Style OpenFreeMap mempunyai filter road shield yang membandingkan `ref_length`
+dengan angka meskipun sebagian feature tidak mempunyai nilai numerik. Transform
+style sebelum tile worker dimuat menambahkan numeric fallback di atas ambang,
+sehingga feature tanpa panjang valid tetap tidak diberi shield. Filter jaringan,
+geometri dan layer lain tidak berubah; tidak ada penekanan console error global.

@@ -1,4 +1,5 @@
 import {readDirectoryFacts} from './directory-facts';
+import {mapDisplayPayload} from '../shared/map-payload';
 import {customerOptions} from './customer-options';
 import {directoryDetails,loadOptionalReferencePoints} from './point-directory';
 import {visitOperationalProfiles} from './visit-operational-profiles';
@@ -364,7 +365,7 @@ scopedRoutes.get('/api/point-directory/:dataset/details/:external_code',async c=
  return detail?c.json({data:{...detail,reference_only:true}}):c.json({code:'DIRECTORY_DETAIL_NOT_FOUND'},404);
 });
 
-scopedRoutes.get('/api/map',async c=>c.json(await mapPayload(c)));
+scopedRoutes.get('/api/map',async c=>{const payload=await mapPayload(c);return c.json({...payload,data:mapDisplayPayload(payload.data,c.req.query('compact')==='1')})});
 
 scopedRoutes.get('/api/sales/last-positions',async c=>{const result=await mapPayload(c);return c.json({data:result.data.sales,meta:result.meta})});
 

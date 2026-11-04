@@ -11,6 +11,7 @@ import {digest,fail,type OperationEnv} from './operations';
 
 const id=z.string().min(1).max(128),hash=z.string().regex(/^[a-f0-9]{64}$/);
 export const regionalFilters=reportFilters.extend({dataset_id:id.optional(),boundary_id:id.optional(),mapping_bucket:z.literal('unmapped').optional()}).strict().refine(x=>!(x.boundary_id&&x.mapping_bucket));
+export const regionalSummaryQuery=regionalFilters.safeExtend({optional:z.literal('1').optional()});
 export const regionalSources=regionalFilters.safeExtend({kind:z.enum(['customers','invoices','activities','targets','sales']),offset:z.coerce.number().int().min(0).max(50000).default(0),limit:z.coerce.number().int().min(1).max(100).default(50),snapshot:hash});
 export const regionalExport=regionalFilters.safeExtend({snapshot:hash});
 const UNKNOWN='__unmapped__';
@@ -62,7 +63,14 @@ export async function regionalReport(c:any,query:any){
 }
 
 export const regionalAnalytics=new Hono<OperationEnv>();
-regionalAnalytics.get('/api/geo/analytics',async c=>c.json({data:(await regionalReport(c,c.req.query())).data}));
+regionalAnalytics.get('/api/geo/analytics',async c=>{
+ const parsed=regionalSummaryQuery.safeParse(c.req.query());if(!parsed.success)fail(422,'INVALID_REGIONAL_FILTERS');
+ const {optional,...filters}=parsed.data;
+ if(optional&&!filters.dataset_id&&!filters.boundary_id&&!filters.mapping_bucket&&!await loadGeographyDataset(c)){
+  return c.json({data:null,meta:{availability:'no_active_dataset'}});
+ }
+ return c.json({data:(await regionalReport(c,filters)).data});
+});
 regionalAnalytics.get('/api/geo/analytics/sources',async c=>{const p=regionalSources.safeParse(c.req.query());if(!p.success)fail(422,'INVALID_REGIONAL_SOURCE_QUERY');const {kind,offset,limit,snapshot,...filters}=p.data,r=await regionalReport(c,filters);if(r.data.snapshot!==snapshot)fail(412,'ANALYTICS_SNAPSHOT_CHANGED');const rows=r.sources[kind];return c.json({data:{rows:rows.slice(offset,offset+limit),kind,snapshot,basis:r.data.basis,pagination:{offset,limit,total:rows.length,has_more:rows.length>offset+limit}}})});
 regionalAnalytics.get('/api/geo/analytics/export',async c=>{const p=regionalExport.safeParse(c.req.query());if(!p.success)fail(422,'INVALID_REGIONAL_EXPORT_QUERY');const {snapshot,...filters}=p.data,r=await regionalReport(c,filters);if(r.data.snapshot!==snapshot)fail(412,'ANALYTICS_SNAPSHOT_CHANGED');const d=r.data,header=['snapshot','definition','geography_basis','mapping_cutoff','timezone','period','cutoff','prior_start','prior_cutoff','dataset','release','filters','source_complete','source_cutoff','source_validation','allocation_basis','read_at','boundary_id','name','customers','covered','coverage_percent','observed_net_minor','observed_previous_net_minor','actual_net_minor','growth_percent','growth_status','target_minor','eligible_actual_minor','achievement_percent','target_status','active','churn','new','status_unknown','unassigned','unassigned_field','unassigned_telesales','overdue_service','unknown_service'];const rows=d.rows.map(x=>[snapshot,d.basis.definition_version,d.basis.geography,d.basis.mapping_cutoff,d.basis.timezone,d.basis.period,d.basis.cutoff,d.basis.comparison.start,d.basis.comparison.cutoff,d.basis.boundary_dataset.id,d.basis.boundary_dataset.release_version,JSON.stringify(d.filters),d.freshness.source_complete,d.freshness.source_cutoff,d.freshness.validation_state,JSON.stringify(d.target_allocation),d.read_at,x.boundary_id,x.name,x.customer_count,x.covered_customer_count,x.coverage_percent,x.observed_actual_net_minor,x.observed_previous_net_minor,x.actual_net_minor,x.growth_percent,x.growth_status,x.target_minor,x.eligible_actual_minor,x.achievement_percent,x.target_status,x.active_customer_count,x.churn_customer_count,x.new_customer_count,x.unknown_customer_status_count,x.unassigned_customer_count,x.unassigned_field_count,x.unassigned_telesales_count,x.overdue_service_count,x.unknown_service_count]);c.header('Content-Disposition',`attachment; filename="NYALES-wilayah-${d.basis.period}.csv"`);c.header('Content-Type','text/csv; charset=utf-8');c.header('Cache-Control','no-store');return c.body(csvFile([header,...rows]))});
 regionalAnalytics.onError((e,c)=>{const m=/integer overflow/i.test(e.message)?['','422','AMOUNT_OVERFLOW']:/^(403|404|409|412|422|503):(.+)$/.exec(e.message);return c.json({code:m?.[2]||'REGIONAL_ANALYTICS_UNAVAILABLE'},(m?Number(m[1]):503) as any)});

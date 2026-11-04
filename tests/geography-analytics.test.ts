@@ -37,3 +37,16 @@ test('WEB-066 published response contracts cover actual summary and each source 
  function valid(value:any,schema:any):void{if(schema.$ref){let target=doc;for(const part of schema.$ref.slice(2).split('/'))target=target[part];return valid(value,target)}if(schema.anyOf){assert.ok(schema.anyOf.some((x:any)=>{try{valid(value,x);return true}catch{return false}}));return}if(schema.oneOf){assert.equal(schema.oneOf.filter((x:any)=>{try{valid(value,x);return true}catch{return false}}).length,1);return}if(schema.const!==undefined)assert.deepEqual(value,schema.const);if(schema.enum)assert.ok(schema.enum.includes(value));if(schema.type==='null')assert.equal(value,null);if(schema.type==='object'){assert.ok(value&&typeof value==='object'&&!Array.isArray(value));for(const key of schema.required||[])assert.ok(key in value,'Missing response field '+key);for(const [key,shape]of Object.entries(schema.properties||{}))if(key in value)valid(value[key],shape)}if(schema.type==='array'){assert.ok(Array.isArray(value));value.forEach((v:any)=>valid(v,schema.items))}if(schema.type==='string'){assert.equal(typeof value,'string');if(schema.pattern)assert.match(value,new RegExp(schema.pattern))}if(schema.type==='boolean')assert.equal(typeof value,'boolean');if(schema.type==='number'||schema.type==='integer'){assert.equal(typeof value,'number');assert.ok(Number.isFinite(value));if(schema.type==='integer')assert.ok(Number.isInteger(value));if(schema.minimum!==undefined)assert.ok(value>=schema.minimum);if(schema.maximum!==undefined)assert.ok(value<=schema.maximum)}}
  const response=await f.report(),body=await response.json() as any;valid(body,doc.components.schemas.summary_response);for(const kind of ['customers','invoices','activities','targets','sales']){const r=await f.req('GET','/api/geo/analytics/sources?period=2026-09&kind='+kind+'&snapshot='+body.data.snapshot);assert.equal(r.status,200);valid(await r.json(),doc.components.schemas.source_response)}const csv=await f.req('GET','/api/geo/analytics/export?period=2026-09&snapshot='+body.data.snapshot),parsed=parseCsv(await csv.text());assert.equal(parsed.headers.length,40);assert.ok(parsed.rows.every(r=>r.values.length===40));
 });
+
+
+test('optional regional summary reports absent active release without enabling drafts or weakening strict analysis',async()=>{
+ const f=await setup();
+ const path='/api/geo/analytics?period=2026-09';
+ const missing=await f.req('GET',path+'&optional=1',undefined,undefined,undefined,'other','MANAGEMENT','x');
+ assert.equal(missing.status,200);assert.deepEqual(await missing.json(),{data:null,meta:{availability:'no_active_dataset'}});
+ assert.equal((await f.req('GET',path,undefined,undefined,undefined,'other','MANAGEMENT','x')).status,409);
+ assert.equal((await f.req('GET',path+'&optional=invalid')).status,422);
+ const draft=await f.release([square(107)],false);
+ assert.equal((await f.report('&dataset_id='+draft.id+'&optional=1')).status,409);
+ const active=await f.data(await f.report('&optional=1'));assert.equal(active.basis.boundary_dataset.id,f.d.id);
+});
