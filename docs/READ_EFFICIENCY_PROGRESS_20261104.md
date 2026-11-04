@@ -268,3 +268,19 @@ untuk tes. Penerapan mengikuti skill apple-hig-review: icons/Best practices,
 buttons/Content, sf-symbols/Rendering modes dan app-icons/Design, diterjemahkan
 ke web melalui cross-platform. Logo/app icon NYALES tetap menggunakan aset merek
 yang sudah ada; perubahan ini fokus pada simbol aksi.
+
+## Follow-up UI: filter, encoding, dan kontrol peta
+
+Filter list/analitik menggunakan FilterPanel yang sama (desktop terbuka, mobile
+sheet), grid responsif dan kontrol berukuran konsisten. Kolom mengikuti lebar
+container tanpa menyembunyikan overflow dropdown. Tombol histori penugasan
+menampilkan "Riwayat"; nama pelanggan tetap menjadi konteks accessible name.
+
+Literal punctuation rusak diperbaiki pada monitoring, komersial, dan atribusi
+OpenStreetMap. Tanggal cutoff diformat sebagai tanggal kalender Indonesia;
+status kelengkapan sumber dan nilai finansial tidak berubah. Guard encoding dan
+uji tanggal ditambahkan. Banner overlay simulasi peta dihapus sesuai permintaan;
+atribusi penyedia tetap tersedia melalui kontrol informasi di kiri 2D/3D.
+
+Perubahan ini tidak menambah query atau mengubah data staging. Pengujian visual
+diserahkan kepada pengguna sesuai instruksinya.

@@ -31,6 +31,7 @@ import './theme.css';
 import './action-icons.css';
 import './select.css';
 import './mobile.css';
+import './map-controls.css';
 import {compactNumber} from './numbers';
 import {DataTools} from './DataTools';
 import {Customers} from './Customers';

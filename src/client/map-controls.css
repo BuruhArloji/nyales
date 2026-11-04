@@ -1,0 +1,34 @@
+/* Keep provider attribution beside the dimension switch, including fullscreen. */
+.maplibre-canvas .map-utility-controls {
+  position: absolute;
+  right: 16px;
+  bottom: 35px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 32px);
+  pointer-events: none;
+}
+.maplibre-canvas .map-utility-controls > * { pointer-events: auto; }
+.maplibre-canvas .map-utility-controls .map-mode-toggle {
+  position: relative;
+  inset: auto;
+  flex: none;
+}
+.map-attribution-host { min-width: 0; }
+.map-attribution-host .maplibregl-ctrl-attrib {
+  float: none;
+  margin: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.map-attribution-host .maplibregl-ctrl-attrib-inner { white-space: normal; }
+@media (max-width: 700px) {
+  .maplibre-canvas .map-utility-controls {
+    right: 12px;
+    bottom: 35px;
+    max-width: calc(100% - 24px);
+    gap: 8px;
+  }
+}

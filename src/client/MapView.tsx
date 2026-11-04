@@ -27,6 +27,7 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
  const [styleLoaded,setStyleLoaded]=useState(false);const callbacks=React.useRef({onBoundarySelect,onCameraChange});callbacks.current={onBoundarySelect,onCameraChange};
 
  const [basemapState,setBasemapState]=useState('Memuat basemap…'),[ready,setReady]=useState(false),[threeD,setThreeD]=useState(false),[closeZoom,setCloseZoom]=useState(false);
+ const attributionHost=React.useRef<HTMLDivElement>(null);
  const stage=React.useRef<HTMLDivElement>(null),container=React.useRef<HTMLDivElement>(null),instance=React.useRef<MapLibreMap|null>(null),markers=React.useRef<Marker[]>([]),popups=React.useRef<Popup[]>([]);
  const national=useTerritoryLayer(instance.current,styleLoaded,territoryUrl,layers);
  const populationError=usePopulationRaster(instance.current,styleLoaded,layers.populationRaster,populationOpacity);
@@ -39,14 +40,13 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
  },[styleLoaded,routeGeometry]);
  const fitted=React.useRef(false);
  const analysisMode=mapData.analysis_mode||'scatter';
- const vector=Boolean(mapData.basemap?.style_url);const demoCount=Number(mapData.demo_operation_overlay_count||0);
- const demoNote=mapData.demo_operation_overlay_note||'Riwayat operasi adalah simulasi dan ditampilkan sebagai overlay pada titik direktori yang sudah ada; bukan transaksi, kunjungan, atau GPS nyata.';
+ const vector=Boolean(mapData.basemap?.style_url);
  useEffect(()=>{
   if(!container.current||instance.current)return;
   let map:MapLibreMap;
   try{map=new maplibregl.Map({container:container.current,
    style:undefined,
-   center:initialCamera?.center||[106.823,-6.216],zoom:initialCamera?.zoom??12.3,pitch:initialCamera?.pitch??0,bearing:initialCamera?.bearing??0,attributionControl:{compact:true},dragRotate:false,locale:{'FullscreenControl.Enter':'Layar penuh','FullscreenControl.Exit':'Keluar layar penuh'}})
+   center:initialCamera?.center||[106.823,-6.216],zoom:initialCamera?.zoom??12.3,pitch:initialCamera?.pitch??0,bearing:initialCamera?.bearing??0,attributionControl:false,dragRotate:false,locale:{'FullscreenControl.Enter':'Layar penuh','FullscreenControl.Exit':'Keluar layar penuh'}})
   }catch{setBasemapState('Peta interaktif tidak tersedia; gunakan tabel koordinat.');return}
   instance.current=map;
   map.on('moveend',()=>{const p=map.getCenter();callbacks.current.onCameraChange?.({center:[p.lng,p.lat],zoom:map.getZoom(),pitch:map.getPitch(),bearing:map.getBearing()})});
@@ -63,6 +63,9 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   map.on('zoom',()=>setCloseZoom(map.getZoom()>=14));
   map.addControl(new maplibregl.FullscreenControl({container:stage.current!}),'top-right');
   map.addControl(new maplibregl.NavigationControl({showCompass:true}),'top-right');
+  map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-right');
+  const attribution=map.getContainer().querySelector<HTMLElement>('.maplibregl-ctrl-attrib');
+  if(attribution&&attributionHost.current)attributionHost.current.appendChild(attribution);
   map.setStyle(mapData.basemap?.style_url||{version:8,glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',sources:{osm:{type:'raster',tiles:[mapData.basemap?.tile_url||'https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:mapData.basemap?.attribution||'© OpenStreetMap contributors'}},layers:[{id:'osm',type:'raster',source:'osm'}]},{transformStyle:(_previous,next)=>normalizeBasemapStyle(next)});
   return()=>{markers.current.forEach(m=>m.remove());popups.current.forEach(p=>p.remove());map.remove();instance.current=null};
  },[]);
@@ -193,7 +196,7 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   {populationError&&layers.populationRaster&&<p className="map-fallback-label" role="status">{populationError}</p>}
   {national.error&&<small className="map-fallback-label" role="status">{national.error}</small>}
   {national.detail&&<aside className="unified-national-detail" aria-label="Detail batas nasional"><button className="button secondary" onClick={national.close} aria-label="Tutup detail batas">×</button><strong>{national.detail.desa_name||'Desa / kelurahan'}</strong><small>{national.detail.admin_code_pum} · {national.detail.province_name}</small><p>Populasi: {national.detail.population_2026==null?'Belum tersedia':Number(national.detail.population_2026).toLocaleString('id-ID')} (estimasi)</p><p>Kepadatan: {national.detail.population_density_km2==null?'Belum tersedia':Number(national.detail.population_density_km2).toLocaleString('id-ID')} jiwa/km²</p><small>BIG 2022-based · WorldPop 2026; bukan pembagian sales operasional.</small></aside>}
-  {demoCount>0&&<small className="map-demo-note">{demoNote}</small>}<LiquidTabs className="map-mode-toggle" role="group" aria-label="Mode tampilan peta"><button type="button" aria-pressed={!threeD} onClick={()=>setMode(false)}>2D</button><button type="button" aria-pressed={threeD} disabled={!ready} onClick={()=>setMode(true)} title={vector?'Bangunan dari data OpenStreetMap':'Sumber raster belum mendukung bangunan 3D'}>3D</button></LiquidTabs>
+  <div className="map-utility-controls"><div className="map-attribution-host" ref={attributionHost}/><LiquidTabs className="map-mode-toggle" role="group" aria-label="Mode tampilan peta"><button type="button" aria-pressed={!threeD} onClick={()=>setMode(false)}>2D</button><button type="button" aria-pressed={threeD} disabled={!ready} onClick={()=>setMode(true)} title={vector?'Bangunan dari data OpenStreetMap':'Sumber raster belum mendukung bangunan 3D'}>3D</button></LiquidTabs></div>
   {(basemapState||threeD)&&<span className="map-fallback-label" role="status">{basemapState||(closeZoom?'Bangunan OSM · tinggi mengikuti data; dapat berupa estimasi':'Mode 3D · zoom dekat untuk melihat bangunan')}</span>}
  </div>;
 }
