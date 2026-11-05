@@ -84,6 +84,17 @@ test('provider errors leave the agenda untouched and generator requires explicit
  }finally{f.sqlite.close()}
 });
 
+test('daily run retains numeric upstream HTTP diagnostics on initial failure and replay without changing agenda',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date(instant)});const f=fixture(2);
+ t.mock.method(console,'warn',()=>{});t.mock.method(globalThis,'fetch',async()=>Response.json({error:{code:2010,message:'private provider text'}},{status:400}));
+ try{
+  await f.activate();const response=await f.req('POST','runs',f.input);assert.equal(response.status,503);assert.equal((await response.json()as any).code,'ORS_MATRIX_HTTP_400_CODE_2010');
+  const row=f.sqlite.prepare('SELECT id,status,error_code FROM daily_visit_run').get()as any;assert.equal(row.status,'failed');assert.equal(row.error_code,'ORS_MATRIX_HTTP_400_CODE_2010');
+  const replay=await f.req('GET','runs/'+row.id);assert.equal(replay.status,503);assert.equal((await replay.json()as any).code,'ORS_MATRIX_HTTP_400_CODE_2010');
+  assert.equal((f.sqlite.prepare('SELECT COUNT(*) n FROM work_plan').get()as any).n,0);
+ }finally{f.sqlite.close()}
+});
+
 test('fixed manual appointments retain their time and are not duplicated when a generated route is applied',async t=>{
  t.mock.timers.enable({apis:['Date'],now:new Date(instant)});const f=fixture(3);t.mock.method(globalThis,'fetch',f.fetchMock);
  try{await f.activate({target_visits:3});f.sqlite.exec("INSERT INTO work_plan(id,organization_id,customer_id,user_id,scheduled_at,original_scheduled_at,kind,status,reason,created_by,created_at,calendar_snapshot_json) VALUES('manual','o','c','sr','2026-11-05T02:00:00.000Z','2026-11-05T02:00:00.000Z','visit','planned','Appointment','mg','2026-11-04T00:00:00Z','{}')");

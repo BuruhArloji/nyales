@@ -2,12 +2,12 @@ import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
 import React,{useEffect,useMemo,useState} from 'react';
 import {apiFetch} from './auth';
-import {orsLimits,orsMessages} from '../shared/ors-planning';
+import {orsLimits,orsErrorMessage} from '../shared/ors-planning';
 import {MapLibreCanvas} from './MapView';
 import {StreetView} from './StreetView';
 
 async function read(url:string,init?:RequestInit){const response=await apiFetch(url,init);return(await response.json() as any).data}
-const message=(e:unknown)=>orsMessages[(e as Error).message]||(e as Error).message;
+const message=(e:unknown)=>orsErrorMessage((e as Error).message)||(e as Error).message;
 const minutes=(seconds:number)=>Math.round(seconds/60).toLocaleString('id-ID')+' mnt';
 const clock=(seconds:number,timezone:string)=>new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit',timeZone:timezone}).format(new Date(seconds*1000));
 

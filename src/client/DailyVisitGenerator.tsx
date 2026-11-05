@@ -6,11 +6,11 @@ import {MapLibreCanvas} from './MapView';
 import {customDailyWindow,suggestedDailyEnd} from './daily-visit-time';
 import {StreetView} from './StreetView';
 import {dailyMessages,defaultDailyPolicy} from '../shared/daily-visit';
-import {orsMessages} from '../shared/ors-planning';
+import {orsErrorMessage} from '../shared/ors-planning';
 
 async function request(path:string,init?:RequestInit){const response=await apiFetch('/api/visit-generator/daily/'+path,init),body=await response.json()as any;if(!response.ok)throw Error(body.code||'DAILY_OPERATION_FAILED');return body.data;}
 const write=(path:string,body:any,method='POST',version?:number)=>request(path,{method,headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID(),...(version!==undefined?{'If-Match':`"${version}"`}:{})},body:JSON.stringify(body)});
-const formatError=(error:unknown)=>dailyMessages[(error as Error).message]||orsMessages[(error as Error).message]||({INVALID_DAILY_POLICY:'Periksa pengaturan dan total bobot 100%.',REP_OFF_VISIT:'Sales sedang off visit pada tanggal ini.',INVALID_DAILY_REQUEST:'Periksa koordinat dan jam kerja: waktu selesai harus setelah mulai, maksimal 12 jam.',DAILY_CUSTOM_HOURS_OWNER_ONLY:'Jam kerja khusus hanya tersedia untuk akun owner Didik.',DAILY_OPERATION_FAILED:'Operasi belum berhasil. Muat ulang dan periksa data.',SCOPE_DENIED:'Akses tidak diizinkan.',VERSION_CONFLICT:'Pengaturan berubah. Muat ulang dahulu.'}as any)[(error as Error).message]||(error as Error).message;
+const formatError=(error:unknown)=>dailyMessages[(error as Error).message]||orsErrorMessage((error as Error).message)||({INVALID_DAILY_POLICY:'Periksa pengaturan dan total bobot 100%.',REP_OFF_VISIT:'Sales sedang off visit pada tanggal ini.',INVALID_DAILY_REQUEST:'Periksa koordinat dan jam kerja: waktu selesai harus setelah mulai, maksimal 12 jam.',DAILY_CUSTOM_HOURS_OWNER_ONLY:'Jam kerja khusus hanya tersedia untuk akun owner Didik.',DAILY_OPERATION_FAILED:'Operasi belum berhasil. Muat ulang dan periksa data.',SCOPE_DENIED:'Akses tidak diizinkan.',VERSION_CONFLICT:'Pengaturan berubah. Muat ulang dahulu.'}as any)[(error as Error).message]||(error as Error).message;
 const clock=(seconds:number,timezone:string)=>new Intl.DateTimeFormat('id-ID',{timeZone:timezone,hour:'2-digit',minute:'2-digit'}).format(new Date(seconds*1000));
 export function DailyVisitGenerator({users,identity,sessions,onApplied}:{users:any[];identity:any;sessions:any[];onApplied:()=>void}){
  const [startMode,setStartMode]=useState<'now'|'manual'>('now');

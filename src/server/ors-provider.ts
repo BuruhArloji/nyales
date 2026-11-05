@@ -2,21 +2,43 @@ import {orsLimits} from '../shared/ors-planning';
 import {fail} from './operations';
 
 const endpoints={matrix:'https://api.heigit.org/openrouteservice/v2/matrix/driving-car',optimization:'https://api.heigit.org/vroom/v0',directions:'https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson'};
-/** Fixed hosts and header-only key. Provider error bodies can contain request
- * coordinates; discard them instead of reflecting/logging them to the client. */
+/** Only fixed stage/status and numeric provider codes are logged. Never log
+ * headers, keys, coordinates, names, request bodies or upstream error text. */
 export async function orsPost(key:string,kind:keyof typeof endpoints,body:unknown){
- let response:Response;
- try{response=await fetch(endpoints[kind],{method:'POST',headers:{Authorization:key,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(orsLimits.timeout_ms),redirect:'error'})}
- catch(e){fail(503,(e as Error).name==='TimeoutError'||(e as Error).name==='AbortError'?'ORS_PROVIDER_TIMEOUT':'ORS_PROVIDER_UNAVAILABLE')}
- if(response!.status===429)fail(503,'ORS_PROVIDER_RATE_LIMIT');
- if([401,403].includes(response!.status))fail(503,'ORS_PROVIDER_AUTH');
- if(!response!.ok)fail(503,'ORS_PROVIDER_UNAVAILABLE');
- // Bound decompressed bytes too; do not buffer an unbounded upstream response.
- const reader=response!.body?.getReader();if(!reader)fail(503,'ORS_INVALID_RESULT');
+ const started=Date.now(),stage=kind.toUpperCase(),controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),orsLimits.timeout_ms);
+ let status:number|null=null;
+ const stop=(reason:string,providerCode?:number):never=>{
+  console.warn(JSON.stringify({event:'nyales_ors_failure',stage:kind,http_status:status,provider_code:providerCode,reason,elapsed_ms:Date.now()-started}));
+  fail(503,`ORS_${stage}_${reason}${providerCode===undefined?'':'_CODE_'+providerCode}`);
+ };
+ try{
+  let response:Response;
+  try{response=await fetch(endpoints[kind],{method:'POST',headers:{Authorization:key,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body),signal:controller.signal,redirect:'error'})}
+  catch{stop(controller.signal.aborted?'TIMEOUT':'NETWORK')}
+  status=response!.status;
+  if(!response!.ok){
+   // Consume only a small bounded body to extract a numeric provider code. Raw
+   // messages can contain locations and must never leave this function.
+   let providerCode:number|undefined;
+   try{
+    const bytes=await readBounded(response!,16384),data=JSON.parse(new TextDecoder().decode(bytes)),value=data?.error?.code??data?.code;
+    if(Number.isSafeInteger(value)&&value>=0&&value<=99999)providerCode=value;
+   }catch{/* status remains diagnostic even when the error body is unavailable */}
+   stop(`HTTP_${status}`,providerCode);
+  }
+  let bytes:Uint8Array;
+  try{bytes=await readBounded(response!,2_000_000)}catch{stop(controller.signal.aborted?'TIMEOUT':'INVALID_RESULT')}
+  try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes!))}catch{stop('INVALID_RESULT')}
+ }finally{clearTimeout(timer)}
+}
+async function readBounded(response:Response,limit:number){
+ const reader=response.body?.getReader();if(!reader)throw Error('EMPTY_BODY');
  const chunks:Uint8Array[]=[];let size=0;
- while(true){const {done,value}=await reader!.read();if(done)break;size+=value.byteLength;if(size>2_000_000){await reader!.cancel();fail(503,'ORS_INVALID_RESULT')}chunks.push(value)}
- const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length}
- try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes))}catch{fail(503,'ORS_INVALID_RESULT')}
+ try{
+  for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>limit)throw Error('BODY_LIMIT');chunks.push(value)}
+ }catch(error){void reader.cancel().catch(()=>{});throw error}finally{reader.releaseLock()}
+ const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length}return bytes;
 }
 
 export async function optimizeOrs(key:string,vehicles:any[],jobs:any[],locations:number[][]){

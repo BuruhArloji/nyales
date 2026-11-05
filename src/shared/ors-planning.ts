@@ -15,3 +15,12 @@ export const orsMessages:Record<string,string>={
  ORS_SOURCE_CHANGED:'Sumber atau agenda berubah saat perhitungan. Buat pemeriksaan baru.',ORS_PREVIEW_NOT_FOUND:'Pratinjau tidak ditemukan.',ORS_PREVIEW_IN_PROGRESS:'Pratinjau masih dihitung.',
  ORS_STORAGE_UNAVAILABLE:'Penyimpanan pratinjau belum tersedia.',ORS_IDEMPOTENCY_CONFLICT:'Permintaan yang sama memiliki isi berbeda.',
 };
+
+/** Stage and HTTP status are non-sensitive diagnostics, retained in failed runs. */
+export function orsErrorMessage(code:string):string|undefined{
+ if(orsMessages[code])return orsMessages[code];
+ const match=/^ORS_(MATRIX|OPTIMIZATION|DIRECTIONS)_(HTTP_([1-5][0-9]{2})|TIMEOUT|NETWORK|INVALID_RESULT)(?:_CODE_[0-9]{1,5})?$/.exec(code);if(!match)return;
+ const stage=({MATRIX:'matriks perjalanan',OPTIMIZATION:'optimasi rute',DIRECTIONS:'garis rute'} as Record<string,string>)[match[1]],status=Number(match[3]);
+ const reason=match[2]==='TIMEOUT'?'Perhitungan melewati batas waktu':match[2]==='NETWORK'?'Koneksi ke ORS gagal':match[2]==='INVALID_RESULT'?'Respons ORS tidak valid':status===429?'Batas permintaan ORS tercapai':status===401||status===403?'ORS menolak akses; periksa API key dan batas pemakaian':status===404?'Endpoint ORS tidak ditemukan':status>=500?'Layanan ORS mengalami kesalahan':'ORS menolak data perhitungan';
+ return `${reason} pada tahap ${stage}${status?' (HTTP '+status+')':''}. Agenda tidak berubah.`;
+}
