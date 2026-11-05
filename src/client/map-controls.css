@@ -106,3 +106,9 @@
   }
   .maplibre-canvas .unified-map-legend { left: 12px; bottom: 12px; max-width: min(205px,calc(100% - 176px)); }
 }
+
+/* Sales hierarchy expands inline; other map actions move with its width. */
+.unified-map-toolbar .map-sales-reveal{overflow:hidden;flex:0 0 auto;min-width:0;display:flex;align-items:center}
+.unified-map-toolbar .map-sales-reveal>.liquid-tabs{box-sizing:border-box;display:inline-flex;flex-wrap:nowrap;gap:2px;padding:4px;margin:0;width:max-content;height:var(--map-control-height,40px);border:1px solid rgba(255,255,255,.68);border-radius:999px;background:linear-gradient(135deg,#ffffff57,#ffffff24 55%,#e8fbf338);backdrop-filter:blur(6px) saturate(145%);white-space:nowrap}
+.unified-map-toolbar .map-sales-reveal button{flex-shrink:0;min-height:calc(var(--map-control-height,40px) - 10px);height:calc(var(--map-control-height,40px) - 10px);padding:0 12px;font-size:12px}
+.maplibre-canvas .unified-map-legend{max-height:min(38vh,300px);overflow-y:auto;overscroll-behavior:contain}

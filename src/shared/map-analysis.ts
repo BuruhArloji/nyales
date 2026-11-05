@@ -1,12 +1,13 @@
 export type MapLayers={customers:boolean;references:boolean;sales:boolean;boundary:boolean;density:boolean;populationRaster:boolean;roads:boolean;operational:boolean};
 export const defaultMapLayers:MapLayers={customers:true,references:true,sales:true,boundary:true,density:false,populationRaster:false,roads:true,operational:true};
-export type MapAnalysisMode='scatter'|'performance'|'coverage'|'risk';
+export type MapAnalysisMode='scatter'|'performance'|'coverage'|'risk'|'sales';
 export const mapColors={neutral:'#c6d0cb',low:'#49a894',mid:'#489d8b',high:'#08685f',covered:'#137f72',uncovered:'#c5ceca',risk:'#b8793f',unknown:'#9ca4a1'};
 export function pointFacts(customer:any){
  const overlay=customer.demo_operation_overlay;
  return overlay?{...overlay,meaningful_count:Number(overlay.productive_count||0)+Number(overlay.follow_up_count||0),synthetic:true}:customer.metrics||null;
 }
 export function mapPointStyle(customer:any,mode:MapAnalysisMode){
+ if(mode==='sales')return{color:customer.sales_group_color||'#a4aeaa',radius:6};
  const facts=pointFacts(customer),actual=Number(facts?.actual_minor||0),visits=Number(facts?.meaningful_count||0);
  if(mode==='performance')return {color:!facts||!facts.invoice_count?mapColors.neutral:actual<=0?mapColors.risk:actual<1e6?mapColors.low:actual<5e6?mapColors.mid:mapColors.high,radius:!facts?.invoice_count?5:Math.min(18,6+Math.sqrt(Math.max(0,actual)/1e6)*2)};
  if(mode==='coverage')return {color:visits>0?mapColors.covered:mapColors.uncovered,radius:visits>0?8:5};
