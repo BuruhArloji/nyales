@@ -16,7 +16,7 @@
   inset: auto;
   flex: none;
 }
-.map-attribution-host { min-width: 0; width: 44px; height: 44px; flex: none; }
+.map-attribution-host { min-width: 0; width: 24px; height: 24px; flex: none; }
 .map-attribution-host .maplibregl-ctrl-attrib {
   float: none;
   margin: 0;
@@ -46,13 +46,13 @@
 }
 .maplibre-canvas .unified-map-legend { left: 16px; bottom: 16px; max-width: min(250px,calc(100% - 200px)); }
 .map-attribution-host .maplibregl-ctrl-attrib.maplibregl-compact {
-  min-width: 44px;
-  min-height: 44px;
-  width: 44px;
-  height: 44px;
+  min-width: 24px;
+  min-height: 24px;
+  width: 24px;
+  height: 24px;
   position: static;
   padding: 0;
-  border-radius: 22px;
+  border-radius: 12px;
   background: rgba(249,253,251,.85);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -62,14 +62,16 @@
   position: relative;
   top: auto;
   right: auto;
-  width: 44px;
-  height: 44px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 24px 24px;
 }
+/* Keep the small visible icon easy to tap without enlarging its glass circle. */
+.map-attribution-host .maplibregl-ctrl-attrib-button::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; }
 .map-attribution-host .maplibregl-ctrl-attrib-button:focus-visible { outline: 2px solid #087d70; outline-offset: 3px; }
 .map-attribution-host .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 0; }
 .map-utility-controls .map-mode-toggle { height: 44px; min-height: 44px; padding: 3px; box-sizing: border-box; }
