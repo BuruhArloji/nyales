@@ -3,7 +3,7 @@
   "info": {
     "title": "NYALES daily visit generator",
     "version": "1.0.0",
-    "description": "Same-day ORS generation from assigned customers, explicit policy, immutable preview and explicit atomic agenda application. Fixed hosts and header-only provider key. No monthly planning guarantee. Runtime Zod and domain tests authoritative."
+    "description": "Same-day ORS generation from assigned customers, explicit policy, immutable preview and explicit atomic agenda application. Fixed hosts and header-only provider key. No monthly planning guarantee. Runtime Zod and domain tests authoritative. Verified Google owner may submit custom_work_hours=true for a future same-day interval of at most 12 hours. Setup returns custom_work_hours_allowed. Calendar settings and customer opening windows stay unchanged; only owner may apply such previews."
   },
   "security": [
     {

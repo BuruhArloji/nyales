@@ -26,7 +26,7 @@ dailyVisit.get('/api/visit-generator/daily/setup',async c=>{
  const calendars=scope.orgWide?(await db.prepare("SELECT w.id,w.name,b.timezone,w.start_time,w.end_time FROM work_calendar w JOIN branch b ON b.organization_id=w.organization_id AND b.id=w.branch_id WHERE w.organization_id=? AND w.status='active' AND b.status='active' ORDER BY w.name LIMIT 101").bind(org(c)).all()).results:[];
  const calendar=policy?await db.prepare("SELECT w.id,w.name,b.timezone,w.start_time,w.end_time FROM work_calendar w JOIN branch b ON b.organization_id=w.organization_id AND b.id=w.branch_id WHERE w.organization_id=? AND w.id=? AND w.status='active' AND b.status='active'").bind(org(c),policy.config.calendar_id).first<any>():null;
  const date=calendar?businessClock(new Date(),calendar.timezone).date:scope.date;
- return c.json({data:{configured:Boolean(c.env.ORS_API_KEY),policy,defaults:defaultDailyPolicy,calendars,calendar,work_window:calendar?{start_at:planningInstant(date,calendar.start_time,calendar.timezone),end_at:planningInstant(date,calendar.end_time,calendar.timezone)}:null,manage:scope.orgWide,today:date,max_candidates:40,max_visits:20,daily_budget:60}});
+ return c.json({data:{configured:Boolean(c.env.ORS_API_KEY),policy,defaults:defaultDailyPolicy,calendars,calendar,work_window:calendar?{start_at:planningInstant(date,calendar.start_time,calendar.timezone),end_at:planningInstant(date,calendar.end_time,calendar.timezone)}:null,manage:scope.orgWide,custom_work_hours_allowed:(c as any).get('portfolioOwner')===true,today:date,max_candidates:40,max_visits:20,daily_budget:60}});
 });
 dailyVisit.put('/api/visit-generator/daily/policy',async c=>{
  const parsed=dailyPolicy.safeParse(await c.req.json().catch(()=>null));if(!parsed.success)return c.json({code:'INVALID_DAILY_POLICY',detail:parsed.error.issues.map(i=>i.message).join('; ')},422);
@@ -44,12 +44,13 @@ dailyVisit.get('/api/visit-generator/daily/runs',async c=>{
 dailyVisit.get('/api/visit-generator/daily/runs/:id',async c=>c.json({data:await runResult(c,await runRow(c,c.req.param('id')))}));
 dailyVisit.post('/api/visit-generator/daily/runs',async c=>{
  const parsed=dailyRequest.safeParse(await c.req.json().catch(()=>null));if(!parsed.success)return c.json({code:'INVALID_DAILY_REQUEST'},422);
+ if(parsed.data.custom_work_hours&&(c as any).get('portfolioOwner')!==true)fail(403,'DAILY_CUSTOM_HOURS_OWNER_ONLY');
  const key=c.req.header('Idempotency-Key');if(!key||key.length<8||key.length>128)fail(400,'IDEMPOTENCY_KEY_REQUIRED');
  if(!c.env.ORS_API_KEY)fail(503,'ORS_NOT_CONFIGURED');if(!c.env.IMPORT_FILES)fail(503,'ORS_STORAGE_UNAVAILABLE');
  const db=c.env.DB,scope=c.get('scope'),input=parsed.data,sha=await digest(canonicalJson(input));await dailyRep(db,scope,input.rep_id);
  const previous=await db.prepare('SELECT * FROM daily_visit_run WHERE organization_id=? AND actor_id=? AND idempotency_key=?').bind(org(c),scope.identity.id,key).first<any>();if(previous){if(previous.input_sha256!==sha)fail(409,'IDEMPOTENCY_CONFLICT');return c.json({data:await runResult(c,previous)});}
  const policy=await readPolicy(c);if(!policy)fail(422,'DAILY_POLICY_REQUIRED');
- const snapshot=await dailySnapshot(db,scope,input,policy.config),id=crypto.randomUUID(),stamp=now(),expires=new Date(Date.now()+20*60000).toISOString(),day=stamp.slice(0,10)+'T00:00:00.000Z',lease=new Date(Date.now()-3*60000).toISOString();
+ const snapshot=await dailySnapshot(db,scope,input,policy.config,(c as any).get('portfolioOwner')===true),id=crypto.randomUUID(),stamp=now(),expires=new Date(Date.now()+20*60000).toISOString(),day=stamp.slice(0,10)+'T00:00:00.000Z',lease=new Date(Date.now()-3*60000).toISOString();
  const claim=await db.prepare("INSERT INTO daily_visit_run(id,organization_id,actor_id,rep_id,service_date,status,idempotency_key,input_sha256,policy_version,snapshot_json,created_at,expires_at) SELECT ?,?,?,?,?,'pending',?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM daily_visit_run WHERE organization_id=? AND created_at>=?)<60 AND NOT EXISTS(SELECT 1 FROM daily_visit_run WHERE organization_id=? AND rep_id=? AND status='pending' AND created_at>=?)").bind(id,org(c),scope.identity.id,input.rep_id,snapshot.date,key,sha,policy.version,canonicalJson(snapshot),stamp,expires,org(c),day,org(c),input.rep_id,lease).run();
  if(!(claim.meta?.changes??(claim as any).changes))fail(503,'DAILY_BUSY');
  try{
@@ -68,6 +69,7 @@ dailyVisit.post('/api/visit-generator/daily/runs/:id/apply',async c=>{
  return operation(c,body,async()=>{
   const db=c.env.DB,row=await runRow(c,c.req.param('id'));if(row.status==='applied')return{resource:'daily-visit-run',data:{id:row.id,status:'applied'},statements:[]};
   const result=await runResult(c,row),snapshot=JSON.parse(row.snapshot_json),policy=await readPolicy(c),scope=c.get('scope');
+  if(snapshot.input.custom_work_hours&&(c as any).get('portfolioOwner')!==true)fail(403,'DAILY_CUSTOM_HOURS_OWNER_ONLY');
   if(!scope.orgWide&&!policy?.config.allow_rep_publish)fail(403,'SCOPE_DENIED');if(!result.current||!result.route||!result.planned)fail(409,'DAILY_STALE');
   const jobs=result.route.steps.filter((s:any)=>s.type==='job'),newJobs=jobs.filter((s:any)=>!s.fixed_plan_id);
   if(jobs.some((s:any)=>(s.arrival+s.waiting_time)*1000<Date.now()+5000))fail(409,'DAILY_PLAN_TIME_PAST');

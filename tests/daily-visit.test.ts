@@ -5,7 +5,7 @@ import {fixture as salesFixture} from './sales-fixture';
 import {scopedRoutes} from '../src/server/index';
 import {defaultDailyPolicy,dailyPolicy,rankDailyCustomers} from '../src/shared/daily-visit';
 const instant='2026-11-05T01:00:00Z';
-function fixture(count=20){
+function fixture(count=20,verifiedOwner=false){
  const f=salesFixture(),objects=new Map<string,Uint8Array>(),calls:any[]=[];
  f.sqlite.exec("UPDATE customer_outlet SET latitude_e7=-62000000,longitude_e7=1068000000,coordinate_status='verified' WHERE id='c'");
  for(let i=1;i<count;i++)f.sqlite.prepare("INSERT INTO customer_outlet(id,organization_id,area_id,name,latitude_e7,longitude_e7,coordinate_status) VALUES(?,'o','a',?,-62000000,?,'verified')").run('c'+i,'Warung '+i,1068000000+i*10000);
@@ -13,7 +13,7 @@ function fixture(count=20){
  const policy={...defaultDailyPolicy,calendar_id:'cal',break_minutes:0,use_shift_as_opening_window:true};
  const bucket={put:async(key:string,value:any)=>{objects.set(key,typeof value==='string'?new TextEncoder().encode(value):new Uint8Array(value));return{}},get:async(key:string)=>{const bytes=objects.get(key);return bytes?{size:bytes.byteLength,arrayBuffer:async()=>bytes.slice().buffer}:null},delete:async(key:string)=>objects.delete(key)} as unknown as R2Bucket;
  async function req(method:string,path:string,body?:any,actor='sr',version?:number,key=crypto.randomUUID()){
-  const h=new Hono();h.use('*',async(c,next)=>{c.set('identity' as never,{id:actor,name:actor,organization_id:actor==='other'?'x':'o',role:actor==='sr'?'SALES_REP':actor==='tele'?'TELESALES':'MANAGEMENT'} as never);await next()});h.route('/',scopedRoutes);
+  const h=new Hono();h.use('*',async(c,next)=>{c.set('portfolioOwner' as never,(verifiedOwner&&actor==='mg') as never);c.set('identity' as never,{id:actor,name:actor,organization_id:actor==='other'?'x':'o',role:actor==='sr'?'SALES_REP':actor==='tele'?'TELESALES':'MANAGEMENT'} as never);await next()});h.route('/',scopedRoutes);
   return h.request('/api/visit-generator/daily/'+path,{method,headers:{'Content-Type':'application/json','Idempotency-Key':key,...(version!==undefined?{'If-Match':`"${version}"`}:{})},...(body?{body:JSON.stringify(body)}:{})},{DB:f.adapter,IMPORT_FILES:bucket,ORS_API_KEY:'synthetic-test-key',APP_ENV:'local'});
  }
  const input={rep_id:'sr',start:{longitude:106.8,latitude:-6.2},start_at:'2026-11-05T01:05:00Z',end_at:'2026-11-05T10:00:00Z',confirmed_external_processing:true};
@@ -103,4 +103,28 @@ test('published route replay fails after the rep loses active field role',async 
  t.mock.timers.enable({apis:['Date'],now:new Date(instant)});const f=fixture(2);t.mock.method(globalThis,'fetch',f.fetchMock);
  try{await f.activate();const route=await f.data(await f.req('POST','runs',f.input)),key=crypto.randomUUID();await f.data(await f.req('POST',`runs/${route.id}/apply`,{confirmed:true},'sr',undefined,key));f.sqlite.exec("UPDATE auth_role_assignment SET effective_to_date='2026-11-05' WHERE user_id='sr'");assert.equal((await f.req('POST',`runs/${route.id}/apply`,{confirmed:true},'sr',undefined,key)).status,403);
  }finally{f.sqlite.close()}
+});
+
+
+test('custom hours require verified owner and preserve the team calendar',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date('2026-11-05T11:00:00Z')});const f=fixture(2,true);t.mock.method(globalThis,'fetch',f.fetchMock);
+ try{await f.activate();f.sqlite.exec("UPDATE work_calendar SET start_time='08:00',end_time='17:00' WHERE id='cal'");
+  const input={...f.input,start_at:'2026-11-05T11:05:00Z',end_at:'2026-11-05T14:00:00Z',custom_work_hours:true};
+  assert.equal((await f.req('GET','setup',undefined,'mg')).status,200);
+  assert.equal((await f.data(await f.req('GET','setup',undefined,'mg'))).custom_work_hours_allowed,true);
+  assert.equal((await f.data(await f.req('GET','setup'))).custom_work_hours_allowed,false);
+  assert.equal((await f.req('POST','runs',input)).status,403);
+  const standard=await f.req('POST','runs',{...input,custom_work_hours:false},'mg');assert.equal(standard.status,422);
+  const result=await f.data(await f.req('POST','runs',input,'mg'));assert.equal(result.planned,2);
+  assert.equal((await f.req('POST',`runs/${result.id}/apply`,{confirmed:true})).status,403);
+  await f.data(await f.req('POST',`runs/${result.id}/apply`,{confirmed:true},'mg'));
+  assert.equal((f.sqlite.prepare("SELECT end_time FROM work_calendar WHERE id='cal'").get()as any).end_time,'17:00');
+  assert.equal((await f.req('POST','runs',{...input,end_at:'2026-11-05T10:00:00Z'},'mg')).status,422);
+  assert.equal((await f.req('POST','runs',{...input,end_at:'2026-11-06T00:00:00Z'},'mg')).status,422);
+ }finally{f.sqlite.close()}
+});
+
+test('management alone cannot enable owner custom hours',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date(instant)});const f=fixture(2);
+ try{assert.equal((await f.req('POST','runs',{...f.input,custom_work_hours:true},'mg')).status,403)}finally{f.sqlite.close()}
 });

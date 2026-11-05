@@ -72,3 +72,7 @@ Tes domain memakai respons provider sintetis, bukan memanggil ORS nyata. Meliput
 15 kunjungan/shortfall, scope, stale policy/source, expiry, publish permission,
 janji tetap, idempotensi/replay, kegagalan provider, dan penggantian sisa rute.
 Pengguna melakukan pengujian tampilan dan perjalanan rute nyata.
+
+## Jam kerja khusus owner
+
+Hanya akun Google owner terverifikasi didikpriyoutomo05@gmail.com yang mendapat opsi jam kerja khusus hari ini (`custom_work_hours: true`). Rentang harus di masa depan, dalam tanggal lokal yang sama, dan maksimal 12 jam. Pengecualian hanya untuk kalender kerja pada permintaan tersebut; kalender tim, jam buka pelanggan, absensi, agenda tetap, dan batas akses sales tidak berubah. Penerapan rute dengan jam khusus juga dibatasi ke owner.

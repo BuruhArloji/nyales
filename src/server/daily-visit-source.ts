@@ -10,7 +10,8 @@ export async function dailyRep(db:D1Database,scope:Scope,id:string){
  const row=await db.prepare("SELECT u.id,u.name FROM app_user u WHERE u.organization_id=? AND u.id=? AND u.status='active' AND EXISTS(SELECT 1 FROM auth_role_assignment r WHERE r.organization_id=u.organization_id AND r.user_id=u.id AND r.role_code='SALES_REP' AND r.channel='field' AND r.effective_from_date<=? AND(r.effective_to_date IS NULL OR r.effective_to_date>?))"+(scope.orgWide||!scope.allRepsInArea?'':" AND EXISTS(SELECT 1 FROM user_area_scope a WHERE a.organization_id=u.organization_id AND a.user_id=u.id AND a.area_id IN(SELECT value FROM json_each(?)) AND a.effective_from_date<=? AND(a.effective_to_date IS NULL OR a.effective_to_date>?))")).bind(scope.identity.organization_id,id,scope.date,scope.date,...(!scope.orgWide&&scope.allRepsInArea?[JSON.stringify(scope.areaIds),scope.date,scope.date]:[])).first<any>();
  if(!row)fail(403,'DAILY_OR_FIELD_SCOPE');return row;
 }
-export async function dailySnapshot(db:D1Database,scope:Scope,input:any,policy:DailyPolicy){
+export async function dailySnapshot(db:D1Database,scope:Scope,input:any,policy:DailyPolicy,allowCustomHours=false){
+ if(input.custom_work_hours&&!allowCustomHours)fail(403,'DAILY_CUSTOM_HOURS_OWNER_ONLY');
  const org=scope.identity.organization_id,initialRevision=await planningRevision(db,org),rep=await dailyRep(db,scope,input.rep_id);
  const geoEpoch=await db.prepare('SELECT epoch FROM geo_distribution_epoch WHERE organization_id=?').bind(org).first<any>();
  const cal=await db.prepare("SELECT w.id,w.name,w.branch_id,b.timezone,w.weekdays_json,w.holidays_json,w.start_time,w.end_time FROM work_calendar w JOIN branch b ON b.organization_id=w.organization_id AND b.id=w.branch_id WHERE w.organization_id=? AND w.id=? AND w.status='active' AND b.status='active'").bind(org,policy.calendar_id).first<any>();if(!cal)fail(422,'DAILY_CALENDAR_REQUIRED');
@@ -18,7 +19,7 @@ export async function dailySnapshot(db:D1Database,scope:Scope,input:any,policy:D
  const date=businessClock(new Date(input.start_at),timezone).date,today=businessClock(new Date(),timezone).date;
  if(date!==today||businessClock(new Date(Date.parse(input.end_at)-1000),timezone).date!==date)fail(422,'DAILY_TODAY_ONLY');
  if(Date.parse(input.start_at)<Date.now()+15000)fail(422,'DAILY_START_PAST');
- if(!isWorkingInstant(new Date(input.start_at),timezone,calendar)||!isWorkingInstant(new Date(Date.parse(input.end_at)-1000),timezone,calendar))fail(422,'DAILY_OUTSIDE_WORKING_HOURS');
+ if(!input.custom_work_hours&&(!isWorkingInstant(new Date(input.start_at),timezone,calendar)||!isWorkingInstant(new Date(Date.parse(input.end_at)-1000),timezone,calendar)))fail(422,'DAILY_OUTSIDE_WORKING_HOURS');
  const profile=await db.prepare("SELECT config_json FROM visit_rep_planning_profile WHERE organization_id=? AND rep_id=? AND status='current' AND valid_from<=? AND valid_until>=?").bind(org,rep.id,date,date).first<any>();
  const repConfig=profile?JSON.parse(profile.config_json):null;if(repConfig&&repConfig.branch_id!==cal.branch_id)fail(422,'DAILY_PROFILE_CALENDAR_MISMATCH');if(repConfig?.absent_dates?.includes(date))fail(422,'DAILY_REP_ABSENT');
  const bounds=businessUtcBounds(date,date,timezone),from=bounds.from,until=bounds.until;
