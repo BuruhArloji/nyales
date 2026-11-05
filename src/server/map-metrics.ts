@@ -29,7 +29,7 @@ export async function readMapMetrics(db:D1Database,scope:Scope,ids:string[],peri
  const filter=`${inv.sql}`+(allChannels?'':' AND i.channel=?')+(repId?' AND i.rep_id=?':'')+(areaId?' AND i.area_id=?':'');
  const userScope=scope.orgWide?'':scope.allRepsInArea?` AND co.area_id IN(SELECT value FROM json_each(?))`:` AND a.user_id IN(SELECT value FROM json_each(?))`;
  const metadata="CASE WHEN json_valid(a.metadata_json) THEN a.metadata_json ELSE '{}' END";
- for(const id of uniqueIds)result.set(id,{period,comparison_period:period,actual_minor:0,current_month_actual_minor:0,highest_month_actual_minor:null,highest_month_period:null,highest_month_history_start:historyFrom,highest_month_history_end:start,hierarchy1:null,wallet_size_minor:null,wallet_size_source:null,invoice_count:0,activity_count:0,meaningful_count:0,last_activity:null});
+ for(const id of uniqueIds)result.set(id,{period,comparison_period:period,actual_minor:0,current_month_actual_minor:0,highest_month_actual_minor:null,highest_month_period:null,highest_month_history_start:historyFrom,highest_month_history_end:end,hierarchy1:null,wallet_size_minor:null,wallet_size_source:null,invoice_count:0,activity_count:0,meaningful_count:0,last_activity:null});
  for(const chunk of chunkMapIds(uniqueIds)){
   const json=JSON.stringify(chunk);
   const wallets=includeWallet?(await db.prepare(`SELECT customer_id id,hierarchy1,wallet_size_minor,source wallet_size_source FROM customer_wallet_profile WHERE organization_id=? AND customer_id IN(SELECT value FROM json_each(?))`).bind(org,json).all<any>()).results:[];
@@ -38,7 +38,10 @@ export async function readMapMetrics(db:D1Database,scope:Scope,ids:string[],peri
   const acts=(await db.prepare(`SELECT COALESCE(co.merged_into_id,co.id) id,COUNT(*) activity_count,SUM(CASE WHEN a.status='done' AND (json_type(${metadata},'$.meaningful')='true' OR json_extract(${metadata},'$.disposition')='connected_pic') THEN 1 ELSE 0 END) meaningful_count,MAX(a.occurred_at) last_activity FROM activity a JOIN customer_outlet co ON co.organization_id=a.organization_id AND co.id=a.outlet_id WHERE a.organization_id=? ${allChannels?'':'AND a.channel=?'} AND a.occurred_at>=? AND a.occurred_at<? AND COALESCE(co.merged_into_id,co.id) IN(SELECT value FROM json_each(?))${userScope}${repId?' AND a.user_id=?':''} GROUP BY COALESCE(co.merged_into_id,co.id)`).bind(org,...channelParams,new Date(start+'T00:00:00+07:00').toISOString(),new Date(end+'T00:00:00+07:00').toISOString(),json,...(userScope?[JSON.stringify(scope.allRepsInArea?scope.areaIds:scope.repIds)]:[]),...(repId?[repId]:[])).all<any>()).results;
   for(const row of wallets){const facts=result.get(row.id);if(facts)Object.assign(facts,{hierarchy1:row.hierarchy1,wallet_size_minor:row.wallet_size_minor,wallet_size_source:row.wallet_size_source})}
   for(const row of history){const facts=result.get(row.id);if(facts)Object.assign(facts,{highest_month_actual_minor:row.highest_month_actual_minor,highest_month_period:row.highest_month_period})}
-  for(const row of invoices){const facts=result.get(row.id);if(facts)Object.assign(facts,{invoice_count:row.invoice_count,actual_minor:row.actual_minor,current_month_actual_minor:row.actual_minor})}
+  for(const row of invoices){const facts=result.get(row.id);if(facts){Object.assign(facts,{invoice_count:row.invoice_count,actual_minor:row.actual_minor,current_month_actual_minor:row.actual_minor});
+   // The selected month is already read above: include observed actual without another history query.
+   if(includeWallet&&(facts.highest_month_actual_minor===null||row.actual_minor>=facts.highest_month_actual_minor))Object.assign(facts,{highest_month_actual_minor:row.actual_minor,highest_month_period:period});
+  }}
   for(const row of acts){const facts=result.get(row.id);if(facts)Object.assign(facts,{activity_count:row.activity_count,meaningful_count:row.meaningful_count,last_activity:row.last_activity})}
  }
  return result;

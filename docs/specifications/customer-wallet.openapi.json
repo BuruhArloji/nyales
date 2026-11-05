@@ -14,7 +14,7 @@
     "/api/customers/{id}/wallet": {
       "get": {
         "summary": "Read one authorized customer wallet and monthly purchase comparison",
-        "description": "Alias resolved before customer scope. Without channel, users limited to one channel retain that scope; authorized management reads combine channels per calendar month. Highest uses the preceding 12 completed months, excluding the selected month. Null means wallet/history unavailable; current actual may be zero or negative. IDR integer rupiah. Fetched on demand; private no-store.",
+        "description": "Alias resolved before customer scope. Without channel, users limited to one channel retain that scope; authorized management reads combine channels per calendar month. Highest compares the preceding 12 completed months with observed actual in the selected month, selecting the most recent month on ties. A selected month without invoices is not invented as a zero-valued purchase month. Null means wallet/history unavailable; current actual may be zero or negative. IDR integer rupiah. Fetched on demand; private no-store.",
         "parameters": [
           {
             "name": "id",
