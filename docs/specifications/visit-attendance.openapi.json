@@ -1,0 +1,388 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES field visit attendance",
+    "version": "1.0.0",
+    "description": "Local implementation; current scope controls all reads and writes. Self requests require manager approval; alpha manager-only. Existing sessions are not retroactively inferred as leave. No staging release implied."
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/visit-attendance": {
+      "get": {
+        "summary": "Paginated field visit recap within current hierarchy and customer scope",
+        "operationId": "get__api_visit-attendance",
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope"
+          },
+          "201": {
+            "description": "Scoped data envelope"
+          },
+          "401": {
+            "description": "Stable code error envelope"
+          },
+          "403": {
+            "description": "Stable code error envelope"
+          },
+          "404": {
+            "description": "Stable code error envelope"
+          },
+          "409": {
+            "description": "Stable code error envelope"
+          },
+          "412": {
+            "description": "Stable code error envelope"
+          },
+          "422": {
+            "description": "Stable code error envelope"
+          },
+          "503": {
+            "description": "Stable code error envelope"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                50,
+                100
+              ],
+              "default": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000,
+              "default": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "start_date",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end_date",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "in": "query",
+            "name": "period",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "area_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rep_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "channel",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "description": "Inclusive local dates, maximum 93 days, no future recap. Field only. Current generator policy defines calendar and target; no configured policy means unknown target. Off permitted days exclude approved alpha. Visits are unique customer/day, completed only. Daily credit is capped at the daily target; excess never offsets a different day. Missing visits do not infer alpha."
+      }
+    },
+    "/api/visit-off-days": {
+      "get": {
+        "summary": "Paginated off-day history within current field workforce scope",
+        "operationId": "get__api_visit-off-days",
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope"
+          },
+          "201": {
+            "description": "Scoped data envelope"
+          },
+          "401": {
+            "description": "Stable code error envelope"
+          },
+          "403": {
+            "description": "Stable code error envelope"
+          },
+          "404": {
+            "description": "Stable code error envelope"
+          },
+          "409": {
+            "description": "Stable code error envelope"
+          },
+          "412": {
+            "description": "Stable code error envelope"
+          },
+          "422": {
+            "description": "Stable code error envelope"
+          },
+          "503": {
+            "description": "Stable code error envelope"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                50,
+                100
+              ],
+              "default": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000,
+              "default": 0
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Self request or manager recording of one full off day",
+        "operationId": "post__api_visit-off-days",
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope"
+          },
+          "201": {
+            "description": "Scoped data envelope"
+          },
+          "401": {
+            "description": "Stable code error envelope"
+          },
+          "403": {
+            "description": "Stable code error envelope"
+          },
+          "404": {
+            "description": "Stable code error envelope"
+          },
+          "409": {
+            "description": "Stable code error envelope"
+          },
+          "412": {
+            "description": "Stable code error envelope"
+          },
+          "422": {
+            "description": "Stable code error envelope"
+          },
+          "503": {
+            "description": "Stable code error envelope"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "user_id",
+                  "service_date",
+                  "reason_code",
+                  "reason"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "service_date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "reason_code": {
+                    "enum": [
+                      "annual_leave",
+                      "sick",
+                      "permit",
+                      "training",
+                      "other",
+                      "alpha"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-off-days/{id}/review": {
+      "post": {
+        "summary": "Versioned manager approval, rejection or cancellation",
+        "operationId": "post__api_visit-off-days_id_review",
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope"
+          },
+          "201": {
+            "description": "Scoped data envelope"
+          },
+          "401": {
+            "description": "Stable code error envelope"
+          },
+          "403": {
+            "description": "Stable code error envelope"
+          },
+          "404": {
+            "description": "Stable code error envelope"
+          },
+          "409": {
+            "description": "Stable code error envelope"
+          },
+          "412": {
+            "description": "Stable code error envelope"
+          },
+          "422": {
+            "description": "Stable code error envelope"
+          },
+          "503": {
+            "description": "Stable code error envelope"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "status",
+                  "reason"
+                ],
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "approved",
+                      "rejected",
+                      "cancelled"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  }
+}

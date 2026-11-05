@@ -1,3 +1,4 @@
+import {visitAttendance} from './visit-attendance';
 import {listPortfolioVisitors} from './portfolio-visitors';
 import {createPortfolioGate} from './portfolio-access';
 import {dailyVisit} from './daily-visit';
@@ -131,6 +132,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
  if(/^\/api\/(workload-policies|territory-scenarios)(\/|$)/.test(c.req.path)){if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(c.req.path.startsWith('/api/visit-generator/daily/')){await next();return}
  if(/^\/api\/visit-generator\/(agents|queue-jobs|policies|graphs|preflights|rep-profiles|customer-profiles)(\/|$)/.test(c.req.path)){if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
+ if(/^\/api\/(visit-off-days|visit-attendance)(\/|$)/.test(c.req.path)){await next();return}
  if(c.req.path.startsWith('/api/workload/')){await next();return}
  if(c.req.path.startsWith('/api/risks/')){await next();return}
  if((c.req.path==='/api/dashboard/summary'||c.req.path==='/api/dashboard/sources')||/^\/api\/(coaching|notifications|notification-policy|audit-events|report-exports)(\/|$)/.test(c.req.path)){await next();return}
@@ -379,6 +381,7 @@ scopedRoutes.get('/api/sales/last-positions',async c=>{const result=await mapPay
 
 // Daily self-service has its own scope checks; mount before legacy admin-only planning middleware.
 scopedRoutes.route('/',dailyVisit);
+scopedRoutes.route('/',visitAttendance);
 scopedRoutes.route('/',customerWallet);
 scopedRoutes.route('/',invoices);
 

@@ -1,3 +1,4 @@
+import {assertRepVisitAvailable} from './visit-attendance';
 import {businessClock,businessUtcBounds,isWorkingInstant,type WorkCalendar} from './calendar';
 import {planningInstant} from './planning-time';
 import {planningRevision} from './visit-planning-source';
@@ -18,6 +19,7 @@ export async function dailySnapshot(db:D1Database,scope:Scope,input:any,policy:D
  const calendar:WorkCalendar={weekdays:JSON.parse(cal.weekdays_json),holidays:JSON.parse(cal.holidays_json),start_time:cal.start_time,end_time:cal.end_time},timezone=cal.timezone;
  const date=businessClock(new Date(input.start_at),timezone).date,today=businessClock(new Date(),timezone).date;
  if(date!==today||businessClock(new Date(Date.parse(input.end_at)-1000),timezone).date!==date)fail(422,'DAILY_TODAY_ONLY');
+ await assertRepVisitAvailable(db,org,rep.id,date);
  if(Date.parse(input.start_at)<Date.now()+15000)fail(422,'DAILY_START_PAST');
  if(!input.custom_work_hours&&(!isWorkingInstant(new Date(input.start_at),timezone,calendar)||!isWorkingInstant(new Date(Date.parse(input.end_at)-1000),timezone,calendar)))fail(422,'DAILY_OUTSIDE_WORKING_HOURS');
  const profile=await db.prepare("SELECT config_json FROM visit_rep_planning_profile WHERE organization_id=? AND rep_id=? AND status='current' AND valid_from<=? AND valid_until>=?").bind(org,rep.id,date,date).first<any>();

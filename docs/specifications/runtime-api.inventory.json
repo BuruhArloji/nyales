@@ -3331,6 +3331,18 @@
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
     },
     {
+      "method": "GET",
+      "path": "/api/visit-attendance",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-attendance.openapi.json",
+          "path": "/api/visit-attendance"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
       "method": "POST",
       "path": "/api/visit-generator/agents/:id/diagnostics",
       "authentication": "bearer plus device session; scope checked server-side",
@@ -3818,6 +3830,42 @@
         {
           "file": "visit-operational-profiles.m4.openapi.json",
           "path": "/api/visit-generator/rep-profiles"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-off-days/:id/review",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-attendance.openapi.json",
+          "path": "/api/visit-off-days/{id}/review"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/visit-off-days",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-attendance.openapi.json",
+          "path": "/api/visit-off-days"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/visit-off-days",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "visit-attendance.openapi.json",
+          "path": "/api/visit-off-days"
         }
       ],
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."

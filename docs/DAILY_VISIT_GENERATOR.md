@@ -76,3 +76,5 @@ Pengguna melakukan pengujian tampilan dan perjalanan rute nyata.
 ## Jam kerja khusus owner
 
 Hanya akun Google owner terverifikasi didikpriyoutomo05@gmail.com yang mendapat opsi jam kerja khusus hari ini (`custom_work_hours: true`). Rentang harus di masa depan, dalam tanggal lokal yang sama, dan maksimal 12 jam. Pengecualian hanya untuk kalender kerja pada permintaan tersebut; kalender tim, jam buka pelanggan, absensi, agenda tetap, dan batas akses sales tidak berubah. Penerapan rute dengan jam khusus juga dibatasi ke owner.
+
+Pada UI jam khusus, pilihan awal adalah Mulai sekarang. Waktu berangkat dihitung ulang saat membuat usulan dengan jeda teknis 2 menit, dibulatkan ke menit berikutnya. Atur jam tetap tersedia. Selesai diberi saran 4 jam dari waktu sekarang, dibatasi 23:59 hari yang sama; pengguna tetap dapat menggantinya.

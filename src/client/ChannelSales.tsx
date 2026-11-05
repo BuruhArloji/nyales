@@ -5,8 +5,8 @@ import{compactNumber}from'./numbers';
 type Channel={channel:string;target_minor:number|null;actual_minor:number|null;achievement_percent:number|null;status:string};
 const name=(channel:string)=>channel==='field'?'Lapangan':'Telesales';
 const percent=(value:number)=>value.toLocaleString('id-ID',{maximumFractionDigits:2})+'%';
-const stateLabel=(c:Channel)=>c.status==='no_target'?'Target belum tersedia':c.status==='zero_target'?'Target nol · belum berlaku':c.status==='source_incomplete'?'Sumber belum lengkap':c.status==='needs_review'?'Basis perlu ditinjau':percent(c.achievement_percent!);
-export function ChannelSales({channels,cutoff,complete,onDrill}:{channels:Channel[];cutoff:string;complete:boolean;onDrill:(title:string,source:SourceSelection)=>void}){
+const stateLabel=(c:Channel)=>c.status==='no_target'?'Target belum tersedia':c.status==='zero_target'?'Target nol · belum berlaku':c.status==='needs_review'?'Basis perlu ditinjau':percent(c.achievement_percent!);
+export function ChannelSales({channels,onDrill}:{channels:Channel[];onDrill:(title:string,source:SourceSelection)=>void}){
  const id=useId(),[active,setActive]=useState<string|null>(null);
  const drill=(c:Channel)=>onDrill('Rincian target '+name(c.channel),{kind:'targets',source_channel:c.channel});
  const tip=channels.find(c=>c.channel===active);
@@ -34,6 +34,5 @@ export function ChannelSales({channels,cutoff,complete,onDrill}:{channels:Channe
     {tip&&<div className="achievement-ring-tooltip" role="tooltip"><strong>{name(tip.channel)} · {stateLabel(tip)}</strong><span>Actual {compactNumber(tip.actual_minor,true).full}</span><span>Target {compactNumber(tip.target_minor,true).full}</span></div>}
    </div>
   </div>
-  {!complete&&<footer><p>Data sampai {cutoff} belum lengkap.</p></footer>}
  </section>;
 }
