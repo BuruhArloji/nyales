@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mapDisplayPayload} from '../src/shared/map-payload';
+import {mapDisplayPayload,mapRenderPin} from '../src/shared/map-payload';
+import {mapFeatureFacts,mapPointStyle,mapSummary} from '../src/shared/map-analysis';
 import {normalizeBasemapStyle} from '../src/client/map-style';
 
 test('display map keeps every pin, source link and operational facts without serializing the full directory twice',()=>{
@@ -26,4 +27,18 @@ test('road shield style handles missing/nonnumeric length without mutating provi
  assert.deepEqual((result.layers[0] as any).filter,['all',['<=',['number',['get','ref_length'],7],6],['==',['get','network'],'road']]);
  assert.deepEqual(style.layers[0].filter[1],['<=',['get','ref_length'],6]);
  assert.equal(result.layers[1],style.layers[1]);assert.deepEqual(normalizeBasemapStyle(result),result);
+});
+
+test('render-only map reconciles every metric and symbology while omitting empty history',()=>{
+ const rows=Array.from({length:58331},(_,i)=>({id:'c'+i,name:'Warung '+i,lat:-6,lng:107,status:i%3===0?'Unknown':i%3===1?'Churn':'Active',directory_dataset_id:'source',external_code:'GMP-'+i,field_rep_id:i<20?'sales':null,
+  metrics:{period:'2026-11',actual_minor:i===0?-100:i<10?100:0,invoice_count:i<10?1:0,activity_count:i<25?2:0,meaningful_count:i<15?1:0,last_activity:i<25?'2026-11-01':null,highest_month_actual_minor:null,highest_month_history_start:'2025-11-01',highest_month_history_end:'2026-11-01',wallet_size_minor:null,comparison_period:'2026-11'}}));
+ const pins=JSON.parse(JSON.stringify(rows.map(mapRenderPin)));
+ assert.equal(pins.length,rows.length);assert.deepEqual(mapSummary(pins),mapSummary(rows));
+ for(let i=0;i<rows.length;i++){
+  assert.deepEqual(mapFeatureFacts(pins[i]),mapFeatureFacts(rows[i]));
+  for(const mode of ['scatter','performance','coverage','risk'] as const)assert.deepEqual(mapPointStyle(pins[i],mode),mapPointStyle(rows[i],mode));
+ }
+ assert.equal(pins[0].directory_dataset_id,'source');assert.equal(pins[0].external_code,'GMP-0');assert.equal(pins[0].field_rep_id,'sales');
+ assert.deepEqual(pins[100].metrics,{actual_minor:0,invoice_count:0,activity_count:0,meaningful_count:0});
+ assert.ok(Buffer.byteLength(JSON.stringify(pins))<Buffer.byteLength(JSON.stringify(rows))*.6);
 });

@@ -4,7 +4,7 @@ import {listPortfolioVisitors} from './portfolio-visitors';
 import {createPortfolioGate} from './portfolio-access';
 import {dailyVisit} from './daily-visit';
 import {readDirectoryFacts} from './directory-facts';
-import {mapDisplayPayload} from '../shared/map-payload';
+import {mapDisplayPayload,mapCustomerPin} from '../shared/map-payload';
 import {customerWallet} from './customer-wallet';
 import {customerOptions} from './customer-options';
 import {directoryDetails,loadOptionalReferencePoints} from './point-directory';
@@ -219,6 +219,12 @@ async function loadCustomers(c:any){
  return cachedJson(c,scopeCacheKey(s,'customers',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,()=>readCustomers(c.env.DB,s));
  }
 
+/** Map cache excludes forms and segmentation evidence before serialization. */
+async function loadMapCustomers(c:any){
+ const s=c.get('scope') as Scope;
+ return cachedJson(c,scopeCacheKey(s,'customer-map-pins-v1',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,async()=>(await readCustomers(c.env.DB,s)).map(row=>({...mapCustomerPin(row),address:row.address,latitude_e7:row.latitude_e7,longitude_e7:row.longitude_e7,version:row.version})));
+}
+
 scopedRoutes.get('/api/customers',async c=>{
 
  // Paged directory: filters, ordering and the count run inside SQLite so a list
@@ -303,7 +309,7 @@ scopedRoutes.get('/api/telesales/queue',async c=>{
 
 async function mapPayload(c:any){
 
- const s=c.get('scope') as Scope;const cachedCustomers=await loadCustomers(c);c.header('X-NYALES-Cache',cacheStatus(cachedCustomers));let customers=cachedCustomers.value;
+ const s=c.get('scope') as Scope;const cachedCustomers=await (c.req.query('compact')==='1'?loadMapCustomers(c):loadCustomers(c));c.header('X-NYALES-Cache',cacheStatus<any[]>(cachedCustomers));let customers:any[]=cachedCustomers.value;
 
  const areaId=c.req.query('area_id'),repId=c.req.query('rep_id'),channel=c.req.query('channel')||'field',status=c.req.query('customer_status');
 
