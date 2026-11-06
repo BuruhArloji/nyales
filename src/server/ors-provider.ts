@@ -14,8 +14,10 @@ export async function orsPost(key:string,kind:keyof typeof endpoints,body:unknow
  };
  try{
   let response:Response;
-  try{response=await fetch(endpoints[kind],{method:'POST',headers:{Authorization:key,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body),signal:controller.signal,redirect:'error'})}
+  try{response=await fetch(endpoints[kind],{method:'POST',headers:{Authorization:key,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body),signal:controller.signal,redirect:'manual'})}
   catch{stop(controller.signal.aborted?'TIMEOUT':'NETWORK')}
+  // Workers supports follow/manual only. Keep redirects visible so credentials
+  // are never forwarded to a different endpoint. Non-2xx responses fail below.
   status=response!.status;
   if(!response!.ok){
    // Consume only a small bounded body to extract a numeric provider code. Raw
