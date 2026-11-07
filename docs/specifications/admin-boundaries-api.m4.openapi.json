@@ -1298,53 +1298,82 @@
       },
       "review": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 1000
-          },
-          "license_reference": {
-            "type": "string",
-            "format": "uri"
-          },
-          "license_note": {
-            "type": "string",
-            "minLength": 12,
-            "maxLength": 2000
-          },
-          "attribution": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 1000
-          },
-          "confirm_usage_rights": {
-            "type": "boolean",
-            "const": true
-          },
-          "expected_active_id": {
-            "anyOf": [
-              {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "reason": {
                 "type": "string",
-                "minLength": 1,
-                "maxLength": 128
+                "minLength": 8,
+                "maxLength": 1000
               },
-              {
-                "type": "null"
+              "license_reference": {
+                "type": "string",
+                "format": "uri"
+              },
+              "license_note": {
+                "type": "string",
+                "minLength": 12,
+                "maxLength": 2000
+              },
+              "attribution": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 1000
+              },
+              "confirm_usage_rights": {
+                "type": "boolean",
+                "const": true
+              },
+              "expected_active_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
-            ]
+            },
+            "required": [
+              "reason",
+              "license_reference",
+              "license_note",
+              "attribution",
+              "confirm_usage_rights",
+              "expected_active_id"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "expected_active_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "enabled",
+              "expected_active_id"
+            ],
+            "additionalProperties": false
           }
-        },
-        "required": [
-          "reason",
-          "license_reference",
-          "license_note",
-          "attribution",
-          "confirm_usage_rights",
-          "expected_active_id"
-        ],
-        "additionalProperties": false
+        ]
       },
       "properties": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",

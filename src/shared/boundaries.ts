@@ -24,3 +24,5 @@ export function canonicalJson(value:unknown):string {
  const obj=value as Record<string,unknown>;return '{'+Object.keys(obj).sort().map(k=>JSON.stringify(k)+':'+canonicalJson(obj[k])).join(',')+'}';
 }
 export function manifestJson(checksums:string[]){return canonicalJson(checksums.map((checksum,index)=>({index,checksum})))}
+
+export const boundarySelectionSchema=z.object({enabled:z.boolean(),expected_active_id:z.string().min(1).max(128).nullable()}).strict();

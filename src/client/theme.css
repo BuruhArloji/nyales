@@ -515,3 +515,5 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 @media(min-width:1400px){.filter-panel .filter-controls{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}}
 @media(max-width:767px){.filter-sheet .filter-controls{grid-template-columns:minmax(0,1fr);gap:16px}.compact-filter-bar{width:100%;box-sizing:border-box;gap:12px}.compact-filter-bar>span{flex:1 1 0;min-width:0}.compact-filter-bar>.button{min-height:44px;white-space:nowrap}.filter-sheet .filter-controls :is(input,select){font-size:16px}.filter-sheet .filter-sheet-actions{justify-content:space-between}.filter-sheet .filter-sheet-actions .button{flex:1 1 auto}}
 @media(prefers-reduced-motion:reduce){.filter-panel-toggle>svg{transition:none}}
+
+.overview-customer-map>.map-canvas{height:440px;min-height:340px}.boundary-select{display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px}.boundary-select input{accent-color:#087e73;width:18px;height:18px}.overview-customer-map .card-header{flex-wrap:wrap;gap:12px}@media(max-width:767px){.overview-customer-map>.map-canvas{height:380px}.overview-customer-map .card-header .data-actions{width:100%;justify-content:flex-end}}

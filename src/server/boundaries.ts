@@ -1,13 +1,13 @@
 import {Hono} from 'hono';
 import {z} from 'zod';
 import {digest,fail,guard,operation,type OperationEnv} from './operations';
-import {boundaryDatasetSchema,boundaryReviewSchema,boundaryLimits,canonicalJson,manifestJson,type BoundaryFeature} from '../shared/boundaries';
+import {boundaryDatasetSchema,boundaryReviewSchema,boundarySelectionSchema,boundaryLimits,canonicalJson,manifestJson,type BoundaryFeature} from '../shared/boundaries';
 import {validateBoundaryCollection} from './boundary-geometry';
 
 export const boundaries=new Hono<OperationEnv>();
 const source='https://geoportal.pertanian.go.id/arcgis/rest/services/Hosted/Batas_Administrasi_Desa/FeatureServer/0';
 const chunkSchema=z.object({index:z.number().int().min(0).max(99),collection:z.unknown()}).strict();
-export const boundaryRequestSchemas={dataset:boundaryDatasetSchema,chunk:chunkSchema,review:boundaryReviewSchema};
+export const boundaryRequestSchemas={dataset:boundaryDatasetSchema,chunk:chunkSchema,review:z.union([boundaryReviewSchema,boundarySelectionSchema])};
 const selectDataset='SELECT d.*,(SELECT COUNT(*) FROM admin_boundary_chunk c WHERE c.organization_id=d.organization_id AND c.dataset_id=d.id) uploaded_chunks,(SELECT COUNT(*) FROM admin_boundary b WHERE b.organization_id=d.organization_id AND b.dataset_id=d.id) uploaded_features FROM admin_boundary_dataset d';
 function expose(row:any){const {metadata_json,coverage_json,...rest}=row;return {...rest,metadata:JSON.parse(metadata_json),coverage:JSON.parse(coverage_json)}}
 async function load(db:D1Database,org:string,id:string){return db.prepare(selectDataset+' WHERE d.organization_id=? AND d.id=?').bind(org,id).first<any>()}
@@ -16,7 +16,7 @@ async function parsed<T extends z.ZodType>(c:any,schema:T):Promise<z.output<T>|n
 
 // Dataset administration is national Management/NSM only. Scoped polygon reads belong to WEB-064.
 boundaries.use('/api/admin-boundaries/*',async(c,next)=>{if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next()});
-boundaries.get('/api/admin-boundaries/config',c=>c.json({data:{limits:boundaryLimits,source_reference:source,reference_release:'Semester 1 Tahun 2025',usage_terms_status:'unverified',note:'Sumber publik bukan bukti izin penggunaan. Aktivasi memerlukan review rilis, cakupan, namespace, ketentuan penggunaan dan atribusi.'}}));
+boundaries.get('/api/admin-boundaries/config',c=>c.json({data:{limits:boundaryLimits,source_reference:source,reference_release:'Semester 1 Tahun 2025',usage_terms_status:'unverified',note:'Sumber publik bukan bukti izin penggunaan. Pilih satu dataset aktif. Kelengkapan dan checksum diperiksa otomatis; metadata sumber tetap tersimpan.'}}));
 boundaries.get('/api/admin-boundaries/datasets',async c=>{const after=c.req.query('after')||'',rows=await c.env.DB.prepare(selectDataset+' WHERE d.organization_id=? AND d.id>? ORDER BY d.id LIMIT 51').bind(c.get('identity').organization_id,after).all<any>();return c.json({data:rows.results.slice(0,50).map(expose),next:rows.results.length>50?rows.results[49].id:null})});
 boundaries.get('/api/admin-boundaries/datasets/:id',async c=>{
  const org=c.get('identity').organization_id,row=await load(c.env.DB,org,c.req.param('id'));if(!row)return c.json({code:'NOT_FOUND'},404);
@@ -75,11 +75,16 @@ boundaries.post('/api/admin-boundaries/datasets/:id/chunks',async c=>{
  });
 });
 boundaries.post('/api/admin-boundaries/datasets/:id/activate',async c=>{
- const value=await parsed(c,boundaryReviewSchema);if(!value)return c.json({code:'VALIDATION_ERROR'},422);
+ const value=await parsed(c,z.union([boundaryReviewSchema,boundarySelectionSchema]));if(!value)return c.json({code:'VALIDATION_ERROR'},422);
  return operation(c,value,async()=>{
-  const db=c.env.DB,org=c.get('identity').organization_id,who=c.get('identity').id,row=await load(db,org,c.req.param('id'));if(!row)fail(404,'NOT_FOUND');version(c,row);if(row.status!=='draft')fail(409,'DATASET_NOT_DRAFT');
+  const db=c.env.DB,org=c.get('identity').organization_id,who=c.get('identity').id,row=await load(db,org,c.req.param('id'));if(!row)fail(404,'NOT_FOUND');version(c,row);const simple='enabled' in value;if(!simple&&row.status!=='draft')fail(409,'DATASET_NOT_DRAFT');
   const active=await db.prepare("SELECT id,version FROM admin_boundary_dataset WHERE organization_id=? AND status='active'").bind(org).first<any>();
   if((active?.id||null)!==value.expected_active_id)fail(412,'ACTIVE_DATASET_CHANGED');
+  if(simple&&!value.enabled){
+   if(row.status!=='active')fail(409,'DATASET_NOT_ACTIVE');
+   return{data:{id:row.id,status:'retired',version:row.version+1},resource:'admin_boundary_dataset',before:expose(row),statements:guard(db,db.prepare("UPDATE admin_boundary_dataset SET status='retired',version=version+1 WHERE organization_id=? AND id=? AND status='active' AND version=?").bind(org,row.id,row.version))};
+  }
+  if(simple&&row.status==='active')fail(409,'DATASET_ALREADY_ACTIVE');
   const chunks=(await db.prepare('SELECT * FROM admin_boundary_chunk WHERE organization_id=? AND dataset_id=? ORDER BY chunk_index').bind(org,row.id).all<any>()).results;
   if(chunks.length!==row.expected_chunks||row.uploaded_features!==row.expected_features||chunks.reduce((n,x)=>n+x.feature_count,0)!==row.expected_features||chunks.some((x,i)=>x.chunk_index!==i))fail(409,'DATASET_INCOMPLETE');
   if(await digest(manifestJson(chunks.map(x=>x.checksum)))!==row.manifest_sha256)fail(409,'MANIFEST_CHECKSUM_MISMATCH');
@@ -89,8 +94,9 @@ boundaries.post('/api/admin-boundaries/datasets/:id/activate',async c=>{
   const statements:D1PreparedStatement[]=[];
   if(active)statements.push(...guard(db,db.prepare("UPDATE admin_boundary_dataset SET status='retired',version=version+1 WHERE organization_id=? AND id=? AND status='active' AND version=?").bind(org,active.id,active.version)));
   const now=new Date().toISOString();
-  statements.push(...guard(db,db.prepare("UPDATE admin_boundary_dataset SET status='active',version=version+1,license_reference=?,license_note=?,attribution=?,reviewed_by=?,reviewed_at=? WHERE organization_id=? AND id=? AND status='draft' AND version=?").bind(value.license_reference,value.license_note,value.attribution,who,now,org,row.id,row.version)));
-  return {data:{id:row.id,status:'active',version:row.version+1,replaced_dataset_id:active?.id||null,reason:value.reason,reviewed_by:who,reviewed_at:now},statements,before:expose(row),resource:'admin_boundary_dataset'};
+  if(simple)statements.push(...guard(db,db.prepare("UPDATE admin_boundary_dataset SET status='active',version=version+1 WHERE organization_id=? AND id=? AND status=? AND version=?").bind(org,row.id,row.status,row.version)));
+  else statements.push(...guard(db,db.prepare("UPDATE admin_boundary_dataset SET status='active',version=version+1,license_reference=?,license_note=?,attribution=?,reviewed_by=?,reviewed_at=? WHERE organization_id=? AND id=? AND status='draft' AND version=?").bind(value.license_reference,value.license_note,value.attribution,who,now,org,row.id,row.version)));
+  return {data:{id:row.id,status:'active',version:row.version+1,replaced_dataset_id:active?.id||null,reason:simple?'Pemilihan batas wilayah':value.reason},statements,before:expose(row),resource:'admin_boundary_dataset'};
  });
 });
 boundaries.get('/api/admin-boundaries/datasets/:id/boundaries',async c=>{

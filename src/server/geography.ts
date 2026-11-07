@@ -65,7 +65,14 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
  routes.onError((e,c)=>{const match=/^(403|404|409|412|422|428|503):(.+)$/.exec(e.message);return c.json({code:match?.[2]||'GEOGRAPHY_UNAVAILABLE'},(match?Number(match[1]):503) as any)});
  routes.get('/api/geo/map',async c=>{
   const channel=c.req.query('channel');if(channel&&!['field','telesales'].includes(channel))return c.json({code:'INVALID_CHANNEL'},422);const period=c.req.query('period');if(period&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(period))return c.json({code:'INVALID_PERIOD'},422);
-  const base=await mapPayload(c),d=await dataset(c,c.req.query('dataset_id')),org=c.get('identity').organization_id,date=c.get('scope').date;
+  const base=await mapPayload(c);
+  if(c.req.query('purpose')==='overview'){
+   const scope=c.get('scope'),month=period||scope.date.slice(0,7),ids=base.data.all_customers.map((x:any)=>x.id),key=scopeCacheKey(scope,'overview-map-metrics',JSON.stringify([await readModelRevision(c),month,channel||'field',c.req.query('area_id')||'',c.req.query('rep_id')||'',await digest(JSON.stringify(ids))]));
+   const cached=await cachedJson(c,key,60,async()=>[...await readMapMetrics(c.env.DB,scope,ids,month,channel||'field',c.req.query('rep_id'),c.req.query('area_id'))].map(([id,metrics])=>[id,mapRenderFacts(metrics)]));
+   const metrics=new Map(cached.value as [string,any][]),customers=base.data.customers.map((row:any)=>mapRenderPin({...row,metrics:metrics.get(row.id)}));
+   return c.json({data:{map:{...base.data,all_customers:[],customers,reference_points:[],sales:[]},period_context:month}});
+  }
+  const d=await dataset(c,c.req.query('dataset_id')),org=c.get('identity').organization_id,date=c.get('scope').date;
   const revision=await readModelRevision(c),scope=c.get('scope');
   const boundaries=await cachedJson(c,scopeCacheKey(scope,'geo-boundary-rows',JSON.stringify([revision,d?.id,d?.version,d?.status])),60,()=>boundaryRows(c,d));
   const rows=boundaries.value;
@@ -92,7 +99,7 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
   c.header('X-NYALES-Geography-Cache',boundaries.enabled&&mappingCache.enabled&&membershipCache.enabled?(boundaries.hit&&mappingCache.hit&&membershipCache.hit?'HIT':'MISS'):'OFF');
   const counts=new Map<string,number>();for(const c of all)if(c.geo_boundary_id)counts.set(c.geo_boundary_id,(counts.get(c.geo_boundary_id)||0)+1);
   const stats={total:all.length,confirmed:all.filter((x:any)=>x.geo_status==='confirmed').length,unmapped:all.filter((x:any)=>x.geo_status!=='confirmed').length};
-  return c.json({data:{summary:mapSummary(all),map:{...base.data,all_customers:compact?[]:all,customers:base.data.customers.map((x:any)=>customerById.get(x.id)).map((x:any)=>compact?mapRenderPin(x):x)},dataset:d?{id:d.id,version:d.version,release_version:d.release_version,status:d.status,attribution:d.attribution,coverage:JSON.parse(d.coverage_json),code_namespace:d.code_namespace}:null,period_context:period||date.slice(0,7),mapping_date:date,stats,boundaries:rows.map(b=>({id:b.id,name:b.name_snapshot,unit_id:b.admin_unit_id,hierarchy:JSON.parse(b.hierarchy_json),bbox:[b.min_longitude_e7,b.min_latitude_e7,b.max_longitude_e7,b.max_latitude_e7].map((n:number)=>n/1e7),confirmed_customer_count:counts.get(b.id)||0,area_business:areaMembership.find(m=>m.admin_unit_id===b.admin_unit_id)||null})),preview:d?.status==='draft',geometry_display_limit:50,source_state:d?'available':'no_active_dataset'}});
+  return c.json({data:{summary:mapSummary(all),map:{...base.data,all_customers:compact?[]:all,customers:base.data.customers.map((x:any)=>customerById.get(x.id)).map((x:any)=>compact?mapRenderPin(x):x)},dataset:d?{id:d.id,version:d.version,release_version:d.release_version,status:d.status,attribution:d.attribution||d.provider,coverage:JSON.parse(d.coverage_json),code_namespace:d.code_namespace}:null,period_context:period||date.slice(0,7),mapping_date:date,stats,boundaries:rows.map(b=>({id:b.id,name:b.name_snapshot,unit_id:b.admin_unit_id,hierarchy:JSON.parse(b.hierarchy_json),bbox:[b.min_longitude_e7,b.min_latitude_e7,b.max_longitude_e7,b.max_latitude_e7].map((n:number)=>n/1e7),confirmed_customer_count:counts.get(b.id)||0,area_business:areaMembership.find(m=>m.admin_unit_id===b.admin_unit_id)||null})),preview:d?.status==='draft',geometry_display_limit:50,source_state:d?'available':'no_active_dataset'}});
  });
  routes.get('/api/geo/geometry',async c=>{
   const ids=(c.req.query('ids')||'').split(',').filter(Boolean);if(ids.length<1||ids.length>50||ids.some(id=>id.length>128))return c.json({code:'INVALID_BOUNDARY_IDS'},422);

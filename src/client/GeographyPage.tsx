@@ -34,6 +34,7 @@ export function GeographyPage(){
  useEffect(()=>{const controller=new AbortController();setGeometry(null);setGeometryError('');if(layers.operational&&data?.dataset&&geometryKey)get('/api/geo/geometry?'+new URLSearchParams({dataset_id:data.dataset.id,ids:geometryKey}),controller.signal).then(setGeometry).catch(e=>{if(!controller.signal.aborted)setGeometryError(e.message)});return()=>controller.abort()},[data?.dataset?.id,data?.dataset?.version,geometryKey,refresh,layers.operational]);
  function context(){return {mode,sales_level:salesLevel,area_id:area,rep_id:rep,channel,period,dataset_id:data?.dataset?.id,boundary_id:selected,camera:camera.current}}
  useEffect(()=>{if(data)replaceGeoContext(context())},[mode,salesLevel,area,rep,channel,period,selected,data?.dataset?.id]);
+ useEffect(()=>{if(!initial.customer_id||!data)return;const item=data.map.customers.find((c:any)=>c.id===initial.customer_id);if(item)setFocus({...item,openPopup:true})},[data?.period_context,Boolean(data),initial.customer_id]);
  const chosen=boundaries.find(b=>b.id===selected),all=data?.map.all_customers||[];
  const summary=useMemo(()=>data?.summary||mapSummary(all),[data]);
  const transactions=useMemo(()=>(data?.map.customers||[]).filter((c:any)=>Number(pointFacts(c)?.invoice_count||0)>0).sort((a:any,b:any)=>Number(pointFacts(b)?.actual_minor||0)-Number(pointFacts(a)?.actual_minor||0)),[data]);

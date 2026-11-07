@@ -69,7 +69,7 @@ test('WEB-063 replacement is atomic, stale active versions fail, old geometry/hi
  f.objects.set(newKey,newBytes);f.objects.set(saved[0],saved[1]);await f.activate(next,old.id);
  assert.equal((await f.data(await f.req('GET','datasets/'+old.id))).status,'retired');
  assert.equal((await f.req('GET','datasets/'+old.id+'/chunks/0')).status,200);
- assert.throws(()=>f.sqlite.prepare("UPDATE admin_boundary_dataset SET status='active',version=version+1 WHERE id=?").run(old.id),/IMMUTABLE/);
+ assert.throws(()=>f.sqlite.prepare("UPDATE admin_boundary_dataset SET status='active',version=version+1 WHERE id=?").run(old.id),/UNIQUE/);
  f.sqlite.close();
 });
 
