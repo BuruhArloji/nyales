@@ -32,7 +32,7 @@ export function customerPredicate(scope:Scope,alias='co'):{sql:string;params:str
  if(scope.orgWide)return {sql,params};
  const area=`${alias}.area_id IN (${scope.areaIds.map(()=>'?').join(',')||'NULL'})`;
  if(scope.allRepsInArea)return {sql:sql+' AND '+area,params:[...params,...scope.areaIds]};
- const assigned=`EXISTS (SELECT 1 FROM customer_assignment ca WHERE ca.organization_id=${alias}.organization_id AND ca.outlet_id IN(SELECT f.id FROM customer_outlet f WHERE f.organization_id=${alias}.organization_id AND (f.id=${alias}.id OR f.merged_into_id=${alias}.id)) AND ca.rep_id IN (${scope.repIds.map(()=>'?').join(',')}) AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)${scope.channel?' AND ca.channel=?':''})`;
+ const assigned=`EXISTS (SELECT 1 FROM customer_assignment ca WHERE ca.organization_id=${alias}.organization_id AND ca.outlet_id IN(SELECT ${alias}.id UNION ALL SELECT f.id FROM customer_outlet f WHERE f.organization_id=${alias}.organization_id AND f.merged_into_id=${alias}.id) AND ca.rep_id IN (${scope.repIds.map(()=>'?').join(',')}) AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?)${scope.channel?' AND ca.channel=?':''})`;
  const assignedParams=[...scope.repIds,scope.date,scope.date,...(scope.channel?[scope.channel]:[])];
  // SR sees their field area or explicit field assignment; telesales only explicit telesales assignment.
  if(scope.identity.role==='SALES_REP')return {sql:sql+` AND (${area} OR ${assigned})`,params:[...params,...scope.areaIds,...assignedParams]};

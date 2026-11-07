@@ -224,3 +224,15 @@ Mitigasi: full customer read model memakai halaman keyset maksimal 1.000 baris p
 Rekonsiliasi fixture lebih dari dua halaman membandingkan seluruh ID/nama/alamat dengan query lama, memeriksa akses Sales/Telesales, data asing, merged customer, nama Unicode, koordinat kosong dan query plan. Query plan memakai `customer_org_identity` dengan rentang id, tanpa temporary sort. Uji cache 12 pembaca bersamaan menjalankan satu producer; scope lain tetap terpisah dan kegagalan dapat dicoba ulang.
 
 Salinan backup staging menghasilkan response map tetap 18.736.106 byte sebelum/sesudah, status lokal 200. Ini mitigasi ukuran kerja tiap statement dan lonjakan permintaan, bukan klaim payload peta sudah kecil atau kuota baca berkurang. Jumlah statement bertambah; total cohort tetap sama. Batas waktu frontend 60 detik tetap berlaku. Pemadatan/progressive loading referensi dan pin belum termasuk perubahan ini. Pemulihan endpoint data di sesi Google pengguna perlu diverifikasi setelah deploy.
+
+
+### Temuan lanjutan: correlated canonical-family lookup pada scope Sales
+
+Mitigasi batch belum mengakhiri 503 yang dilaporkan pengguna. Live tail domain yang benar menangkap `/api/me` 200 lalu map 503 setelah sekitar 34 detik (Worker CPU sekitar 21 ms, 10 statement dicoba, 9 metadata berhasil). Permintaan `/api/users` dan `/api/me` berikutnya gagal di satu statement awal. Ini menempatkan pekerjaan lambat di sisi D1, bukan render browser.
+
+Query plan pada scope Sales Didik menemukan `customerPredicate` memakai OR pada pencarian keluarga canonical/merged, sehingga subquery hanya memakai prefix organization dari `customer_family` dan dapat memindai seluruh organisasi untuk setiap pelanggan. Ganti daftar keluarga menjadi `SELECT co.id UNION ALL SELECT f.id ... organization_id=co.organization_id AND merged_into_id=co.id`. UNION ALL aman untuk IN (duplikat tidak mengubah keanggotaan) dan tidak memaksa merge-sort berdasarkan id seperti UNION distinct; query plan kini mencari dua komponen indeks `customer_family(organization_id,merged_into_id)`. Tidak memperluas izin atau menghilangkan pemeriksaan tenant, tanggal, kanal, area dan tim.
+
+Benchmark read-only pada backup staging, scope Sales yang sama, batch pertama 1.000: query lama dihentikan progress handler setelah 3.000 ms dan 45.430.000 VM steps, belum mengembalikan seluruh hasil; query baru selesai 68 ms, 320.000 VM steps, 1.000 pelanggan. Ini bukan rasio kecepatan end-to-end produksi. Tes membandingkan keanggotaan lama/baru untuk Management, NSM, Area Manager, Supervisor, Sales dan Telesales, termasuk pelanggan canonical lintas area dengan penugasan pada alias, area-only, tanpa penugasan, dan organisasi lain.
+
+
+Pemeriksaan tambahan D1 remote terhadap query berindeks yang sama: berhasil mengembalikan 1.000 ID pelanggan sesuai scope, SQL duration 138,769 ms, 26.855 rows_read, 0 rows_written. Tidak menjalankan query legacy yang diketahui mahal di remote. Ini bukti perbaikan query pada database staging sebenarnya; pemuatan peta lengkap tetap perlu acceptance sesudah deploy.
