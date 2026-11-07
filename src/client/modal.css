@@ -1,0 +1,13 @@
+/* The rounded dialog is a frame; only its inset body owns the scrollbar.
+ * Keep the closed native <dialog> hidden and retain its focus/Escape behavior. */
+.app-dialog{overflow:hidden}
+.app-dialog[open]{display:flex;flex-direction:column}
+.app-dialog-header{position:relative;flex:0 0 auto;min-width:0}
+.app-dialog-body{
+ min-height:0;min-width:0;flex:0 1 auto;overflow:auto;
+ margin-right:8px;margin-bottom:12px;padding-right:16px;padding-bottom:12px;
+ scrollbar-gutter:stable;overscroll-behavior:contain;
+}
+@media(max-width:480px){
+ .app-dialog-body{margin-right:6px;margin-bottom:10px;padding-right:10px;padding-bottom:10px}
+}

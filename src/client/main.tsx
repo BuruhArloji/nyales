@@ -35,6 +35,7 @@ import './map-controls.css';
 import './daily-visit.css';
 import './portfolio.css';
 import './scrollbars.css';
+import './modal.css';
 import {compactNumber} from './numbers';
 import {DataTools} from './DataTools';
 import {Customers} from './Customers';
