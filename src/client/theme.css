@@ -492,6 +492,7 @@ th,.map-row small,.coverage-no-activity{color:#47534e}
 /* Filter groups share one sizing contract; dropdown pickers keep their top layer. */
 .filter-panel{display:block;min-width:0;max-width:100%;box-sizing:border-box;margin:0 0 20px;overflow:visible}
 .filter-panel--embedded{padding:0 0 18px;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none}
+.filter-panel--embedded+.pagination{border-top:0}
 .filter-panel-header{display:flex;justify-content:space-between;align-items:center;gap:16px;min-width:0;margin-bottom:18px}
 .filter-panel-caption{display:grid;gap:5px;min-width:0}.filter-panel-caption>strong{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
 .filter-panel-caption>span{font-size:12px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
