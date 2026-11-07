@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {hierarchyGroups,hierarchySnapshot,reportingOn,type HierarchyPerson,type ReportingEdge} from '../src/client/hierarchy-model';
+import {organizationBranches,hierarchyGroups,hierarchySnapshot,reportingOn,type HierarchyPerson,type ReportingEdge} from '../src/client/hierarchy-model';
 const people:HierarchyPerson[]=[{id:'head',name:'Management',role_code:'MANAGEMENT',channel:null,status:'active',version:1},{id:'spv',name:'Supervisor',channel:'field',status:'active',version:1},{id:'rep',name:'Sales',channel:'field',status:'active',version:1},{id:'tele',name:'Telesales',channel:'telesales',status:'active',version:1}];
 const edge=(id:string,manager_id:string,subordinate_id:string,extras:Partial<ReportingEdge>={}):ReportingEdge=>({id,manager_id,subordinate_id,area_id:'west',channel:'field',effective_from_date:'2026-10-01',effective_to_date:null,version:1,...extras});
 const filters={date:'2026-10-29',channel:'',area:''};
@@ -80,3 +80,5 @@ test('orphan diagnostics ignore legitimate Management roots and do not infer a g
 test('detached operational teams remain inspectable separately without inventing reporting edges',()=>{
  const data:HierarchyPerson[]=[{id:'m',name:'Owner',role_code:'MANAGEMENT',status:'active',version:1},{id:'n',name:'Leader',role_code:'NSM',status:'active',version:1},{id:'s',name:'Sales',role_code:'SALES_REP',status:'active',version:1}];const snapshot=hierarchySnapshot(data,[edge('child','n','s')],filters),groups=hierarchyGroups(snapshot);assert.deepEqual(groups.main.map(p=>p.id),['m']);assert.deepEqual(groups.detached.map(p=>p.id),['n']);assert.equal(groups.detachedIds.size,2);assert.equal(snapshot.relations.length,1);
 });
+
+test('one organization container groups all Management roots without inventing person reporting records',()=>{const data:HierarchyPerson[]=[{id:'m1',name:'Owner',role_code:'MANAGEMENT',status:'active',version:1},{id:'m2',name:'Director',role_code:'MANAGEMENT',status:'active',version:1},{id:'n',name:'National',role_code:'NSM',status:'active',version:1}];const snapshot=hierarchySnapshot(data,[edge('report','m1','n')],filters);assert.deepEqual(organizationBranches(snapshot).map(p=>p.id),['m1','m2']);assert.equal(snapshot.relations.length,1);assert.equal(snapshot.members.length,3)});

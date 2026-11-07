@@ -1,6 +1,6 @@
 # Rencana dan aktivitas kunjungan
 
-Implementasi lokal, 7 November 2026. Belum dideploy ke staging.
+Rilis staging, 7 November 2026. Rilis pembagian halaman, peta, dan batas wilayah telah dideploy melalui GitHub Actions; perapian bagan tunggal menyusul dalam commit ini.
 
 ## Pembagian halaman
 
@@ -29,7 +29,7 @@ Rute lama tetap kompatibel. Mode baru memakai GET /api/work-plans atau /api/acti
 
 Response menambahkan meta.date, timezone, summary, overdue_tolerance_minutes dan pagination. Baris menambahkan identitas pelaksana, tautan plan/activity yang cocok organisasi-pelanggan-pelaksana, waktu event, lokasi event, dan maksimum 20 metadata lampiran ready. Storage key tidak dikirim. Unduhan tetap melalui endpoint privat yang sudah ada.
 
-Migrasi 0060 menambah indeks waktu rencana, tautan activity-plan, event kunjungan dan lampiran. Hanya diterapkan pada prototype lokal pada pekerjaan ini. Tidak ada perubahan customer, invoice, kunjungan, agenda atau batas wilayah staging.
+Migrasi 0060 menambah indeks waktu rencana, tautan activity-plan, event kunjungan dan lampiran; telah diterapkan pada staging melalui rilis gabungan. Migrasi 0061 menyederhanakan pemilihan dataset batas wilayah dengan validasi kelengkapan dan keunikan aktif tetap berlaku. Rilis ini tidak membuat atau memindahkan customer, invoice, kunjungan, atau agenda; aktivasi sumber polygon staging tetap dilakukan pengguna.
 
 ## Pemeriksaan
 
@@ -46,5 +46,13 @@ Bukti pengujian dan screenshot: .nyales-agent/staging/visit-day-*. Prinsip UI ya
 - Handoff ditampilkan sebagai Delegasi; Exception sebagai Eskalasi. Kunci API/database tetap sama. Ikon rencana kunjungan menggunakan places.png yang diberikan pengguna.
 - Mulai sesi tetap menandai periode kerja eksplisit, diperlukan oleh generator/pencatatan aktivitas yang ada. Bukan check-in pelanggan, bukti kehadiran, atau pelacakan GPS otomatis. Penggabungan langkah ini belum diterapkan pada rilis ini.
 - Pemeriksaan staging read-only menemukan 47 akun, dua akun bernama Rizky Aditya dengan ID/peran berbeda (Management dan NSM), akun Didik nonaktif, NSM dan Supervisor tanpa atasan. Tidak ada merge, penghapusan, atau penugasan atasan berdasarkan kemiripan nama.
-- Bagan aktif menyembunyikan anggota nonaktif secara default; tim tanpa hubungan ke Management dapat dibuka terpisah. Pimpinan Management tidak dianggap membutuhkan atasan. Riwayat tetap tersedia. Tim terpisah bukan hubungan organisasi baru yang diasumsikan.
+- Bagan aktif menyembunyikan anggota nonaktif secara default dan menyatukan semua cabang di bawah simpul visual NYALES. Simpul organisasi bukan akun atau hubungan pelaporan baru. Management tidak diwajibkan mempunyai atasan. Riwayat tetap tersedia; cabang yang belum terhubung pada snapshot historis memakai garis putus-putus, tanpa mengarang hubungan pelaporan.
 - Pengaman user: tolak penonaktifan/perubahan role selama pekerjaan terbuka belum ditangani; revoke sesi saat identitas autentikasi berubah atau user dinonaktifkan, tutup pelaporan masuk sesuai batas tanggal tanpa menghapus sejarah. Diuji termasuk kondisi transaksi bersamaan.
+
+## Perapian hirarki sintetis menjadi satu bagan
+
+Atas izin eksplisit pengguna untuk mengubah data dummy, dua tim operasional yang sebelumnya terpisah dihubungkan melalui pelaporan efektif 7 November 2026. NSM Rizky Aditya melapor ke Management Didik Priyo; Area Manager baru Bima Prasetya menangani scope area lama tim Supervisor Bekasi dan melapor ke NSM tersebut; Supervisor Bekasi melapor ke Bima. Akun Management sintetis yang sebelumnya juga bernama Rizky Aditya diubah menjadi Rangga Pratama, tanpa menggabungkan identitas. Akun Didik nonaktif tetap nonaktif. Dua akun Management ditempatkan di bawah simpul visual organisasi, bukan saling melapor.
+
+Backup D1 dibuat sebelum perubahan. SQL dijalankan lebih dahulu pada salinan backup, dengan pemeriksaan role, kanal, satu atasan, keterjangkauan, foreign key dan hash tabel bisnis. Perubahan user, scope dan pelaporan dicatat dalam master audit. Verifikasi staging: 47 akun aktif, 45 hubungan pelaporan, seluruh 47 akun terjangkau dari Management, nol anggota operasional tanpa atasan dan nol pelanggaran lapisan/kanal. Jumlah dan kontrol nilai customer, assignment, invoice, activity dan work plan sama sebelum/sesudah; transaksi, penugasan pelanggan dan agenda tidak dipindahkan.
+
+Pemeriksaan rilis bagan: typecheck dan build lulus; 528 tes lulus, 8 dilewati, nol gagal. Prototype desktop/mobile diperiksa dengan data lokal terpisah; tidak ada error JavaScript atau overflow mobile.

@@ -3,6 +3,8 @@ export type ReportingEdge={id:string;subordinate_id:string;manager_id:string;are
 export const roleNames:Record<string,string>={MANAGEMENT:'Management',NSM:'National Sales Manager',AREA_MANAGER:'Area Manager',SUPERVISOR:'Supervisor',SALES_REP:'Sales',TELESALES:'Telesales'};
 export const roleName=(value?:string|null)=>value?roleNames[value]||value:'Role belum efektif';
 export function reportingOn(edge:ReportingEdge,date:string){return edge.effective_from_date<=date&&(!edge.effective_to_date||edge.effective_to_date>date)}
+/** Organization is a visual container, not a person or an invented reporting assignment. */
+export function organizationBranches(snapshot:ReturnType<typeof hierarchySnapshot>){return snapshot.visible.filter(person=>!snapshot.parents.has(person.id))}
 
 /** Detached operational teams need a real reporting decision, never a fabricated edge. */
 export function hierarchyGroups(snapshot:ReturnType<typeof hierarchySnapshot>){

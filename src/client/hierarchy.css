@@ -18,3 +18,5 @@
 @media(max-width:520px){.org-canvas{border-radius:22px}.org-canvas .org-chart-stage{height:404px}.org-canvas .org-history{height:404px;padding:18px}.org-canvas .org-chart-toolbar{padding:14px;gap:10px}.org-canvas .org-summary{margin:0}.org-canvas .org-chart-toolbar>.button{padding:10px;font-size:11px}.org-canvas .org-view-select{width:106px}}
 
 .org-detached-teams{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid #d5e4dd;background:#f6faf6b3}.org-detached-teams>span{font-size:12px;color:#66796e;margin-right:8px}.org-detached-teams>.button{min-height:38px;padding:8px 12px;font-size:12px}@media(max-width:767px){.org-detached-teams>.button{min-height:44px}.org-detached-teams>span{flex-basis:100%}}
+
+.org-organization{box-sizing:border-box;width:244px;min-height:100px;background:#223d34;color:#fff;border:1px solid #ffffffb3;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px #183b2d18}.org-organization strong{font-size:22px;letter-spacing:2px;font-weight:600}.org-organization span{font-size:12px;color:#d4e7df}
