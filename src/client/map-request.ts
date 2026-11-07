@@ -1,6 +1,6 @@
 /** Bound the whole request, including token retrieval and JSON body decoding.
  * A slow/ignored AbortSignal must not leave the page spinner hanging forever. */
-export async function readMapData(send:(url:string,init:RequestInit)=>Promise<Response>,url:string,signal?:AbortSignal,timeoutMs=30000){
+export async function readMapData(send:(url:string,init:RequestInit)=>Promise<Response>,url:string,signal?:AbortSignal,timeoutMs=60000){
  if(signal?.aborted)throw new DOMException('Aborted','AbortError');
  const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined,onAbort:()=>void=()=>{};
  const stop=new Promise<never>((_,reject)=>{
