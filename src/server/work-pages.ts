@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import {customerPredicate,type Scope} from './scope';
+import {readFieldWorkDay} from './field-work-day';
 
 export const workPageQuery=z.object({
  limit:z.coerce.number().int().min(1).max(100),
@@ -7,6 +8,9 @@ export const workPageQuery=z.object({
  status:z.string().trim().min(1).max(40).optional(),
  channel:z.enum(['field','telesales']).optional(),
  activity_kind:z.enum(['visit','call']).optional(),
+ date:z.iso.date().optional(),
+ user_id:z.string().min(1).max(128).optional(),
+ id:z.string().min(1).max(128).optional(),
 }).strict();
 
 export type WorkPageKind='work-plans'|'work-sessions'|'activities'|'tasks'|'handoffs'|'exceptions';
@@ -24,6 +28,11 @@ export async function readWorkPage(db:D1Database,s:Scope,kind:WorkPageKind,input
  const parsed=workPageQuery.safeParse(input);
  if(!parsed.success)return {error:'INVALID_WORK_PAGE'} as const;
  const q=parsed.data,where:string[]=[],params:any[]=[];
+ if(q.date){
+  if(!['work-plans','activities'].includes(kind)||q.status||q.channel&&q.channel!=='field'||q.activity_kind&&q.activity_kind!=='visit')return {error:'INVALID_WORK_PAGE_FILTER'} as const;
+  return readFieldWorkDay(db,s,kind as 'work-plans'|'activities',{...q,date:q.date});
+ }
+ if(q.user_id||q.id)return {error:'INVALID_WORK_PAGE_FILTER'} as const;
  let select:string,from:string,order:string;
  if(kind==='work-sessions'){
   if(q.channel||q.activity_kind||q.status&&!['active','ended'].includes(q.status))return {error:'INVALID_WORK_PAGE_FILTER'} as const;

@@ -35,6 +35,7 @@ import './select.css';
 import './mobile.css';
 import './map-controls.css';
 import './daily-visit.css';
+import './visit-day.css';
 import './portfolio.css';
 import './scrollbars.css';
 import './modal.css';
