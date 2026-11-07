@@ -93,3 +93,16 @@ test('a failing cache never fails the request',async()=>{
   });
   assert.equal(reads,1);
 });
+
+test('concurrent cold reads share one producer without mixing scope and a failed producer can retry',async()=>{
+ const runtime=fakeRuntime();await withRuntime(runtime.caches,async()=>{
+  let release!:()=>void,calls=0;const waiting=new Promise<void>(resolve=>release=resolve);
+  const read=()=>cachedJson({},'cold-one',60,async()=>{calls++;await waiting;return{scope:'one'}});
+  const pending=Array.from({length:12},read);
+  const other=await cachedJson({},'cold-two',60,async()=>({scope:'two'}));assert.equal(other.value.scope,'two');release();
+  const results=await Promise.all(pending);assert.equal(calls,1);assert.ok(results.every(r=>r.value.scope==='one'));
+  let failed=0,releaseError!:()=>void;const blocked=new Promise<void>(resolve=>releaseError=resolve);const fail=()=>cachedJson({},'cold-fail',60,async()=>{failed++;await blocked;throw Error('D1 unavailable')});
+  const pendingFailures=Promise.allSettled([fail(),fail(),fail()]);await new Promise(resolve=>setImmediate(resolve));releaseError();const failures=await pendingFailures;assert.equal(failed,1);assert.ok(failures.every(r=>r.status==='rejected'));
+  assert.deepEqual((await cachedJson({},'cold-fail',60,async()=>({ok:true}))).value,{ok:true});
+ });
+});

@@ -8,6 +8,7 @@ import type {Scope} from './scope';
 import {digest} from './operations';
 
 const ORIGIN='https://nyales-cache.internal/';
+const pendingReads=new WeakMap<object,Map<string,Promise<unknown>>>();
 export const READ_MODEL_TTL_SECONDS=60;
 export const DASHBOARD_TTL_SECONDS=300;
 
@@ -61,25 +62,17 @@ export async function cachedJson<T>(
   const cache=(globalThis as any).caches?.default as Cache|undefined;
   if(!cache)return{value:await produce(),hit:false,enabled:false};
 
-  // Fixed-size opaque URL: filters can contain hundreds of scope IDs and must
-  // not exceed Cache API key limits or expose query text in a cache URL.
-  const request=new Request(ORIGIN+await digest(key),{method:'GET'});
-  try{
-    const hit=await cache.match(request);
-    if(hit)return{value:await hit.json() as T,hit:true,enabled:true};
-  }catch(error){
-    // Cache read unavailable: fall through to the origin read.
-  }
-
-  const value=await produce();
-  try{
-    const response=new Response(JSON.stringify(value),{
-      headers:{'content-type':'application/json','cache-control':`public, max-age=${Math.max(1,ttlSeconds)}`},
-    });
-    const task=cache.put(request,response);
-    if(c?.executionCtx?.waitUntil)c.executionCtx.waitUntil(task);else await task;
-  }catch(error){
-    // Cache write unavailable: the response is still correct, it just is not stored.
-  }
-  return{value,hit:false,enabled:true};
+  // Register before async hashing/cache lookup: simultaneous misses must not race
+  // ahead of the shared producer, including when the producer rejects immediately.
+  let pending=pendingReads.get(cache);if(!pending){pending=new Map();pendingReads.set(cache,pending)}
+  const existing=pending.get(key);if(existing)return await existing as CacheLookup<T>;
+  const task=(async():Promise<CacheLookup<T>>=>{
+    const request=new Request(ORIGIN+await digest(key),{method:'GET'});
+    try{const hit=await cache.match(request);if(hit)return{value:await hit.json() as T,hit:true,enabled:true}}catch{/* Fall back to origin on cache failure. */}
+    const value=await produce();
+    try{await cache.put(request,new Response(JSON.stringify(value),{headers:{'content-type':'application/json','cache-control':`public, max-age=${Math.max(1,ttlSeconds)}`}}))}catch{/* Preserve successful origin reads when cache storage fails. */}
+    return{value,hit:false,enabled:true};
+  })();
+  pending.set(key,task);
+  try{return await task}finally{if(pending.get(key)===task)pending.delete(key)}
 }

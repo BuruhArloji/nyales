@@ -214,3 +214,13 @@ Ambang keputusan:
 | Pagination mengubah urutan | `ORDER BY name, id`; test regresi isi halaman |
 | Kuota habis lagi | stale-on-error + alarm 60% |
 | Perubahan besar sekaligus | tiap fase di-commit & di-deploy terpisah, diukur sebelum lanjut |
+
+## Insiden D1 7429 dan HTTP 503 — 8 November 2026
+
+Pengguna melaporkan 503 pada `/api/geo/map`, `/api/users` dan `/api/me`, termasuk `IDENTITY_STORE_UNAVAILABLE`. Pemeriksaan D1 remote mengembalikan kode 7429: database melampaui CPU time limit dan di-reset. Pemeriksaan berikutnya dengan SELECT 1, timezone organisasi dan transfer terjadwal merespons normal. Ini membuktikan gangguan D1 sementara; tanpa trace query pemicu, jangan mengklaim satu query tertentu sebagai akar penyebab yang sudah terbukti. Public health 200 tidak membuktikan endpoint data terautentikasi sehat. Tidak mengubah kredensial, role, atau mekanisme izin untuk mengatasi error.
+
+Mitigasi: full customer read model memakai halaman keyset maksimal 1.000 baris per pernyataan, bukan satu hasil 57 ribu pelanggan. Cursor memakai `(organization_id,id)` yang sudah diindeks; tidak memakai OFFSET, tidak membatasi total pelanggan, dan tetap mempertahankan canonical merge, tenant, area/penugasan, koordinat kosong dan pengurutan nama BINARY. Detail pelanggan tetap dibatasi satu ID. Cache pin map diberi versi baru. Permintaan cache kosong serentak untuk scope/revisi yang sama berbagi satu producer dalam isolate; error producer tidak disimpan dan cache kegagalan tetap mengembalikan hasil origin bila tersedia. Ini tidak menggabungkan query antar-scope atau meng-cache login/sesi.
+
+Rekonsiliasi fixture lebih dari dua halaman membandingkan seluruh ID/nama/alamat dengan query lama, memeriksa akses Sales/Telesales, data asing, merged customer, nama Unicode, koordinat kosong dan query plan. Query plan memakai `customer_org_identity` dengan rentang id, tanpa temporary sort. Uji cache 12 pembaca bersamaan menjalankan satu producer; scope lain tetap terpisah dan kegagalan dapat dicoba ulang.
+
+Salinan backup staging menghasilkan response map tetap 18.736.106 byte sebelum/sesudah, status lokal 200. Ini mitigasi ukuran kerja tiap statement dan lonjakan permintaan, bukan klaim payload peta sudah kecil atau kuota baca berkurang. Jumlah statement bertambah; total cohort tetap sama. Batas waktu frontend 60 detik tetap berlaku. Pemadatan/progressive loading referensi dan pin belum termasuk perubahan ini. Pemulihan endpoint data di sesi Google pengguna perlu diverifikasi setelah deploy.

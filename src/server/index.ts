@@ -1,3 +1,4 @@
+import {readCustomerRows} from './customer-read-rows';
 import {ownerSalesMode,ownerSalesScope} from './owner-sales-mode';
 import {villageTerritory} from './village-territory';
 import {effectiveCustomerStatus} from '../shared/customer-recency';
@@ -205,9 +206,7 @@ async function readCustomers(db:D1Database,s:Scope,customerId?:string){
  // Keep the same scope and area join as the directory, including merged aliases.
  if(detail&&!await db.prepare(`SELECT co.id FROM customer_outlet co JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id WHERE ${filter.sql} AND co.merged_into_id IS NULL AND co.id=?`).bind(...filter.params,customerId).first())return [];
  const facts=await readDirectoryFacts(db,s,customerId);
- const rows=await db.prepare(`SELECT co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified FROM customer_outlet co
- JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id
- WHERE ${filter.sql} AND co.merged_into_id IS NULL ${detail?'AND co.id=?':''} ORDER BY co.name`).bind(...filter.params,...(detail?[customerId]:[])).all<any>();
+ const rows={results:await readCustomerRows(db,s,customerId)};
 
  const segmentRun=await segmentationSnapshot(db,s.identity.organization_id,s.date);const segmentRows=(await db.prepare('SELECT customer_id,status,tier,provisional,observed_status,cutoff,rule_id,rule_version FROM customer_status_snapshot WHERE run_id=?'+(detail?' AND customer_id=?':'')).bind(segmentRun.id,...(detail?[customerId]:[])).all<any>()).results;
  const segmentsByCustomer=new Map(segmentRows.map(r=>[r.customer_id,r]));
@@ -227,7 +226,7 @@ async function loadCustomers(c:any){
 /** Map cache excludes forms and segmentation evidence before serialization. */
 async function loadMapCustomers(c:any){
  const s=c.get('scope') as Scope;
- return cachedJson(c,scopeCacheKey(s,'customer-map-pins-v3',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,async()=>(await readCustomers(c.env.DB,s)).map(row=>({...mapCustomerPin(row),address:row.address,latitude_e7:row.latitude_e7,longitude_e7:row.longitude_e7,version:row.version})));
+ return cachedJson(c,scopeCacheKey(s,'customer-map-pins-v4',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,async()=>(await readCustomers(c.env.DB,s)).map(row=>({...mapCustomerPin(row),address:row.address,latitude_e7:row.latitude_e7,longitude_e7:row.longitude_e7,version:row.version})));
 }
 
 scopedRoutes.get('/api/customers',async c=>{
