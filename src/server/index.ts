@@ -1,3 +1,4 @@
+import {effectiveCustomerStatus} from '../shared/customer-recency';
 import {readMapSalesHierarchy} from './map-sales';
 import {visitAttendance} from './visit-attendance';
 import {listPortfolioVisitors} from './portfolio-visitors';
@@ -209,20 +210,20 @@ async function readCustomers(db:D1Database,s:Scope,customerId?:string){
  const current=(await db.prepare(`SELECT COALESCE(al.canonical_id,ca.outlet_id) customer_id,ca.rep_id,ca.channel,u.name FROM customer_assignment ca LEFT JOIN customer_alias al ON al.organization_id=ca.organization_id AND al.source_id=ca.outlet_id JOIN app_user u ON u.organization_id=ca.organization_id AND u.id=ca.rep_id WHERE ca.organization_id=? AND ca.effective_from_date<=? AND (ca.effective_to_date IS NULL OR ca.effective_to_date>?) ${detail?'AND ca.outlet_id IN (SELECT ? UNION SELECT source_id FROM customer_alias WHERE organization_id=? AND canonical_id=?) AND COALESCE(al.canonical_id,ca.outlet_id)=?':''}`).bind(s.identity.organization_id,s.date,s.date,...(detail?[customerId,s.identity.organization_id,customerId,customerId]:[])).all<any>()).results;
 
  const ownersByCustomer=new Map<string,any[]>();for(const assignment of current){const list=ownersByCustomer.get(assignment.customer_id)||[];list.push(assignment);ownersByCustomer.set(assignment.customer_id,list)}
- return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,directory_dataset_id:r.directory_dataset_id,transaction_history_unverified:Boolean(r.transaction_history_unverified),area:r.area.replace(/^Area /,''),field_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='field')?.rep_id||null,telesales_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.rep_id||null,telesales_owner:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.name||'Belum assigned',owner:facts.owners.get(r.id)||'Belum assigned',status:segmentsByCustomer.get(r.id)?.status||'Unknown',tier:segmentsByCustomer.get(r.id)?.tier||'Belum tersedia',segmentation:segmentsByCustomer.get(r.id)||null,actual:(facts.invoices.get(r.id)?.actual||0)/1000000,actual_minor:facts.invoices.get(r.id)?.actual||0,last:facts.invoices.get(r.id)?.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
+ return rows.results.map(r=>({id:r.id,name:r.name,latitude_e7:r.latitude_e7,longitude_e7:r.longitude_e7,area_id:r.area_id,address:r.address,external_code:r.external_code,external_code_review:r.external_code_review,version:r.version,record_status:r.record_status,coordinate_status:r.coordinate_status,location_note:r.location_note,outlet_type:r.outlet_type,service_frequency_days:r.service_frequency_days,visit_window:r.visit_window,directory_dataset_id:r.directory_dataset_id,transaction_history_unverified:Boolean(r.transaction_history_unverified),area:r.area.replace(/^Area /,''),field_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='field')?.rep_id||null,telesales_rep_id:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.rep_id||null,telesales_owner:ownersByCustomer.get(r.id)?.find(a=>a.channel==='telesales')?.name||'Belum assigned',owner:facts.owners.get(r.id)||'Belum assigned',status:effectiveCustomerStatus(facts.invoices.get(r.id)?.last,s.date,segmentsByCustomer.get(r.id)?.status||'Unknown'),tier:segmentsByCustomer.get(r.id)?.tier||'Belum tersedia',segmentation:segmentsByCustomer.get(r.id)||null,actual:(facts.invoices.get(r.id)?.actual||0)/1000000,actual_minor:facts.invoices.get(r.id)?.actual||0,last:facts.invoices.get(r.id)?.last||'Belum pernah invoice',lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7}));
 
 }
 
 /** Cached per authorization scope: dashboard, customer list, map and queue all read the same model. */
 async function loadCustomers(c:any){
  const s=c.get('scope') as Scope;
- return cachedJson(c,scopeCacheKey(s,'customers',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,()=>readCustomers(c.env.DB,s));
+ return cachedJson(c,scopeCacheKey(s,'customers-recency-v3',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,()=>readCustomers(c.env.DB,s));
  }
 
 /** Map cache excludes forms and segmentation evidence before serialization. */
 async function loadMapCustomers(c:any){
  const s=c.get('scope') as Scope;
- return cachedJson(c,scopeCacheKey(s,'customer-map-pins-v1',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,async()=>(await readCustomers(c.env.DB,s)).map(row=>({...mapCustomerPin(row),address:row.address,latitude_e7:row.latitude_e7,longitude_e7:row.longitude_e7,version:row.version})));
+ return cachedJson(c,scopeCacheKey(s,'customer-map-pins-v3',await readModelRevision(c)),READ_MODEL_TTL_SECONDS,async()=>(await readCustomers(c.env.DB,s)).map(row=>({...mapCustomerPin(row),address:row.address,latitude_e7:row.latitude_e7,longitude_e7:row.longitude_e7,version:row.version})));
 }
 
 scopedRoutes.get('/api/customers',async c=>{
@@ -273,7 +274,7 @@ scopedRoutes.get('/api/customers/:id',async c=>{const requested=c.req.param('id'
 
 scopedRoutes.get('/api/dashboard',async c=>{
  const s=c.get('scope') as Scope;
- const cached=await cachedJson(c,scopeCacheKey(s,'dashboard',await readModelRevision(c)),DASHBOARD_TTL_SECONDS,()=>buildDashboard(c,s));
+ const cached=await cachedJson(c,scopeCacheKey(s,'dashboard-recency-v3',await readModelRevision(c)),DASHBOARD_TTL_SECONDS,()=>buildDashboard(c,s));
  c.header('X-NYALES-Cache',cacheStatus(cached));
  return c.json({data:cached.value,meta:meta()});
 });
@@ -292,7 +293,7 @@ async function buildDashboard(c:any,s:Scope){
 
  const targetOverview=await targetSummary(c.env.DB,s,s.date.slice(0,7));const targetTotal=targetOverview.target_minor,targetActual=targetOverview.actual_minor;
  const customerCohort=customers.filter((x:any)=>x.record_status==='active'),unknownCustomerCount=customerCohort.filter((x:any)=>x.status==='Unknown').length;
- return {period:s.date.slice(0,7),trend,actual_net_minor:rows.results.reduce((a:number,r:any)=>a+r.amount,0),target_net_minor:targetTotal,target_needs_review:targetOverview.needs_review,achievement:targetTotal&&targetActual!==null&&!targetOverview.needs_review?targetActual/targetTotal*100:null,active_customer_count:unknownCustomerCount?null:customerCohort.filter((x:any)=>x.status==='Aktif').length,customer_status_unknown_count:unknownCustomerCount,observed_active_customer_count:customerCohort.filter((x:any)=>x.segmentation?.observed_status==='Aktif').length,sales_rep_count:rows.results.reduce((a:number,r:any)=>a+r.reps,0),channels:rows.results.map((r:any)=>({channel:r.channel,actual_minor:r.amount,target_minor:null}))};
+ return {period:s.date.slice(0,7),trend,actual_net_minor:rows.results.reduce((a:number,r:any)=>a+r.amount,0),target_net_minor:targetTotal,target_needs_review:targetOverview.needs_review,achievement:targetTotal&&targetActual!==null&&!targetOverview.needs_review?targetActual/targetTotal*100:null,active_customer_count:customerCohort.filter((x:any)=>x.status==='Aktif').length,customer_status_unknown_count:unknownCustomerCount,observed_active_customer_count:customerCohort.filter((x:any)=>x.status==='Aktif').length,sales_rep_count:rows.results.reduce((a:number,r:any)=>a+r.reps,0),channels:rows.results.map((r:any)=>({channel:r.channel,actual_minor:r.amount,target_minor:null}))};
 }
 
 scopedRoutes.get('/api/telesales/queue',async c=>{

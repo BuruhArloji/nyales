@@ -47,7 +47,7 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
     params.push(like,like,like,like);
   }
   if(q.areaId){where.push('co.area_id=?');params.push(q.areaId)}
-  if(q.status){where.push('ss.status=?');params.push(q.status)}
+  if(q.status){where.push("CASE WHEN recent.customer_id IS NOT NULL THEN 'Aktif' ELSE COALESCE(ss.status,'Unknown') END=?");params.push(q.status)}
   if(q.recordStatus){where.push('co.record_status=?');params.push(q.recordStatus)}
   if(q.location){
     if(q.location==='missing')where.push('(co.latitude_e7 IS NULL OR co.longitude_e7 IS NULL)');
@@ -62,15 +62,15 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
 
   const from=`FROM customer_outlet co
     JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id
-    ${assignmentOnly?'':'LEFT JOIN customer_status_snapshot ss ON ss.run_id=? AND ss.customer_id=co.id'}
+    ${assignmentOnly?'':`LEFT JOIN customer_status_snapshot ss ON ss.run_id=? AND ss.customer_id=co.id LEFT JOIN (SELECT DISTINCT COALESCE(child.merged_into_id,child.id) customer_id FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id WHERE i.organization_id=? AND i.is_current=1 AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=?) recent ON recent.customer_id=co.id`}
     WHERE ${where.join(' AND ')}`;
 
-  const fromParams=[...(run?[run.id]:[]),...params];
+  const fromParams=[...(run?[run.id,org,new Date(Date.parse(s.date)-90*86400000).toISOString().slice(0,10),s.date]:[]),...params];
   const count=async()=>(await db.prepare(`SELECT COUNT(*) n ${from}`).bind(...fromParams).first<{n:number}>())?.n||0;
   // One exact total per filter/revision, shared across pages; authorization was
   // resolved for this request before looking up the cache. No cached page rows.
   const total=context?(await cachedJson(context,scopeCacheKey(s,'customer-count',JSON.stringify([await readModelRevision(context),from,fromParams])),30,count)).value:await count();
-  const columns=assignmentOnly?'co.id,co.name,a.name area,co.area_id,co.external_code,co.version,co.record_status':'co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified';
+  const columns=assignmentOnly?'co.id,co.name,a.name area,co.area_id,co.external_code,co.version,co.record_status':'co.id,co.name,a.name area,co.latitude_e7,co.longitude_e7,co.area_id,co.address,co.external_code,co.external_code_review,co.version,co.record_status,co.coordinate_status,co.location_note,co.outlet_type,co.service_frequency_days,co.visit_window,co.directory_dataset_id,co.transaction_history_unverified,recent.customer_id recent_invoice_id';
   const page=await db.prepare(`SELECT ${columns} ${from} ORDER BY co.name COLLATE NOCASE,co.id LIMIT ? OFFSET ?`).bind(...fromParams,limit,offset).all<any>();
 
   const ids=page.results.map((row:any)=>row.id);
@@ -132,7 +132,7 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
         telesales_rep_id:owner.find(x=>x.channel==='telesales')?.rep_id||null,
         telesales_owner:owner.find(x=>x.channel==='telesales')?.name||'Belum assigned',
         owner:owner.find(x=>x.channel==='field')?.name||'Belum assigned',
-        status:segment?.status||'Unknown',tier:segment?.tier||'Belum tersedia',segmentation:segment||null,
+        status:r.recent_invoice_id?'Aktif':segment?.status||'Unknown',tier:segment?.tier||'Belum tersedia',segmentation:segment||null,
         actual:(fact?.actual||0)/1000000,actual_minor:fact?.actual||0,last:fact?.last||'Belum pernah invoice',
         lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7,
       };

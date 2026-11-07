@@ -103,7 +103,7 @@
 .map-popup-heading{padding:20px 58px 15px 20px;flex:none;border-bottom:1px solid #e6eee8;background:linear-gradient(135deg,#edf7f1,#f9fcfa)}
 .map-popup-heading>small{display:block;font-size:10px!important;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:#577769!important;margin-bottom:6px}
 .map-popup-heading>strong{display:block;font-size:17px;line-height:1.35;font-weight:600;overflow-wrap:anywhere}
-.map-popup-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 20px;scrollbar-width:thin;scrollbar-color:#c3d4c9 transparent;flex:1 1 auto}
+.map-popup-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 20px;flex:1 1 auto}
 .map-popup-body:focus-visible{outline:2px solid #168e85;outline-offset:-3px;border-radius:10px}
 .map-popup-media{margin-bottom:15px}.map-popup-media .map-popup-image{height:150px;border-radius:15px;object-fit:cover}
 .map-popup-photo-note:not([hidden]){display:block;padding:14px;background:#edf3ef;border:1px dashed #cbdcd0;border-radius:14px;color:#6a7d70;font-size:11px}

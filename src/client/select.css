@@ -13,7 +13,7 @@
   box-shadow:0 12px 32px rgba(21,48,38,.14),inset 0 1px 0 rgba(255,255,255,.96);
   min-inline-size:min(anchor-size(width),calc(100dvw - 24px));max-inline-size:min(440px,calc(100dvw - 24px));
   position-try-order:normal;
-  max-block-size:min(360px,60dvh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#a8c6ba transparent;
+  max-block-size:min(360px,60dvh);overflow-y:auto;overscroll-behavior:contain;
   opacity:0;translate:0 -5px;
   transition:opacity .18s ease,translate .24s cubic-bezier(.22,.9,.25,1),display .24s allow-discrete,overlay .24s allow-discrete;
  }
@@ -35,7 +35,7 @@
 }
 
 /* Multi-selection controls stay listboxes, with the same surfaces and selection color. */
-select[multiple]{border-radius:14px;background:#f5faf7;color:#354e44;scrollbar-width:thin;scrollbar-color:#a8c6ba transparent}
+select[multiple]{border-radius:14px;background:#f5faf7;color:#354e44;}
 select[multiple] option{padding:9px 12px;border-radius:9px;white-space:normal}
 select[multiple] option:checked{background:#dcefe7 linear-gradient(#dcefe7,#dcefe7);color:#165d50}
 
