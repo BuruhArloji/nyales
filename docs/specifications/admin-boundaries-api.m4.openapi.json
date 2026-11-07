@@ -1253,7 +1253,7 @@
           "expected_features": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000
+            "maximum": 5000
           },
           "expected_chunks": {
             "type": "integer",
@@ -1622,11 +1622,11 @@
   },
   "x-limits": {
     "maxBytes": 1572864,
-    "maxDatasetBytes": 8388608,
+    "maxDatasetBytes": 67108864,
     "maxFeatures": 32,
     "maxPositions": 40000,
     "maxFeaturePositions": 20000,
-    "maxDatasetFeatures": 1000,
+    "maxDatasetFeatures": 5000,
     "maxChunks": 100
   }
 }

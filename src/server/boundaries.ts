@@ -95,7 +95,7 @@ boundaries.post('/api/admin-boundaries/datasets/:id/activate',async c=>{
 });
 boundaries.get('/api/admin-boundaries/datasets/:id/boundaries',async c=>{
  const org=c.get('identity').organization_id,row=await load(c.env.DB,org,c.req.param('id'));if(!row)return c.json({code:'NOT_FOUND'},404);
- const after=c.req.query('after')||'',rows=await c.env.DB.prepare('SELECT id,admin_unit_id,name_snapshot,parent_code_snapshot,hierarchy_json,geometry_type,geometry_checksum,min_longitude_e7,min_latitude_e7,max_longitude_e7,max_latitude_e7 FROM admin_boundary WHERE organization_id=? AND dataset_id=? AND id>? ORDER BY id LIMIT 101').bind(org,row.id,after).all<any>();
+ const after=c.req.query('after')||'',q=(c.req.query('q')||'').trim();if(q.length>120)return c.json({code:'INVALID_SEARCH'},422);const rows=await c.env.DB.prepare('SELECT id,admin_unit_id,name_snapshot,parent_code_snapshot,hierarchy_json,geometry_type,geometry_checksum,min_longitude_e7,min_latitude_e7,max_longitude_e7,max_latitude_e7 FROM admin_boundary WHERE organization_id=? AND dataset_id=? AND id>?'+(q?' AND (name_snapshot LIKE ? OR hierarchy_json LIKE ?)':'')+' ORDER BY id LIMIT 101').bind(org,row.id,after,...(q?['%'+q+'%','%'+q+'%']:[])).all<any>();
  return c.json({data:rows.results.slice(0,100).map(({hierarchy_json,...x})=>({...x,hierarchy:JSON.parse(hierarchy_json)})),next:rows.results.length>100?rows.results[99].id:null,dataset_status:row.status});
 });
 boundaries.get('/api/admin-boundaries/datasets/:id/chunks/:index',async c=>{

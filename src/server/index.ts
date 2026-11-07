@@ -1,3 +1,4 @@
+import {villageTerritory} from './village-territory';
 import {effectiveCustomerStatus} from '../shared/customer-recency';
 import {readMapSalesHierarchy} from './map-sales';
 import {visitAttendance} from './visit-attendance';
@@ -419,6 +420,7 @@ scopedRoutes.route('/',recovery);
 scopedRoutes.route('/',boundaries);
 scopedRoutes.route('/',createGeographyRoutes(mapPayload));
 scopedRoutes.route('/',distribution);
+scopedRoutes.route('/',villageTerritory);
 scopedRoutes.route('/',regionalAnalytics);
 scopedRoutes.route('/',customerRisk);
 scopedRoutes.route('/',riskEvaluations);

@@ -1347,6 +1347,42 @@
       "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
     },
     {
+      "method": "POST",
+      "path": "/api/geo/village-territories/commit",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "distribution-api.m4.openapi.json",
+          "path": "/api/geo/village-territories/commit"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "POST",
+      "path": "/api/geo/village-territories/preview",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "distribution-api.m4.openapi.json",
+          "path": "/api/geo/village-territories/preview"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/geo/village-territories",
+      "authentication": "bearer plus device session; scope checked server-side",
+      "contracts": [
+        {
+          "file": "distribution-api.m4.openapi.json",
+          "path": "/api/geo/village-territories"
+        }
+      ],
+      "contract_boundary": "Links identify implementation slices. Runtime validators and business tests remain authoritative; response envelopes are not a fully typed SDK contract."
+    },
+    {
       "method": "GET",
       "path": "/api/handoff-recipients",
       "authentication": "bearer plus device session; scope checked server-side",

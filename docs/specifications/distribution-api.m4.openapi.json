@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "NYALES WEB-065 village distribution local API",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Membership alone never transfers customers or expands customer read scope. Assignments use current active confirmed geography cohort, optionally an explicit subset and separately reasoned exception customers. Both channels must be reviewed for customer area transfers; null recipient explicitly unassigns that channel. All relevant org inputs are epoch guarded. Single batch: 50 villages across at most 16 immutable R2 chunks, 25 assignment customers, 600 total prepared statements; larger cohorts require explicit subsets, never silent partial commit. No cloud capacity guarantee. Historical context is current-month observed stored validated current IDR invoice net (whole IDR rupiah), all channels for the full active confirmed selected geography cohort, excluding explicit exceptions; never reattributes invoices/targets/visits/incentives. Preview epoch may be invalidated conservatively by any relevant organization change. Future committed cohort is frozen; later mapping changes do not automatically cancel or expand it."
   },
   "security": [
@@ -236,6 +236,161 @@
           }
         }
       }
+    },
+    "/api/geo/village-territories": {
+      "get": {
+        "operationId": "village_territory_list",
+        "summary": "Effective and scheduled whole-village field owners, 50 rows per page",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            }
+          }
+        ],
+        "x-access-policy": "Management/NSM organization-wide only; portfolio visitor mutations denied",
+        "x-constraints": "One field rep per village and date; no customer subsets or exceptions. 50 villages, 10000 confirmed mapped active canonical customers, 450000 ID bytes. Preview hash and source/agenda epochs fence commit. Telesales and historical attribution unchanged. Agenda cancellation requires explicit action. Overload warns without splitting a village.",
+        "responses": {
+          "200": {
+            "description": "data envelope; list has owners and nullable next_offset, preview has summary, blockers, can_commit and preview_hash"
+          },
+          "201": {
+            "description": "data envelope; list has owners and nullable next_offset, preview has summary, blockers, can_commit and preview_hash"
+          },
+          "401": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "403": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "404": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "409": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "412": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "422": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "503": {
+            "description": "Stable code error; no partial mutation"
+          }
+        }
+      }
+    },
+    "/api/geo/village-territories/preview": {
+      "post": {
+        "operationId": "village_territory_preview",
+        "summary": "Read-only whole-village cohort and dependency review",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/village_preview"
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM organization-wide only; portfolio visitor mutations denied",
+        "x-constraints": "One field rep per village and date; no customer subsets or exceptions. 50 villages, 10000 confirmed mapped active canonical customers, 450000 ID bytes. Preview hash and source/agenda epochs fence commit. Telesales and historical attribution unchanged. Agenda cancellation requires explicit action. Overload warns without splitting a village.",
+        "responses": {
+          "200": {
+            "description": "data envelope; list has owners and nullable next_offset, preview has summary, blockers, can_commit and preview_hash"
+          },
+          "201": {
+            "description": "data envelope; list has owners and nullable next_offset, preview has summary, blockers, can_commit and preview_hash"
+          },
+          "401": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "403": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "404": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "409": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "412": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "422": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "503": {
+            "description": "Stable code error; no partial mutation"
+          }
+        }
+      }
+    },
+    "/api/geo/village-territories/commit": {
+      "post": {
+        "operationId": "village_territory_commit",
+        "summary": "Atomically apply an exact whole-village ownership preview",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/village_commit"
+              }
+            }
+          }
+        },
+        "x-access-policy": "Management/NSM organization-wide only; portfolio visitor mutations denied",
+        "x-constraints": "One field rep per village and date; no customer subsets or exceptions. 50 villages, 10000 confirmed mapped active canonical customers, 450000 ID bytes. Preview hash and source/agenda epochs fence commit. Telesales and historical attribution unchanged. Agenda cancellation requires explicit action. Overload warns without splitting a village.",
+        "responses": {
+          "200": {
+            "description": "data envelope; list has owners and nullable next_offset, preview has summary, blockers, can_commit and preview_hash"
+          },
+          "201": {
+            "description": "data envelope; list has owners and nullable next_offset, preview has summary, blockers, can_commit and preview_hash"
+          },
+          "401": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "403": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "404": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "409": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "412": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "422": {
+            "description": "Stable code error; no partial mutation"
+          },
+          "503": {
+            "description": "Stable code error; no partial mutation"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -458,6 +613,132 @@
           "telesales_rep_id",
           "preview_hash",
           "basis_epoch",
+          "confirmed"
+        ],
+        "additionalProperties": false
+      },
+      "village_preview": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_ids": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "agenda_action": {
+            "default": "block",
+            "type": "string",
+            "enum": [
+              "block",
+              "cancel"
+            ]
+          }
+        },
+        "required": [
+          "dataset_id",
+          "boundary_ids",
+          "area_id",
+          "rep_id",
+          "effective_from_date",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "village_commit": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "boundary_ids": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "area_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rep_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "effective_from_date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 500
+          },
+          "agenda_action": {
+            "default": "block",
+            "type": "string",
+            "enum": [
+              "block",
+              "cancel"
+            ]
+          },
+          "preview_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "dataset_id",
+          "boundary_ids",
+          "area_id",
+          "rep_id",
+          "effective_from_date",
+          "reason",
+          "preview_hash",
           "confirmed"
         ],
         "additionalProperties": false

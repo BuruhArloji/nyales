@@ -1,3 +1,30 @@
+# Revisi WEB-065 - 7 November 2026
+
+Cakupan penataan ulang: **semua wilayah customer yang sudah diimpor**. Satu kelurahan/desa memiliki satu sales lapangan pada tanggal yang sama; satu sales boleh beberapa kelurahan. Beban berlebih menjadi peringatan untuk memindahkan kelurahan utuh. Telesales tetap terpisah. Revisi ini menggantikan aturan subset/exception lapangan pada catatan historis di bawah.
+
+## Alur dan kontrak baru
+
+Pelanggan > Distribusi sales > Atur wilayah. Pilih dataset aktif, 1-50 kelurahan, area kerja, sales penerima, tanggal efektif dan alasan. Preview memperlihatkan PIC sebelum/sesudah, pelanggan, wallet diketahui/kosong, invoice net 90 hari, kebutuhan visit seluruh beban sales penerima, kapasitas nominal dan agenda terdampak. Frekuensi kosong memakai 7 hari. Kapasitas kalender belum mengurangi perjalanan dan cuti; tidak diklaim sebagai optimasi rute.
+
+GET `/api/geo/village-territories` menyediakan metadata dan owner dengan pagination 50. POST `/preview` hanya membaca. POST `/commit` memerlukan hash preview, `confirmed=true` dan Idempotency-Key. Tidak menerima subset atau exception pelanggan lapangan. Seluruh customer aktif canonical dengan mapping confirmed yang masih valid pada kelurahan terpilih diproses atomik. Maksimum 10.000 pelanggan atau 450.000 byte ID per operasi; melebihi batas ditolak tanpa pemotongan.
+
+Validasi penerima memeriksa role, scope area, satu SPV aktif dan tanggal. Mapping stale, interval konflik, transfer tertunda, visit aktif, task PIC lama dan handoff lapangan terbuka menahan commit. Pembatalan agenda mendatang harus eksplisit. Membership, owner kelurahan, assignment, transfer area, revisi agenda, audit dan idempotensi dalam batch atomik. `village_sales_owner` masuk backup logis. Guard database menolak owner overlap dan perubahan assignment individu yang memecah kelurahan. Invoice, visit selesai, atribusi histori, target dan insentif tidak ditulis ulang.
+
+## Cutover seluruh wilayah impor
+
+1. Inventaris wilayah impor dan snapshot data sebelum migrasi. Area sumber impor bukan bukti batas operasional.
+2. Sediakan snapshot batas desa/kelurahan untuk seluruh wilayah impor, cocokkan jumlah, kode/namespace, geometri, lisensi, atribusi dan checksum. PMTiles yang terlihat di peta bukan dataset operasional.
+3. Cocokkan koordinat pelanggan dengan polygon; review konflik, garis batas, koordinat stale dan di luar cakupan. Jangan menebak dari nama area atau memilih polygon terdekat.
+4. Susun area kerja, scope/hirarki penerima dan owner per kelurahan; preview dan commit bertahap per kelurahan utuh.
+5. Customer baru atau mapping berubah setelah commit memerlukan review. Mapping confirmed ke kelurahan yang sudah punya owner ditolak jika interval assignment lapangan yang sesuai belum tersedia; siapkan penugasan owner yang cocok terlebih dahulu. Pelanggan lama dengan PIC berbeda harus ditangani lewat review perpindahan, bukan dipindah diam-diam oleh mapping. Aktivasi batas saja tidak berarti semua customer sudah mendapat PIC.
+6. Arsipkan area lama setelah kosong dan dependensi berpindah. Pertahankan histori referensi transaksi.
+
+**Belum dijalankan:** cutover staging, penghapusan area lama atau aktivasi batas nyata. Pemeriksaan staging 7 November menemukan belum ada dataset batas operasional aktif atau mapping confirmed. Batas pilot 1.000 fitur pada D1 sudah diganti lewat migrasi 0059 tanpa mengubah histori atau foreign key. Validator menerima hingga 5.000 fitur/64 MiB, dengan chunk tetap kecil dan daftar kelurahan dipaginasi. Snapshot BIG untuk 14 wilayah impor berisi 1.639 fitur; sesuai instruksi pengguna, Area Tidak Terdefinisi tanpa kode (OBJECTID 84504) dikeluarkan. Paket yang disiapkan memuat 1.638 desa/kelurahan dalam 54 chunk. Koordinat dinormalisasi ke XY WGS84; 24 perbaikan topologi GEOS make_valid tercatat dengan perubahan luas relatif di bawah 4e-9. Tidak ada perubahan PIC, pelanggan, invoice atau agenda pada impor batas. Aktivasi dan cutover terpisah dari impor draft.
+
+## Catatan historis
+
+Batas 25/2.000 dan pengecualian pada baseline berikut hanya berlaku untuk jalur lama. Form baru mengganti alur tersebut; endpoint lama tetap tunduk pada guard kelurahan terkelola.
+
 # WEB-065 — pembagian kelurahan/desa dan sales
 
 24 Oktober 2026. Implementasi dan verifikasi lokal selesai. [Bukti terstruktur](WEB065_EVIDENCE.json). Sumber nyata masih draft; acceptance bisnis/provider/cloud terpisah.

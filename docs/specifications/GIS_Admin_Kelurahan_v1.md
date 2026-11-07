@@ -4,6 +4,10 @@
 
 22 Oktober 2026. Addendum PRD v1.10 CUS-04, ERD v1.2 dan backlog v1.2. **Keputusan produk disepakati; WEB-063 tersedia lokal sejak 23 Oktober 2026, aktivasi sumber nyata pending review; WEB-064/065 Planned.** Menggantikan frasa umum “daftar outlet serta polygon opsional” untuk pembagian awal wilayah. Tidak mengubah status fitur yang sudah diimplementasikan pada WEB-009/015/016.
 
+## Keputusan terbaru - 7 November 2026
+
+Cakupan penataan ulang adalah **semua wilayah customer yang sudah diimpor**. Satu kelurahan/desa hanya memiliki satu sales lapangan pada tanggal yang sama. Satu sales boleh beberapa kelurahan. Beban berlebih tidak membelah kelurahan; telesales terpisah. Ketentuan ini menggantikan pengecualian lapangan GEO-05 pada baseline di bawah. Perubahan dilakukan melalui preview dan tanggal efektif. Area lama diarsipkan setelah customer/dependensi berpindah, dengan histori transaksi tetap utuh. Detail: [WEB-065](../WEB065_DISTRIBUTION.md).
+
 ## Sumber file batas yang dipilih
 
 | Metadata | Keputusan |

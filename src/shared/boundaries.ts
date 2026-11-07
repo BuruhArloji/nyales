@@ -1,6 +1,6 @@
 import {z} from 'zod';
 
-export const boundaryLimits={maxBytes:1536*1024,maxDatasetBytes:8*1024*1024,maxFeatures:32,maxPositions:40000,maxFeaturePositions:20000,maxDatasetFeatures:1000,maxChunks:100} as const;
+export const boundaryLimits={maxBytes:1536*1024,maxDatasetBytes:64*1024*1024,maxFeatures:32,maxPositions:40000,maxFeaturePositions:20000,maxDatasetFeatures:5000,maxChunks:100} as const;
 const text=z.string().trim().min(1).max(250),code=z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/),sha=z.string().regex(/^[a-f0-9]{64}$/);
 const https=z.url().refine(v=>new URL(v).protocol==='https:','Gunakan referensi HTTPS');
 export const boundaryDatasetSchema=z.object({

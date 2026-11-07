@@ -1,8 +1,10 @@
 {
-  "date": "2026-10-24",
+  "date": "2026-11-07",
   "migrations": [
     "0037_geography_distribution.sql",
-    "0038_distribution_org_clock.sql"
+    "0038_distribution_org_clock.sql",
+    "0058_village_sales_ownership.sql",
+    "0059_boundary_release_capacity.sql"
   ],
   "tables": {
     "geo_distribution_epoch": {
@@ -417,6 +419,208 @@
           "sql": "CREATE TRIGGER geo_epoch_area_admin_membership_delete AFTER DELETE ON area_admin_membership BEGIN INSERT INTO geo_distribution_epoch(organization_id,epoch) VALUES(OLD.organization_id,1) ON CONFLICT(organization_id) DO UPDATE SET epoch=epoch+1; END"
         }
       ]
+    },
+    "village_sales_owner": {
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "organization_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "admin_unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "area_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "rep_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "effective_from_date",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "effective_to_date",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 0,
+          "seq": 1,
+          "table": "app_user",
+          "from": "created_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "app_user",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 1,
+          "table": "app_user",
+          "from": "rep_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "area",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 1,
+          "table": "area",
+          "from": "area_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 0,
+          "table": "admin_unit",
+          "from": "organization_id",
+          "to": "organization_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 3,
+          "seq": 1,
+          "table": "admin_unit",
+          "from": "admin_unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_village_sales_owner_1",
+          "sql": null
+        },
+        {
+          "name": "village_owner_period",
+          "sql": "CREATE INDEX village_owner_period ON village_sales_owner(organization_id,admin_unit_id,effective_from_date,effective_to_date)"
+        },
+        {
+          "name": "village_owner_rep",
+          "sql": "CREATE INDEX village_owner_rep ON village_sales_owner(organization_id,rep_id,effective_from_date,effective_to_date)"
+        }
+      ],
+      "triggers": [
+        {
+          "name": "village_owner_overlap",
+          "sql": "CREATE TRIGGER village_owner_overlap BEFORE INSERT ON village_sales_owner BEGIN\r\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM admin_unit WHERE organization_id=NEW.organization_id AND id=NEW.admin_unit_id AND level='village' AND status='active') THEN RAISE(ABORT,'VILLAGE_REQUIRED') END;\r\n SELECT CASE WHEN EXISTS(SELECT 1 FROM village_sales_owner v WHERE v.organization_id=NEW.organization_id AND v.admin_unit_id=NEW.admin_unit_id AND v.effective_from_date<COALESCE(NEW.effective_to_date,'9999-12-31') AND NEW.effective_from_date<COALESCE(v.effective_to_date,'9999-12-31')) THEN RAISE(ABORT,'VILLAGE_OWNER_OVERLAP') END;\r\nEND"
+        },
+        {
+          "name": "village_owner_history",
+          "sql": "CREATE TRIGGER village_owner_history BEFORE UPDATE ON village_sales_owner WHEN NEW.id IS NOT OLD.id OR NEW.organization_id IS NOT OLD.organization_id OR NEW.admin_unit_id IS NOT OLD.admin_unit_id OR NEW.area_id IS NOT OLD.area_id OR NEW.rep_id IS NOT OLD.rep_id OR NEW.effective_from_date IS NOT OLD.effective_from_date OR NEW.reason IS NOT OLD.reason OR NEW.created_by IS NOT OLD.created_by OR NEW.created_at IS NOT OLD.created_at OR OLD.effective_to_date IS NOT NULL BEGIN SELECT RAISE(ABORT,'VILLAGE_OWNER_HISTORY_IMMUTABLE'); END"
+        },
+        {
+          "name": "village_owner_no_delete",
+          "sql": "CREATE TRIGGER village_owner_no_delete BEFORE DELETE ON village_sales_owner BEGIN SELECT RAISE(ABORT,'VILLAGE_OWNER_HISTORY_IMMUTABLE'); END"
+        },
+        {
+          "name": "village_owner_epoch_insert",
+          "sql": "CREATE TRIGGER village_owner_epoch_insert AFTER INSERT ON village_sales_owner BEGIN INSERT INTO geo_distribution_epoch VALUES(NEW.organization_id,1) ON CONFLICT(organization_id) DO UPDATE SET epoch=epoch+1; END"
+        },
+        {
+          "name": "village_owner_epoch_update",
+          "sql": "CREATE TRIGGER village_owner_epoch_update AFTER UPDATE ON village_sales_owner BEGIN INSERT INTO geo_distribution_epoch VALUES(NEW.organization_id,1) ON CONFLICT(organization_id) DO UPDATE SET epoch=epoch+1; END"
+        }
+      ]
     }
   },
   "revision_input_triggers": [
@@ -425,5 +629,6 @@
       "tbl_name": "organization",
       "sql": "CREATE TRIGGER geo_distribution_org_clock AFTER UPDATE ON organization BEGIN UPDATE geo_distribution_epoch SET epoch=epoch+1 WHERE organization_id=NEW.id; END"
     }
-  ]
+  ],
+  "notes_village_ownership": "One field rep per village and effective date. Customer assignment and confirmed-mapping guards apply across legacy and new workflows. Telesales and historical facts unchanged. Backup allowlist includes village_sales_owner."
 }
