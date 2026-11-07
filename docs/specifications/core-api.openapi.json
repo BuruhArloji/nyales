@@ -2102,6 +2102,58 @@
         "x-constraints": "Runtime enforces cross-field role/channel/calendar/date/dependency checks. Device registration requires recent login; privileged nonlocal requests require signed second-factor except explicit Google-only portfolio mode. Session tokens are returned only at bootstrap; session bootstrap is not idempotent."
       }
     },
+    "/api/owner-sales-mode": {
+      "get": {
+        "operationId": "owner_sales_mode_get",
+        "summary": "List active same-organization field sales for owner mode",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "data array of active unambiguous Sales profiles with id/name"
+          },
+          "401": {
+            "description": "Real owner bearer and device session required"
+          },
+          "403": {
+            "description": "Only verified portfolio owner with Management role in staging"
+          },
+          "422": {
+            "description": "Invalid body or inactive/foreign/non-field/ambiguous target"
+          }
+        },
+        "x-constraints": "Does not change Google identity, roles, customer assignments or device ownership. X-NYALES-Sales on scoped API requests selects one active same-organization Sales identity after real owner/session verification. Owner-mode and device-session endpoints retain real identity. Delegated business audit records owner actor and acting_sales_id. Nonowner header forgery is denied. POST audit is append-only and may record repeated mode entry attempts."
+      },
+      "post": {
+        "operationId": "owner_sales_mode_post",
+        "summary": "Audit owner entry/exit; client selects delegated request identity",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/owner_sales_mode"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data.sales_id; null means return to Management"
+          },
+          "401": {
+            "description": "Real owner bearer and device session required"
+          },
+          "403": {
+            "description": "Only verified portfolio owner with Management role in staging"
+          },
+          "422": {
+            "description": "Invalid body or inactive/foreign/non-field/ambiguous target"
+          }
+        },
+        "x-constraints": "Does not change Google identity, roles, customer assignments or device ownership. X-NYALES-Sales on scoped API requests selects one active same-organization Sales identity after real owner/session verification. Owner-mode and device-session endpoints retain real identity. Delegated business audit records owner actor and acting_sales_id. Nonowner header forgery is denied. POST audit is append-only and may record repeated mode entry attempts."
+      }
+    },
     "/api/auth/first-admin": {
       "post": {
         "operationId": "core_post_first_admin",
@@ -2573,6 +2625,28 @@
         },
         "required": [
           "reason"
+        ],
+        "additionalProperties": false
+      },
+      "owner_sales_mode": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "sales_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "sales_id"
         ],
         "additionalProperties": false
       }

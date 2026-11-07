@@ -1,3 +1,4 @@
+import {ownerSalesMode,ownerSalesScope} from './owner-sales-mode';
 import {villageTerritory} from './village-territory';
 import {effectiveCustomerStatus} from '../shared/customer-recency';
 import {readMapSalesHierarchy} from './map-sales';
@@ -121,9 +122,11 @@ app.use('/api/*',sessionGate);
 app.use('/api/*',apiBodyLimit);
 
 app.route('/',sessions);
+app.route('/',ownerSalesMode);
 
 export const scopedRoutes=new Hono<{Bindings:Bindings;Variables:{identity:Identity;portfolioOwner:boolean;scope:Scope}}>();
 
+scopedRoutes.use('/api/*',ownerSalesScope);
 scopedRoutes.use('/api/*',async(c,next)=>{
 
  try{c.set('scope',await resolveScope(c.env.DB,c.get('identity')))}catch{return c.json({code:'SCOPE_UNAVAILABLE',detail:'Akses belum dapat diperiksa.'},503)}

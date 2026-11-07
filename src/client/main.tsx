@@ -1,3 +1,4 @@
+import {OwnerSalesMode} from './OwnerSalesMode';
 import {TableAccessibility} from './TableAccessibility';
 import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
@@ -75,7 +76,7 @@ function Shell({page,setPage,children}:{page:Page;setPage:(p:Page)=>void;childre
   <div className="rail-brand">NYALES</div>
  </aside><main id="workspace-main" tabIndex={-1} className="main-content">
   <header className="topbar"><LiquidNav key={group?.id} activeKey={page}>{navigation.filter(n=>group?.pages.includes(n.id)).sort((a,b)=>group.pages.indexOf(a.id)-group.pages.indexOf(b.id)).map(n=><WorkspaceNavButton key={n.id} active={page===n.id} label={n.label} onClick={()=>setPage(n.id)}><n.icon size={15} aria-hidden="true"/></WorkspaceNavButton>)}</LiquidNav>
-   <div className="top-actions"><div className="profile"><span className="avatar" aria-hidden="true">{initials}</span><div><strong>{presentationLabel(identity.name)}</strong><small>{identity.role}</small></div></div><button className="button secondary logout-button" disabled={loggingOut} onClick={()=>void logout()}>{loggingOut?'Keluar…':'Keluar'}</button></div>
+   <div className="top-actions"><OwnerSalesMode/><div className="profile"><span className="avatar" aria-hidden="true">{initials}</span><div><strong>{presentationLabel(identity.name)}</strong><small>{identity.role}</small></div></div><button className="button secondary logout-button" disabled={loggingOut} onClick={()=>void logout()}>{loggingOut?'Keluar…':'Keluar'}</button></div>
   </header>
 
   <div className="page-scene" key={page} data-page={page}><React.Suspense fallback={<Loading>Memuat halaman…</Loading>}>{children}</React.Suspense></div>

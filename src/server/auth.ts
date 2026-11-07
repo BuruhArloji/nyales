@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey } from 'jose';
-export type Identity={id:string;name:string;organization_id:string;role:string;channel?:'field'|'telesales'|null};
+export type Identity={id:string;name:string;organization_id:string;role:string;channel?:'field'|'telesales'|null;performed_by?:{id:string;name:string}};
 export type AuthBindings={DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string};
 const keys=createRemoteJWKSet(new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com'));
 export function localAuthEnabled(env:Pick<AuthBindings,'APP_ENV'|'LOCAL_AUTH'>){return (env.APP_ENV==='local'||env.APP_ENV==='staging')&&env.LOCAL_AUTH==='true'}
