@@ -41,3 +41,13 @@ Tab “Beban & simulasi” dinamai **Simulasi pembagian**. Ini membandingkan beb
 - Query recap memakai agregasi per sales/hari dan indeks aktivitas serta off. Seluruh invoice dan pelanggan tidak dimuat ke browser untuk menghitung rekap.
 - Data off termasuk dalam logical backup allowlist; bukan klaim backup seluruh database atau restore yang sudah diverifikasi.
 - API: `visit-attendance.openapi.json`. Migrasi masih lokal; D1 staging belum disentuh.
+
+## Rekap Sales dan Telesales — 7 November 2026
+
+Monitoring menyediakan pilihan **Sales | Telesales** pada satu kartu rekap. Filter tanggal tersembunyi saat pertama dibuka; mengubah kanal tidak mengubah data atau agenda.
+
+- Sales mempertahankan target visit, off berizin, alfa, visit, dan visit compliance.
+- Telesales: **Call target** adalah jumlah agenda panggilan berstatus planned/proposed/done dalam rentang, bukan kebijakan target baru. Tanpa agenda nilainya belum diatur.
+- **Call** menghitung aktivitas telesales call selesai. **Berhasil** menghitung hasil manual connected_pic; tidak menyatakan verifikasi provider, order atau konversi penjualan.
+- **Success rate** = Berhasil / Call; tanpa panggilan nilainya kosong.
+- Agregasi hanya untuk halaman sales yang sedang diminta dan customer dalam scope pengguna. Tidak ada perubahan data saat GET.

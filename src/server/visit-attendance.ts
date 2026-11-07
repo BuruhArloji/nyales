@@ -10,25 +10,37 @@ export const visitAttendance=new Hono<OperationEnv>();
 const id=z.string().min(1).max(128),reason=z.string().trim().min(1).max(1000),date=z.iso.date();
 const manager=(s:Scope)=>['MANAGEMENT','NSM','AREA_MANAGER','SUPERVISOR'].includes(s.identity.role);
 const organization=(c:any)=>c.get('scope').identity.organization_id;
-function repPredicate(s:Scope){
- let sql="u.organization_id=? AND u.status='active' AND EXISTS(SELECT 1 FROM auth_role_assignment r WHERE r.organization_id=u.organization_id AND r.user_id=u.id AND r.role_code='SALES_REP' AND r.channel='field' AND r.effective_from_date<=? AND(r.effective_to_date IS NULL OR r.effective_to_date>?))";
+function repPredicate(s:Scope,channel:'field'|'telesales'='field'){
+ let sql=`u.organization_id=? AND u.status='active' AND EXISTS(SELECT 1 FROM auth_role_assignment r WHERE r.organization_id=u.organization_id AND r.user_id=u.id AND r.role_code='${channel==='field'?'SALES_REP':'TELESALES'}' AND r.channel='${channel}' AND r.effective_from_date<=? AND(r.effective_to_date IS NULL OR r.effective_to_date>?))`;
  const params:any[]=[s.identity.organization_id,s.date,s.date];
  if(!s.orgWide){if(!s.allRepsInArea){sql+=' AND u.id IN(SELECT value FROM json_each(?))';params.push(JSON.stringify(s.repIds))}if(s.allRepsInArea||s.identity.role==='SUPERVISOR'){sql+=' AND EXISTS(SELECT 1 FROM user_area_scope a WHERE a.organization_id=u.organization_id AND a.user_id=u.id AND a.area_id IN(SELECT value FROM json_each(?)) AND a.effective_from_date<=? AND(a.effective_to_date IS NULL OR a.effective_to_date>?))';params.push(JSON.stringify(s.areaIds),s.date,s.date)}}
- if(s.channel==='telesales')sql+=' AND 0=1';return{sql,params};
+ if(s.channel&&s.channel!==channel)sql+=' AND 0=1';return{sql,params};
 }
 async function readableRep(c:any,user:string){const p=repPredicate(c.get('scope'));if(!await c.env.DB.prepare('SELECT u.id FROM app_user u WHERE u.id=? AND '+p.sql).bind(user,...p.params).first())fail(404,'FIELD_REP_NOT_FOUND')}
 export function repVisitAvailableGuard(db:D1Database,org:string,user:string,date:string){return [db.prepare("INSERT INTO master_mutation_guard(ok) SELECT CASE WHEN NOT EXISTS(SELECT id FROM visit_off_day WHERE organization_id=? AND user_id=? AND service_date=? AND status='approved') THEN 1 ELSE 0 END").bind(org,user,date),db.prepare('DELETE FROM master_mutation_guard')]}
 export async function assertRepVisitAvailable(db:D1Database,org:string,user:string,date:string){if(await db.prepare("SELECT id FROM visit_off_day WHERE organization_id=? AND user_id=? AND service_date=? AND status='approved'").bind(org,user,date).first())fail(409,'REP_OFF_VISIT')}
 const range=z.object({start_date:date,end_date:date,limit:z.coerce.number().int().refine(n=>n===50||n===100).default(50),offset:z.coerce.number().int().min(0).max(100000).default(0)}).strict().refine(q=>q.end_date>=q.start_date&&Date.parse(q.end_date)-Date.parse(q.start_date)<=92*86400000);
+async function telesalesRecap(c:any,filters:any,range:{start_date:string;end_date:string},reps:any[],hasMore:boolean){
+ const db=c.env.DB as D1Database,s=c.get('scope')as Scope,org=organization(c);
+ const timezone=(await db.prepare('SELECT timezone FROM organization WHERE id=?').bind(org).first<any>())!.timezone;
+ const bounds=businessUtcBounds(range.start_date,range.end_date,timezone),ids=JSON.stringify(reps.map(r=>r.id)),cp=customerPredicate(s);
+ if(filters.area_id){cp.sql+=' AND co.area_id=?';cp.params.push(filters.area_id)}
+ if(filters.branch_id){cp.sql+=' AND co.area_id IN(SELECT id FROM area WHERE organization_id=co.organization_id AND branch_id=?)';cp.params.push(filters.branch_id)}
+ const results=(await db.prepare("SELECT a.user_id,COUNT(*) call_count,SUM(CASE WHEN json_extract(CASE WHEN json_valid(a.metadata_json) THEN a.metadata_json ELSE '{}' END,'$.disposition')='connected_pic' THEN 1 ELSE 0 END) success_count FROM activity a JOIN customer_outlet co ON co.organization_id=a.organization_id AND co.id=a.outlet_id WHERE a.organization_id=? AND a.user_id IN(SELECT value FROM json_each(?)) AND a.channel='telesales' AND a.activity_kind='call' AND a.status='done' AND a.occurred_at>=? AND a.occurred_at<? AND "+cp.sql+' GROUP BY a.user_id').bind(org,ids,bounds.from,bounds.until,...cp.params).all<any>()).results;
+ const plans=(await db.prepare("SELECT p.user_id,COUNT(*) call_target FROM work_plan p JOIN customer_outlet co ON co.organization_id=p.organization_id AND co.id=p.customer_id WHERE p.organization_id=? AND p.user_id IN(SELECT value FROM json_each(?)) AND p.kind='call' AND p.status IN('planned','proposed','done') AND p.scheduled_at>=? AND p.scheduled_at<? AND "+cp.sql+' GROUP BY p.user_id').bind(org,ids,bounds.from,bounds.until,...cp.params).all<any>()).results;
+ const calls=new Map(results.map(r=>[r.user_id,r])),targets=new Map(plans.map(r=>[r.user_id,r.call_target]));
+ return c.json({data:reps.map(r=>{const a=calls.get(r.id),count=a?.call_count||0,success=a?.success_count||0;return{...r,call_target:targets.get(r.id)??null,call_count:count,success_count:success,success_rate_percent:count?success/count*100:null}}),meta:{channel:'telesales',has_more:hasMore,timezone,start_date:range.start_date,end_date:range.end_date,target_basis:'scheduled_calls',success_basis:'manual_connected_pic'}});
+}
 visitAttendance.get('/api/visit-attendance',async c=>{
  const raw=c.req.query(),extra={start_date:raw.start_date,end_date:raw.end_date,limit:raw.limit,offset:raw.offset},r=range.safeParse(extra);if(!r.success)fail(422,'VISIT_DATE_RANGE_MAX_93_DAYS');
  const q=reportFilters.safeParse(Object.fromEntries(Object.entries(raw).filter(([k])=>!Object.keys(extra).includes(k))));if(!q.success)fail(422,'INVALID_REPORT_FILTERS');
- const ctx=await reportContext(c,q.data),s=c.get('scope'),db=c.env.DB,p=repPredicate(s),x=q.data;
+ const ctx=await reportContext(c,q.data),s=c.get('scope'),db=c.env.DB,p=repPredicate(s,q.data.channel==='telesales'?'telesales':'field'),x=q.data;
  if(r.data.end_date>s.date)fail(422,'VISIT_FUTURE_RECAP');
- if(x.channel==='telesales')return c.json({data:[],meta:{has_more:false,daily_target:null}});
+
  let sql=p.sql;const params=[...p.params];if(x.rep_id){sql+=' AND u.id=?';params.push(x.rep_id)}if(ctx.team){sql+=' AND u.id IN(SELECT value FROM json_each(?))';params.push(JSON.stringify(ctx.team))}
  if(x.area_id||x.branch_id){sql+=' AND EXISTS(SELECT 1 FROM user_area_scope a JOIN area ar ON ar.organization_id=a.organization_id AND ar.id=a.area_id WHERE a.organization_id=u.organization_id AND a.user_id=u.id AND a.effective_from_date<=? AND(a.effective_to_date IS NULL OR a.effective_to_date>?)'+(x.area_id?' AND a.area_id=?':'')+(x.branch_id?' AND ar.branch_id=?':'')+')';params.push(s.date,s.date,...(x.area_id?[x.area_id]:[]),...(x.branch_id?[x.branch_id]:[]))}
  const reps=(await db.prepare('SELECT u.id,u.name FROM app_user u WHERE '+sql+' ORDER BY u.name,u.id LIMIT ? OFFSET ?').bind(...params,r.data.limit+1,r.data.offset).all<any>()).results,visible=reps.slice(0,r.data.limit),ids=JSON.stringify(visible.map(u=>u.id));
+ if(x.channel==='telesales')return telesalesRecap(c,x,r.data,visible,reps.length>r.data.limit);
  const policy=await db.prepare("SELECT p.config_json,w.weekdays_json,w.holidays_json,b.timezone FROM daily_visit_policy p JOIN work_calendar w ON w.organization_id=p.organization_id AND w.id=json_extract(p.config_json,'$.calendar_id') JOIN branch b ON b.organization_id=w.organization_id AND b.id=w.branch_id WHERE p.organization_id=? AND w.status='active' AND b.status='active'").bind(organization(c)).first<any>();
  const timezone=policy?.timezone||(await db.prepare('SELECT timezone FROM organization WHERE id=?').bind(organization(c)).first<any>())!.timezone;
  const dates:string[]=[];for(let d=Date.parse(r.data.start_date);d<=Date.parse(r.data.end_date);d+=86400000)dates.push(new Date(d).toISOString().slice(0,10));

@@ -1,3 +1,4 @@
+import {TableAccessibility} from './TableAccessibility';
 import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
 import {DeferredSection} from './DeferredSection';
@@ -28,6 +29,7 @@ import '@fontsource/inter/latin-500.css';
 import '@fontsource/inter/latin-600.css';
 import './styles.css';
 import './theme.css';
+import './ui-polish.css';
 import './action-icons.css';
 import './select.css';
 import './mobile.css';
@@ -66,7 +68,7 @@ function Shell({page,setPage,children}:{page:Page;setPage:(p:Page)=>void;childre
  const lastPages=React.useRef<Record<string,Page>>({});
  useEffect(()=>{if(group)lastPages.current[group.id]=page},[group?.id,page]);
  const initials=identity.name.split(/\s+/).slice(0,2).map(n=>n[0]).join('');
- return <div className="app-shell"><svg className="glass-filter-definitions" width="0" height="0" aria-hidden="true" focusable="false"><defs><filter id="nyales-dock-refraction" x="-10%" y="-30%" width="120%" height="160%" colorInterpolationFilters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.014 0.045" numOctaves="1" seed="8" result="noise"/><feGaussianBlur in="noise" stdDeviation="2" result="smoothNoise"/><feDisplacementMap in="SourceGraphic" in2="smoothNoise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><a className="skip-link" href="#workspace-main">Lewati navigasi ke konten</a><aside className="sidebar">
+ return <div className="app-shell"><svg className="glass-filter-definitions" width="0" height="0" aria-hidden="true" focusable="false"><defs><filter id="nyales-dock-refraction" x="-10%" y="-30%" width="120%" height="160%" colorInterpolationFilters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.014 0.045" numOctaves="1" seed="8" result="noise"/><feGaussianBlur in="noise" stdDeviation="2" result="smoothNoise"/><feDisplacementMap in="SourceGraphic" in2="smoothNoise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><a className="skip-link" href="#workspace-main" onClick={e=>{e.preventDefault();const main=document.getElementById('workspace-main');if(main){main.tabIndex=-1;main.focus();main.scrollIntoView({block:'start',behavior:'instant'})}}}>Lewati navigasi ke konten</a><aside className="sidebar">
   <button className="brand brand-home" onClick={()=>setPage('overview')} aria-label="NYALES · Overview"><img src="/brand/nyales-mark.svg" alt=""/></button>
   <nav aria-label="Kelompok workspace">{groups.map(g=><button key={g.id} className={'rail-item '+(group?.id===g.id?'active':'')} aria-label={g.label} data-label={g.label} aria-current={group?.id===g.id?'true':undefined} onClick={()=>{const remembered=lastPages.current[g.id];const destination=navigation.find(n=>n.id===remembered&&g.pages.includes(n.id))||g.pages.map(id=>navigation.find(n=>n.id===id)).find(Boolean);if(destination)setPage(destination.id)}}><g.icon size={20}/><span className="rail-text" aria-hidden="true">{g.label}</span></button>)}</nav>
   <div className="rail-brand">NYALES</div>
@@ -106,4 +108,4 @@ function currentPage():Page{const value=new URLSearchParams(location.hash.slice(
 // Keep the shell mounted for continuous navigation motion; reset only route content.
 function App(){const [page,setPage]=useState<Page>(currentPage),[route,setRoute]=useState(location.hash);useEffect(()=>{const change=()=>{setPage(currentPage());setRoute(location.hash)};window.addEventListener('popstate',change);window.addEventListener('hashchange',change);return()=>{window.removeEventListener('popstate',change);window.removeEventListener('hashchange',change)}},[]);return <Shell page={page} setPage={p=>geoNavigate(p)}><React.Fragment key={route}>
 {page==='recovery'?<Recovery/>:page==='observability'?<Observability/>:page==='monitoring'?<Monitoring/>:page==='incentives'?<Incentives/>:page==='overview'?<Overview/>:page==='customers'?<Customers/>:page==='segmentation'?<Segmentation/>:page==='targets'?<Targets/>:page==='work'?<FieldWork/>:page==='commercial'?<Commercial/>:page==='telesales'?<TelesalesWorkbench/>:page==='settings'?<Settings/>:page==='people'?<People/>:page==='sessions'?<Sessions/>:page==='assignments'?<Assignments/>:page==='map'?<MapPage/>:page==='products'?<Catalog/>:page==='invoices'?<Transactions/>:<DataTools/>}</React.Fragment></Shell>}
-createRoot(document.getElementById('root')!).render(<AuthGate><App/></AuthGate>);
+createRoot(document.getElementById('root')!).render(<AuthGate><TableAccessibility/><App/></AuthGate>);

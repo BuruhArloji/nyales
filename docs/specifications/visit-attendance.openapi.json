@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "NYALES field visit attendance",
-    "version": "1.0.0",
+    "title": "NYALES sales activity recap and field attendance",
+    "version": "1.1.0",
     "description": "Local implementation; current scope controls all reads and writes. Self requests require manager approval; alpha manager-only. Existing sessions are not retroactively inferred as leave. No staging release implied."
   },
   "security": [
@@ -129,7 +129,7 @@
             }
           }
         ],
-        "description": "Inclusive local dates, maximum 93 days, no future recap. Field only. Current generator policy defines calendar and target; no configured policy means unknown target. Off permitted days exclude approved alpha. Visits are unique customer/day, completed only. Daily credit is capped at the daily target; excess never offsets a different day. Missing visits do not infer alpha."
+        "description": "Inclusive local dates, maximum 93 days, no future recap. channel=field returns existing visit attendance using current generator policy; channel=telesales returns call_target (planned/proposed/done call agenda in range, null if no agenda), call_count (done telesales call activities), success_count (manual connected_pic disposition), success_rate_percent (null when no calls). Role, area, customer and hierarchy scopes apply to both channels; pagination limits reps before activity aggregation. GET is read-only. Field daily credit stays capped; missing visits never infer alpha."
       }
     },
     "/api/visit-off-days": {

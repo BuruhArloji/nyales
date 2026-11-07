@@ -47,7 +47,9 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
     params.push(like,like,like,like);
   }
   if(q.areaId){where.push('co.area_id=?');params.push(q.areaId)}
-  if(q.status){where.push("CASE WHEN recent.customer_id IS NOT NULL THEN 'Aktif' ELSE COALESCE(ss.status,'Unknown') END=?");params.push(q.status)}
+  const relationshipFilter=q.status==='Leads'||q.status==='Diverifikasi manual',historyScope=invoicePredicate(s);
+  if(relationshipFilter)where.push(q.status==='Leads'?'history.customer_id IS NULL':'history.customer_id IS NOT NULL');
+  else if(q.status){where.push("CASE WHEN recent.customer_id IS NOT NULL THEN 'Aktif' ELSE COALESCE(ss.status,'Unknown') END=?");params.push(q.status)}
   if(q.recordStatus){where.push('co.record_status=?');params.push(q.recordStatus)}
   if(q.location){
     if(q.location==='missing')where.push('(co.latitude_e7 IS NULL OR co.longitude_e7 IS NULL)');
@@ -63,9 +65,10 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
   const from=`FROM customer_outlet co
     JOIN area a ON a.organization_id=co.organization_id AND a.id=co.area_id
     ${assignmentOnly?'':`LEFT JOIN customer_status_snapshot ss ON ss.run_id=? AND ss.customer_id=co.id LEFT JOIN (SELECT DISTINCT COALESCE(child.merged_into_id,child.id) customer_id FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id WHERE i.organization_id=? AND i.is_current=1 AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date>=? AND i.invoice_date<=?) recent ON recent.customer_id=co.id`}
+    ${relationshipFilter?`LEFT JOIN (SELECT DISTINCT COALESCE(child.merged_into_id,child.id) customer_id FROM invoice i JOIN customer_outlet child ON child.organization_id=i.organization_id AND child.id=i.outlet_id WHERE ${historyScope.sql} AND i.is_current=1 AND i.status='validated' AND i.validation_state='validated' AND i.invoice_date<=?) history ON history.customer_id=co.id`:''}
     WHERE ${where.join(' AND ')}`;
 
-  const fromParams=[...(run?[run.id,org,new Date(Date.parse(s.date)-90*86400000).toISOString().slice(0,10),s.date]:[]),...params];
+  const fromParams=[...(run?[run.id,org,new Date(Date.parse(s.date)-90*86400000).toISOString().slice(0,10),s.date]:[]),...(relationshipFilter?[...historyScope.params,s.date]:[]),...params];
   const count=async()=>(await db.prepare(`SELECT COUNT(*) n ${from}`).bind(...fromParams).first<{n:number}>())?.n||0;
   // One exact total per filter/revision, shared across pages; authorization was
   // resolved for this request before looking up the cache. No cached page rows.
@@ -133,7 +136,7 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
         telesales_owner:owner.find(x=>x.channel==='telesales')?.name||'Belum assigned',
         owner:owner.find(x=>x.channel==='field')?.name||'Belum assigned',
         status:r.recent_invoice_id?'Aktif':segment?.status||'Unknown',tier:segment?.tier||'Belum tersedia',segmentation:segment||null,
-        actual:(fact?.actual||0)/1000000,actual_minor:fact?.actual||0,last:fact?.last||'Belum pernah invoice',
+        has_invoice_history:Boolean(fact?.last),actual:(fact?.actual||0)/1000000,actual_minor:fact?.actual||0,last:fact?.last||'Belum pernah invoice',
         lat:r.latitude_e7===null?null:r.latitude_e7/1e7,lng:r.longitude_e7===null?null:r.longitude_e7/1e7,
       };
     }),

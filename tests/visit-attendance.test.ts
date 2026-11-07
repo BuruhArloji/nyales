@@ -35,7 +35,7 @@ test('recap groups customers per local date, preserves alpha target, applies rol
   f.sqlite.exec("INSERT INTO customer_outlet(id,organization_id,area_id,name) VALUES('c2','o','a','Second');INSERT INTO activity(id,organization_id,outlet_id,user_id,channel,activity_kind,status,occurred_at) VALUES('v1','o','c','sr','field','visit','done','2026-11-03T18:00:00.000Z'),('v2','o','c','sr','field','visit','done','2026-11-04T02:00:00.000Z'),('v3','o','c2','sr','field','visit','done','2026-11-04T03:00:00.000Z'),('v4','o','c','sr','field','visit','done','2026-11-05T02:00:00.000Z'),('v5','o','c2','sr','field','visit','needs_review','2026-11-05T02:00:00.000Z'),('call','o','c','tele','telesales','call','done','2026-11-05T02:00:00.000Z')");
   const rows=await f.data(await f.req('GET',recap,undefined,undefined,'mg'));assert.equal(rows.length,1);assert.equal(rows[0].off_permitted_days,1);assert.equal(rows[0].off_alpha_days,1);assert.equal(rows[0].target_visit,45);assert.equal(rows[0].visit_count,3);assert.equal(rows[0].visit_compliance_percent,100*3/45);
   const day=await f.data(await f.req('GET',recap.replace('start_date=2026-11-01','start_date=2026-11-05')));assert.equal(day[0].visit_count,1);assert.equal(day[0].target_visit,15);
-  assert.equal((await f.data(await f.req('GET',recap+'&channel=telesales',undefined,undefined,'mg'))).length,0);
+  assert.equal((await f.data(await f.req('GET',recap+'&channel=telesales',undefined,undefined,'mg')))[0].call_count,1);
   assert.equal((await f.data(await f.req('GET',recap,undefined,undefined,'tele'))).length,0);
   assert.equal((f.sqlite.prepare('SELECT COUNT(*) n FROM invoice').get()as any).n,0);
  }finally{f.sqlite.close()}
