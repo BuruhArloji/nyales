@@ -28,3 +28,8 @@ export function mapRenderPin(x:any){
 export function mapDisplayPayload(data:any,compact=false){
  return {...data,all_customers:compact?[]:data.all_customers.map(mapCustomerPin),customers:data.customers.map(mapCustomerPin)};
 }
+
+/** Overview reuses the canonical GIS payload, including invoice facts and period. */
+export function overviewMapData(payload:any){
+ return {...payload.map,analysis_mode:'scatter',analysis_period:payload.period_context};
+}

@@ -1,7 +1,8 @@
+import {createExpression} from '@maplibre/maplibre-gl-style-spec';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mapDisplayPayload,mapRenderPin} from '../src/shared/map-payload';
-import {mapFeatureFacts,mapPointStyle,mapSummary} from '../src/shared/map-analysis';
+import {mapDisplayPayload,mapRenderPin,overviewMapData} from '../src/shared/map-payload';
+import {mapFeatureFacts,mapPointStyle,mapSummary,mapClusterStyle,mapColors} from '../src/shared/map-analysis';
 import {normalizeBasemapStyle} from '../src/client/map-style';
 
 test('display map keeps every pin, source link and operational facts without serializing the full directory twice',()=>{
@@ -41,4 +42,15 @@ test('render-only map reconciles every metric and symbology while omitting empty
  assert.equal(pins[0].directory_dataset_id,'source');assert.equal(pins[0].external_code,'GMP-0');assert.equal(pins[0].field_rep_id,'sales');
  assert.deepEqual(pins[100].metrics,{actual_minor:0,invoice_count:0,activity_count:0,meaningful_count:0});
  assert.ok(Buffer.byteLength(JSON.stringify(pins))<Buffer.byteLength(JSON.stringify(rows))*.6);
+});
+
+test('Overview keeps canonical map invoice facts and highlights transactions at point and cluster level',()=>{
+ const transacting={id:'customer',lat:-6,lng:107,metrics:{period:'2026-11',invoice_count:1,actual_minor:428000,activity_count:2,meaningful_count:1}},plain={id:'lead',lat:-6,lng:107,metrics:{invoice_count:0}};
+ const payload={map:{customers:[transacting,plain],sales:[],all_customers:[]},period_context:'2026-11'};
+ const data=overviewMapData(payload);assert.equal(data.analysis_mode,'scatter');assert.equal(data.analysis_period,'2026-11');assert.equal(data.customers[0],transacting);assert.notEqual(mapPointStyle(transacting,'scatter').color,mapPointStyle(plain,'scatter').color);assert.equal(mapFeatureFacts(transacting).invoice_total,1);assert.equal(payload.map.customers.length,2);const expression=createExpression(mapClusterStyle('scatter').color,'layers[customers].paint.circle-color');assert.equal(expression.result,'success');if(expression.result==='success'){assert.equal(expression.value.evaluateWithoutErrorHandling({zoom:8},{type:1,properties:{customer_total:200,invoice_total:1}}),mapColors.high);assert.equal(expression.value.evaluateWithoutErrorHandling({zoom:8},{type:1,properties:{customer_total:200,invoice_total:0}}),mapColors.neutral)}
+});
+
+test('OpenFreeMap road_shield_us normalizes null reference length exactly like highway shields',()=>{
+ const source:any={version:8,sources:{},layers:[{id:'road_shield_us',type:'symbol',filter:['all',['<=',['get','ref_length'],6],['==',['get','network'],'us-highway']]}]};const fixed=normalizeBasemapStyle(source);
+ assert.deepEqual((fixed.layers[0]as any).filter[1],['<=',['number',['get','ref_length'],7],6]);assert.deepEqual(source.layers[0].filter[1],['<=',['get','ref_length'],6]);assert.deepEqual(normalizeBasemapStyle(fixed),fixed);const compiled=createExpression((fixed.layers[0]as any).filter,'layers[road_shield_us].filter');assert.equal(compiled.result,'success');if(compiled.result==='success'){for(const value of [undefined,null,'bad',7])assert.equal(compiled.value.evaluateWithoutErrorHandling({zoom:10},{type:2,properties:{network:'us-highway',ref_length:value}}),false);for(const value of [1,6])assert.equal(compiled.value.evaluateWithoutErrorHandling({zoom:10},{type:2,properties:{network:'us-highway',ref_length:value}}),true)}
 });

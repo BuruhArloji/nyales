@@ -10,6 +10,6 @@ export function normalizeBasemapStyle(style:StyleSpecification):StyleSpecificati
   }
   return value.map(filter);
  }
- return {...style,layers:style.layers.map(layer=>layer.id.startsWith('highway-shield-')&&'filter' in layer?
+ return {...style,layers:style.layers.map(layer=>/^(highway-shield-|road_shield_)/.test(layer.id)&&'filter' in layer?
   {...layer,filter:filter(layer.filter)}:layer)};
 }
