@@ -3,7 +3,7 @@
   "info": {
     "title": "NYALES WEB-066 regional performance and coverage API",
     "version": "0.1.0",
-    "description": "Local implementation. Mapping current at read cutoff; historical facts unchanged. Active canonical coverage cohort; invoice attribution remains historical and inaccessible current geography uses unmapped bucket. Definition nyales-geo-kpi-1; bounds 2000 customers/50000 invoices/10000 activities/2000 targets. Not market share or provider-completeness evidence."
+    "description": "Local implementation. Mapping current at read cutoff; historical facts unchanged. Active canonical coverage cohort; invoice attribution remains historical and inaccessible current geography uses unmapped bucket. Definition nyales-geo-kpi-1; Customer scope read in keyset pages of 1000 without total truncation; bounds 50000 invoices/10000 activities/2000 targets. Not market share or provider-completeness evidence."
   },
   "paths": {
     "/api/geo/analytics": {
@@ -1370,6 +1370,17 @@
             "type": "object",
             "properties": {
               "customers": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "customer_page_size": {
                 "type": "integer",
                 "minimum": 0
               },
@@ -1388,6 +1399,7 @@
             },
             "required": [
               "customers",
+              "customer_page_size",
               "invoices",
               "activities",
               "targets"

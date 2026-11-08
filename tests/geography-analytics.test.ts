@@ -4,6 +4,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {harness,square} from './geography-fixture';
 import {businessDayStart} from '../src/server/calendar';
+import {regionalCohort} from '../src/server/regional-cohort';
 async function setup(){const f=harness(),d=await f.release([square(),square(106.2)]);f.point();await f.data(await f.review(await f.preview()));const b=(await f.data(await f.req('GET','/api/geo/map'))).boundaries;
  f.sqlite.exec("INSERT INTO customer_outlet(id,organization_id,area_id,name,address,service_frequency_days) VALUES('u','o','a','Unmapped','Fixture',7);UPDATE customer_outlet SET service_frequency_days=7 WHERE id='c';INSERT INTO customer_assignment(id,organization_id,outlet_id,rep_id,channel,area_id,effective_from_date) VALUES('uf','o','u','sr','field','a','2020-01-01');");
  const invoice=(id:string,co:string,date:string,value:number,ch='field',area='a',rep=ch==='field'?'sr':'tele')=>f.sqlite.prepare("INSERT INTO invoice(id,organization_id,source_invoice_id,source_version,outlet_id,rep_id,area_id,channel,invoice_date,net_minor,status,validation_state) VALUES(?,'o',?,'1',?,?,?,?,?,?,'validated','validated')").run(id,id,co,rep,area,ch,date,value);
@@ -49,4 +50,24 @@ test('optional regional summary reports absent active release without enabling d
  const draft=await f.release([square(107)],false);
  assert.equal((await f.report('&dataset_id='+draft.id+'&optional=1')).status,409);
  const active=await f.data(await f.report('&optional=1'));assert.equal(active.basis.boundary_dataset.id,f.d.id);
+});
+
+test('regional scope over 2000 customers reads all keyset pages and reconciles unchanged financial facts',async()=>{
+ const f=await setup();try{
+  f.coverage();const before=await f.data(await f.report());
+  const add=f.sqlite.prepare("INSERT INTO customer_outlet(id,organization_id,area_id,name) VALUES(?,'o','a',?)");
+  f.sqlite.exec('BEGIN');for(let i=0;i<2505;i++){const id='regional-'+String(i).padStart(5,'0');add.run(id,id)}f.sqlite.exec('COMMIT');
+  const projected=await regionalCohort(f.adapter,"co.organization_id=?",['o']);
+  const original=f.sqlite.prepare("SELECT * FROM customer_outlet co WHERE co.organization_id='o' AND co.merged_into_id IS NULL ORDER BY co.id").all() as any[];
+  assert.deepEqual(projected.map(co=>({...co})),original.map(co=>Object.fromEntries(['id','name','record_status','latitude_e7','longitude_e7','coordinate_status','service_frequency_days'].map(k=>[k,co[k]]))));
+  assert.equal(new Set(projected.map(c=>c.id)).size,2507);
+  const after=await f.data(await f.report());assert.equal(after.totals.customer_count,before.totals.customer_count+2505);
+  assert.equal(after.totals.observed_actual_net_minor,before.totals.observed_actual_net_minor);
+  assert.equal(after.totals.invoice_count,before.totals.invoice_count);assert.equal(after.totals.activity_count,before.totals.activity_count);
+  assert.equal(after.totals.covered_customer_count,before.totals.covered_customer_count);
+  assert.deepEqual(after.rows.map((r:any)=>[r.key,r.observed_actual_net_minor,r.observed_previous_net_minor,r.achievement_percent,r.activity_count]),before.rows.map((r:any)=>[r.key,r.observed_actual_net_minor,r.observed_previous_net_minor,r.achievement_percent,r.activity_count]));
+  assert.equal(after.limits.customers,null);assert.equal(after.limits.customer_page_size,1000);
+  const sources=await f.data(await f.req('GET','/api/geo/analytics/sources?period=2026-09&kind=customers&offset=2500&limit=100&snapshot='+after.snapshot));assert.equal(sources.pagination.total,2507);assert.equal(sources.rows.length,7);
+  assert.deepEqual(await regionalCohort(f.adapter,'co.organization_id=?',['foreign']),[]);
+ }finally{f.sqlite.close()}
 });
