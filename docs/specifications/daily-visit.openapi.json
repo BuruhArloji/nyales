@@ -217,7 +217,122 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "rep_id",
+                  "start",
+                  "start_at",
+                  "end_at",
+                  "confirmed_external_processing"
+                ],
+                "properties": {
+                  "rep_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "start": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "longitude",
+                      "latitude"
+                    ],
+                    "properties": {
+                      "longitude": {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      },
+                      "latitude": {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      }
+                    }
+                  },
+                  "end": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "longitude",
+                      "latitude"
+                    ],
+                    "properties": {
+                      "longitude": {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      },
+                      "latitude": {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      }
+                    }
+                  },
+                  "weights": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "wallet",
+                      "last_visit",
+                      "sales",
+                      "follow_up",
+                      "proximity"
+                    ],
+                    "properties": {
+                      "wallet": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "last_visit": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "sales": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "follow_up": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "proximity": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      }
+                    },
+                    "description": "Optional per-run priority override. Total must equal 100. Saved in the run snapshot/result; never updates the organization policy. Omit to use organization defaults."
+                  },
+                  "custom_work_hours": {
+                    "type": "boolean",
+                    "description": "Owner-only custom working hours."
+                  },
+                  "start_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "end_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "confirmed_external_processing": {
+                    "const": true
+                  },
+                  "replace_run_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "description": "End must be after start with a window of at most 12 hours. Existing role, customer assignment, eligibility and calendar rules remain enforced."
               },
               "examples": {
                 "contract": {

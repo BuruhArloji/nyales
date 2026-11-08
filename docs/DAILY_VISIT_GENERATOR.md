@@ -78,3 +78,10 @@ Pengguna melakukan pengujian tampilan dan perjalanan rute nyata.
 Hanya akun Google owner terverifikasi didikpriyoutomo05@gmail.com yang mendapat opsi jam kerja khusus hari ini (`custom_work_hours: true`). Rentang harus di masa depan, dalam tanggal lokal yang sama, dan maksimal 12 jam. Pengecualian hanya untuk kalender kerja pada permintaan tersebut; kalender tim, jam buka pelanggan, absensi, agenda tetap, dan batas akses sales tidak berubah. Penerapan rute dengan jam khusus juga dibatasi ke owner.
 
 Pada UI jam khusus, pilihan awal adalah Mulai sekarang. Waktu berangkat dihitung ulang saat membuat usulan dengan jeda teknis 2 menit, dibulatkan ke menit berikutnya. Atur jam tetap tersedia. Selesai diberi saran 4 jam dari waktu sekarang, dibatasi 23:59 hari yang sama; pengguna tetap dapat menggantinya.
+
+
+## Settings placement and per-route priorities (2026-11-09)
+
+Organization defaults are edited in **Pengaturan → Perencanaan kunjungan → Generator harian** (the default planning section). Calendar, visit target, service duration, minimum gap, break, coordinate policy, unknown opening-hour fallback, publishing permission and default priority weights retain Management/NSM authorization, optimistic version checks and audit history. Viewing this section does not save or activate anything. Other planning tooling is loaded only when its section is selected.
+
+**Aktivitas Lapangan → Susun rute harian / Mulai hari → Bobot prioritas rute** lets an authorized field user override only the five priority weights for this preview, with a reset to organization defaults. Each weight is an integer 0–100 and all five must total 100. The optional `weights` object on `POST /api/visit-generator/daily/runs` is validated server-side; omitting it preserves the existing organization defaults. A run records its effective weights in the immutable snapshot and stored result. Weights participate in the idempotency input hash; they never change the organization policy, eligibility, assignments, visit cadence or authority to apply a plan. No agenda changes occur before explicit application of the plan.

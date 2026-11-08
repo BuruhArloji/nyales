@@ -139,3 +139,22 @@ test('management alone cannot enable owner custom hours',async t=>{
  t.mock.timers.enable({apis:['Date'],now:new Date(instant)});const f=fixture(2);
  try{assert.equal((await f.req('POST','runs',{...f.input,custom_work_hours:true},'mg')).status,403)}finally{f.sqlite.close()}
 });
+
+test('sales route weights are per-run immutable inputs and cannot edit organization scheduling rules',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date(instant)});const f=fixture(4);t.mock.method(globalThis,'fetch',f.fetchMock);
+ try{
+  await f.activate();const original=f.sqlite.prepare("SELECT version,config_json FROM daily_visit_policy WHERE organization_id='o'").get();
+  const weights={wallet:0,last_visit:100,sales:0,follow_up:0,proximity:0},key=crypto.randomUUID();
+  const result=await f.data(await f.req('POST','runs',{...f.input,weights},'sr',undefined,key));
+  assert.deepEqual(result.policy.weights,weights);assert.equal(result.policy.target_visits,f.policy.target_visits);assert.equal(result.policy.calendar_id,'cal');
+  const stored=f.sqlite.prepare('SELECT snapshot_json FROM daily_visit_run WHERE id=?').get(result.id)as any,snapshot=JSON.parse(stored.snapshot_json);assert.deepEqual(snapshot.policy.weights,weights);assert.deepEqual(snapshot.input.weights,weights);
+  assert.deepEqual(f.sqlite.prepare("SELECT version,config_json FROM daily_visit_policy WHERE organization_id='o'").get(),original);
+  assert.equal((await f.req('POST','runs',{...f.input,weights:{...weights,last_visit:90}},'sr')).status,422);
+  assert.equal((await f.req('POST','runs',{...f.input,weights,service_minutes:5},'sr')).status,422);
+  assert.equal((await f.req('POST','runs',{...f.input,weights,target_visits:100},'sr')).status,422);
+  assert.equal((await f.req('PUT','policy',{...f.policy,weights},'sr',1)).status,403);
+  assert.equal((await f.req('POST','runs',{...f.input,weights:{wallet:100,last_visit:0,sales:0,follow_up:0,proximity:0}},'sr',undefined,key)).status,409);
+  const reopened=await f.data(await f.req('GET','runs/'+result.id));assert.deepEqual(reopened.policy.weights,weights);
+  assert.equal((f.sqlite.prepare('SELECT COUNT(*) n FROM work_plan').get()as any).n,0);
+ }finally{f.sqlite.close()}
+});

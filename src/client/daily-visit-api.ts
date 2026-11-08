@@ -1,0 +1,6 @@
+import {apiFetch} from './auth';
+import {dailyMessages} from '../shared/daily-visit';
+import {orsErrorMessage} from '../shared/ors-planning';
+export async function dailyRead(path:string,init?:RequestInit){const response=await apiFetch('/api/visit-generator/daily/'+path,init),body=await response.json()as any;if(!response.ok)throw Error(body.code||'DAILY_OPERATION_FAILED');return body.data;}
+export const dailyWrite=(path:string,body:any,method='POST',version?:number,key:string=crypto.randomUUID())=>dailyRead(path,{method,headers:{'Content-Type':'application/json','Idempotency-Key':key,...(version!==undefined?{'If-Match':`"${version}"`}:{})},body:JSON.stringify(body)});
+export const dailyError=(error:unknown)=>dailyMessages[(error as Error).message]||orsErrorMessage((error as Error).message)||({INVALID_DAILY_POLICY:'Periksa pengaturan dan total bobot 100%.',REP_OFF_VISIT:'Sales sedang off visit pada tanggal ini.',INVALID_DAILY_REQUEST:'Periksa koordinat, total bobot 100%, dan jam kerja maksimal 12 jam.',DAILY_CUSTOM_HOURS_OWNER_ONLY:'Jam kerja khusus hanya tersedia untuk akun owner Didik.',DAILY_OPERATION_FAILED:'Operasi belum berhasil. Muat ulang dan periksa data.',SCOPE_DENIED:'Akses tidak diizinkan.',VERSION_CONFLICT:'Pengaturan berubah. Muat ulang dahulu.'}as any)[(error as Error).message]||(error as Error).message;
