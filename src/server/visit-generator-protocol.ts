@@ -7,7 +7,7 @@ type Proof={attempt_no:number;fence:number;snapshot_sha256:string};
 type Event={type:'claim';lease_seconds:number}|{type:'renew';lease_seconds:number;proof:Proof}|{type:'complete';proof:Proof;result_sha256:string}|{type:'attempt_failed';proof:Proof;retryable:boolean;code:string}|{type:'cancel'}|{type:'cancel_ack';proof:Proof}|{type:'reap'}|{type:'agent_revoked';agent_id:string};
 function deny(code:string):never{throw Error(code)}
 const terminal=(state:VisitJob['state'])=>['completed','failed','cancelled','expired'].includes(state);
-export type PlanningScope={organization_id:string;actor_id:string;role:'MANAGEMENT'|'NSM'|'AREA_MANAGER'|'SUPERVISOR'|'SALES_REP'|'TELESALES';channel:'field'|'telesales'|null;allowed_rep_ids:readonly string[]};
+export type PlanningScope={organization_id:string;actor_id:string;role:'MANAGEMENT'|'NSM'|'REGIONAL_MANAGER'|'AREA_MANAGER'|'SUPERVISOR'|'SALES_REP'|'TELESALES';channel:'field'|'telesales'|null;allowed_rep_ids:readonly string[]};
 /** allowed_rep_ids must be derived server-side from current hierarchy, area and dated field assignments. */
 export function authorizeVisitOperation(scope:PlanningScope,operation:'configure'|'generate'|'read'|'cancel'|'review'|'publish',organization:string,repIds:readonly string[]=[],requester?:string){
  if(scope.organization_id!==organization)deny('PLANNING_SCOPE_DENIED');

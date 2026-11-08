@@ -1,6 +1,6 @@
 import {applyDueTerritories} from './territories';
 import type {Identity} from './auth';
-export const roles=['MANAGEMENT','NSM','AREA_MANAGER','SUPERVISOR','SALES_REP','TELESALES'] as const;
+export const roles=['MANAGEMENT','NSM','REGIONAL_MANAGER','AREA_MANAGER','SUPERVISOR','SALES_REP','TELESALES'] as const;
 export type Scope={identity:Identity;areaIds:string[];repIds:string[];orgWide:boolean;allRepsInArea:boolean;channel:'field'|'telesales'|null;date:string;capabilities:string[]};
 const active=`effective_from_date<=? AND (effective_to_date IS NULL OR effective_to_date>?)`;
 export async function resolveScope(db:D1Database,identity:Identity):Promise<Scope>{
@@ -10,11 +10,11 @@ export async function resolveScope(db:D1Database,identity:Identity):Promise<Scop
  const date=new Intl.DateTimeFormat('en-CA',{timeZone:org.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  await applyDueTerritories(db,identity.organization_id,date);
  const orgWide=['MANAGEMENT','NSM'].includes(identity.role);
- const allRepsInArea=identity.role==='AREA_MANAGER';
+ const allRepsInArea=['REGIONAL_MANAGER','AREA_MANAGER'].includes(identity.role);
  const areaRows=await db.prepare(`SELECT area_id FROM user_area_scope WHERE organization_id=? AND user_id=? AND ${active}`).bind(identity.organization_id,identity.id,date,date).all<{area_id:string}>();
  const areaIds=[...new Set(areaRows.results.map(r=>r.area_id))];
  let repIds=[identity.id];
- if(identity.role==='SUPERVISOR'){
+ if(['SUPERVISOR','REGIONAL_MANAGER'].includes(identity.role)){
   // UNION deduplicates nodes; area boundaries are enforced on every edge and the final resource.
   const rows=await db.prepare(`WITH RECURSIVE team(id) AS (SELECT ? UNION SELECT r.subordinate_id FROM reporting_assignment r JOIN team t ON r.manager_id=t.id JOIN app_user u ON u.id=r.subordinate_id AND u.organization_id=r.organization_id WHERE r.organization_id=? AND u.status='active' AND r.effective_from_date<=? AND (r.effective_to_date IS NULL OR r.effective_to_date>?) AND r.area_id IN (SELECT area_id FROM user_area_scope WHERE organization_id=? AND user_id=? AND ${active})) SELECT id FROM team`).bind(identity.id,identity.organization_id,date,date,identity.organization_id,identity.id,date,date).all<{id:string}>();
   repIds=rows.results.map(r=>r.id);
@@ -22,7 +22,7 @@ export async function resolveScope(db:D1Database,identity:Identity):Promise<Scop
  const channel=identity.role==='SALES_REP'?'field':identity.role==='TELESALES'?'telesales':identity.channel??null;
  const capabilities=['customers:read','dashboard:read','map:read'];
  if(orgWide)capabilities.push('settings:manage','telesales:read');
- else if(['TELESALES','SUPERVISOR','AREA_MANAGER'].includes(identity.role))capabilities.push('telesales:read');
+ else if(['TELESALES','SUPERVISOR','AREA_MANAGER','REGIONAL_MANAGER'].includes(identity.role))capabilities.push('telesales:read');
  return {identity,areaIds,repIds,orgWide,allRepsInArea,channel,date,capabilities};
 }
 export function canReadRep(scope:Scope,userId:string){return scope.orgWide||scope.repIds.includes(userId)}

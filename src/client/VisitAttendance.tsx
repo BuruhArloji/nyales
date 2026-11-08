@@ -38,7 +38,7 @@ export function VisitRecap({filters}:{filters:Record<string,string>}){
  </section>;
 }
 export function OffVisits({users}:{users:any[]}){
- const {identity}=useIdentity(),manager=['MANAGEMENT','NSM','AREA_MANAGER','SUPERVISOR'].includes(identity.role),[page,setPage]=useState(0),[size,setSize]=useState(50),[modal,setModal]=useState<any>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const {identity}=useIdentity(),manager=['MANAGEMENT','NSM','REGIONAL_MANAGER','AREA_MANAGER','SUPERVISOR'].includes(identity.role),[page,setPage]=useState(0),[size,setSize]=useState(50),[modal,setModal]=useState<any>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const state=usePagedRead(`/api/visit-off-days?limit=${size}&offset=${page*size}`),[draft,setDraft]=useState({user_id:identity.id,service_date:today(),reason_code:'annual_leave',reason:'',status:'approved'});
  const reps=users.filter(u=>u.role_code==='SALES_REP'&&u.channel==='field');
  async function save(){setBusy(true);setError('');try{if(modal.create)await workWrite('/api/visit-off-days',{user_id:draft.user_id,service_date:draft.service_date,reason_code:draft.reason_code,reason:draft.reason});else await workWrite(`/api/visit-off-days/${modal.row.id}/review`,{status:draft.status,reason:draft.reason},modal.row.version);setModal(null);window.dispatchEvent(new Event('nyales-visit-off-changed'));}catch(e){setError(message(e))}finally{setBusy(false)}}

@@ -1,4 +1,5 @@
 import {ActionIcon} from './ActionIcon';
+import {roleName} from './hierarchy-model';
 import {presentationLabel} from '../shared/business-labels';
 import {LiquidTabs} from './LiquidNav';
 import{Loading}from'./Loading';
@@ -8,7 +9,7 @@ import {Modal} from './Modal';
 import {apiFetch} from './auth';
 type Person={id:string;name:string;status:string;version:number;auth_subject?:string|null;role_code?:string|null;channel?:string|null;roles?:Array<{role_code:string;channel:string|null;effective_from_date:string;effective_to_date:string|null}>;areas?:Array<{area_id:string;effective_from_date:string;effective_to_date:string|null}>};
 type Edge={id:string;subordinate_id:string;manager_id:string;area_id:string;channel:string;effective_from_date:string;effective_to_date:string|null;version:number};
-const roles=['SALES_REP','TELESALES','SUPERVISOR','AREA_MANAGER','NSM','MANAGEMENT'];
+const roles=['SALES_REP','TELESALES','SUPERVISOR','AREA_MANAGER','REGIONAL_MANAGER','NSM','MANAGEMENT'];
 export function People(){
  const [users,setUsers]=useState<Person[]>([]),[edges,setEdges]=useState<Edge[]>([]),[areas,setAreas]=useState<Array<{id:string;name:string;status:string}>>([]);
  const [loading,setLoading]=useState(true),[error,setError]=useState(''),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[tab,setTab]=useState<'users'|'hierarchy'>('hierarchy');
@@ -26,10 +27,10 @@ export function People(){
   const response=await apiFetch(path,{method,headers:{'Content-Type':'application/json','Idempotency-Key':retry.current.key,...(version?{'If-Match':`"${version}"`}:{})},body:JSON.stringify(body)});retry.current=null;return response;
  }
  async function run(work:()=>Promise<unknown>,success:string){if(busy)return;setBusy(true);setError('');setMessage('');try{await work();await load();setMessage(success);setModal(null);setEnding(null)}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
- const roleBody=()=>({role_code:role,channel:['NSM','MANAGEMENT'].includes(role)?null:role==='TELESALES'?'telesales':role==='SALES_REP'?'field':channel,area_ids:areaIds,effective_from_date:from});
+ const roleBody=()=>({role_code:role,channel:['NSM','MANAGEMENT','REGIONAL_MANAGER'].includes(role)?null:role==='TELESALES'?'telesales':role==='SALES_REP'?'field':channel,area_ids:areaIds,effective_from_date:from});
  function saveUser(e:React.FormEvent){e.preventDefault();void run(async()=>{if(edit)await mutate('/api/users/'+edit.id,'PUT',{name,auth_subject:uid||null,status},edit.version);else await mutate('/api/users','POST',{name,auth_subject:uid||null,role:roleBody()});reset()},edit?'Profil user diperbarui.':'User dibuat nonaktif. Atur hirarki lalu aktifkan jika persyaratan sudah lengkap.')}
  const userName=(id:string)=>users.find(x=>x.id===id)?.name||id;
- const roleFields=<><label>Role<select aria-label="Role user" value={role} onChange={e=>{setRole(e.target.value);if(e.target.value==='TELESALES')setChannel('telesales');if(e.target.value==='SALES_REP')setChannel('field')}}>{roles.map(x=><option key={x}>{x}</option>)}</select></label>{!['MANAGEMENT','NSM','SALES_REP','TELESALES'].includes(role)&&<label>Kanal role<select aria-label="Kanal role" value={channel} onChange={e=>setChannel(e.target.value)}><option value="field">Lapangan</option><option value="telesales">Telesales</option></select></label>}<fieldset><legend>Scope area</legend><div className="day-options">{areas.filter(x=>x.status==='active').map(a=><label key={a.id}><input type="checkbox" checked={areaIds.includes(a.id)} onChange={e=>setAreaIds(e.target.checked?[...areaIds,a.id]:areaIds.filter(x=>x!==a.id))}/>{presentationLabel(a.name)}</label>)}</div></fieldset><label>Role berlaku mulai<input type="date" required value={from} onChange={e=>setFrom(e.target.value)}/></label></>;
+ const roleFields=<><label>Role<select aria-label="Role user" value={role} onChange={e=>{setRole(e.target.value);if(e.target.value==='TELESALES')setChannel('telesales');if(e.target.value==='SALES_REP')setChannel('field')}}>{roles.map(x=><option key={x} value={x}>{roleName(x)}</option>)}</select></label>{!['MANAGEMENT','NSM','REGIONAL_MANAGER','SALES_REP','TELESALES'].includes(role)&&<label>Kanal role<select aria-label="Kanal role" value={channel} onChange={e=>setChannel(e.target.value)}><option value="field">Lapangan</option><option value="telesales">Telesales</option></select></label>}<fieldset><legend>Scope area</legend><div className="day-options">{areas.filter(x=>x.status==='active').map(a=><label key={a.id}><input type="checkbox" checked={areaIds.includes(a.id)} onChange={e=>setAreaIds(e.target.checked?[...areaIds,a.id]:areaIds.filter(x=>x!==a.id))}/>{presentationLabel(a.name)}</label>)}</div></fieldset><label>Role berlaku mulai<input type="date" required value={from} onChange={e=>setFrom(e.target.value)}/></label></>;
  function closeModal(){if(busy)return;setModal(null);setEnding(null);setError('');reset()}
  function openCreate(){setError('');setMessage('');if(tab==='users'){reset();setModal('user')}else{setSub('');setManager('');setEdgeArea('');setEdgeChannel('field');setEdgeFrom(from);setEdgeTo('');setModal('hierarchy')}}
  return <><div className="page-heading"><div><h1>User & hirarki sales</h1></div></div>

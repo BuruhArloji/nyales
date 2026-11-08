@@ -1,6 +1,6 @@
 export type HierarchyPerson={id:string;name:string;status:string;version:number;role_code?:string|null;channel?:string|null};
 export type ReportingEdge={id:string;subordinate_id:string;manager_id:string;area_id:string;channel:string;effective_from_date:string;effective_to_date:string|null;version:number};
-export const roleNames:Record<string,string>={MANAGEMENT:'Management',NSM:'National Sales Manager',AREA_MANAGER:'Area Manager',SUPERVISOR:'Supervisor',SALES_REP:'Sales',TELESALES:'Telesales'};
+export const roleNames:Record<string,string>={MANAGEMENT:'Management',NSM:'National Sales Manager',REGIONAL_MANAGER:'Regional Manager',AREA_MANAGER:'Area Manager',SUPERVISOR:'Supervisor',SALES_REP:'Sales',TELESALES:'Telesales'};
 export const roleName=(value?:string|null)=>value?roleNames[value]||value:'Role belum efektif';
 export function reportingOn(edge:ReportingEdge,date:string){return edge.effective_from_date<=date&&(!edge.effective_to_date||edge.effective_to_date>date)}
 /** Organization is a visual container, not a person or an invented reporting assignment. */

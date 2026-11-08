@@ -6,7 +6,7 @@ import {roles,type Scope} from './scope';
 type Env={Bindings:{DB:D1Database};Variables:{identity:Identity;scope:Scope}};
 export const people=new Hono<Env>();
 const id=z.string().min(1).max(128),name=z.string().trim().min(1).max(120),date=z.iso.date();
-const roleInput=z.object({role_code:z.enum(roles),channel:z.enum(['field','telesales']).nullable(),area_ids:z.array(id).max(100).refine(a=>new Set(a).size===a.length),effective_from_date:date}).strict().refine(r=>r.role_code==='SALES_REP'?r.channel==='field':r.role_code==='TELESALES'?r.channel==='telesales':['MANAGEMENT','NSM'].includes(r.role_code)?r.channel===null:r.channel!==null,{message:'Kanal tidak sesuai role'}).refine(r=>!['AREA_MANAGER','SUPERVISOR'].includes(r.role_code)||r.area_ids.length>0,{message:'Area wajib untuk Manager/Supervisor'});
+const roleInput=z.object({role_code:z.enum(roles),channel:z.enum(['field','telesales']).nullable(),area_ids:z.array(id).max(100).refine(a=>new Set(a).size===a.length),effective_from_date:date}).strict().refine(r=>r.role_code==='SALES_REP'?r.channel==='field':r.role_code==='TELESALES'?r.channel==='telesales':['MANAGEMENT','NSM','REGIONAL_MANAGER'].includes(r.role_code)?r.channel===null:r.channel!==null,{message:'Kanal tidak sesuai role'}).refine(r=>!['REGIONAL_MANAGER','AREA_MANAGER','SUPERVISOR'].includes(r.role_code)||r.area_ids.length>0,{message:'Area wajib untuk Manager/Supervisor'});
 const userInput=z.object({name,auth_subject:id.nullable(),role:roleInput}).strict();
 const profileInput=z.object({name,auth_subject:id.nullable(),status:z.enum(['active','inactive'])}).strict();
 const assignmentInput=z.object({subordinate_id:id,manager_id:id,area_id:id,channel:z.enum(['field','telesales']),effective_from_date:date,effective_to_date:date.nullable()}).strict().refine(r=>r.subordinate_id!==r.manager_id,{message:'User tidak boleh melapor ke dirinya sendiri'}).refine(r=>!r.effective_to_date||r.effective_to_date>r.effective_from_date,{message:'Periode tidak valid'});
@@ -73,7 +73,7 @@ async function checkHierarchy(db:D1Database,s:Scope,input:any){
  const subordinateRole=await roleAt(db,org,sub.id,input.effective_from_date,input.effective_to_date),managerRole=await roleAt(db,org,manager.id,input.effective_from_date,input.effective_to_date);
  if(!subordinateRole||!managerRole)throw new Error('409:ROLE_MUST_COVER_ASSIGNMENT');
  if(['SALES_REP','TELESALES'].includes(subordinateRole.role_code)&&input.effective_to_date)throw new Error('422:USE_TRANSFER_TO_END_SALES_ASSIGNMENT');
- const parents:Record<string,string[]>={SALES_REP:['SUPERVISOR'],TELESALES:['SUPERVISOR'],SUPERVISOR:['AREA_MANAGER'],AREA_MANAGER:['NSM','MANAGEMENT'],NSM:['MANAGEMENT']};
+ const parents:Record<string,string[]>={SALES_REP:['SUPERVISOR'],TELESALES:['SUPERVISOR'],SUPERVISOR:['AREA_MANAGER'],AREA_MANAGER:['REGIONAL_MANAGER','NSM','MANAGEMENT'],REGIONAL_MANAGER:['MANAGEMENT'],NSM:['MANAGEMENT']};
  if(!parents[subordinateRole.role_code]?.includes(managerRole.role_code))throw new Error('422:INVALID_REPORTING_LAYER');
  if(subordinateRole.channel&&subordinateRole.channel!==input.channel||managerRole.channel&&managerRole.channel!==input.channel)throw new Error('422:CHANNEL_MISMATCH');
  if(!await validAreas(db,org,[input.area_id]))throw new Error('422:INVALID_AREA');

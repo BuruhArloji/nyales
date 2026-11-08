@@ -8,7 +8,7 @@ import {customerPredicate,type Scope} from './scope';
 
 export const visitAttendance=new Hono<OperationEnv>();
 const id=z.string().min(1).max(128),reason=z.string().trim().min(1).max(1000),date=z.iso.date();
-const manager=(s:Scope)=>['MANAGEMENT','NSM','AREA_MANAGER','SUPERVISOR'].includes(s.identity.role);
+const manager=(s:Scope)=>['MANAGEMENT','NSM','REGIONAL_MANAGER','AREA_MANAGER','SUPERVISOR'].includes(s.identity.role);
 const organization=(c:any)=>c.get('scope').identity.organization_id;
 function repPredicate(s:Scope,channel:'field'|'telesales'='field'){
  let sql=`u.organization_id=? AND u.status='active' AND EXISTS(SELECT 1 FROM auth_role_assignment r WHERE r.organization_id=u.organization_id AND r.user_id=u.id AND r.role_code='${channel==='field'?'SALES_REP':'TELESALES'}' AND r.channel='${channel}' AND r.effective_from_date<=? AND(r.effective_to_date IS NULL OR r.effective_to_date>?))`;
