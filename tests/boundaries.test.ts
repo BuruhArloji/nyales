@@ -6,6 +6,24 @@ import {boundaryLimits,canonicalJson,manifestJson,type BoundaryCollection} from 
 import {validateBoundaryCollection} from '../src/server/boundary-geometry';
 
 const ring=[[106,-6],[106.1,-6],[106.1,-5.9],[106,-5.9],[106,-6]];
+
+test('village picker filters by dated area membership before pagination and rejects foreign areas',async()=>{
+ const f=harness();try{
+  const a=collection(),b=collection('31.71.02.1001','31.71.02','Kelurahan Lain');
+  let row=await f.create([a,b]);row=await f.upload(row,a);row=await f.upload(row,b,1);await f.activate(row);
+  f.sqlite.exec("INSERT INTO area(id,organization_id,name) VALUES('empty','o','Empty area');");
+  const village=f.sqlite.prepare('SELECT id,admin_unit_id FROM admin_boundary WHERE dataset_id=? ORDER BY name_snapshot').all(row.id) as any[];
+  const chosen=village.find(v=>(f.sqlite.prepare('SELECT name_snapshot FROM admin_boundary WHERE id=?').get(v.id) as any).name_snapshot==='Kelurahan Contoh');
+  f.sqlite.prepare('INSERT INTO area_admin_membership VALUES(?,?,?,?,?,?,?,?)').run('member','o','a',chosen.admin_unit_id,chosen.id,'2020-01-01','2030-01-01','Fixture membership');
+  const query='datasets/'+row.id+'/boundaries?area_id=a&effective_from_date=';
+  assert.deepEqual((await f.data(await f.req('GET',query+'2026-11-08'))).map((v:any)=>v.id),[chosen.id]);
+  assert.equal((await f.data(await f.req('GET',query+'2030-01-01'))).length,0);
+  assert.equal((await f.data(await f.req('GET','datasets/'+row.id+'/boundaries?area_id=empty'))).length,0);
+  assert.equal((await f.req('GET','datasets/'+row.id+'/boundaries?area_id=foreign')).status,422);
+  assert.equal((await f.req('GET',query+'invalid')).status,422);
+  assert.equal((await f.data(await f.req('GET','datasets/'+row.id+'/boundaries'))).length,2);
+ }finally{f.sqlite.close()}
+});
 function collection(code='31.71.01.1001',district='31.71.01',name='Kelurahan Contoh'):BoundaryCollection{return {type:'FeatureCollection',features:[{type:'Feature',properties:{source_id:code,province:{code:'31',name:'Provinsi Contoh'},regency:{code:'31.71',name:'Kota Contoh'},district:{code:district,name:'Kecamatan '+district},village:{code,name,type:'kelurahan'}},geometry:{type:'Polygon',coordinates:[structuredClone(ring)]}}]}}
 async function source(chunks:BoundaryCollection[],release='Synthetic release',manifest?:string){return {provider:'Synthetic fixture, not a real boundary source',code_namespace:'fixture-pum',release_version:release,released_at:null,acquired_at:'2026-01-01T00:00:00Z',source_reference:'https://example.test/boundaries',source_checksum:await digest('synthetic source'),metadata:{reference_release:'Synthetic',origin:'Test only',code_mapping:'Explicit fixture namespace',usage_terms_status:'unverified',notes:'No real-world rights assertion'},coverage:{label:'Synthetic test scope',source_filter:'fixture-only',national_complete:false},manifest_sha256:manifest||await digest(manifestJson(await Promise.all(chunks.map(c=>digest(canonicalJson(c)))))),expected_features:chunks.reduce((n,c)=>n+c.features.length,0),expected_chunks:chunks.length}}
 const review=(expected_active_id:string|null=null)=>({reason:'Synthetic release review',license_reference:'https://example.test/synthetic-fixture-terms',license_note:'Synthetic fixture authored for this test; no real provider assertion.',attribution:'NYALES synthetic fixture',confirm_usage_rights:true,expected_active_id});

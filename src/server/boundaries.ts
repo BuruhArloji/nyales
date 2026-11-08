@@ -101,7 +101,12 @@ boundaries.post('/api/admin-boundaries/datasets/:id/activate',async c=>{
 });
 boundaries.get('/api/admin-boundaries/datasets/:id/boundaries',async c=>{
  const org=c.get('identity').organization_id,row=await load(c.env.DB,org,c.req.param('id'));if(!row)return c.json({code:'NOT_FOUND'},404);
- const after=c.req.query('after')||'',q=(c.req.query('q')||'').trim();if(q.length>120)return c.json({code:'INVALID_SEARCH'},422);const rows=await c.env.DB.prepare('SELECT id,admin_unit_id,name_snapshot,parent_code_snapshot,hierarchy_json,geometry_type,geometry_checksum,min_longitude_e7,min_latitude_e7,max_longitude_e7,max_latitude_e7 FROM admin_boundary WHERE organization_id=? AND dataset_id=? AND id>?'+(q?' AND (name_snapshot LIKE ? OR hierarchy_json LIKE ?)':'')+' ORDER BY id LIMIT 101').bind(org,row.id,after,...(q?['%'+q+'%','%'+q+'%']:[])).all<any>();
+ const after=c.req.query('after')||'',q=(c.req.query('q')||'').trim(),area=c.req.query('area_id')||'',date=c.req.query('effective_from_date')||c.get('scope').date;
+ if(q.length>120)return c.json({code:'INVALID_SEARCH'},422);
+ if(!z.iso.date().safeParse(date).success)return c.json({code:'INVALID_DATE'},422);
+ if(area&&!await c.env.DB.prepare("SELECT id FROM area WHERE organization_id=? AND id=? AND status='active'").bind(org,area).first())return c.json({code:'INVALID_AREA'},422);
+ const membership=area?' AND EXISTS(SELECT 1 FROM area_admin_membership m WHERE m.organization_id=admin_boundary.organization_id AND m.admin_unit_id=admin_boundary.admin_unit_id AND m.boundary_id=admin_boundary.id AND m.area_id=? AND m.effective_from_date<=? AND(m.effective_to_date IS NULL OR m.effective_to_date>?))':'';
+ const rows=await c.env.DB.prepare('SELECT id,admin_unit_id,name_snapshot,parent_code_snapshot,hierarchy_json,geometry_type,geometry_checksum,min_longitude_e7,min_latitude_e7,max_longitude_e7,max_latitude_e7 FROM admin_boundary WHERE organization_id=? AND dataset_id=? AND id>?'+(q?' AND (name_snapshot LIKE ? OR hierarchy_json LIKE ?)':'')+membership+' ORDER BY id LIMIT 101').bind(org,row.id,after,...(q?['%'+q+'%','%'+q+'%']:[]),...(area?[area,date,date]:[])).all<any>();
  return c.json({data:rows.results.slice(0,100).map(({hierarchy_json,...x})=>({...x,hierarchy:JSON.parse(hierarchy_json)})),next:rows.results.length>100?rows.results[99].id:null,dataset_status:row.status});
 });
 boundaries.get('/api/admin-boundaries/datasets/:id/chunks/:index',async c=>{
