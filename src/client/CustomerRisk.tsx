@@ -1,3 +1,4 @@
+import {readGeometryBatches} from './geometry-request';
 import {FilterPanel} from './FilterPanel';
 import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
@@ -18,7 +19,7 @@ export function CustomerRisk({filters,baseMap,context,selected,onSelect,camera,o
  const generation=useRef(0),retry=useRef<{fingerprint:string;key:string}|null>(null);
  useEffect(()=>{let alive=true;generation.current++;setData(null);setGeometry(null);setDetail(null);setHistory(null);setError('');setBusy(false);setState('loading');const url=runId?'/api/risks/runs/'+encodeURIComponent(runId):'/api/risks/current?'+query;get(url).then(d=>{if(alive){setState(runId?'ready':d.state);setData(runId?d:d.run||d)}}).catch(e=>{if(alive){setError(riskError(e.message));setState('error')}});return()=>{alive=false;generation.current++}},[query,runId,refresh]);
  const results:Customer[]=state==='ready'?data?.results||[]:[],sameDataset=data?.dataset_id===filters.dataset_id,boundaryIds=[...new Set(results.map(r=>r.boundary_id).filter(Boolean))].sort() as string[],geometryKey=boundaryIds.slice(0,50).join(',');
- useEffect(()=>{let alive=true;setGeometry(null);setGeometryError('');if(state==='ready'&&sameDataset&&geometryKey)get('/api/geo/geometry?'+new URLSearchParams({dataset_id:data.dataset_id,ids:geometryKey})).then(g=>alive&&setGeometry(g)).catch(e=>alive&&setGeometryError(riskError(e.message)));return()=>{alive=false}},[state,sameDataset,geometryKey,data?.dataset_id,refresh]);
+ useEffect(()=>{const controller=new AbortController();setGeometry(null);setGeometryError('');if(state==='ready'&&sameDataset&&geometryKey)void readGeometryBatches(apiFetch,data.dataset_id,geometryKey.split(','),{signal:controller.signal,onUpdate:setGeometry}).catch(e=>{if(!controller.signal.aborted)setGeometryError(riskError(e.message))});return()=>controller.abort()},[state,sameDataset,geometryKey,data?.dataset_id,refresh]);
  const aggregate=useMemo(()=>{const a=new Map<string,{total:number;flags:number;unknown:number}>();for(const c of results){const k=c.boundary_id||'__unmapped__',v=a.get(k)||{total:0,flags:0,unknown:0};v.total++;if(c.result.flag_count)v.flags++;if(c.result.unknown_count)v.unknown++;a.set(k,v)}return a},[data,state]);
  const styled=useMemo(()=>geometry?{...geometry,features:geometry.features.map((f:any)=>{const a=aggregate.get(String(f.id));return{...f,properties:{...f.properties,fill_color:a?.flags?'#126757':a?.unknown?'#b7c0bc':'#d5ece7',metric_unknown:!a||a.unknown>0,metric_label:`${a?.flags??0} customer perlu perhatian · ${a?.unknown??0} data kurang · ${a?.total??0} diperiksa`}}})}:null,[geometry,aggregate]);
  const map=useMemo(()=>({...baseMap,customers:[],sales:[]}),[baseMap]);

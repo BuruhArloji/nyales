@@ -1,3 +1,4 @@
+import {readGeometryBatches} from './geometry-request';
 import {readMapData} from './map-request';
 import {MapSalesControls} from './MapSalesControls';
 import {salesMapCustomers,type SalesMapLevel} from '../shared/map-sales';
@@ -31,7 +32,7 @@ export function GeographyPage(){
  useEffect(()=>{const controller=new AbortController();setBusy(true);setError('');get('/api/geo/map?'+key,controller.signal).then(d=>{setData(d);if(selected&&!d.boundaries.some((b:any)=>b.id===selected))setSelected('')}).catch(e=>{if(!controller.signal.aborted)setError(e.message)}).finally(()=>{if(!controller.signal.aborted)setBusy(false)});return()=>controller.abort()},[key,refresh]);
  const boundaries:any[]=data?.boundaries||[],visible=useMemo(()=>boundaries.filter(b=>[b.name,b.hierarchy?.district?.name,b.hierarchy?.village?.code].join(' ').toLowerCase().includes(search.toLowerCase())),[boundaries,search]);
  const ids=visible.slice(0,40).map(b=>b.id);if(selected&&!ids.includes(selected))ids.push(selected);const geometryKey=ids.join(',');
- useEffect(()=>{const controller=new AbortController();setGeometry(null);setGeometryError('');if(layers.operational&&data?.dataset&&geometryKey)get('/api/geo/geometry?'+new URLSearchParams({dataset_id:data.dataset.id,ids:geometryKey}),controller.signal).then(setGeometry).catch(e=>{if(!controller.signal.aborted)setGeometryError(e.message)});return()=>controller.abort()},[data?.dataset?.id,data?.dataset?.version,geometryKey,refresh,layers.operational]);
+ useEffect(()=>{const controller=new AbortController();setGeometry(null);setGeometryError('');if(layers.operational&&data?.dataset&&geometryKey)readGeometryBatches(apiFetch,data.dataset.id,geometryKey.split(','),{signal:controller.signal,onUpdate:setGeometry}).catch(e=>{if(!controller.signal.aborted)setGeometryError(e.message)});return()=>controller.abort()},[data?.dataset?.id,data?.dataset?.version,geometryKey,refresh,layers.operational]);
  function context(){return {mode,sales_level:salesLevel,area_id:area,rep_id:rep,channel,period,dataset_id:data?.dataset?.id,boundary_id:selected,camera:camera.current}}
  useEffect(()=>{if(data)replaceGeoContext(context())},[mode,salesLevel,area,rep,channel,period,selected,data?.dataset?.id]);
  useEffect(()=>{if(!initial.customer_id||!data)return;const item=data.map.customers.find((c:any)=>c.id===initial.customer_id);if(item)setFocus({...item,openPopup:true})},[data?.period_context,Boolean(data),initial.customer_id]);

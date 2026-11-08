@@ -1,4 +1,5 @@
 import {mapRenderPin,mapRenderFacts} from '../shared/map-payload';
+import {readMapGeographyStates} from './map-geography';
 import {mapSummary} from '../shared/map-analysis';
 import {cachedJson,scopeCacheKey,readModelRevision} from './cache';
 import {chunkMapIds,readMapMetrics} from './map-metrics';
@@ -78,15 +79,11 @@ export function createGeographyRoutes(mapPayload:(c:any)=>Promise<any>){
   const rows=boundaries.value;
   const mapRows=[...new Map([...base.data.all_customers,...base.data.customers].map((customer:any)=>[customer.id,customer])).values()];
   const cohortIds=JSON.stringify(mapRows.map((x:any)=>x.id));
-  const mappingCache=await cachedJson(c,scopeCacheKey(scope,'geo-map-mappings',JSON.stringify([revision,await digest(cohortIds)])),60,async()=>{
-   const result:any[]=[];
-   for(const ids of chunkMapIds(mapRows.map((x:any)=>x.id)))result.push(...(await c.env.DB.prepare('SELECT l.outlet_id,l.boundary_id,b.dataset_id,l.status,l.evidence_json,l.revision FROM customer_admin_location l LEFT JOIN admin_boundary b ON b.organization_id=l.organization_id AND b.id=l.boundary_id WHERE l.organization_id=? AND l.outlet_id IN (SELECT value FROM json_each(?)) AND l.superseded_at IS NULL AND l.effective_from_date<=? AND (l.effective_to_date IS NULL OR l.effective_to_date>?) ORDER BY l.revision DESC').bind(org,JSON.stringify(ids),date,date).all<any>()).results);
-   return result;
-  });
+  const mappingCache=await cachedJson(c,scopeCacheKey(scope,'geo-map-states-v2',JSON.stringify([revision,d?.id,d?.version,await digest(cohortIds)])),60,()=>readMapGeographyStates(c.env.DB,org,date,mapRows,d));
   const mappings=mappingCache.value;
   const mappingByCustomer=new Map<string,any>();for(const row of mappings)if(!mappingByCustomer.has(row.outlet_id))mappingByCustomer.set(row.outlet_id,row);
   const compact=c.req.query('compact')==='1';
-  const enrich=(customer:any)=>{const row=mappingByCustomer.get(customer.id),state=mappingState(row,customer,d);return {...(compact?mapRenderPin(customer):customer),geo_status:state,geo_boundary_id:state==='confirmed'?row.boundary_id:null}};
+  const enrich=(customer:any)=>{const row=mappingByCustomer.get(customer.id);return {...(compact?mapRenderPin(customer):customer),geo_status:row?.geo_status||'unmapped',geo_boundary_id:row?.geo_boundary_id||null}};
   const metricIds=base.data.all_customers.map((x:any)=>x.id);
   const metricKey=scopeCacheKey(c.get('scope'),compact?'map-metrics-render-v2':'map-metrics',JSON.stringify([await readModelRevision(c),period||date.slice(0,7),channel||'field',c.req.query('rep_id')||'',c.req.query('area_id')||'',await digest(JSON.stringify([...metricIds].sort()))]));
   const metricCache=await cachedJson(c,metricKey,60,async()=>{const entries=[...await readMapMetrics(c.env.DB,c.get('scope'),metricIds,period||date.slice(0,7),channel||'field',c.req.query('rep_id'),c.req.query('area_id'))];return compact?entries.map(([id,metrics])=>[id,mapRenderFacts(metrics)] as [string,any]).filter(([,metrics])=>metrics):entries});
