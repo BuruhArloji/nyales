@@ -51,3 +51,11 @@ test('WEB-057 file verification remains organization/role scoped and refuses for
  assert.equal((await f.req('POST','/api/recovery/drills',{manifest_id:backup.id,notes:'Other organization cannot inspect bytes',verify_objects:true},undefined,'other','MANAGEMENT','x')).status,404);
  assert.equal((await f.req('POST','/api/recovery/drills',{manifest_id:backup.id,notes:'Forged input',verify_objects:'true'},undefined,'mg')).status,422);
 });
+
+test('proposal photos join frozen recovery inventory with private keys and checksums while pending uploads stay excluded',async()=>{
+ const row={id:'proposal',organization_id:'o',photo_key:'customer-proposals/o/proposal/photo',photo_size:Buffer.byteLength(content),photo_sha256:await sha()};
+ const tables={customer_proposal:[row,{id:'pending',organization_id:'o',photo_key:null}]};
+ const inventory=collectRecoveryObjects(tables,'o');assert.equal(inventory.objects.length,1);assert.equal(inventory.skipped_uncommitted_attachments,1);assert.equal(inventory.objects[0].resource_type,'customer_proposal_photo');
+ const verified=await verifyRecoveryObjects(bucket(),tables,'o');assert.equal(verified.status,'passed');assert.equal(verified.verified_count,1);
+ assert.throws(()=>collectRecoveryObjects({customer_proposal:[{...row,photo_key:'customer-proposals/foreign/photo'}]},'o'),/RECOVERY_OBJECT_INVENTORY_INVALID/);
+});

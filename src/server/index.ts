@@ -1,3 +1,5 @@
+import {customerProposals} from './customer-proposals';
+import {visitLocation} from './visit-location';
 import {readCustomerRows} from './customer-read-rows';
 import {ownerSalesMode,ownerSalesScope} from './owner-sales-mode';
 import {villageTerritory} from './village-territory';
@@ -146,6 +148,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
  if(/^\/api\/(incentive-plans|incentive-plan-versions|incentive-enrollments|incentive-simulations|incentive-calculations|incentive-statements|incentive-exports|disputes)(\/|$)/.test(c.req.path)){await next();return}
  if(/^\/api\/(target-plans|target-versions|targets)(\/|$)/.test(c.req.path)){await next();return}
  if(/^\/api\/(customer-tier-rules|customer-source-coverage|customer-segmentation)(\/|$)/.test(c.req.path)){if(c.req.path!=='/api/customer-segmentation'&&!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
+ if(/^\/api\/(customer-proposals|visit-location)(\/|$)/.test(c.req.path)){await next();return}
  if(/^\/api\/(work-plans|work-sessions|activities|visits|tasks|handoffs|handoff-recipients|campaigns|scripts|attachment-intents|attachments|sync|exceptions)(\/|$)/.test(c.req.path)){if(c.req.method!=='GET'&&/^\/api\/(campaigns|scripts)(\/|$)/.test(c.req.path)&&!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(/^\/api\/(leads|opportunities|orders|approval-policies|forecast-contributions|forecast-review)(\/|$)/.test(c.req.path)){if(c.req.path.startsWith('/api/approval-policies')&&!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
  const isFinance=/^\/api\/(invoice-imports|jobs|invoices)(\/|$)/.test(c.req.path);
@@ -392,6 +395,8 @@ scopedRoutes.get('/api/map',async c=>{const payload=await mapPayload(c);return c
 scopedRoutes.get('/api/sales/last-positions',async c=>{const result=await mapPayload(c);return c.json({data:result.data.sales,meta:result.meta})});
 
 // Daily self-service has its own scope checks; mount before legacy admin-only planning middleware.
+scopedRoutes.route('/',visitLocation);
+scopedRoutes.route('/',customerProposals);
 scopedRoutes.route('/',dailyVisit);
 scopedRoutes.route('/',visitAttendance);
 scopedRoutes.route('/',customerWallet);

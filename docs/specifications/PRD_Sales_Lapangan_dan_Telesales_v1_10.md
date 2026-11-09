@@ -1267,3 +1267,8 @@ maksimal 10 pelanggan/3 sales/15 titik unik. Input dari snapshot kesiapan dan
 profil operasional yang ditinjau. Hasil berupa pratinjau, belum publish agenda
 atau PJP bulanan; WEB-070–074 tetap belum selesai. Provider/live acceptance
 terpisah dari keberhasilan build dan deployment.
+
+
+## Addendum 9 November 2026 — verifikasi pelanggan dan lokasi kunjungan
+
+[Spesifikasi pengajuan, persetujuan dan geofence](../CUSTOMER_LOCATION_VERIFICATION.md) menjadi acuan implementasi untuk pelanggan baru/koreksi titik dari Sales, peninjauan independen scoped Supervisor ke atas, penugasan satu pemilik per kelurahan, serta radius check-in/check-out. Status hubungan invoice dipisahkan dari kepercayaan titik; transaksi tidak otomatis memverifikasi koordinat. Rute dan kunjungan pada titik belum terverifikasi mengikuti izin organisasi dan tidak memperoleh klaim lokasi tervalidasi. Foto dan bukti disimpan privat, dicakup dalam logical backup dan verifikasi objek. Histori finansial/kunjungan lama tidak ditulis ulang.

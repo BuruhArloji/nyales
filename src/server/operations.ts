@@ -6,6 +6,13 @@ export function fail(status:number,code:string):never{throw new Error(status+':'
 export function riskScopeFingerprint(s:Scope){return digest(JSON.stringify({organization:s.identity.organization_id,actor:s.identity.id,role:s.identity.role,areas:[...s.areaIds].sort(),reps:[...s.repIds].sort(),channel:s.channel,capabilities:[...s.capabilities].sort()}))}
 async function replayAllowed(c:any,body:any,data:any,s:Scope){
  if(s.orgWide)return true;const db=c.env.DB as D1Database,org=s.identity.organization_id;let customerId=body?.customer_id as string|undefined;const routeId=c.req.param('id');const path=c.req.path;const table=path.startsWith('/api/visits/')||path.startsWith('/api/activities/')?'activity':path.startsWith('/api/work-plans/')?'work_plan':path.startsWith('/api/work-sessions/')?'work_session':path.startsWith('/api/tasks/')?'sales_task':path.startsWith('/api/handoffs/')?'sales_handoff':path.startsWith('/api/telesales/queue/')&&routeId?'telesales_lease':path.startsWith('/api/attachments/')?'evidence_attachment':path.startsWith('/api/orders/')?'sales_order':path.startsWith('/api/leads/')||path.startsWith('/api/opportunities/')?'sales_lead':path.startsWith('/api/forecast-contributions/')?'forecast_contribution':path.startsWith('/api/exceptions/')?'sales_exception':null;
+
+ if(path.startsWith('/api/customer-proposals')){
+  const proposalId=routeId||data.id,p=await db.prepare('SELECT proposed_by,area_id,status FROM customer_proposal WHERE organization_id=? AND id=?').bind(org,proposalId).first<any>();if(!p)return false;
+  const inArea=s.areaIds.includes(p.area_id),own=p.proposed_by===s.identity.id;
+  if(path.endsWith('/review'))return !own&&(s.allRepsInArea&&inArea||s.identity.role==='SUPERVISOR'&&inArea&&s.repIds.includes(p.proposed_by));
+  return own&&inArea||inArea&&(s.allRepsInArea||s.identity.role==='SUPERVISOR'&&s.repIds.includes(p.proposed_by));
+ }
  let row:any=null;if(table&&routeId){row=await db.prepare('SELECT * FROM '+table+' WHERE organization_id=? AND id=?').bind(org,routeId).first<any>();if(!row)return false;customerId=row.customer_id||row.outlet_id||customerId;if(!s.allRepsInArea&&!s.repIds.includes(row.user_id)&&!s.repIds.includes(row.sender_id)&&!s.repIds.includes(row.receiver_id))return false;if(table==='evidence_attachment'){const activity=await db.prepare('SELECT outlet_id FROM activity WHERE organization_id=? AND id=?').bind(org,row.activity_id).first<any>();if(!activity)return false;customerId=activity.outlet_id}}
  if(path.startsWith('/api/visit-generator/daily/runs/')){
   const runId=path.split('/')[5],run=await db.prepare('SELECT rep_id FROM daily_visit_run WHERE organization_id=? AND id=?').bind(org,runId).first<any>();

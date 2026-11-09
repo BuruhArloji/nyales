@@ -1,6 +1,7 @@
 /** Read-only checks against frozen backup rows. This never copies, restores or deletes R2 objects. */
 export const recoveryObjectLimits={max_objects:64,max_object_bytes:8*1024*1024,max_total_bytes:32*1024*1024,max_source_manifest_bytes:8*1024*1024} as const;
 const sources=[
+ {table:'customer_proposal',kind:'customer_proposal_photo',bytes:'photo_size',hash:'photo_sha256'},
  {table:'evidence_attachment',kind:'attachment',bytes:'size',hash:'sha256'},
  {table:'admin_boundary_chunk',kind:'boundary_chunk',bytes:'byte_count',hash:'checksum'},
  {table:'customer_risk_run',kind:'risk_snapshot',bytes:'byte_count',hash:'snapshot_sha256'},
@@ -16,11 +17,12 @@ export function collectRecoveryObjects(tables:Record<string,any[]>,organization:
   const rows=tables[source.table];if(!Array.isArray(rows))throw Error('RECOVERY_OBJECT_INVENTORY_INVALID');
   for(const row of rows){
    if(!row||row.organization_id!==organization)throw Error('RECOVERY_OBJECT_TENANT_MISMATCH');
+   if(source.table==='customer_proposal'&&!row.photo_key){skipped++;continue}
    if(source.table==='evidence_attachment'&&row.status!=='ready'){skipped++;continue}
    if(source.table==='admin_boundary_chunk'&&(typeof row.dataset_id!=='string'||!row.dataset_id.length||!Number.isInteger(row.chunk_index)||row.chunk_index<0||row.chunk_index>99))throw Error('RECOVERY_OBJECT_INVENTORY_INVALID');
    const resourceId=source.table==='admin_boundary_chunk'?String(row.dataset_id)+':'+String(row.chunk_index):row.id;
-   const key=row.storage_key,size=row[source.bytes],hash=row[source.hash];
-   const prefix=source.table==='evidence_attachment'?'evidence/'+organization+'/':source.table==='admin_boundary_chunk'?encodeURIComponent(organization)+'/admin-boundaries/':organization+'/'+({customer_risk_run:'risk',territory_scenario_revision:'scenario',visit_planning_preflight:'visit-readiness'} as Record<string,string>)[source.table]+'/';
+   const key=source.table==='customer_proposal'?row.photo_key:row.storage_key,size=row[source.bytes],hash=row[source.hash];
+   const prefix=source.table==='customer_proposal'?'customer-proposals/'+organization+'/':source.table==='evidence_attachment'?'evidence/'+organization+'/':source.table==='admin_boundary_chunk'?encodeURIComponent(organization)+'/admin-boundaries/':organization+'/'+({customer_risk_run:'risk',territory_scenario_revision:'scenario',visit_planning_preflight:'visit-readiness'} as Record<string,string>)[source.table]+'/';
    if(typeof resourceId!=='string'||!resourceId.length||resourceId.length>256||typeof key!=='string'||key.length>1024||!key.startsWith(prefix)||key.length===prefix.length||key.split('/').some(p=>!p||p==='.'||p==='..')||!Number.isSafeInteger(size)||size<0||typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash))throw Error('RECOVERY_OBJECT_INVENTORY_INVALID');
    const previous=objects.get(key);if(previous&&(previous.bytes!==size||previous.sha256!==hash))throw Error('RECOVERY_OBJECT_REFERENCE_CONFLICT');
    references++;if(!previous)objects.set(key,{resource_type:source.kind,resource_id:resourceId,storage_key:key,bytes:size,sha256:hash});
@@ -61,6 +63,6 @@ export async function verifyRecoveryObjects(bucket:R2Bucket|undefined,tables:Rec
  return{status:checks.every(c=>c.status==='passed')?'passed' as const:'failed' as const,object_count:checks.length,verified_count:checks.filter(c=>c.status==='passed').length,
   expected_bytes:inventory.expected_bytes,verified_bytes:verifiedBytes,reference_count:inventory.reference_count,
   skipped_uncommitted_attachments:inventory.skipped_uncommitted_attachments,included_tables:inventory.included_tables,
-  excluded_scope:'Transient reports, import source files and objects outside the five supported table families are not verified by this drill.',
+  excluded_scope:'Transient reports, import source files and objects outside the supported table families are not verified by this drill.',
   checks,limits:recoveryObjectLimits,actual_restore_performed:false as const};
 }

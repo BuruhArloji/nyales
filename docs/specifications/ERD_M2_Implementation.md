@@ -35,3 +35,8 @@ Forecast sales dan alternatif manager adalah dua pandangan terpisah. Satu basket
 Script pada lease dan hasil panggilan dibekukan dengan versinya. Mutasi script berikutnya tidak mengubah qualification pada lease aktif. Evidence hanya metadata di D1; byte disimpan di R2 privat, melalui API autentikasi.
 
 Tidak ada relasi Account bisnis/legal. Alias pelanggan dan seluruh fakta keuangan lama dipertahankan. Android/GPS background dan tabel finalisasi insentif tidak termasuk slice M2 ini.
+
+
+## Revamp verifikasi lokasi — 9 November 2026
+
+Lihat [aturan, model data, API dan penerimaan verifikasi lokasi](../CUSTOMER_LOCATION_VERIFICATION.md). Pengajuan pelanggan/koreksi titik bersifat pending sampai ditinjau independen, penugasan mengikuti pemilik kelurahan, dan radius check-in dihitung server terpisah dari status bisnis serta coverage operasional. Migration0063 menambah customer_proposal dan visit_location_policy.

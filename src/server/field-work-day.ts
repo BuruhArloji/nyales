@@ -45,6 +45,9 @@ export async function readFieldWorkDay(db:D1Database,s:Scope,kind:'work-plans'|'
  SUM(CASE WHEN status IN('needs_review','pending_checkin') THEN 1 ELSE 0 END) needs_review,
  SUM(CASE WHEN status='draft' THEN 1 ELSE 0 END) drafts,
  SUM(CASE WHEN status='done' AND json_extract(${metadata('facts')},'$.outcome')='productive' THEN 1 ELSE 0 END) productive,
+ SUM(CASE WHEN status='done' AND json_type(${metadata('facts')},'$.location_validated')='true' THEN 1 ELSE 0 END) location_validated_count,
+ SUM(CASE WHEN status='done' AND json_type(${metadata('facts')},'$.location_verification_pending')='true' THEN 1 ELSE 0 END) location_pending_count,
+ SUM(CASE WHEN status='done' AND json_type(${metadata('facts')},'$.location_validation') IS NULL THEN 1 ELSE 0 END) location_unassessed_count,
  AVG(CASE WHEN status='done' AND check_in_at IS NOT NULL AND check_out_at>=check_in_at THEN (unixepoch(check_out_at)-unixepoch(check_in_at))/60.0 END) average_minutes FROM facts`;
  const summary=await db.prepare(`WITH facts AS (SELECT ${select} ${base}) ${summarySql}`).bind(...params,...(kind==='work-plans'?[new Date().toISOString()]:[])).first<any>();
  const rows=(await db.prepare(`SELECT ${select} ${base}${q.id?` AND ${alias}.id=?`:''} ORDER BY ${order} LIMIT ? OFFSET ?`).bind(...params,...(q.id?[q.id]:[]),q.limit+1,q.offset).all<any>()).results;

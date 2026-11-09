@@ -14,5 +14,5 @@ export function invoiceLabel(value:unknown):string {
 
 /** Directory relationship label only; never changes segmentation or coordinate evidence. */
 export function customerRelationshipLabel(row:{has_invoice_history?:boolean;last?:unknown;[key:string]:unknown}):string {
- return row.has_invoice_history===true||/^\d{4}-\d{2}-\d{2}/.test(String(row.last??''))?'Diverifikasi manual':'Leads';
+ return row.has_invoice_history===true||/^\d{4}-\d{2}-\d{2}/.test(String(row.last??''))?'Pernah bertransaksi':'Leads';
 }

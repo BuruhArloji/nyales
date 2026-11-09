@@ -1,3 +1,4 @@
+import {VisitLocationSettings} from './VisitLocation';
 import React,{useEffect,useRef,useState} from 'react';
 import {useIdentity} from './auth';
 import {ActionIcon} from './ActionIcon';
@@ -16,7 +17,7 @@ export function DailyVisitSettings(){
   const value=await dailyWrite('policy',draft,'PUT',setup.policy?.version??0,retry.current.key);retry.current=null;setSetup({...setup,policy:value});setDraft(value.config);setMessage('Pengaturan generator disimpan.');
  }catch(e){setError(dailyError(e))}finally{setBusy(false)}}
  const total=Object.values(draft.weights).reduce((a,b)=>a+b,0);
- return <section aria-label="Pengaturan generator harian"><div className="card-header"><h3>Generator kunjungan harian</h3><button type="button" className="button secondary" disabled={loading||busy} onClick={()=>void load()}><ActionIcon name="refresh"/>Muat ulang</button></div>
+ return <><section aria-label="Pengaturan generator harian"><div className="card-header"><h3>Generator kunjungan harian</h3><button type="button" className="button secondary" disabled={loading||busy} onClick={()=>void load()}><ActionIcon name="refresh"/>Muat ulang</button></div>
  {error&&<p role="alert" className="notice danger">{error}</p>}{message&&<p role="status" className="notice">{message}</p>}
  {loading?<Loading>Memuat pengaturan generator</Loading>:setup&&<form onSubmit={save}><fieldset disabled={busy||identity.read_only||!setup.manage} className="settings-fields"><div className="daily-visit-fields">
  <label>Kalender kerja<select required value={draft.calendar_id} onChange={e=>setDraft({...draft,calendar_id:e.target.value})}><option value="">Pilih kalender</option>{setup.calendars.map((cal:any)=><option key={cal.id} value={cal.id}>{cal.name} · {cal.start_time}–{cal.end_time}</option>)}</select></label>
@@ -28,5 +29,5 @@ export function DailyVisitSettings(){
  <label className="inline-check"><input type="checkbox" checked={draft.allow_rep_publish} onChange={e=>setDraft({...draft,allow_rep_publish:e.target.checked})}/>Izinkan sales memasukkan hasil rute ke agenda</label></div>
  <div className="actions"><button className="button" disabled={total!==100}><ActionIcon name="save"/>{busy?'Menyimpan…':'Simpan pengaturan'}</button></div>
  </fieldset></form>}
- </section>;
+ </section><VisitLocationSettings/></>;
 }

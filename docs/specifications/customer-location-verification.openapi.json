@@ -1,0 +1,719 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NYALES customer/location proposals and visit geofence",
+    "version": "1.0.0",
+    "description": "See ../CUSTOMER_LOCATION_VERIFICATION.md for transaction, assignment, source evidence and compatibility rules. No automatic business facts; browser GPS is reported evidence, not anti-spoof attestation."
+  },
+  "security": [
+    {
+      "BearerAuth": [],
+      "DeviceSession": []
+    }
+  ],
+  "paths": {
+    "/api/customer-proposals": {
+      "get": {
+        "operationId": "location_get__api_customer-proposals",
+        "summary": "Scoped proposal queue, default50/max100, status and offset",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ],
+              "default": "pending"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "location_post__api_customer-proposals",
+        "summary": "Submit GPS customer/location proposal; field Sales only",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "name",
+                  "address",
+                  "area_id",
+                  "latitude_e7",
+                  "longitude_e7",
+                  "accuracy_cm",
+                  "captured_at",
+                  "notes"
+                ],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "new_customer",
+                      "location"
+                    ]
+                  },
+                  "customer_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  },
+                  "area_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "latitude_e7": {
+                    "type": "integer",
+                    "minimum": -900000000,
+                    "maximum": 900000000
+                  },
+                  "longitude_e7": {
+                    "type": "integer",
+                    "minimum": -1800000000,
+                    "maximum": 1800000000
+                  },
+                  "accuracy_cm": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "captured_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 2000
+                  },
+                  "evidence_attachment_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "description": "location requires existing customer_id; new_customer must omit/null customer_id. GPS at submission at most600seconds old,30seconds future. No master mutation at submission."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer-proposals/{id}": {
+      "get": {
+        "operationId": "location_get__api_customer-proposals_id",
+        "summary": "Scoped proposal detail, duplicate candidates and physical territory checks",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        }
+      }
+    },
+    "/api/customer-proposals/{id}/photo": {
+      "get": {
+        "operationId": "location_get__api_customer-proposals_id_photo",
+        "summary": "Scoped private image",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        }
+      },
+      "put": {
+        "operationId": "location_put__api_customer-proposals_id_photo",
+        "summary": "Author uploads pending proposal photo (2MiB PNG/JPEG)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Content-SHA256",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Content-Length",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2097152
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "image/jpeg": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer-proposals/{id}/review": {
+      "post": {
+        "operationId": "location_post__api_customer-proposals_id_review",
+        "summary": "Independent scoped reviewer approves or rejects atomically",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "decision",
+                  "reason"
+                ],
+                "properties": {
+                  "decision": {
+                    "enum": [
+                      "approve",
+                      "reject"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 2000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visit-location/policy": {
+      "get": {
+        "operationId": "location_get__api_visit-location_policy",
+        "summary": "Read location policy/defaults",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        }
+      },
+      "put": {
+        "operationId": "location_put__api_visit-location_policy",
+        "summary": "Management/NSM saves versioned location policy",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "radius_m",
+                  "max_accuracy_m",
+                  "max_age_seconds",
+                  "allow_unverified_visits",
+                  "allow_outside_exception"
+                ],
+                "properties": {
+                  "radius_m": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 1000
+                  },
+                  "max_accuracy_m": {
+                    "type": "integer",
+                    "minimum": 5,
+                    "maximum": 500
+                  },
+                  "max_age_seconds": {
+                    "type": "integer",
+                    "minimum": 30,
+                    "maximum": 600
+                  },
+                  "allow_unverified_visits": {
+                    "type": "boolean"
+                  },
+                  "allow_outside_exception": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/visits/{id}/location-check": {
+      "get": {
+        "operationId": "location_get__api_visits_id_location-check",
+        "summary": "Scoped own-visit GPS assessment; recomputed on actual event submit",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "in": "query",
+            "name": "latitude_e7",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": -900000000,
+              "maximum": 900000000
+            }
+          },
+          {
+            "in": "query",
+            "name": "longitude_e7",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": -1800000000,
+              "maximum": 1800000000
+            }
+          },
+          {
+            "in": "query",
+            "name": "accuracy_cm",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            }
+          },
+          {
+            "in": "query",
+            "name": "captured_at",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped data envelope / photo body"
+          },
+          "201": {
+            "description": "Pending proposal created; no master mutation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Scope, author or independent-reviewer requirement failed"
+          },
+          "404": {
+            "description": "Not found or outside scope"
+          },
+          "409": {
+            "description": "Conflict/duplicate/active visit/territory transfer"
+          },
+          "412": {
+            "description": "Version/source changed"
+          },
+          "422": {
+            "description": "Invalid input, GPS, evidence or territory"
+          },
+          "503": {
+            "description": "Storage/boundary service unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "DeviceSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Session"
+      }
+    }
+  }
+}

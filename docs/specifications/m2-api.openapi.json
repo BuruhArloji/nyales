@@ -1189,7 +1189,7 @@
               "minimum": 1,
               "maximum": 100
             },
-            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+            "description": "Opt in to bounded SQL pagination, 1\u2013100 rows. Omit to retain the legacy list contract."
           },
           {
             "name": "offset",
@@ -1272,7 +1272,7 @@
           }
         },
         "x-source": "src/server/workflows.ts",
-        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field\u2192visit/telesales\u2192call."
       },
       "post": {
         "operationId": "m2_post__api_work_plans",
@@ -1484,7 +1484,7 @@
               "minimum": 1,
               "maximum": 100
             },
-            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+            "description": "Opt in to bounded SQL pagination, 1\u2013100 rows. Omit to retain the legacy list contract."
           },
           {
             "name": "offset",
@@ -1567,7 +1567,7 @@
           }
         },
         "x-source": "src/server/workflows.ts",
-        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field\u2192visit/telesales\u2192call."
       },
       "post": {
         "operationId": "m2_post__api_work_sessions",
@@ -1793,7 +1793,7 @@
               "minimum": 1,
               "maximum": 100
             },
-            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+            "description": "Opt in to bounded SQL pagination, 1\u2013100 rows. Omit to retain the legacy list contract."
           },
           {
             "name": "offset",
@@ -1876,7 +1876,7 @@
           }
         },
         "x-source": "src/server/workflows.ts",
-        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field\u2192visit/telesales\u2192call."
       }
     },
     "/api/visits/{id}/check-in": {
@@ -1958,7 +1958,8 @@
               }
             }
           }
-        }
+        },
+        "description": " GPS is assessed server-side against customer coordinates and current policy. Optional captured_at is the actual browser GPS fix timestamp; absent legacy events cannot establish validated visit location. Check-out exceptions need reason and do not trap an active visit."
       }
     },
     "/api/visits/{id}/check-out": {
@@ -2040,7 +2041,8 @@
               }
             }
           }
-        }
+        },
+        "description": " GPS is assessed server-side against customer coordinates and current policy. Optional captured_at is the actual browser GPS fix timestamp; absent legacy events cannot establish validated visit location. Check-out exceptions need reason and do not trap an active visit."
       }
     },
     "/api/tasks": {
@@ -2060,7 +2062,7 @@
               "minimum": 1,
               "maximum": 100
             },
-            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+            "description": "Opt in to bounded SQL pagination, 1\u2013100 rows. Omit to retain the legacy list contract."
           },
           {
             "name": "offset",
@@ -2143,7 +2145,7 @@
           }
         },
         "x-source": "src/server/workflows.ts",
-        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field\u2192visit/telesales\u2192call."
       },
       "post": {
         "operationId": "m2_post__api_tasks",
@@ -2307,7 +2309,7 @@
               "minimum": 1,
               "maximum": 100
             },
-            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+            "description": "Opt in to bounded SQL pagination, 1\u2013100 rows. Omit to retain the legacy list contract."
           },
           {
             "name": "offset",
@@ -2390,7 +2392,7 @@
           }
         },
         "x-source": "src/server/workflows.ts",
-        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field\u2192visit/telesales\u2192call."
       },
       "post": {
         "operationId": "m2_post__api_handoffs",
@@ -3398,7 +3400,7 @@
               "minimum": 1,
               "maximum": 100
             },
-            "description": "Opt in to bounded SQL pagination, 1–100 rows. Omit to retain the legacy list contract."
+            "description": "Opt in to bounded SQL pagination, 1\u2013100 rows. Omit to retain the legacy list contract."
           },
           {
             "name": "offset",
@@ -3481,7 +3483,7 @@
           }
         },
         "x-source": "src/server/workflows.ts",
-        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field→visit/telesales→call."
+        "x-pagination": "SQL LIMIT limit+1 OFFSET offset, scope and optional status/channel/activity_kind predicates before paging; active/ended session status is own-user only. activity_kind applies only to activities; exceptions do not accept channel; plan channel maps field\u2192visit/telesales\u2192call."
       }
     },
     "/api/attachment-intents": {

@@ -4487,7 +4487,7 @@
             }
           }
         },
-        "description": " Scope must be checked server-side. Mutation validators enforce state transitions, temporal overlap and cross-field rules. Defaults do not imply provider resources exist. ETag and If-Match refer to the targeted aggregate (customer for reassignment, contact for preference, parent version for target item mutation). Lists use fixed snapshot cursor; expired snapshot returns 409 CURSOR_EXPIRED.",
+        "description": " Scope must be checked server-side. Mutation validators enforce state transitions, temporal overlap and cross-field rules. Defaults do not imply provider resources exist. ETag and If-Match refer to the targeted aggregate (customer for reassignment, contact for preference, parent version for target item mutation). Lists use fixed snapshot cursor; expired snapshot returns 409 CURSOR_EXPIRED. GPS is assessed server-side against customer coordinates and current policy. Optional captured_at is the actual browser GPS fix timestamp; absent legacy events cannot establish validated visit location. Check-out exceptions need reason and do not trap an active visit.",
         "x-business-errors": [
           "SCOPE_DENIED",
           "VERSION_CONFLICT",
@@ -4692,7 +4692,7 @@
             }
           }
         },
-        "description": " Scope must be checked server-side. Mutation validators enforce state transitions, temporal overlap and cross-field rules. Defaults do not imply provider resources exist. ETag and If-Match refer to the targeted aggregate (customer for reassignment, contact for preference, parent version for target item mutation). Lists use fixed snapshot cursor; expired snapshot returns 409 CURSOR_EXPIRED.",
+        "description": " Scope must be checked server-side. Mutation validators enforce state transitions, temporal overlap and cross-field rules. Defaults do not imply provider resources exist. ETag and If-Match refer to the targeted aggregate (customer for reassignment, contact for preference, parent version for target item mutation). Lists use fixed snapshot cursor; expired snapshot returns 409 CURSOR_EXPIRED. GPS is assessed server-side against customer coordinates and current policy. Optional captured_at is the actual browser GPS fix timestamp; absent legacy events cannot establish validated visit location. Check-out exceptions need reason and do not trap an active visit.",
         "x-business-errors": [
           "SCOPE_DENIED",
           "VERSION_CONFLICT",

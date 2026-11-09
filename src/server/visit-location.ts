@@ -1,0 +1,15 @@
+import {Hono} from 'hono';
+import {z} from 'zod';
+import {visitLocationPolicy,defaultVisitLocationPolicy,assessVisitLocation} from '../shared/visit-location';
+import {customerPredicate} from './scope';
+import {operation,guard,fail,type OperationEnv} from './operations';
+export async function readVisitLocationPolicy(db:D1Database,org:string){const r=await db.prepare('SELECT version,config_json FROM visit_location_policy WHERE organization_id=?').bind(org).first<any>();return {id:org,version:r?.version??0,config:r?visitLocationPolicy.parse(JSON.parse(r.config_json)):defaultVisitLocationPolicy};}
+export const visitLocation=new Hono<OperationEnv>();
+visitLocation.get('/api/visit-location/policy',async c=>c.json({data:await readVisitLocationPolicy(c.env.DB,c.get('scope').identity.organization_id)}));
+visitLocation.put('/api/visit-location/policy',async c=>{const p=visitLocationPolicy.safeParse(await c.req.json().catch(()=>null));if(!p.success)return c.json({code:'INVALID_VISIT_LOCATION_POLICY'},422);return operation(c,p.data,async()=>{const s=c.get('scope'),db=c.env.DB,prior=await readVisitLocationPolicy(db,s.identity.organization_id);if(c.req.header('If-Match')!==`"${prior.version}"`)fail(412,'VERSION_CONFLICT');const version=prior.version+1,statement=prior.version?db.prepare('UPDATE visit_location_policy SET version=?,config_json=?,updated_by=?,updated_at=? WHERE organization_id=? AND version=?').bind(version,JSON.stringify(p.data),s.identity.id,new Date().toISOString(),s.identity.organization_id,prior.version):db.prepare('INSERT INTO visit_location_policy VALUES(?,?,?,?,?)').bind(s.identity.organization_id,version,JSON.stringify(p.data),s.identity.id,new Date().toISOString());return {data:{id:prior.id,version,config:p.data},resource:'visit-location-policy',before:prior,statements:guard(db,statement)};});});
+visitLocation.get('/api/visits/:id/location-check',async c=>{
+ const s=c.get('scope'),f=customerPredicate(s),db=c.env.DB;
+ const customer=await db.prepare(`SELECT co.latitude_e7,co.longitude_e7,co.coordinate_status FROM activity a JOIN customer_outlet co ON co.organization_id=a.organization_id AND co.id=a.outlet_id WHERE a.organization_id=? AND a.id=? AND a.user_id=? AND ${f.sql}`).bind(s.identity.organization_id,c.req.param('id'),s.identity.id,...f.params).first<any>();if(!customer)return c.json({code:'NOT_FOUND'},404);
+ const p=z.object({latitude_e7:z.coerce.number().int().min(-900000000).max(900000000),longitude_e7:z.coerce.number().int().min(-1800000000).max(1800000000),accuracy_cm:z.coerce.number().int().min(0).max(100000000),captured_at:z.iso.datetime({offset:true})}).strict().safeParse(c.req.query());if(!p.success)return c.json({code:'INVALID_LOCATION_FIX'},422);
+ const policy=await readVisitLocationPolicy(db,s.identity.organization_id);c.header('Cache-Control','private, no-store');return c.json({data:assessVisitLocation(customer,{...p.data,occurred_at:new Date().toISOString(),source:'browser_gps'},policy.config)});
+});

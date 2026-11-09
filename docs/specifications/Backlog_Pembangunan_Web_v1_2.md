@@ -2618,3 +2618,8 @@ maksimal 10 pelanggan/3 sales/15 titik unik. Input dari snapshot kesiapan dan
 profil operasional yang ditinjau. Hasil berupa pratinjau, belum publish agenda
 atau PJP bulanan; WEB-070–074 tetap belum selesai. Provider/live acceptance
 terpisah dari keberhasilan build dan deployment.
+
+
+## Revamp verifikasi lokasi — 9 November 2026
+
+Lihat [aturan, model data, API dan penerimaan verifikasi lokasi](../CUSTOMER_LOCATION_VERIFICATION.md). Pengajuan pelanggan/koreksi titik bersifat pending sampai ditinjau independen, penugasan mengikuti pemilik kelurahan, dan radius check-in dihitung server terpisah dari status bisnis serta coverage operasional. Migration0063 menambah customer_proposal dan visit_location_policy.

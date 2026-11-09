@@ -47,7 +47,7 @@ export async function readCustomerPage(db:D1Database,s:Scope,q:CustomerPageQuery
     params.push(like,like,like,like);
   }
   if(q.areaId){where.push('co.area_id=?');params.push(q.areaId)}
-  const relationshipFilter=q.status==='Leads'||q.status==='Diverifikasi manual',historyScope=invoicePredicate(s);
+  const relationshipFilter=q.status==='Leads'||q.status==='Pernah bertransaksi'||q.status==='Diverifikasi manual',historyScope=invoicePredicate(s);
   if(relationshipFilter)where.push(q.status==='Leads'?'history.customer_id IS NULL':'history.customer_id IS NOT NULL');
   else if(q.status){where.push("CASE WHEN recent.customer_id IS NOT NULL THEN 'Aktif' ELSE COALESCE(ss.status,'Unknown') END=?");params.push(q.status)}
   if(q.recordStatus){where.push('co.record_status=?');params.push(q.recordStatus)}
