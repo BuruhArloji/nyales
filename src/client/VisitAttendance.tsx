@@ -1,5 +1,5 @@
 import {LiquidTabs} from './LiquidNav';
-import React,{useEffect,useState} from 'react';
+import {useEffect,useState} from 'react';
 import {apiFetch,useIdentity} from './auth';
 import {ActionIcon} from './ActionIcon';
 import {FilterPanel} from './FilterPanel';

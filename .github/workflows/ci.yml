@@ -21,6 +21,7 @@ jobs:
       - run: mkdir -p test-results
       - run: npm test
       - run: npm run check
+      - run: npm run check:unused
       - run: npm run build
       - run: npm run pilot:release-gate -- docs/release-gate-ci.json
       - name: Upload release readiness report (not production approval)

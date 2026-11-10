@@ -1,6 +1,6 @@
 import {ActionIcon} from './ActionIcon';
 import type {SourceSelection} from './SourceDrill';
-import React, {useId} from 'react';
+import {useId} from 'react';
 
 type Activity = {id:string; channel:string; meaningful:boolean};
 type Customer = {id:string; covered:boolean};

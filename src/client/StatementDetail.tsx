@@ -1,5 +1,5 @@
 import {invoiceLabel} from '../shared/business-labels';
-import React,{useId,useState}from'react';
+import {useId,useState}from'react';
 import{compactNumber}from'./numbers';
 
 // Keep the engine's decimal string exact; only group digits and trim trailing zeroes.

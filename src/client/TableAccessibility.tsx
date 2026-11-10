@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import {useEffect} from 'react';
 
 /** Keep wide data tables reachable by keyboard without adding stops to fitting tables. */
 export function TableAccessibility(){

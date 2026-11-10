@@ -17,7 +17,7 @@ const tableFor={contacts:'contact',customers:'customer_outlet'} as const;
 type Kind=keyof typeof tableFor;
 async function visibleOutlet(db:D1Database,s:Scope,customerId:string){const f=customerPredicate(s);return db.prepare(`SELECT co.id FROM customer_outlet co WHERE co.id=? AND ${f.sql}`).bind(customerId,...f.params).first()}
 function publicContact(row:any,s:Scope){const {phone,organization_id,permission_note,...rest}=row;return {...rest,...(s.orgWide?{permission_note}:{}),phone_display:s.orgWide?phone:phone.slice(0,3)+'••••'+phone.slice(-3),...(s.orgWide?{phone}:{})}}
-async function list(c:any,kind:'contacts'){
+async function list(c:any,_kind:'contacts'){
  const s=c.get('scope') as Scope,f=customerPredicate(s),db=c.env.DB as D1Database;
  return (await db.prepare(`SELECT ct.*,co.name customer_name,co.id canonical_customer_id FROM contact ct LEFT JOIN customer_alias al ON al.source_id=ct.customer_id AND al.organization_id=ct.organization_id JOIN customer_outlet co ON co.id=COALESCE(al.canonical_id,ct.customer_id) AND co.organization_id=ct.organization_id WHERE ct.organization_id=? AND ${f.sql} ORDER BY ct.name,ct.id`).bind(s.identity.organization_id,...f.params).all()).results.map(row=>publicContact(row,s));
 }

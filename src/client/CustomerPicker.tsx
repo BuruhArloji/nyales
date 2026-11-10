@@ -19,7 +19,7 @@ export function CustomerPicker({label='Pelanggan',value,onChange,required=true,d
   if(!value){setHydrating(false);selectedRef.current=null;setSelected(null);if(!typing.current)setText('');return}
   if(selectedRef.current?.id===value)return;
   const controller=new AbortController();selectedRef.current=null;setSelected(null);setText('');setHydrating(true);setError('');
-  read(new URLSearchParams({id:value,record_status:recordStatus}),controller.signal).then(result=>{if(controller.signal.aborted)return;const row=result.data[0];if(!row){setError('Pelanggan tidak lagi tersedia dalam akses Anda.');return}selectedRef.current=row;setSelected(row);setText(presentationLabel(row.name));typing.current=false}).catch(e=>{if(!controller.signal.aborted)setError('Pilihan pelanggan belum dapat dimuat.')}).finally(()=>{if(!controller.signal.aborted)setHydrating(false)});
+  read(new URLSearchParams({id:value,record_status:recordStatus}),controller.signal).then(result=>{if(controller.signal.aborted)return;const row=result.data[0];if(!row){setError('Pelanggan tidak lagi tersedia dalam akses Anda.');return}selectedRef.current=row;setSelected(row);setText(presentationLabel(row.name));typing.current=false}).catch(()=>{if(!controller.signal.aborted)setError('Pilihan pelanggan belum dapat dimuat.')}).finally(()=>{if(!controller.signal.aborted)setHydrating(false)});
   return()=>controller.abort();
  },[value,recordStatus,retry]);
  useEffect(()=>{

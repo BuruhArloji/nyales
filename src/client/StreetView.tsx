@@ -1,4 +1,4 @@
-import React,{useEffect,useState}from'react';
+import {useEffect,useState}from'react';
 import{apiFetch}from'./auth';
 import{Loading}from'./Loading';
 import{Modal}from'./Modal';

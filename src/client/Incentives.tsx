@@ -3,7 +3,7 @@ import {presentationLabel} from '../shared/business-labels';
 import {LiquidTabs} from './LiquidNav';
 import{Loading}from'./Loading';
 import{StatementDetail}from'./StatementDetail';
-import React,{useEffect,useRef,useState}from'react';import{useIdentity}from'./auth';import{Modal}from'./Modal';import{workGet,workWrite}from'./Work';import{compactNumber}from'./numbers';
+import {useEffect,useRef,useState}from'react';import{useIdentity}from'./auth';import{Modal}from'./Modal';import{workGet,workWrite}from'./Work';import{compactNumber}from'./numbers';
 const rp=(n:number|null)=>n===null?'Perlu review':compactNumber(n,true).full;
 const models={threshold_progressive:'Threshold + bonus progresif',flat:'Persentase tetap',whole_basis:'Tier seluruh basis',progressive:'Persentase progresif',milestone:'Bonus milestone'};
 const defaults={model:'threshold_progressive',threshold:'80',bonus_minor:'0',rate:'1',milestone_mode:'highest',cap_minor:'',require_no_exceptions:true,tiers:[{from:'0',to:'80',rate:'0',bonus_minor:'0'},{from:'80',to:'100',rate:'1',bonus_minor:'0'},{from:'100',to:'',rate:'2',bonus_minor:'0'}]};

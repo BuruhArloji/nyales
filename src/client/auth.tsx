@@ -3,8 +3,9 @@ import React,{createContext,useContext,useEffect,useRef,useState} from 'react';
 import {initializeApp,getApps} from 'firebase/app';
 import {getAuth,onIdTokenChanged,signInWithPopup,GoogleAuthProvider,signOut,browserSessionPersistence,setPersistence,getMultiFactorResolver,type MultiFactorError,type MultiFactorResolver,type User,type Auth} from 'firebase/auth';
 import {AuthApiError,loginProblem,shouldExpireSession,sessionExpiredMessage}from'./auth-errors';
-import {TotpChallenge,TotpEnrollment}from'./auth-mfa';
 import {createReadRequests,identityHeartbeat} from './read-requests';
+const TotpChallenge=React.lazy(()=>import('./auth-mfa').then(m=>({default:m.TotpChallenge})));
+const TotpEnrollment=React.lazy(()=>import('./auth-mfa').then(m=>({default:m.TotpEnrollment})));
 type Identity={performed_by?:{id:string;name:string};portfolio_owner?:boolean;read_only?:boolean;portfolio_read_only?:boolean;can_preview_routes?:boolean;portfolio_expires_at?:string;portfolio_remaining_seconds?:number;demo_data?:boolean;training_data?:boolean;bekasi_demo_data?:boolean;bekasi_demo_ready?:boolean;directory_data?:boolean;id:string;name:string;organization_id:string;role:string;capabilities:string[];area_ids:string[];scope:string};
 type Config={mode:'local'|'firebase';configured:boolean;google_only?:boolean;portfolio_enabled?:boolean};
 let firebaseAuth:Auth|undefined;
@@ -136,9 +137,9 @@ export function AuthGate({children}:{children:React.ReactNode}){
  if(loading)return <main className="login-page"><Loading>Memeriksa sesi NYALES…</Loading></main>;
  if(identity)return <Context.Provider key={identity.organization_id+':'+identity.id+':'+identity.role+':'+identity.area_ids.join(',')+':'+currentDeviceSession()?.id} value={{identity,logout,loggingOut,switchSalesMode}}>{identity.read_only&&<aside role="status" className="portfolio-access-notice">Portofolio / Hanya lihat / Berakhir {identity.portfolio_expires_at?new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit'}).format(new Date(identity.portfolio_expires_at)):''}</aside>}{children}</Context.Provider>;
  return <main className="login-page"><section className="login-card"><div className="brand"><img src="/brand/nyales-mark.svg" alt=""/><span>NYALES</span></div>
-  {resolver?<TotpChallenge resolver={resolver} onComplete={()=>setResolver(null)} onCancel={logout}/>:pending==='mfa'&&account?<TotpEnrollment key={account.uid} user={account} onEnrolled={enrolled} onRetry={retry} onSignOut={logout}/>:pending==='activation'&&account?<>
+  <React.Suspense fallback={<Loading>Memuat verifikasi masuk…</Loading>}>{resolver?<TotpChallenge resolver={resolver} onComplete={()=>setResolver(null)} onCancel={logout}/>:pending==='mfa'&&account?<TotpEnrollment key={account.uid} user={account} onEnrolled={enrolled} onRetry={retry} onSignOut={logout}/>:pending==='activation'&&account?<>
    <h1>Akun menunggu aktivasi.</h1><p>Anda berhasil masuk dengan Google/Firebase. Administrator perlu menghubungkan akun ini ke organisasi dan role NYALES.</p><p className="muted">{account.email}</p><label className="full-field">ID akun<input className="auth-uid" readOnly value={account.uid} onFocus={e=>e.target.select()}/></label><p className="muted">ID ini dapat dibagikan kepada administrator. Jangan membagikan password atau kode Authenticator.</p>
    {error&&<p role="alert" className="notice danger">{error}</p>}<button className="button" disabled={busy} onClick={()=>void retry()}>Periksa akses kembali</button><button className="button secondary" disabled={loggingOut} onClick={()=>void logout()}>Gunakan akun lain</button>
   </>:<><h1>Masuk ke NYALES.</h1><p className="muted">Kelola customer, aktivitas sales, dan pencapaian tim Anda.</p>{error&&<p role="alert" className="notice danger">{error}</p>}{notice&&<p role="status" className="notice">{notice}</p>}{config?.mode==='local'?<><button className="button login-primary" disabled={busy} onClick={()=>void login('demo')}>{busy?'Menyiapkan sesi…':'Masuk sebagai Management'}</button></>:config?.configured?<><button type="button" className="button login-primary" disabled={busy} onClick={()=>void login('google')}>{busy?'Memeriksa akun…':'Masuk dengan Google'}</button>{config.portfolio_enabled&&<p className="muted">Jelajahi seluruh tampilan portofolio selama 20 menit. Mode pengunjung hanya untuk melihat. Email dan waktu login dicatat.</p>}</>:<p className="notice">Login belum dikonfigurasi. Hubungi administrator NYALES.</p>}</>}
- </section></main>;
+ </React.Suspense></section></main>;
 }

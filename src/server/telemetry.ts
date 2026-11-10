@@ -1,3 +1,4 @@
+import {matchedRoutes} from 'hono/route';
 import type{MiddlewareHandler}from'hono';
 
 export type Counters={db_statements:number;db_meta_samples:number;rows_read:number;rows_written:number;r2_a:number;r2_b:number;r2_deletes:number;sync_accepted:number;sync_review:number;sync_rejected:number};
@@ -38,7 +39,7 @@ export const telemetry:MiddlewareHandler<any>=async(c,next)=>{
  c.header('X-Request-ID',requestId);
  try{await next()}finally{
   const wall=Math.max(0,performance.now()-started),status=c.res?.status||500;
-  const route=c.req.routePath?.startsWith('/api/')?c.req.routePath:'/api/:unmatched';
+  const route=matchedRoutes(c).filter(r=>r.path.startsWith('/api/')&&!r.path.includes('*')&&(r.method===c.req.method||c.req.method==='HEAD'&&r.method==='GET')).at(-1)?.path||'/api/:unmatched';
   const operation=c.req.method+' '+route,identity=c.get('identity'),metricOrganization=identity?.organization_id||c.get('agentIdentity')?.record?.organization_id;
   // Never log raw paths, query strings, bodies, SQL, bindings, auth headers, or exception messages.
   console.log(JSON.stringify({event:'nyales_api',request_id:requestId,operation,status,wall_ms:Math.round(wall),...stats}));

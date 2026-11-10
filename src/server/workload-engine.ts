@@ -1,4 +1,4 @@
-import {workloadInput,type WorkloadInput,type WorkloadChannel} from '../shared/workload';
+import {workloadInput,type WorkloadInput} from '../shared/workload';
 
 type Service=WorkloadInput['customers'][number]['services'][number];
 type CustomerService={customer_id:string;boundary_id:string|null;service:Service};

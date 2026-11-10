@@ -10,7 +10,6 @@ import {useTerritoryLayer} from './TerritoryLayer';
 import {usePopulationRaster,useRoadVisibility,populationRasterUrl} from './PopulationRoadLayers';
 import {MapLegend} from './MapLegend';
 import {LiquidTabs} from './LiquidNav';
-import{StreetView}from'./StreetView';
 import{Loading}from'./Loading';
 import React,{useEffect,useState} from 'react';
 import * as maplibregl from 'maplibre-gl';
@@ -23,7 +22,7 @@ import {geoNavigate} from './geo-navigation';
 export {GeographyPage as MapPage} from './GeographyPage';
 const hasDemoOverlay=(item:any)=>Boolean(item?.demo_operation_overlay);
 
-export function MapPanel({url='/api/geo/map?compact=1&channel=field&purpose=overview',full=false}:{url?:string;full?:boolean}){
+export function MapPanel({url='/api/geo/map?compact=1&channel=field&purpose=overview'}:{url?:string}){
  const[data,setData]=useState<any>(null),[error,setError]=useState(''),[retry,setRetry]=useState(0);const camera=React.useRef<any>(null);const query=new URL(url,location.origin).searchParams;
  const context=()=>({period:data?.analysis_period,channel:query.get('channel')||'field',area_id:query.get('area_id')||undefined,rep_id:query.get('rep_id')||undefined,mode:'scatter',camera:camera.current||undefined});
  useEffect(()=>{const controller=new AbortController();setData(null);setError('');apiFetch(url,{signal:controller.signal}).then(r=>r.json()as any).then(r=>{if(!controller.signal.aborted)setData(r.data?.map?overviewMapData(r.data):r.data)}).catch(e=>{if(!controller.signal.aborted)setError(e.message)});return()=>controller.abort()},[url,retry]);
@@ -226,4 +225,3 @@ export function MapLibreCanvas({mapData,focus,onStreetView,geometry,selectedBoun
   {(basemapState||threeD)&&<span className="map-fallback-label" role="status">{basemapState||(closeZoom?'Bangunan OSM · tinggi mengikuti data; dapat berupa estimasi':'Mode 3D · zoom dekat untuk melihat bangunan')}</span>}
  </div>;
 }
-function escapeHtml(value:string){return value.replace(/[&<>'"]/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]??char))}

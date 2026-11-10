@@ -1,4 +1,4 @@
-import React,{useId,useState}from'react';
+import {useId,useState}from'react';
 import{compactNumber}from'./numbers';
 
 type Channel={channel:string;actual_minor:number};

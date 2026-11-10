@@ -1,7 +1,7 @@
 import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
 import {MetricCorner} from './MetricCorner';
-import React,{useEffect,useState}from'react';
+import {useEffect,useState}from'react';
 import{useIdentity}from'./auth';
 import{workGet,workWrite}from'./Work';
 import{Loading}from'./Loading';

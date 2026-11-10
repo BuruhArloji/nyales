@@ -1,5 +1,5 @@
 import {presentationLabel} from '../shared/business-labels';
-import React,{useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {apiFetch} from './auth';
 import {Modal} from './Modal';
 import {ActionIcon} from './ActionIcon';

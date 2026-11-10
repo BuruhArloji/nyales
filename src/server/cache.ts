@@ -54,7 +54,7 @@ export function cacheStatus<T>(lookup:CacheLookup<T>):string{
  * Any cache failure degrades to an uncached read; it never fails the request.
  */
 export async function cachedJson<T>(
-  c:any,
+  _c:any,
   key:string,
   ttlSeconds:number,
   produce:()=>Promise<T>,

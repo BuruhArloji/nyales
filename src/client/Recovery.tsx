@@ -1,6 +1,6 @@
 import {ActionIcon} from './ActionIcon';
 import {MetricCorner} from './MetricCorner';
-import React,{useEffect,useRef,useState}from'react';
+import {useEffect,useRef,useState}from'react';
 import{apiFetch}from'./auth';
 import{Loading}from'./Loading';
 import{Modal}from'./Modal';
@@ -23,7 +23,7 @@ export function Recovery(){
   if(running.current)return;running.current=true;setBusy(true);setError('');setMessage('');
   const fingerprint=JSON.stringify({path,body});if(retry.current?.fingerprint!==fingerprint)retry.current={fingerprint,key:crypto.randomUUID()};
   try{
-   const response=await apiFetch(path,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':retry.current.key},body:JSON.stringify(body)}),result=await response.json()as{data:any};
+   const response=await apiFetch(path,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':retry.current.key},body:JSON.stringify(body)});await response.json();
    if(!alive.current)return;
    setMessage(path.endsWith('/drills')?(body.verify_objects?'Uji metadata dan berkas selesai. Lihat hasil serta cakupan pemeriksaannya.':'Uji metadata selesai. Isi berkas belum diperiksa.'):path.endsWith('/backups')?'Backup logical tersimpan. Isi berkas tetap disimpan terpisah.':'Preview retensi selesai; tidak ada data dihapus.');
    retry.current=null;setModal(null);setDrillId('');setRefresh(x=>x+1);

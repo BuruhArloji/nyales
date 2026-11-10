@@ -35,7 +35,7 @@ import{monitoring,notificationMaintenance,operationalReminders,reportMaintenance
 import{incentives}from'./incentives';
 import {pipeline} from './pipeline';
 import {workflows,salesMaintenance} from './workflows';
-import {targets,achievement,targetSummary} from './targets';
+import {targets,targetSummary} from './targets';
 import {segmentation,segmentationSnapshot,dailySegmentation} from './segmentation';
 import {invoices} from './invoices';
 import {recovery} from './recovery';

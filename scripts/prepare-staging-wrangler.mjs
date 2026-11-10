@@ -17,7 +17,7 @@ export function stagingConfig(env){
  if(portfolio&&!/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(env.PORTFOLIO_ORGANIZATION_ID||''))throw Error('PORTFOLIO_ORGANIZATION_REQUIRED');
  return {$schema:'node_modules/wrangler/config-schema.json',name:'nyales-staging',account_id:env.CF_ACCOUNT_ID,
   main:'dist/nyales/index.js',no_bundle:true,compatibility_date:'2026-10-17',compatibility_flags:['nodejs_compat'],
-  // Cron disabled during initial staging bootstrap; enable after source/account capacity review.
+  // Scheduled writes/retention stay disabled deliberately; see docs/LEGACY_CLEANUP.md before enabling.
   triggers:{crons:[]},observability:{enabled:true,head_sampling_rate:0.1},
   assets:{directory:'./dist/client',not_found_handling:'single-page-application',run_worker_first:['/api/*','/demo/*']},
   vars:{APP_ENV:'staging',LOCAL_AUTH:portfolio?'false':'true',PORTFOLIO_ENABLED:portfolio?'true':'false',...(portfolio?{PORTFOLIO_ORGANIZATION_ID:env.PORTFOLIO_ORGANIZATION_ID}:{}),FIREBASE_PROJECT_ID:env.FIREBASE_PROJECT_ID,...(firstAdmin?{FIRST_ADMIN_EMAIL:firstAdmin,FIRST_ADMIN_ORGANIZATION_NAME:organization}:{})},

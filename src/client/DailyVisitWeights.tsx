@@ -1,4 +1,3 @@
-import React from 'react';
 import {dailyWeights,type DailyPolicy} from '../shared/daily-visit';
 export function DailyVisitWeights({value,onChange,disabled=false}:{value:DailyPolicy['weights'];onChange:(value:DailyPolicy['weights'])=>void;disabled?:boolean}){
  const total=Object.values(value).reduce((a,b)=>a+b,0);

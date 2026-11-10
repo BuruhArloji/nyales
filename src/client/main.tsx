@@ -48,7 +48,6 @@ import {People} from './People';
 import {Settings} from './Settings';
 import {AuthGate,apiFetch,useIdentity} from './auth';
 type Page='recovery'|'observability'|'incentives'|'monitoring'|'work'|'commercial'|'segmentation'|'targets'|'overview'|'customers'|'telesales'|'settings'|'people'|'sessions'|'data'|'assignments'|'map'|'products'|'invoices';
-type Customer={id:string;name:string;area:string;owner:string;status:string;tier:string;actual:number;last:string;dnc?:boolean|null;contact_permission?:string};
 function useData<T>(url:string){const [data,setData]=useState<T|null>(null),[error,setError]=useState(''),[retry,setRetry]=useState(0);useEffect(()=>{let active=true;setData(null);setError('');apiFetch(url).then(r=>r.json() as Promise<{data:T}>).then(r=>{if(active)setData(r.data)}).catch(e=>{if(active)setError(e.message)});return()=>{active=false}},[url,retry]);return {data,error,reload:()=>setRetry(x=>x+1)}}
 function Feedback({error,reload}:{error:string;reload:()=>void}){return error?<div role="alert" className="notice danger">{error} <button className="button secondary" onClick={reload}><ActionIcon name="refresh"/>Coba lagi</button></div>:<Loading>Memuat data sesuai scope…</Loading>}
 function formatRp(v:number){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(v)}

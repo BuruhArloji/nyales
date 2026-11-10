@@ -51,6 +51,7 @@ test('telemetry sanitizes paths and headers, survives missing metric storage and
   const env={DB:adapter};const results=await Promise.all([h.request('/api/customers/SECRET-CUSTOMER?key=SECRET-KEY',{headers:{Authorization:'Bearer SECRET-TOKEN'}},env),h.request('/api/customers/SECOND',{},env)]);
   assert.ok(results.every(r=>r.status===200&&r.headers.get('X-Request-ID')));assert.equal(env.DB,adapter);assert.ok(!logs.join('').includes('SECRET'));assert.ok(logs.join('').includes('/api/customers/:id'));
   assert.equal((sqlite.prepare("SELECT SUM(calls) n FROM ops_hourly WHERE kind='api'").get()as any).n,2);
+  assert.deepEqual(sqlite.prepare("SELECT DISTINCT operation FROM ops_hourly WHERE kind='api'").all().map((r:any)=>r.operation),['GET /api/customers/:id']);
   sqlite.exec('DROP TABLE ops_hourly');assert.equal((await h.request('/api/customers/secret',{},env)).status,200);
  }finally{console.log=prior;console.warn=warn}
 });

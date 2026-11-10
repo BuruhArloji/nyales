@@ -1,5 +1,5 @@
 import type {SourceSelection} from './SourceDrill';
-import React,{useId,useState}from'react';
+import {useId,useState}from'react';
 import{compactNumber}from'./numbers';
 
 type Channel={channel:string;target_minor:number|null;actual_minor:number|null;achievement_percent:number|null;status:string};

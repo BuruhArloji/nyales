@@ -20,9 +20,34 @@ test('imported recent-invoice customer matches overview, status-filtered pages, 
   const active=await get('/api/customers?limit=50&status=Aktif');assert.deepEqual(active.map((c:any)=>c.id),['c']);assert.equal(active[0].status,'Aktif');
   const unknown=await get('/api/customers?limit=50&status=Unknown');assert.deepEqual(unknown.map((c:any)=>c.id),['no-history']);
   assert.equal((await get('/api/customers/c')).status,'Aktif');
+  const segmentation=await get('/api/customer-segmentation');
+  const segmented=segmentation.find((c:any)=>c.customer_id==='c');
+  assert.equal(segmented.status,'Aktif');assert.equal(segmented.customer_name,'Customer');
+  assert.equal(segmented.source_history_complete,false);assert.equal(segmented.tier,null);
+  assert.equal(segmentation.find((c:any)=>c.customer_id==='no-history').status,'Unknown');
   const map=await get('/api/map?compact=1');assert.equal(map.all_customers.length,0);
   const full=await get('/api/customers?all=1');assert.equal(full.find((c:any)=>c.id==='c').status,'Aktif');
   assert.equal((f.sqlite.prepare("SELECT transaction_history_unverified value FROM customer_outlet WHERE id='c'").get() as any).value,1);
   assert.equal((f.sqlite.prepare('SELECT SUM(net_minor) total FROM invoice').get() as any).total,1000);
+ }finally{f.sqlite.close()}
+});
+
+test('status presentation reconciles old snapshots without rewriting history, finance or tiers',async()=>{
+ const f=fixture(),date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta'}).format(new Date());
+ try{
+  f.sqlite.prepare("INSERT INTO invoice(id,organization_id,source_invoice_id,source_version,outlet_id,rep_id,area_id,channel,invoice_date,net_minor,status,validation_state) VALUES('recent','o','INV-02','1','c','sr','a','field',?,2500,'validated','validated')").run(date);
+  const get=async()=>f.data(await f.req('GET','/api/customer-segmentation',undefined,undefined,'mg'));
+  const first=(await get()).find((r:any)=>r.customer_id==='c');
+  assert.equal(first.status,'Aktif');assert.equal(first.snapshot_status,'Unknown');
+  assert.equal(first.source_history_complete,false);assert.equal(first.provisional,0);assert.equal(first.tier,null);
+  const snapshots=f.sqlite.prepare('SELECT * FROM customer_status_snapshot ORDER BY customer_id').all();
+  assert.equal((snapshots[0] as any).status,'Unknown');
+  const invoices=f.sqlite.prepare('SELECT * FROM invoice ORDER BY id').all();
+  const assignments=f.sqlite.prepare('SELECT * FROM customer_assignment ORDER BY id').all();
+  assert.deepEqual(await get(),await get());
+  assert.deepEqual(f.sqlite.prepare('SELECT * FROM customer_status_snapshot ORDER BY customer_id').all(),snapshots);
+  assert.deepEqual(f.sqlite.prepare('SELECT * FROM invoice ORDER BY id').all(),invoices);
+  assert.deepEqual(f.sqlite.prepare('SELECT * FROM customer_assignment ORDER BY id').all(),assignments);
+  assert.equal((f.sqlite.prepare('SELECT SUM(net_minor) total FROM invoice').get() as any).total,2500);
  }finally{f.sqlite.close()}
 });

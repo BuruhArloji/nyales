@@ -79,7 +79,7 @@ Kalau D1 menolak: jangan retry berulang, jangan ubah kode untuk "mengakali" — 
 
 - **Jangan seed staging.** Data staging adalah data pilot nyata.
 - Jangan mengubah customer/invoice staging tanpa persetujuan eksplisit.
-- Migrasi baru: nomor urut berikutnya (`0049_...`), hanya ke staging.
+- Migrasi baru: nomor urut berikutnya setelah nomor tertinggi di `migrations/`, hanya ke staging.
 - Periksa migrasi tertunda dulu:
   `npx wrangler d1 migrations list nyales-staging --remote --config wrangler.staging.generated.json`
 
@@ -106,10 +106,11 @@ Kalau D1 menolak: jangan retry berulang, jangan ubah kode untuk "mengakali" — 
 | `docs/AGENT_ACCESS.md` | apa yang boleh/tidak boleh diserahkan ke agent lain |
 | `docs/AUTH_SETUP.md` | auth, Firebase, MFA |
 
-## Kondisi saat ini (per 3 Nov 2026)
+## Status rilis dan pekerjaan lama
 
-- `main` memuat: cache read-model, pagination customer di SQLite, migrasi `0048` (index).
-- Migrasi `0048` **belum diterapkan** ke staging.
-- Test `tests/m2-foundation.test.ts` ("customer merge cannot duplicate achievement") gagal
-  pada pergantian bulan karena fixture bergantung tanggal berjalan — bukan regresi.
-- Workers Paid aktif menurut konfirmasi operator; migrasi D1 `0048` masih tertunda sebelum deploy staging.
+- Checkpoint terverifikasi 10 Nov 2026: rilis `a40b4c6`, CI `42557779629` dan deployment `42558108739` berhasil; migrasi sampai `0063` diterapkan. Ini checkpoint historis, bukan pernyataan HEAD selalu sama.
+- Untuk status terkini, cocokkan HEAD dengan CI/deploy GitHub dan jalankan migrations list; jangan memakai snapshot lama sebagai alasan seed atau migrasi ulang.
+- Generator kunjungan harian adalah jalur operasional utama. OSRM lokal, kebijakan/preflight generasi lama, dan pengaturan risiko lama berada di bagian Eksperimental yang tidak terbuka secara default.
+- Endpoint kompatibilitas dan tabel histori tidak boleh dihapus hanya karena UI lama sudah tidak dipakai. Periksa telemetry dan kontrak/tooling sebelum penghentian.
+- Staging menggunakan config hasil `scripts/prepare-staging-wrangler.mjs`. Cron di config tersebut tetap nonaktif; handler scheduled yang tersedia bukan bukti job otomatis berjalan.
+- Panduan perapihan dan batas perubahan: `docs/LEGACY_CLEANUP.md`.

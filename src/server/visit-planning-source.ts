@@ -1,4 +1,4 @@
-import {repPlanningConfig,customerPlanningConfig,type PlanningProfile} from '../shared/visit-operational-profiles';
+import {customerPlanningConfig,type PlanningProfile} from '../shared/visit-operational-profiles';
 import {operationalRepDays,operationalCustomerDays} from './visit-operational-source';
 import {z} from 'zod';
 import {visitReadinessInput,readinessMessages} from '../shared/visit-planning';

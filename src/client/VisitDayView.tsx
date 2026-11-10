@@ -1,6 +1,6 @@
 import {visitLocationLabels} from './VisitLocation';
 import {apiFetch} from './auth';
-import React,{useEffect,useState} from 'react';
+import {useEffect,useState} from 'react';
 import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
 

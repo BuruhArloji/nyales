@@ -1,4 +1,3 @@
-import React from 'react';
 import {Activity,Banknote,BriefcaseBusiness,CloudUpload,DatabaseBackup,FileCheck2,History,LockKeyhole,MapPin,Phone,ShieldCheck,Target,Timer,TriangleAlert,UserRoundCheck} from 'lucide-react';
 
 const icons={sales:Banknote,target:Target,customers:UserRoundCheck,workforce:BriefcaseBusiness,api:Activity,error:TriangleAlert,latency:Timer,outbox:CloudUpload,backup:DatabaseBackup,restore:History,hold:LockKeyhole,privacy:ShieldCheck,invoice:FileCheck2,field:MapPin,telesales:Phone};

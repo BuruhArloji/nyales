@@ -2,7 +2,7 @@ import {mapRenderPin,mapRenderFacts} from '../shared/map-payload';
 import {readMapGeographyStates} from './map-geography';
 import {mapSummary} from '../shared/map-analysis';
 import {cachedJson,scopeCacheKey,readModelRevision} from './cache';
-import {chunkMapIds,readMapMetrics} from './map-metrics';
+import {readMapMetrics} from './map-metrics';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import GeoJSONReader from 'jsts/org/locationtech/jts/io/GeoJSONReader.js';

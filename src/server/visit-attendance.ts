@@ -1,7 +1,7 @@
 import {Hono} from 'hono';
 import {z} from 'zod';
 import {fail,guard,operation,type OperationEnv} from './operations';
-import {businessClock,businessUtcBounds} from './calendar';
+import {businessUtcBounds} from './calendar';
 import {reportContext,reportFilters} from './monitoring-report';
 import {offVisitReasons,summarizeVisitDays} from '../shared/visit-attendance';
 import {customerPredicate,type Scope} from './scope';

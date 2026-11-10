@@ -1,6 +1,6 @@
 import {ActionIcon} from './ActionIcon';
 import {presentationLabel} from '../shared/business-labels';
-import React,{useEffect,useMemo,useRef,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {apiFetch,useIdentity} from './auth';
 import {CustomerPicker,type CustomerOption} from './CustomerPicker';
 import {FilterPanel} from './FilterPanel';
@@ -116,7 +116,7 @@ export function Targets(){
    <button type="button" role="tab" aria-selected={view==='manage'} className={'button '+(view==='manage'?'':'secondary')} onClick={()=>setView('manage')}>Kelola target</button>
    <button type="button" role="tab" aria-selected={view==='achievement'} className={'button '+(view==='achievement'?'':'secondary')} onClick={()=>setView('achievement')}>Pencapaian</button>
   </LiquidTabs></>}
-  <FilterPanel count={[channel,area,rep,month].filter(Boolean).length} onReset={()=>{setChannel('');setArea('');setRep('');setMonth('')}} className="target-filter-panel" label="Filter target" summary={[month||'Semua periode',channel==='field'?'Lapangan':channel==='telesales'?'Telesales':'Semua kanal',view==='achievement'&&area?presentationLabel(areas.find(a=>a.id===area)?.name):null,view==='achievement'&&rep?presentationLabel(users.find(u=>u.id===rep)?.name):null].filter(Boolean).join(' · ')}>
+  <FilterPanel count={[channel,area,rep,month].filter(Boolean).length} onReset={()=>{setChannel('');setArea('');setRep('');setMonth('')}} className="target-filter-panel" label="Filter target">
    <div className="assignment-filters target-filters"><label>Periode<input type="month" aria-label="Periode target" value={month} onChange={e=>setMonth(e.target.value)}/></label><label>Kanal<select aria-label="Kanal target" value={channel} onChange={e=>setChannel(e.target.value)}><option value="">Semua kanal</option><option value="field">Lapangan</option><option value="telesales">Telesales</option></select></label>{view==='achievement'&&<><label>Area<select aria-label="Area target" value={area} onChange={e=>setArea(e.target.value)}><option value="">Semua area</option>{areas.map(a=><option key={a.id} value={a.id}>{presentationLabel(a.name)}</option>)}</select></label><label>Sales<select aria-label="Sales target" value={rep} onChange={e=>setRep(e.target.value)}><option value="">Semua sales</option>{users.filter(u=>['SALES_REP','TELESALES'].includes(u.role_code)&&(!channel||u.channel===channel)).map(u=><option key={u.id} value={u.id}>{presentationLabel(u.name)}</option>)}</select></label></>}</div>
   </FilterPanel>
   {notice&&<p className="notice target-notice" role="status">{notice}</p>}{error&&!modal&&<p className="notice danger" role="alert">{error}<button className="button secondary" onClick={()=>setRefresh(v=>v+1)}><ActionIcon name="refresh"/>Coba lagi</button></p>}

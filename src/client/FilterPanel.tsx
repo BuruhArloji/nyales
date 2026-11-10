@@ -2,7 +2,7 @@ import {ActionIcon} from './ActionIcon';
 import React,{useEffect,useId,useState} from 'react';
 import {ChevronDown,SlidersHorizontal} from 'lucide-react';
 import {Modal} from './Modal';
-export function FilterPanel({label='Filter',summary='Semua data',className='',children,onReset,count=0,embedded=false}:{label?:string;summary?:string;className?:string;children:React.ReactNode;onReset?:()=>void;count?:number;embedded?:boolean}){
+export function FilterPanel({label='Filter',className='',children,onReset,count=0,embedded=false}:{label?:string;className?:string;children:React.ReactNode;onReset?:()=>void;count?:number;embedded?:boolean}){
  const id=useId();const [expanded,setExpanded]=useState(false);
  const [compact,setCompact]=useState(()=>window.matchMedia('(max-width:767px)').matches),[open,setOpen]=useState(false);
  useEffect(()=>{const media=window.matchMedia('(max-width:767px)');const update=()=>{setCompact(media.matches);if(!media.matches)setOpen(false)};media.addEventListener('change',update);return()=>media.removeEventListener('change',update)},[]);

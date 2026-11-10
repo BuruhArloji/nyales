@@ -2,7 +2,7 @@ import {Hono} from 'hono';
 import {bodyLimit} from 'hono/body-limit';
 import {z} from 'zod';
 import {parseCsv,csvFile} from './csv';
-import {invoiceCsv,invoiceCsvFields,invoiceInput,stableJson,sourceVersion,money,lineInput} from '../shared/invoices';
+import {invoiceCsv,invoiceCsvFields,stableJson,sourceVersion,money,lineInput} from '../shared/invoices';
 import {validateInvoices,epoch,type FinancePayload,type FinancePlan} from './invoice-engine';
 import {operation,guard,digest,fail,type OperationEnv} from './operations';
 import {invoicePredicate,type Scope} from './scope';
