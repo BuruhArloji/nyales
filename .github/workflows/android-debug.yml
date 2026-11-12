@@ -30,7 +30,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      - name: Check Android SDK
+        run: test -d "$ANDROID_HOME" && test -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
       - name: Prepare development configuration
         shell: bash
         run: |
