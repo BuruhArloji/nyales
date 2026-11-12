@@ -1,6 +1,6 @@
 gradle.projectsEvaluated {
   def app = gradle.rootProject.findProject(':app')
-  if (app == null || !app.plugins.hasPlugin('com.android.application')) throw new GradleException('Android application project missing')
+  if (app == null || !app.plugins.hasPlugin('com.android.application')) return
   def store = System.getenv('NYALES_SIGNING_STORE')
   def password = System.getenv('NYALES_SIGNING_PASSWORD')
   if (!store || !password) throw new GradleException('NYALES development signing configuration missing')
