@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "NYALES Dev",
+    "slug": "nyales-mobile-dev",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "id.biz.nyales.mobile.dev"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store"
+    ]
+  }
+}

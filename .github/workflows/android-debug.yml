@@ -1,0 +1,68 @@
+name: Android development APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['codex/nyales-android-build']
+
+permissions:
+  contents: read
+
+jobs:
+  android-debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      NYALES_SIGNING_BASE64: ${{ secrets.NYALES_ANDROID_DEV_KEYSTORE }}
+      NYALES_SIGNING_PASSWORD: ${{ secrets.NYALES_ANDROID_DEV_KEYSTORE_PASSWORD }}
+      NYALES_FIREBASE_CONFIG: ${{ secrets.NYALES_ANDROID_DEV_FIREBASE_CONFIG }}
+      NYALES_SIGNING_STORE: ${{ runner.temp }}/nyales-dev.p12
+      NYALES_GOOGLE_SERVICES_FILE: ${{ runner.temp }}/google-services.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Prepare development configuration
+        shell: bash
+        run: |
+          set -eu
+          test -n "$NYALES_SIGNING_BASE64" && test -n "$NYALES_SIGNING_PASSWORD" && test -n "$NYALES_FIREBASE_CONFIG"
+          printf '%s' "$NYALES_SIGNING_BASE64" | base64 --decode > "$NYALES_SIGNING_STORE"
+          printf '%s' "$NYALES_FIREBASE_CONFIG" | base64 --decode > "$NYALES_GOOGLE_SERVICES_FILE"
+          chmod 600 "$NYALES_SIGNING_STORE" "$NYALES_GOOGLE_SERVICES_FILE"
+      - name: Install dependencies
+        run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Generate Android project
+        run: npx expo prebuild --platform android --no-install --non-interactive
+      - name: Build development APK
+        working-directory: mobile/android
+        run: ./gradlew assembleDebug --no-daemon --init-script ../scripts/nyales-debug-signing.gradle
+      - name: Verify APK signing certificate
+        shell: bash
+        run: |
+          set -eu
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)
+          test -n "$APKSIGNER"
+          "$APKSIGNER" verify --print-certs "$APK" > "$RUNNER_TEMP/apk-cert.txt"
+          tr -d ':' < "$RUNNER_TEMP/apk-cert.txt" | tr '[:upper:]' '[:lower:]' | grep -q 'bd1b3537eea8f23080cedd4d1d8068caa475dbe4'
+      - name: Upload development APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: nyales-android-debug
+          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7

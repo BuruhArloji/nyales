@@ -1,0 +1,14 @@
+gradle.projectsEvaluated {
+  def app = gradle.rootProject.findProject(':app')
+  if (app == null || !app.plugins.hasPlugin('com.android.application')) throw new GradleException('Android application project missing')
+  def store = System.getenv('NYALES_SIGNING_STORE')
+  def password = System.getenv('NYALES_SIGNING_PASSWORD')
+  if (!store || !password) throw new GradleException('NYALES development signing configuration missing')
+  def signing = app.android.signingConfigs.maybeCreate('nyalesDevelopment')
+  signing.storeFile = new File(store)
+  signing.storeType = 'PKCS12'
+  signing.storePassword = password
+  signing.keyAlias = 'nyales-dev'
+  signing.keyPassword = password
+  app.android.buildTypes.getByName('debug').signingConfig = signing
+}
