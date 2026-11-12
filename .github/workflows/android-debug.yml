@@ -19,8 +19,6 @@ jobs:
       NYALES_SIGNING_BASE64: ${{ secrets.NYALES_ANDROID_DEV_KEYSTORE }}
       NYALES_SIGNING_PASSWORD: ${{ secrets.NYALES_ANDROID_DEV_KEYSTORE_PASSWORD }}
       NYALES_FIREBASE_CONFIG: ${{ secrets.NYALES_ANDROID_DEV_FIREBASE_CONFIG }}
-      NYALES_SIGNING_STORE: ${{ runner.temp }}/nyales-dev.p12
-      NYALES_GOOGLE_SERVICES_FILE: ${{ runner.temp }}/google-services.json
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -37,6 +35,9 @@ jobs:
         shell: bash
         run: |
           set -eu
+          export NYALES_SIGNING_STORE="$RUNNER_TEMP/nyales-dev.p12"
+          export NYALES_GOOGLE_SERVICES_FILE="$RUNNER_TEMP/google-services.json"
+          printf "NYALES_SIGNING_STORE=%s\nNYALES_GOOGLE_SERVICES_FILE=%s\n" "$NYALES_SIGNING_STORE" "$NYALES_GOOGLE_SERVICES_FILE" >> "$GITHUB_ENV"
           test -n "$NYALES_SIGNING_BASE64" && test -n "$NYALES_SIGNING_PASSWORD" && test -n "$NYALES_FIREBASE_CONFIG"
           printf '%s' "$NYALES_SIGNING_BASE64" | base64 --decode > "$NYALES_SIGNING_STORE"
           printf '%s' "$NYALES_FIREBASE_CONFIG" | base64 --decode > "$NYALES_GOOGLE_SERVICES_FILE"
