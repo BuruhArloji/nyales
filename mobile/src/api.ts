@@ -9,9 +9,11 @@ export class NyalesApiError extends Error {
 
 export type Credentials = { idToken: string; deviceSession?: string };
 export type AuthProvider = () => Promise<Credentials>;
-export type Envelope<T> = { data: T };
-export type Identity = { id: string; organization_id: string; name?: string; role?: string };
+export type Envelope<T> = { data: T; meta?: Record<string, unknown> };
+export type Identity = { id: string; organization_id: string; name?: string; role?: string; channel?: 'field' | 'telesales' | null };
 export type DeviceSession = { id: string; session_token: string; version: number };
+export type Customer = { id: string; name: string; address?: string | null; status?: string | null };
+export type CustomerPage = { rows: Customer[]; total: number; offset: number; limit: number };
 
 export class NyalesApi {
   private readonly origin: string;
@@ -42,6 +44,19 @@ export class NyalesApi {
     return this.request<DeviceSession>('/api/device-sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_id: deviceId }) });
   }
   me() { return this.request<Identity>('/api/me'); }
+  async customers(offset = 0, query = '', channel: 'field' | 'telesales' = 'field'): Promise<CustomerPage> {
+    if (!Number.isSafeInteger(offset) || offset < 0 || query.length > 200 || !['field', 'telesales'].includes(channel)) throw new Error('Invalid customer filter');
+    const params = new URLSearchParams({ limit: '50', offset: String(offset), channel });
+    if (query.trim()) params.set('q', query.trim());
+    const response = await this.request<Customer[]>(`/api/customers?${params}`);
+    const { total, limit, offset: pageOffset } = response.meta || {};
+    if (!Array.isArray(response.data) || !response.data.every(row => row && typeof row.id === 'string' && typeof row.name === 'string') ||
+        !Number.isSafeInteger(total) || !Number.isSafeInteger(limit) || !Number.isSafeInteger(pageOffset) ||
+        (total as number) < 0 || limit !== 50 || pageOffset !== offset || response.data.length > 50) {
+      throw new NyalesApiError('INVALID_RESPONSE', 200);
+    }
+    return { rows: response.data, total: total as number, limit, offset: pageOffset };
+  }
 }
 
 export type VisitFix = {

@@ -56,6 +56,24 @@ test('mobile API sends the verified identity token and device session and parses
  }finally{globalThis.fetch=oldFetch}
 });
 
+test('mobile customers use scoped paginated API and reject malformed metadata',async()=>{
+ const oldFetch=globalThis.fetch;
+ try{
+  globalThis.fetch=async(input,init)=>{
+   const url=new URL(String(input)); assert.equal(url.pathname,'/api/customers');
+   assert.equal(url.searchParams.get('limit'),'50'); assert.equal(url.searchParams.get('offset'),'50');
+   assert.equal(url.searchParams.get('channel'),'telesales'); assert.equal(url.searchParams.get('q'),'Toko & Co');
+   assert.equal(new Headers(init?.headers).get('X-Device-Session'),'device');
+   return Response.json({data:[{id:'1',name:'Toko'}],meta:{total:51,offset:50,limit:50}});
+  };
+  const api=new NyalesApi('https://example.com',async()=>({idToken:'token',deviceSession:'device'}));
+  const page=await api.customers(50,' Toko & Co ','telesales'); assert.equal(page.total,51);assert.equal(page.rows[0].name,'Toko');
+  globalThis.fetch=async()=>Response.json({data:[],meta:{total:100,offset:0,limit:999}});
+  await assert.rejects(()=>api.customers(),(e:unknown)=>e instanceof NyalesApiError&&e.code==='INVALID_RESPONSE');
+  await assert.rejects(()=>api.customers(-1));
+ }finally{globalThis.fetch=oldFetch}
+});
+
 test('mobile visit event carries version and a stable idempotency key',async()=>{
  const {submitVisitEvent}=await import('../mobile/src/api'); const oldFetch=globalThis.fetch;
  try{
