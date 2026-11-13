@@ -13,7 +13,14 @@ export class MobileSession {
   private session: DeviceSession | null = null;
   private account: VerifiedAccount | null = null;
   private generation = 0;
+  private storageQueue: Promise<void> = Promise.resolve();
   readonly api: NyalesApi;
+
+  private withStorage<T>(operation: () => Promise<T>): Promise<T> {
+    const result = this.storageQueue.then(operation);
+    this.storageQueue = result.then(() => undefined, () => undefined);
+    return result;
+  }
 
   constructor(origin: string, private readonly store: SessionStore) {
     this.api = new NyalesApi(origin, async () => {
@@ -32,11 +39,11 @@ export class MobileSession {
     this.session = null;
     const ensureCurrent = () => { if (generation !== this.generation || this.account !== account) throw new Error('ACCOUNT_CHANGED'); };
     try {
-      const saved = await this.store.read(account.subject); ensureCurrent();
+      const saved = await this.withStorage(async () => { ensureCurrent(); return this.store.read(account.subject); }); ensureCurrent();
       this.session = saved;
       if (!this.session) {
         const result = await this.api.createDeviceSession(deviceId); ensureCurrent();
-        await this.store.save(account.subject, result.data); ensureCurrent();
+        await this.withStorage(async () => { ensureCurrent(); await this.store.save(account.subject, result.data); }); ensureCurrent();
         this.session = result.data;
       }
       const identity = await this.api.me(); ensureCurrent();
@@ -52,6 +59,6 @@ export class MobileSession {
     ++this.generation;
     this.account = null;
     this.session = null;
-    await this.store.clear();
+    await this.withStorage(() => this.store.clear());
   }
 }

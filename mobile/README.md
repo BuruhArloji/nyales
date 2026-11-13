@@ -1,6 +1,6 @@
 # NYALES Android — fondasi pengembangan
 
-Proyek React Native / Expo ini adalah prototipe awal, terpisah dari web. Belum ada login, akses data, generator, penyimpanan offline, tracking GPS, maupun APK yang siap digunakan.
+Proyek React Native / Expo ini masih berupa pratinjau, terpisah dari web. Kode dasar login, akses API, dan lokasi kunjungan tersedia tetapi belum terhubung ke antarmuka operasional. Generator, penyimpanan offline, dan tracking GPS latar belakang belum siap digunakan.
 
 ```powershell
 cd mobile
@@ -18,6 +18,6 @@ Jalankan `npm run web -- --host localhost --port 5198`, lalu buka http://localho
 
 ## Build APK pengembangan lewat GitHub Actions
 
-Workflow `Android development APK` dijalankan manual dan menghasilkan APK debug sebagai artifact selama tujuh hari. Ini hanya build internal untuk mencoba tampilan; belum mengaktifkan login, GPS, data, offline, atau penandatanganan rilis. GitHub Actions dan artifact memiliki kuota sesuai akun. Workflow ini belum dijalankan dan belum menghasilkan APK sampai kode tersedia di GitHub dan workflow berhasil.
+Workflow `Android development APK` menghasilkan APK debug sebagai artifact selama tujuh hari. Build pratinjau telah berhasil; ini hanya build internal untuk mencoba tampilan, belum mengaktifkan login, GPS, data, offline, atau penandatanganan rilis. GitHub Actions dan artifact memiliki kuota sesuai akun. Periksa hasil workflow terbaru untuk status setiap build.
 
 Konfigurasi Google native disiapkan per lingkungan dengan `NYALES_GOOGLE_SERVICES_FILE` menunjuk ke berkas konfigurasi aplikasi Android yang terdaftar di Firebase. Berkas tersebut harus cocok dengan package dan SHA penandatanganan APK. Tanpa konfigurasi ini preview masih dapat berjalan, tetapi login native belum dapat digunakan. Jangan gunakan service-account private key sebagai berkas konfigurasi aplikasi.
