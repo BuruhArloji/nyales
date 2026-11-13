@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import * as Crypto from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 import { MobileSession } from './mobile-session';
-import { NyalesApiError, type CustomerPage, type Identity } from './api';
+import { NyalesApiError, type Customer, type CustomerPage, type Identity } from './api';
 import { signInWithGoogle, signOutGoogle } from './google-auth.native';
 import { readDeviceSession, saveDeviceSession, clearDeviceSession } from './session-store';
 import ConnectedModules from './ConnectedModules';
@@ -33,7 +33,7 @@ function errorText(error: unknown) {
     if (error.code === 'REAUTH_REQUIRED' || error.code === 'DEVICE_SESSION_INVALID') return 'Sesi berakhir. Silakan masuk kembali.';
     if (error.status === 403) return 'Akun ini belum memiliki akses ke NYALES.';
   }
-  return 'Belum bisa masuk. Periksa koneksi dan coba lagi.';
+  return 'Permintaan belum berhasil. Periksa koneksi dan coba lagi.';
 }
 
 export default function Login({ onClose }: { onClose: () => void }) {
@@ -41,6 +41,7 @@ export default function Login({ onClose }: { onClose: () => void }) {
   const [identity, setIdentity] = useState<Identity | null>(null);
   const [message, setMessage] = useState('');
   const [page, setPage] = useState<CustomerPage | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
   const [search, setSearch] = useState('');
   const [appliedSearch, setAppliedSearch] = useState('');
   const [listOpen, setListOpen] = useState(false);
@@ -68,7 +69,7 @@ export default function Login({ onClose }: { onClose: () => void }) {
     if (busy) return;
     listGeneration.current++;
     setBusy(true); setMessage('');
-    try { await session.current?.clearLocal(); await signOutGoogle(); setIdentity(null); setPage(null); setListOpen(false); session.current = null; }
+    try { await session.current?.clearLocal(); await signOutGoogle(); setIdentity(null); setPage(null); setCustomer(null); setListOpen(false); session.current = null; }
     catch { setMessage('Belum bisa keluar sepenuhnya. Coba lagi.'); }
     finally { setBusy(false); }
   };
@@ -82,15 +83,23 @@ export default function Login({ onClose }: { onClose: () => void }) {
     } catch (error) { if (generation === listGeneration.current) setMessage(errorText(error)); }
     finally { if (generation === listGeneration.current) setBusy(false); }
   };
+  const loadCustomer = async (id: string) => {
+    if (!session.current || busy) return;
+    const generation = ++listGeneration.current;
+    setBusy(true); setMessage('');
+    try { const result = await session.current.api.customer(id); if (generation === listGeneration.current) setCustomer(result); }
+    catch (error) { if (generation === listGeneration.current) setMessage(errorText(error)); }
+    finally { if (generation === listGeneration.current) setBusy(false); }
+  };
   return <ScrollView contentContainerStyle={s.screen} keyboardShouldPersistTaps="handled">
     <Text style={s.brand}>NYALES</Text>
     <Text style={s.title}>{identity ? 'Akun terhubung' : 'Masuk ke NYALES'}</Text>
     {identity ? <><Text style={s.body}>{identity.name || 'Pengguna NYALES'}</Text><Text style={s.body}>Peran: {identity.role || 'belum tersedia'}</Text><Text style={s.note}>Terhubung ke NYALES staging. Fitur operasional lainnya masih dalam pengembangan.</Text>
       {session.current && <ConnectedModules api={session.current.api} />}
-      {!listOpen ? <Pressable disabled={busy} accessibilityRole="button" onPress={() => loadCustomers(0, '')} style={s.secondary}><Text style={s.secondaryText}>Lihat pelanggan</Text></Pressable> : <>
+      {!listOpen ? <Pressable disabled={busy} accessibilityRole="button" onPress={() => loadCustomers(0, '')} style={s.secondary}><Text style={s.secondaryText}>Lihat pelanggan</Text></Pressable> : customer ? <><Pressable accessibilityRole="button" onPress={() => setCustomer(null)} style={s.secondary}><Text style={s.secondaryText}>‹ Kembali ke pelanggan</Text></Pressable><Text style={s.listHeading}>{customer.name}</Text><View style={s.customer}><Text style={s.customerName}>Alamat</Text><Text style={s.customerAddress}>{customer.address || 'Belum tersedia'}</Text></View><View style={s.customer}><Text style={s.customerName}>Status pelanggan</Text><Text style={s.customerAddress}>{customer.status || 'Belum tersedia'}</Text></View></> : <>
         <Text style={s.listHeading}>Pelanggan</Text><View style={s.searchRow}><TextInput accessibilityLabel="Cari pelanggan" style={s.input} value={search} onChangeText={setSearch} placeholder="Cari nama atau alamat" maxLength={200} returnKeyType="search" onSubmitEditing={() => loadCustomers(0, search)} /><Pressable disabled={busy} accessibilityRole="button" onPress={() => loadCustomers(0, search)} style={s.searchButton}><Text>Cari</Text></Pressable></View>
         {page && <><Text style={s.note}>{page.total.toLocaleString('id-ID')} pelanggan · {page.total ? page.offset + 1 : 0}–{page.offset + page.rows.length}</Text>
-          {page.rows.map(customer => <View key={customer.id} style={s.customer}><Text style={s.customerName}>{customer.name}</Text>{!!customer.address && <Text style={s.customerAddress}>{customer.address}</Text>}</View>)}
+          {page.rows.map(customer => <Pressable disabled={busy} accessibilityRole="button" accessibilityLabel={'Lihat pelanggan '+customer.name} onPress={() => loadCustomer(customer.id)} key={customer.id} style={s.customer}><Text style={s.customerName}>{customer.name}</Text>{!!customer.address && <Text style={s.customerAddress}>{customer.address}</Text>}</Pressable>)}
           {!page.rows.length && <Text style={s.note}>Tidak ada pelanggan yang cocok.</Text>}
           <View style={s.paging}><Pressable disabled={busy || page.offset === 0} accessibilityRole="button" onPress={() => loadCustomers(Math.max(0, page.offset - page.limit), appliedSearch)}><Text style={[s.secondaryText, page.offset === 0 && s.disabled]}>Sebelumnya</Text></Pressable><Pressable disabled={busy || page.offset + page.rows.length >= page.total} accessibilityRole="button" onPress={() => loadCustomers(page.offset + page.limit, appliedSearch)}><Text style={[s.secondaryText, page.offset + page.rows.length >= page.total && s.disabled]}>Berikutnya</Text></Pressable></View></>}
       </>}</> : <Text style={s.body}>Gunakan akun Google untuk menghubungkan perangkat ke NYALES staging.</Text>}

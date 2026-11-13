@@ -74,6 +74,16 @@ test('mobile customers use scoped paginated API and reject malformed metadata',a
  }finally{globalThis.fetch=oldFetch}
 });
 
+test('mobile customer detail is authenticated, encoded and validated',async()=>{
+ const oldFetch=globalThis.fetch;
+ try{
+  globalThis.fetch=async(input,init)=>{assert.equal(new URL(String(input)).pathname,'/api/customers/customer%201');assert.equal(new Headers(init?.headers).get('X-Device-Session'),'device');return Response.json({data:{id:'customer 1',name:'Warung',address:'Jakarta'}})};
+  const api=new NyalesApi('https://example.com',async()=>({idToken:'token',deviceSession:'device'}));
+  assert.equal((await api.customer('customer 1')).name,'Warung');await assert.rejects(()=>api.customer(''));
+  globalThis.fetch=async()=>Response.json({data:{id:'1'}});await assert.rejects(()=>api.customer('1'),(e:unknown)=>e instanceof NyalesApiError&&e.code==='INVALID_RESPONSE');
+ }finally{globalThis.fetch=oldFetch}
+});
+
 test('mobile overview and work pages use authenticated bounded endpoints and validate responses',async()=>{
  const oldFetch=globalThis.fetch;
  try{

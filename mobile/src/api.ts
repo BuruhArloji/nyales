@@ -48,6 +48,12 @@ export class NyalesApi {
     return this.request<DeviceSession>('/api/device-sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_id: deviceId }) });
   }
   me() { return this.request<Identity>('/api/me'); }
+  async customer(id: string): Promise<Customer> {
+    if (!id || id.length > 128) throw new Error('Invalid customer ID');
+    const { data } = await this.request<Customer>(`/api/customers/${encodeURIComponent(id)}`);
+    if (!data || typeof data.id !== 'string' || typeof data.name !== 'string') throw new NyalesApiError('INVALID_RESPONSE', 200);
+    return data;
+  }
   async overview(): Promise<Overview> {
     const { data } = await this.request<Overview>('/api/dashboard');
     if (!data || typeof data.period !== 'string' || !Number.isSafeInteger(data.actual_net_minor) ||
