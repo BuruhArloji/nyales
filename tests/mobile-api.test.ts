@@ -92,6 +92,23 @@ test('mobile overview and work pages use authenticated bounded endpoints and val
  }finally{globalThis.fetch=oldFetch}
 });
 
+test('mobile performance reads current-period targets and scoped incentive statements',async()=>{
+ const oldFetch=globalThis.fetch;
+ try{
+  globalThis.fetch=async(input,init)=>{
+   const url=new URL(String(input));assert.equal(new Headers(init?.headers).get('X-Device-Session'),'device');
+   if(url.pathname==='/api/targets'){assert.equal(url.searchParams.get('period_start'),'2026-11-01');return Response.json({data:[{id:'t',target_minor:100}]})}
+   assert.equal(url.pathname,'/api/incentive-statements');return Response.json({data:[{id:'s',entitlement_minor:10}]});
+  };
+  const api=new NyalesApi('https://example.com',async()=>({idToken:'token',deviceSession:'device'}));
+  assert.equal((await api.performance('targets','2026-11'))[0].id,'t');
+  assert.equal((await api.performance('incentive-statements'))[0].id,'s');
+  await assert.rejects(()=>api.performance('targets','2026-99'));
+  globalThis.fetch=async()=>Response.json({data:[{name:'missing id'}]});
+  await assert.rejects(()=>api.performance('targets'),(e:unknown)=>e instanceof NyalesApiError&&e.code==='INVALID_RESPONSE');
+ }finally{globalThis.fetch=oldFetch}
+});
+
 test('mobile visit event carries version and a stable idempotency key',async()=>{
  const {submitVisitEvent}=await import('../mobile/src/api'); const oldFetch=globalThis.fetch;
  try{

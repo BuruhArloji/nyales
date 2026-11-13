@@ -17,6 +17,7 @@ export type CustomerPage = { rows: Customer[]; total: number; offset: number; li
 export type Overview = { period: string; actual_net_minor: number; target_net_minor: number | null; achievement: number | null; active_customer_count: number; sales_rep_count: number };
 export type WorkKind = 'work-plans' | 'activities' | 'tasks' | 'invoices';
 export type WorkPage = { rows: Record<string, unknown>[]; offset: number; hasMore: boolean };
+export type PerformanceKind = 'targets' | 'incentive-statements';
 
 export class NyalesApi {
   private readonly origin: string;
@@ -66,6 +67,15 @@ export class NyalesApi {
       throw new NyalesApiError('INVALID_RESPONSE', 200);
     }
     return { rows: data, offset, hasMore: pagination.has_more };
+  }
+  /** Existing server endpoints return full scoped lists; call only on demand. */
+  async performance(kind: PerformanceKind, period?: string): Promise<Record<string, unknown>[]> {
+    if (kind !== 'targets' && kind !== 'incentive-statements') throw new Error('Invalid performance section');
+    if (period && !/^\d{4}-(0[1-9]|1[0-2])$/.test(period)) throw new Error('Invalid period');
+    const query = kind === 'targets' && period ? `?period_start=${period}-01` : '';
+    const { data } = await this.request<Record<string, unknown>[]>(`/api/${kind}${query}`);
+    if (!Array.isArray(data) || !data.every(row => row && typeof row === 'object' && typeof row.id === 'string')) throw new NyalesApiError('INVALID_RESPONSE', 200);
+    return data;
   }
   async customers(offset = 0, query = '', channel: 'field' | 'telesales' = 'field'): Promise<CustomerPage> {
     if (!Number.isSafeInteger(offset) || offset < 0 || query.length > 200 || !['field', 'telesales'].includes(channel)) throw new Error('Invalid customer filter');

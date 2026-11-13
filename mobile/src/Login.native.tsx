@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text as NativeText, TextInput, View } from 'react-native';
 import Constants from 'expo-constants';
 import * as Crypto from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
@@ -8,6 +8,11 @@ import { NyalesApiError, type CustomerPage, type Identity } from './api';
 import { signInWithGoogle, signOutGoogle } from './google-auth.native';
 import { readDeviceSession, saveDeviceSession, clearDeviceSession } from './session-store';
 import ConnectedModules from './ConnectedModules';
+
+function Text(props: React.ComponentProps<typeof NativeText>) {
+  const weight = StyleSheet.flatten(props.style)?.fontWeight;
+  return <NativeText {...props} style={[props.style, { fontFamily: weight === '700' || weight === 'bold' ? 'Inter_700Bold' : weight === '600' ? 'Inter_600SemiBold' : weight === '500' ? 'Inter_500Medium' : 'Inter_400Regular', fontWeight: 'normal' }]} />;
+}
 
 const DEVICE_KEY = 'nyales.device_id.v1';
 const extra = Constants.expoConfig?.extra;
