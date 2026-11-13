@@ -1,6 +1,6 @@
 # NYALES Android — fondasi pengembangan
 
-Proyek React Native / Expo ini masih dalam pengembangan, terpisah dari web. Build Android yang dikonfigurasi Firebase menyediakan login Google dan daftar pelanggan terhubung ke API staging, dengan pagination. Integrasi ini masih perlu diuji pada perangkat. Halaman pratinjau tetap memakai data contoh; alur lokasi kunjungan, generator, penyimpanan offline, dan tracking GPS latar belakang belum terhubung ke antarmuka operasional.
+Proyek React Native / Expo ini masih dalam pengembangan, terpisah dari web. Build Android yang dikonfigurasi Firebase menyediakan login Google, daftar pelanggan, ringkasan, agenda, aktivitas, tugas dan invoice yang membaca API staging. Daftar pelanggan dan daftar operasional dimuat bertahap. Integrasi ini masih perlu diuji pada perangkat. Halaman pratinjau tetap memakai data contoh; alur lokasi kunjungan, generator, penyimpanan offline, dan tracking GPS latar belakang belum terhubung ke antarmuka operasional.
 
 ```powershell
 cd mobile

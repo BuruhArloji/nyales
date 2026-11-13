@@ -14,6 +14,9 @@ export type Identity = { id: string; organization_id: string; name?: string; rol
 export type DeviceSession = { id: string; session_token: string; version: number };
 export type Customer = { id: string; name: string; address?: string | null; status?: string | null };
 export type CustomerPage = { rows: Customer[]; total: number; offset: number; limit: number };
+export type Overview = { period: string; actual_net_minor: number; target_net_minor: number | null; achievement: number | null; active_customer_count: number; sales_rep_count: number };
+export type WorkKind = 'work-plans' | 'activities' | 'tasks' | 'invoices';
+export type WorkPage = { rows: Record<string, unknown>[]; offset: number; hasMore: boolean };
 
 export class NyalesApi {
   private readonly origin: string;
@@ -44,6 +47,26 @@ export class NyalesApi {
     return this.request<DeviceSession>('/api/device-sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_id: deviceId }) });
   }
   me() { return this.request<Identity>('/api/me'); }
+  async overview(): Promise<Overview> {
+    const { data } = await this.request<Overview>('/api/dashboard');
+    if (!data || typeof data.period !== 'string' || !Number.isSafeInteger(data.actual_net_minor) ||
+      !Number.isSafeInteger(data.active_customer_count) || !Number.isSafeInteger(data.sales_rep_count) ||
+      !(data.target_net_minor === null || Number.isSafeInteger(data.target_net_minor)) ||
+      !(data.achievement === null || typeof data.achievement === 'number' && Number.isFinite(data.achievement))) {
+      throw new NyalesApiError('INVALID_RESPONSE', 200);
+    }
+    return data;
+  }
+  async workPage(kind: WorkKind, offset = 0): Promise<WorkPage> {
+    if (!['work-plans', 'activities', 'tasks', 'invoices'].includes(kind) || !Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) throw new Error('Invalid work page');
+    const { data, meta } = await this.request<Record<string, unknown>[]>(`/api/${kind}?limit=50&offset=${offset}`);
+    const pagination = meta?.pagination as Record<string, unknown> | undefined;
+    if (!Array.isArray(data) || !data.every(row => row && typeof row === 'object' && typeof row.id === 'string') ||
+      data.length > 50 || pagination?.limit !== 50 || pagination?.offset !== offset || typeof pagination?.has_more !== 'boolean') {
+      throw new NyalesApiError('INVALID_RESPONSE', 200);
+    }
+    return { rows: data, offset, hasMore: pagination.has_more };
+  }
   async customers(offset = 0, query = '', channel: 'field' | 'telesales' = 'field'): Promise<CustomerPage> {
     if (!Number.isSafeInteger(offset) || offset < 0 || query.length > 200 || !['field', 'telesales'].includes(channel)) throw new Error('Invalid customer filter');
     const params = new URLSearchParams({ limit: '50', offset: String(offset), channel });

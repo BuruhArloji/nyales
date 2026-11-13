@@ -74,6 +74,24 @@ test('mobile customers use scoped paginated API and reject malformed metadata',a
  }finally{globalThis.fetch=oldFetch}
 });
 
+test('mobile overview and work pages use authenticated bounded endpoints and validate responses',async()=>{
+ const oldFetch=globalThis.fetch;
+ try{
+  globalThis.fetch=async(input,init)=>{
+   const url=new URL(String(input)); assert.equal(new Headers(init?.headers).get('Authorization'),'Bearer token');
+   if(url.pathname==='/api/dashboard')return Response.json({data:{period:'2026-11',actual_net_minor:125000,target_net_minor:null,achievement:null,active_customer_count:3,sales_rep_count:1}});
+   assert.equal(url.pathname,'/api/work-plans');assert.equal(url.searchParams.get('limit'),'50');assert.equal(url.searchParams.get('offset'),'50');
+   return Response.json({data:[{id:'p1',customer_name:'Warung'}],meta:{pagination:{limit:50,offset:50,has_more:false}}});
+  };
+  const api=new NyalesApi('https://example.com',async()=>({idToken:'token',deviceSession:'device'}));
+  assert.equal((await api.overview()).actual_net_minor,125000);
+  assert.deepEqual(await api.workPage('work-plans',50),{rows:[{id:'p1',customer_name:'Warung'}],offset:50,hasMore:false});
+  globalThis.fetch=async()=>Response.json({data:[{}],meta:{pagination:{limit:50,offset:0,has_more:false}}});
+  await assert.rejects(()=>api.workPage('activities'),(e:unknown)=>e instanceof NyalesApiError&&e.code==='INVALID_RESPONSE');
+  await assert.rejects(()=>api.workPage('tasks',-1));
+ }finally{globalThis.fetch=oldFetch}
+});
+
 test('mobile visit event carries version and a stable idempotency key',async()=>{
  const {submitVisitEvent}=await import('../mobile/src/api'); const oldFetch=globalThis.fetch;
  try{

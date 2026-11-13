@@ -7,6 +7,7 @@ import { MobileSession } from './mobile-session';
 import { NyalesApiError, type CustomerPage, type Identity } from './api';
 import { signInWithGoogle, signOutGoogle } from './google-auth.native';
 import { readDeviceSession, saveDeviceSession, clearDeviceSession } from './session-store';
+import ConnectedModules from './ConnectedModules';
 
 const DEVICE_KEY = 'nyales.device_id.v1';
 const extra = Constants.expoConfig?.extra;
@@ -80,6 +81,7 @@ export default function Login({ onClose }: { onClose: () => void }) {
     <Text style={s.brand}>NYALES</Text>
     <Text style={s.title}>{identity ? 'Akun terhubung' : 'Masuk ke NYALES'}</Text>
     {identity ? <><Text style={s.body}>{identity.name || 'Pengguna NYALES'}</Text><Text style={s.body}>Peran: {identity.role || 'belum tersedia'}</Text><Text style={s.note}>Terhubung ke NYALES staging. Fitur operasional lainnya masih dalam pengembangan.</Text>
+      {session.current && <ConnectedModules api={session.current.api} />}
       {!listOpen ? <Pressable disabled={busy} accessibilityRole="button" onPress={() => loadCustomers(0, '')} style={s.secondary}><Text style={s.secondaryText}>Lihat pelanggan</Text></Pressable> : <>
         <Text style={s.listHeading}>Pelanggan</Text><View style={s.searchRow}><TextInput accessibilityLabel="Cari pelanggan" style={s.input} value={search} onChangeText={setSearch} placeholder="Cari nama atau alamat" maxLength={200} returnKeyType="search" onSubmitEditing={() => loadCustomers(0, search)} /><Pressable disabled={busy} accessibilityRole="button" onPress={() => loadCustomers(0, search)} style={s.searchButton}><Text>Cari</Text></Pressable></View>
         {page && <><Text style={s.note}>{page.total.toLocaleString('id-ID')} pelanggan · {page.total ? page.offset + 1 : 0}–{page.offset + page.rows.length}</Text>
