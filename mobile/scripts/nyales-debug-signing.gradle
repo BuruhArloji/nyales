@@ -1,3 +1,11 @@
+// Firebase BoM 35 requires newer Kotlin metadata than this Expo toolchain supports.
+// Keep this temporary override aligned with the Android build until Kotlin is upgraded.
+gradle.beforeProject { project ->
+  if (project == project.rootProject) {
+    project.ext.set('react-native', [versions: [firebase: [bom: '34.14.1']]])
+  }
+}
+
 gradle.beforeProject { project ->
   if (project.path != ':app') return
   project.plugins.withId('com.android.application') {
