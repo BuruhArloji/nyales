@@ -54,15 +54,20 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          ./gradlew assembleDebug --no-daemon --init-script ../scripts/nyales-debug-signing.gradle 2>&1 | tee "$RUNNER_TEMP/nyales-build.log" || {
+          ./gradlew assembleRelease --no-daemon --init-script ../scripts/nyales-debug-signing.gradle 2>&1 | tee "$RUNNER_TEMP/nyales-build.log" || {
             grep -E -A 5 'What went wrong:|^\* |^> |error:|FAILURE:' "$RUNNER_TEMP/nyales-build.log" | tail -35 | while IFS= read -r line; do printf "::error::%s\n" "$line"; done || true
             exit 1
           }
+      - name: Verify application bundle is included
+        shell: bash
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          python -c "import sys,zipfile; z=zipfile.ZipFile(sys.argv[1]); assert z.getinfo('assets/index.android.bundle').file_size > 0" "$APK"
       - name: Verify APK signing certificate
         shell: bash
         run: |
           set -eu
-          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          APK=android/app/build/outputs/apk/release/app-release.apk
           APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)
           test -n "$APKSIGNER"
           "$APKSIGNER" verify --print-certs "$APK" > "$RUNNER_TEMP/apk-cert.txt"
@@ -71,6 +76,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nyales-android-debug
-          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          path: mobile/android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 7

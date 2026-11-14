@@ -20,6 +20,7 @@ gradle.beforeProject { project ->
       signing.keyAlias = 'nyales-dev'
       signing.keyPassword = password
       android.buildTypes.getByName('debug').signingConfig = signing
+      android.buildTypes.getByName('release').signingConfig = signing
     }
   }
 }
