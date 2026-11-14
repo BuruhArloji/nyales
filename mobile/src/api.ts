@@ -10,7 +10,7 @@ export class NyalesApiError extends Error {
 export type Credentials = { idToken: string; deviceSession?: string };
 export type AuthProvider = () => Promise<Credentials>;
 export type Envelope<T> = { data: T; meta?: Record<string, unknown> };
-export type Identity = { id: string; organization_id: string; name?: string; role?: string; channel?: 'field' | 'telesales' | null };
+export type Identity = { id: string; organization_id: string; name?: string; role?: string; channel?: 'field' | 'telesales' | null; portfolio_read_only?: boolean };
 export type DeviceSession = { id: string; session_token: string; version: number };
 export type Customer = { id: string; name: string; address?: string | null; status?: string | null };
 export type CustomerPage = { rows: Customer[]; total: number; offset: number; limit: number };
@@ -48,6 +48,15 @@ export class NyalesApi {
     return this.request<DeviceSession>('/api/device-sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_id: deviceId }) });
   }
   me() { return this.request<Identity>('/api/me'); }
+  dailySetup() { return this.request<DailySetup>('/api/visit-generator/daily/setup'); }
+  dailyPreview(input: DailyInput, eventId: string) {
+    if (eventId.length < 8 || eventId.length > 128) throw new Error('Invalid event identity');
+    return this.request<DailyResult>('/api/visit-generator/daily/runs', {method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify(input)});
+  }
+  dailyApply(id: string, eventId: string) {
+    if (!id || id.length > 128 || eventId.length < 8 || eventId.length > 128) throw new Error('Invalid event identity');
+    return this.request<{id:string;status:string;created?:number}>(`/api/visit-generator/daily/runs/${encodeURIComponent(id)}/apply`, {method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify({confirmed:true})});
+  }
   async customer(id: string): Promise<Customer> {
     if (!id || id.length > 128) throw new Error('Invalid customer ID');
     const { data } = await this.request<Customer>(`/api/customers/${encodeURIComponent(id)}`);
@@ -99,6 +108,11 @@ export class NyalesApi {
     return { rows: response.data, total: total as number, limit, offset: pageOffset };
   }
 }
+
+export type DailyWeights = {wallet:number;last_visit:number;sales:number;follow_up:number;proximity:number};
+export type DailySetup = {configured:boolean;policy:{config:{weights:DailyWeights}}|null;work_window:{start_at:string;end_at:string}|null};
+export type DailyInput = {rep_id:string;start:{latitude:number;longitude:number};start_at:string;end_at:string;confirmed_external_processing:true;weights:DailyWeights};
+export type DailyResult = {id:string;current:boolean;status:string;planned:number;shortfall:number;route:{steps:Array<{type:string;customer_name?:string;arrival?:number;waiting_time?:number}>}|null};
 
 export type VisitFix = {
   occurred_at: string; captured_at?: string; latitude_e7: number | null;

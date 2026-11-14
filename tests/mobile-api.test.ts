@@ -119,6 +119,17 @@ test('mobile performance reads current-period targets and scoped incentive state
  }finally{globalThis.fetch=oldFetch}
 });
 
+test('daily generator keeps explicit preview consent and separate confirmed apply',async()=>{
+ const oldFetch=globalThis.fetch;const calls:string[]=[];
+ try{
+  globalThis.fetch=async(input,init)=>{const path=new URL(String(input)).pathname;calls.push(path);const h=new Headers(init?.headers);assert.equal(h.get('Idempotency-Key'),'attempt-123');const body=JSON.parse(String(init?.body));if(path.endsWith('/runs')){assert.equal(body.confirmed_external_processing,true);return Response.json({data:{id:'run-1',current:true,status:'complete',planned:1,shortfall:0,route:null}})}assert.equal(path,'/api/visit-generator/daily/runs/run-1/apply');assert.deepEqual(body,{confirmed:true});return Response.json({data:{id:'run-1',status:'applied',created:1}})};
+  const api=new NyalesApi('https://example.com',async()=>({idToken:'token',deviceSession:'device'}));
+  const input={rep_id:'sr',start:{latitude:-6.2,longitude:106.8},start_at:'2026-11-14T01:00:00Z',end_at:'2026-11-14T10:00:00Z',confirmed_external_processing:true as const,weights:{wallet:25,last_visit:30,sales:20,follow_up:10,proximity:15}};
+  assert.equal((await api.dailyPreview(input,'attempt-123')).data.status,'complete');assert.equal(calls.length,1);
+  assert.equal((await api.dailyApply('run-1','attempt-123')).data.status,'applied');assert.equal(calls.length,2);
+ }finally{globalThis.fetch=oldFetch}
+});
+
 test('mobile visit event carries version and a stable idempotency key',async()=>{
  const {submitVisitEvent}=await import('../mobile/src/api'); const oldFetch=globalThis.fetch;
  try{

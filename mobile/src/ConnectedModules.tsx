@@ -18,13 +18,13 @@ function textFor(section: Exclude<Section, 'Ringkasan'>, row: Record<string, unk
     const title = section === 'Target' ? label(row,'name') : label(row,'user_name');
     const value = section === 'Target' ? row.target_minor : row.entitlement_minor;
     const actual = section === 'Target' && typeof row.actual_minor === 'number' ? 'Actual '+money(row.actual_minor) : '';
-    return { title: title || 'Data tanpa nama', subtitle: [label(row,'customer_name') || label(row,'plan_name'), label(row,'period_start'), label(row,'status'), typeof value === 'number' ? money(value) : '', actual].filter(Boolean).join(' Â· ') };
+    return { title: title || 'Data tanpa nama', subtitle: [label(row,'customer_name') || label(row,'plan_name'), label(row,'period_start'), label(row,'status'), typeof value === 'number' ? money(value) : '', actual].filter(Boolean).join(' · ') };
   }
   const title = section === 'Tugas' ? label(row,'title') : section === 'Invoice' ? label(row,'source_invoice_id') : label(row,'customer_name');
   const customer = label(row,'customer_name');
   const date = section === 'Agenda' ? label(row,'scheduled_at') : section === 'Aktivitas' ? label(row,'occurred_at') : section === 'Tugas' ? label(row,'due_at') : label(row,'invoice_date');
   const amount = section === 'Invoice' && typeof row.net_minor === 'number' ? money(row.net_minor) : '';
-  return { title: title || customer || 'Data tanpa nama', subtitle: [section === 'Invoice' ? customer : '', date, label(row,'status'), amount].filter(Boolean).join(' Â· ') };
+  return { title: title || customer || 'Data tanpa nama', subtitle: [section === 'Invoice' ? customer : '', date, label(row,'status'), amount].filter(Boolean).join(' · ') };
 }
 export default function ConnectedModules({ api }: { api: NyalesApi }) {
  const [section,setSection]=useState<Section | null>(null), [overview,setOverview]=useState<Overview | null>(null), [page,setPage]=useState<WorkPage | null>(null);
@@ -41,7 +41,7 @@ export default function ConnectedModules({ api }: { api: NyalesApi }) {
   {busy && <ActivityIndicator color="#087c71" style={s.loading}/>}
   {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   {overview && <View style={s.panel}><Text style={s.muted}>Periode {overview.period}</Text><Text style={s.label}>Actual penjualan</Text><Text style={s.value}>{money(overview.actual_net_minor)}</Text><Text style={s.line}>Target: {money(overview.target_net_minor)}</Text><Text style={s.line}>Pencapaian: {overview.achievement === null ? 'Belum tersedia' : overview.achievement.toLocaleString('id-ID',{maximumFractionDigits:2})+'%'}</Text><Text style={s.line}>Pelanggan aktif: {overview.active_customer_count.toLocaleString('id-ID')}</Text><Text style={s.line}>Sales bertransaksi: {overview.sales_rep_count.toLocaleString('id-ID')}</Text></View>}
-  {page && section && section!=='Ringkasan' && <><Text style={s.muted}>Data {page.rows.length ? page.offset+1 : 0}â€“{page.offset+page.rows.length}</Text>{page.rows.map(row=>{const item=textFor(section,row);return <View key={String(row.id)} style={s.row}><Text style={s.rowTitle}>{item.title}</Text><Text style={s.muted}>{item.subtitle}</Text></View>})}{page.rows.length===0&&<Text style={s.muted}>Tidak ada data untuk ditampilkan.</Text>}<View style={s.paging}><Pressable disabled={busy||page.offset===0} accessibilityRole="button" onPress={()=>load(section,Math.max(0,page.offset-50))}><Text style={[s.link,page.offset===0&&s.disabled]}>Sebelumnya</Text></Pressable><Pressable disabled={busy||!page.hasMore} accessibilityRole="button" onPress={()=>load(section,page.offset+50)}><Text style={[s.link,!page.hasMore&&s.disabled]}>Berikutnya</Text></Pressable></View></>}
+  {page && section && section!=='Ringkasan' && <><Text style={s.muted}>Data {page.rows.length ? page.offset+1 : 0}–{page.offset+page.rows.length}</Text>{page.rows.map(row=>{const item=textFor(section,row);return <View key={String(row.id)} style={s.row}><Text style={s.rowTitle}>{item.title}</Text><Text style={s.muted}>{item.subtitle}</Text></View>})}{page.rows.length===0&&<Text style={s.muted}>Tidak ada data untuk ditampilkan.</Text>}<View style={s.paging}><Pressable disabled={busy||page.offset===0} accessibilityRole="button" onPress={()=>load(section,Math.max(0,page.offset-50))}><Text style={[s.link,page.offset===0&&s.disabled]}>Sebelumnya</Text></Pressable><Pressable disabled={busy||!page.hasMore} accessibilityRole="button" onPress={()=>load(section,page.offset+50)}><Text style={[s.link,!page.hasMore&&s.disabled]}>Berikutnya</Text></Pressable></View></>}
 
  </View>;
 }
