@@ -74,3 +74,21 @@ test('GPS exceptions cannot bypass a policy prohibiting unverified customer loca
  const policy={...defaultVisitLocationPolicy,allow_unverified_visits:false,allow_outside_exception:true};
  for(const co of [{...customer,coordinate_status:'unverified'},{...customer,latitude_e7:null,longitude_e7:null,coordinate_status:'missing'}])for(const bad of [{...fix,source:'unavailable',latitude_e7:null,longitude_e7:null},{...fix,accuracy_cm:100000},{...fix,captured_at:undefined}])assert.equal(assessVisitLocation(co,bad,policy).can_check_in,false);
 });
+
+test('Android GPS follows the same verification policy as browser GPS',()=>{
+ const android={...fix,source:'android_gps'};
+ assert.deepEqual(assessVisitLocation(customer,android),assessVisitLocation(customer,fix));
+ assert.equal(assessVisitLocation(customer,{...android,accuracy_cm:10001}).status,'poor_accuracy');
+ assert.equal(assessVisitLocation({...customer,coordinate_status:'unverified'},android).location_verified,false);
+});
+
+test('Android GPS check-in and checkout preserve location verification',async()=>{
+ const f=fixture();try{
+  f.sqlite.prepare("UPDATE customer_outlet SET latitude_e7=?,longitude_e7=?,coordinate_status='verified' WHERE id='c'").run(customer.latitude_e7,customer.longitude_e7);
+  await f.session();const a=await f.activity();
+  const checkin=await f.data(await f.req('POST',`/api/visits/${a.id}/check-in`,{...f.event(),source:'android_gps',captured_at:new Date().toISOString()},a.version));
+  assert.equal(checkin.location_validation.location_verified,true);
+  const done=await f.data(await f.req('POST',`/api/visits/${a.id}/check-out`,{...f.event(),source:'android_gps',captured_at:new Date().toISOString(),outcome:'productive'},checkin.version));
+  assert.equal(done.location_validation.location_verified,true);
+ }finally{f.sqlite.close()}
+});

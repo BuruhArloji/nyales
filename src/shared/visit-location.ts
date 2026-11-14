@@ -8,7 +8,7 @@ export function assessVisitLocation(customer:any,fix:any,config=defaultVisitLoca
  const distance=hasFix&&hasCustomer?distanceKm({latitude:customer.latitude_e7/1e7,longitude:customer.longitude_e7/1e7},{latitude:fix.latitude_e7/1e7,longitude:fix.longitude_e7/1e7})*1000:null;
  const age=fix.captured_at?(Date.parse(fix.occurred_at)-Date.parse(fix.captured_at))/1000:null;
  let status='inside';
- if(!hasFix||fix.source!=='browser_gps')status='missing_fix';
+ if(!hasFix||!['browser_gps','android_gps'].includes(fix.source))status='missing_fix';
  else if(accuracy===null||accuracy>config.max_accuracy_m)status='poor_accuracy';
  else if(age===null||!Number.isFinite(age)||age< -30||age>config.max_age_seconds)status='stale_fix';
  else if(!hasCustomer)status='missing_customer';
