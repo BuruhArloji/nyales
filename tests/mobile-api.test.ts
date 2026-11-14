@@ -107,12 +107,12 @@ test('mobile performance reads current-period targets and scoped incentive state
  try{
   globalThis.fetch=async(input,init)=>{
    const url=new URL(String(input));assert.equal(new Headers(init?.headers).get('X-Device-Session'),'device');
-   if(url.pathname==='/api/targets'){assert.equal(url.searchParams.get('period_start'),'2026-11-01');return Response.json({data:[{id:'t',target_minor:100}]})}
-   assert.equal(url.pathname,'/api/incentive-statements');return Response.json({data:[{id:'s',entitlement_minor:10}]});
+   if(url.pathname==='/api/targets'){assert.equal(url.searchParams.get('period_start'),'2026-11-01');return Response.json({data:[{id:'t',target_minor:100}],meta:{pagination:{limit:50,offset:0,has_more:false}}})}
+   assert.equal(url.pathname,'/api/incentive-statements');return Response.json({data:[{id:'s',entitlement_minor:10}],meta:{pagination:{limit:50,offset:0,has_more:false}}});
   };
   const api=new NyalesApi('https://example.com',async()=>({idToken:'token',deviceSession:'device'}));
-  assert.equal((await api.performance('targets','2026-11'))[0].id,'t');
-  assert.equal((await api.performance('incentive-statements'))[0].id,'s');
+  assert.equal((await api.performance('targets','2026-11')).rows[0].id,'t');
+  assert.equal((await api.performance('incentive-statements')).rows[0].id,'s');
   await assert.rejects(()=>api.performance('targets','2026-99'));
   globalThis.fetch=async()=>Response.json({data:[{name:'missing id'}]});
   await assert.rejects(()=>api.performance('targets'),(e:unknown)=>e instanceof NyalesApiError&&e.code==='INVALID_RESPONSE');

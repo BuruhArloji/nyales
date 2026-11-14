@@ -74,14 +74,16 @@ export class NyalesApi {
     }
     return { rows: data, offset, hasMore: pagination.has_more };
   }
-  /** Existing server endpoints return full scoped lists; call only on demand. */
-  async performance(kind: PerformanceKind, period?: string): Promise<Record<string, unknown>[]> {
+  async performance(kind: PerformanceKind, period?: string, offset = 0): Promise<WorkPage> {
     if (kind !== 'targets' && kind !== 'incentive-statements') throw new Error('Invalid performance section');
     if (period && !/^\d{4}-(0[1-9]|1[0-2])$/.test(period)) throw new Error('Invalid period');
-    const query = kind === 'targets' && period ? `?period_start=${period}-01` : '';
-    const { data } = await this.request<Record<string, unknown>[]>(`/api/${kind}${query}`);
-    if (!Array.isArray(data) || !data.every(row => row && typeof row === 'object' && typeof row.id === 'string')) throw new NyalesApiError('INVALID_RESPONSE', 200);
-    return data;
+    if (!Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) throw new Error('Invalid page');
+    const params = new URLSearchParams({limit:'50',offset:String(offset)});
+    if (kind === 'targets' && period) params.set('period_start', `${period}-01`);
+    const {data,meta} = await this.request<Record<string, unknown>[]>(`/api/${kind}?${params}`);
+    const pagination=meta?.pagination as Record<string, unknown> | undefined;
+    if (!Array.isArray(data) || data.length > 50 || !data.every(row => row && typeof row === 'object' && typeof row.id === 'string') || pagination?.limit !== 50 || pagination?.offset !== offset || typeof pagination?.has_more !== 'boolean') throw new NyalesApiError('INVALID_RESPONSE',200);
+    return {rows:data,offset,hasMore:pagination.has_more};
   }
   async customers(offset = 0, query = '', channel: 'field' | 'telesales' = 'field'): Promise<CustomerPage> {
     if (!Number.isSafeInteger(offset) || offset < 0 || query.length > 200 || !['field', 'telesales'].includes(channel)) throw new Error('Invalid customer filter');
