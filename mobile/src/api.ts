@@ -76,9 +76,13 @@ export class NyalesApi {
     }
     return data;
   }
-  async workPage(kind: WorkKind, offset = 0): Promise<WorkPage> {
+  async workPage(kind: WorkKind, offset = 0, filter?: {date?: string; userId?: string; status?: string}): Promise<WorkPage> {
     if (!['work-plans', 'work-sessions', 'activities', 'tasks', 'invoices'].includes(kind) || !Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) throw new Error('Invalid work page');
-    const { data, meta } = await this.request<Record<string, unknown>[]>(`/api/${kind}?limit=50&offset=${offset}`);
+    const params = new URLSearchParams({limit:'50',offset:String(offset)});
+    if (filter?.date) { if (!/^\d{4}-\d{2}-\d{2}$/.test(filter.date)) throw new Error('Invalid work date'); params.set('date',filter.date); }
+    if (filter?.userId) params.set('user_id',filter.userId);
+    if (filter?.status) params.set('status',filter.status);
+    const { data, meta } = await this.request<Record<string, unknown>[]>(`/api/${kind}?${params}`);
     const pagination = meta?.pagination as Record<string, unknown> | undefined;
     if (!Array.isArray(data) || !data.every(row => row && typeof row === 'object' && typeof row.id === 'string') ||
       data.length > 50 || pagination?.limit !== 50 || pagination?.offset !== offset || typeof pagination?.has_more !== 'boolean') {

@@ -156,3 +156,12 @@ test('mobile visit event carries version and a stable idempotency key',async()=>
   const session=new MobileSession('https://example.com',store);assert.equal((await session.open({subject:'subject-a',getIdToken:async()=> 'jwt'},'phone')).id,'u');assert.equal(saved.subject,'subject-a');await session.clearLocal();assert.equal(saved,null);
  }finally{globalThis.fetch=oldFetch}
 });
+
+test('field agenda requests the selected user, date and next page',async()=>{
+ const oldFetch=globalThis.fetch;
+ try{
+  globalThis.fetch=async(input)=>{const url=new URL(String(input));assert.equal(url.pathname,'/api/work-plans');assert.equal(url.searchParams.get('date'),'2026-11-15');assert.equal(url.searchParams.get('user_id'),'sales-1');assert.equal(url.searchParams.get('offset'),'50');return Response.json({data:[{id:'plan-51'}],meta:{pagination:{limit:50,offset:50,has_more:false}}})};
+  const api=new NyalesApi('https://example.com',async()=>({idToken:'token'}));
+  const page=await api.workPage('work-plans',50,{date:'2026-11-15',userId:'sales-1'});assert.equal(page.rows[0].id,'plan-51');assert.equal(page.hasMore,false);
+ }finally{globalThis.fetch=oldFetch}
+});
