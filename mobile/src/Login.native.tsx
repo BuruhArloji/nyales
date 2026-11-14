@@ -9,6 +9,7 @@ import { signInWithGoogle, signOutGoogle } from './google-auth.native';
 import { readDeviceSession, saveDeviceSession, clearDeviceSession } from './session-store';
 import ConnectedModules from './ConnectedModules';
 import DailyGenerator from './DailyGenerator';
+import FieldVisits from './FieldVisits';
 
 function Text(props: React.ComponentProps<typeof NativeText>) {
   const weight = StyleSheet.flatten(props.style)?.fontWeight;
@@ -97,6 +98,7 @@ export default function Login({ onClose }: { onClose: () => void }) {
     <Text style={s.title}>{identity ? 'Akun terhubung' : 'Masuk ke NYALES'}</Text>
     {identity ? <><Text style={s.body}>{identity.name || 'Pengguna NYALES'}</Text><Text style={s.body}>Peran: {identity.role || 'belum tersedia'}</Text><Text style={s.note}>Terhubung ke NYALES staging. Fitur operasional lainnya masih dalam pengembangan.</Text>
       {session.current && identity.role === 'SALES_REP' && <DailyGenerator api={session.current.api} identity={identity} />}
+      {session.current && identity.role === 'SALES_REP' && !identity.portfolio_read_only && <FieldVisits api={session.current.api} identity={identity} />}
       {session.current && <ConnectedModules api={session.current.api} />}
       {!listOpen ? <Pressable disabled={busy} accessibilityRole="button" onPress={() => loadCustomers(0, '')} style={s.secondary}><Text style={s.secondaryText}>Lihat pelanggan</Text></Pressable> : customer ? <><Pressable accessibilityRole="button" onPress={() => setCustomer(null)} style={s.secondary}><Text style={s.secondaryText}>‹ Kembali ke pelanggan</Text></Pressable><Text style={s.listHeading}>{customer.name}</Text><View style={s.customer}><Text style={s.customerName}>Alamat</Text><Text style={s.customerAddress}>{customer.address || 'Belum tersedia'}</Text></View><View style={s.customer}><Text style={s.customerName}>Status pelanggan</Text><Text style={s.customerAddress}>{customer.status || 'Belum tersedia'}</Text></View></> : <>
         <Text style={s.listHeading}>Pelanggan</Text><View style={s.searchRow}><TextInput accessibilityLabel="Cari pelanggan" style={s.input} value={search} onChangeText={setSearch} placeholder="Cari nama atau alamat" maxLength={200} returnKeyType="search" onSubmitEditing={() => loadCustomers(0, search)} /><Pressable disabled={busy} accessibilityRole="button" onPress={() => loadCustomers(0, search)} style={s.searchButton}><Text>Cari</Text></Pressable></View>

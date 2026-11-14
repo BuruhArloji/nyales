@@ -130,6 +130,15 @@ test('daily generator keeps explicit preview consent and separate confirmed appl
  }finally{globalThis.fetch=oldFetch}
 });
 
+test('field work session start and end keep idempotency and session version',async()=>{
+ const oldFetch=globalThis.fetch;
+ try{
+  globalThis.fetch=async(input,init)=>{const path=new URL(String(input)).pathname,h=new Headers(init?.headers);assert.equal(h.get('Idempotency-Key'),'operation-123');if(path==='/api/work-sessions'){assert.equal(JSON.parse(String(init?.body)).kind,'work');return Response.json({data:{id:'s',version:1}})}assert.equal(path,'/api/work-sessions/s/end');assert.equal(h.get('If-Match'),'"1"');assert.deepEqual(JSON.parse(String(init?.body)),{});return Response.json({data:{id:'s',version:2,ended_at:'2026-11-14T00:00:00Z'}})};
+  const api=new NyalesApi('https://example.com',async()=>({idToken:'token',deviceSession:'device'}));
+  assert.equal((await api.startWorkSession('operation-123')).data.version,1);assert.equal((await api.endWorkSession('s',1,'operation-123')).data.version,2);assert.throws(()=>api.endWorkSession('s',0,'operation-123'));
+ }finally{globalThis.fetch=oldFetch}
+});
+
 test('mobile visit event carries version and a stable idempotency key',async()=>{
  const {submitVisitEvent}=await import('../mobile/src/api'); const oldFetch=globalThis.fetch;
  try{

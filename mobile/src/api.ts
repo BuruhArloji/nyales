@@ -15,7 +15,7 @@ export type DeviceSession = { id: string; session_token: string; version: number
 export type Customer = { id: string; name: string; address?: string | null; status?: string | null };
 export type CustomerPage = { rows: Customer[]; total: number; offset: number; limit: number };
 export type Overview = { period: string; actual_net_minor: number; target_net_minor: number | null; achievement: number | null; active_customer_count: number; sales_rep_count: number };
-export type WorkKind = 'work-plans' | 'activities' | 'tasks' | 'invoices';
+export type WorkKind = 'work-plans' | 'work-sessions' | 'activities' | 'tasks' | 'invoices';
 export type WorkPage = { rows: Record<string, unknown>[]; offset: number; hasMore: boolean };
 export type PerformanceKind = 'targets' | 'incentive-statements';
 
@@ -48,6 +48,9 @@ export class NyalesApi {
     return this.request<DeviceSession>('/api/device-sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_id: deviceId }) });
   }
   me() { return this.request<Identity>('/api/me'); }
+  startWorkSession(eventId: string) { return this.request<{id:string;version:number}>('/api/work-sessions',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify({kind:'work',reason:'Mulai kerja melalui Android'})}); }
+  endWorkSession(id:string,version:number,eventId:string) { if(!id||id.length>128||!Number.isInteger(version)||version<1)throw new Error('Invalid session');return this.request<{id:string;version:number;ended_at:string}>(`/api/work-sessions/${encodeURIComponent(id)}/end`,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId,'If-Match':`"${version}"`},body:'{}'}); }
+  startVisit(customerId:string,planId:string,eventId:string) { return this.request<{id:string;version:number;status:string}>('/api/activities',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify({customer_id:customerId,kind:'visit',notes:'',plan_id:planId})}); }
   dailySetup() { return this.request<DailySetup>('/api/visit-generator/daily/setup'); }
   dailyPreview(input: DailyInput, eventId: string) {
     if (eventId.length < 8 || eventId.length > 128) throw new Error('Invalid event identity');
@@ -74,7 +77,7 @@ export class NyalesApi {
     return data;
   }
   async workPage(kind: WorkKind, offset = 0): Promise<WorkPage> {
-    if (!['work-plans', 'activities', 'tasks', 'invoices'].includes(kind) || !Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) throw new Error('Invalid work page');
+    if (!['work-plans', 'work-sessions', 'activities', 'tasks', 'invoices'].includes(kind) || !Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) throw new Error('Invalid work page');
     const { data, meta } = await this.request<Record<string, unknown>[]>(`/api/${kind}?limit=50&offset=${offset}`);
     const pagination = meta?.pagination as Record<string, unknown> | undefined;
     if (!Array.isArray(data) || !data.every(row => row && typeof row === 'object' && typeof row.id === 'string') ||
