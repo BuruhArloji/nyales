@@ -1,16 +1,21 @@
 {
   "expo": {
-    "name": "NYALES Dev",
+    "name": "NYALES",
     "slug": "nyales-mobile-dev",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "android": {
-      "package": "id.biz.nyales.mobile.dev"
+      "package": "id.biz.nyales.mobile.dev",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/nyales-adaptive-foreground.png",
+        "backgroundColor": "#242625"
+      }
     },
     "plugins": [
       "expo-font",
       "expo-secure-store"
-    ]
+    ],
+    "icon": "./assets/nyales-icon.png"
   }
 }
