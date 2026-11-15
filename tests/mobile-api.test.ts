@@ -178,3 +178,8 @@ test('mobile orders use server pagination without downloading all orders',async(
  const oldFetch=globalThis.fetch;
  try{globalThis.fetch=async(input)=>{const url=new URL(String(input));assert.equal(url.pathname,'/api/orders');assert.equal(url.searchParams.get('limit'),'50');assert.equal(url.searchParams.get('offset'),'50');return Response.json({data:[{id:'order-51'}],meta:{pagination:{limit:50,offset:50,has_more:false}}})};const api=new NyalesApi('https://example.com',async()=>({idToken:'token'}));assert.equal((await api.orders(50)).rows[0].id,'order-51')}finally{globalThis.fetch=oldFetch}
 });
+
+
+test('mobile pipeline uses paginated opportunity endpoint',async()=>{
+ const oldFetch=globalThis.fetch;try{globalThis.fetch=async(input)=>{const url=new URL(String(input));assert.equal(url.pathname,'/api/opportunities');assert.equal(url.searchParams.get('offset'),'50');return Response.json({data:[{id:'opp-51'}],meta:{pagination:{limit:50,offset:50,has_more:false}}})};const api=new NyalesApi('https://example.com',async()=>({idToken:'token'}));assert.equal((await api.commercial('opportunities',50)).rows[0].id,'opp-51')}finally{globalThis.fetch=oldFetch}
+});
