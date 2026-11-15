@@ -90,6 +90,13 @@ export class NyalesApi {
     }
     return { rows: data, offset, hasMore: pagination.has_more };
   }
+  async orders(offset=0):Promise<WorkPage> {
+    if(!Number.isSafeInteger(offset)||offset<0||offset>1000000)throw new Error('Invalid page');
+    const {data,meta}=await this.request<Record<string,unknown>[]>(`/api/orders?limit=50&offset=${offset}`);
+    const pagination=meta?.pagination as Record<string,unknown>|undefined;
+    if(!Array.isArray(data)||data.length>50||!data.every(row=>row&&typeof row.id==='string')||pagination?.limit!==50||pagination?.offset!==offset||typeof pagination?.has_more!=='boolean')throw new NyalesApiError('INVALID_RESPONSE',200);
+    return {rows:data,offset,hasMore:pagination.has_more};
+  }
   async performance(kind: PerformanceKind, period?: string, offset = 0): Promise<WorkPage> {
     if (kind !== 'targets' && kind !== 'incentive-statements') throw new Error('Invalid performance section');
     if (period && !/^\d{4}-(0[1-9]|1[0-2])$/.test(period)) throw new Error('Invalid period');

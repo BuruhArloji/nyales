@@ -172,3 +172,9 @@ test('mobile map rejects invalid coordinates and filters on observed invoices',a
  const points=validMapPoints([{id:'a',name:'Toko',lat:-6.2,lng:106.8,metrics:{invoice_count:1}},{id:'b',name:'Warung',lat:-6.3,lng:107},{id:'bad',name:'Rusak',lat:200,lng:106}]);
  assert.equal(points.length,2);assert.deepEqual(visibleMapPoints(points,true).map(p=>p.id),['a']);assert.equal(pointMapFacts({...points[1],demo_operation_overlay:{invoice_count:2,productive_count:1,follow_up_count:2}}).meaningful_count,3);assert.throws(()=>validMapPoints(null));
 });
+
+
+test('mobile orders use server pagination without downloading all orders',async()=>{
+ const oldFetch=globalThis.fetch;
+ try{globalThis.fetch=async(input)=>{const url=new URL(String(input));assert.equal(url.pathname,'/api/orders');assert.equal(url.searchParams.get('limit'),'50');assert.equal(url.searchParams.get('offset'),'50');return Response.json({data:[{id:'order-51'}],meta:{pagination:{limit:50,offset:50,has_more:false}}})};const api=new NyalesApi('https://example.com',async()=>({idToken:'token'}));assert.equal((await api.orders(50)).rows[0].id,'order-51')}finally{globalThis.fetch=oldFetch}
+});
