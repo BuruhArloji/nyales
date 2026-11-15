@@ -14,7 +14,8 @@
     },
     "plugins": [
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@maplibre/maplibre-react-native"
     ],
     "icon": "./assets/nyales-icon.png"
   }

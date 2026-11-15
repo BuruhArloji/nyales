@@ -165,3 +165,10 @@ test('field agenda requests the selected user, date and next page',async()=>{
   const page=await api.workPage('work-plans',50,{date:'2026-11-15',userId:'sales-1'});assert.equal(page.rows[0].id,'plan-51');assert.equal(page.hasMore,false);
  }finally{globalThis.fetch=oldFetch}
 });
+
+
+test('mobile map rejects invalid coordinates and filters on observed invoices',async()=>{
+ const {validMapPoints,visibleMapPoints,pointMapFacts}=await import('../mobile/src/map-data');
+ const points=validMapPoints([{id:'a',name:'Toko',lat:-6.2,lng:106.8,metrics:{invoice_count:1}},{id:'b',name:'Warung',lat:-6.3,lng:107},{id:'bad',name:'Rusak',lat:200,lng:106}]);
+ assert.equal(points.length,2);assert.deepEqual(visibleMapPoints(points,true).map(p=>p.id),['a']);assert.equal(pointMapFacts({...points[1],demo_operation_overlay:{invoice_count:2,productive_count:1,follow_up_count:2}}).meaningful_count,3);assert.throws(()=>validMapPoints(null));
+});
