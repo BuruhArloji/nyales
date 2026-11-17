@@ -125,8 +125,8 @@ export class NyalesApi {
 }
 
 export type DailyWeights = {wallet:number;last_visit:number;sales:number;follow_up:number;proximity:number};
-export type DailySetup = {configured:boolean;policy:{config:{weights:DailyWeights}}|null;work_window:{start_at:string;end_at:string}|null};
-export type DailyInput = {rep_id:string;start:{latitude:number;longitude:number};start_at:string;end_at:string;confirmed_external_processing:true;weights:DailyWeights};
+export type DailySetup = {configured:boolean;policy:{config:{weights:DailyWeights}}|null;work_window:{start_at:string;end_at:string}|null;custom_work_hours_allowed?:boolean;today?:string;calendar?:{timezone:string}|null};
+export type DailyInput = {rep_id:string;start:{latitude:number;longitude:number};start_at:string;end_at:string;confirmed_external_processing:true;weights:DailyWeights;custom_work_hours?:boolean};
 export type DailyResult = {id:string;current:boolean;status:string;planned:number;shortfall:number;route:{steps:Array<{type:string;customer_name?:string;arrival?:number;waiting_time?:number}>}|null};
 
 export type VisitFix = {
