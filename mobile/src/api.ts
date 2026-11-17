@@ -127,7 +127,7 @@ export class NyalesApi {
 export type DailyWeights = {wallet:number;last_visit:number;sales:number;follow_up:number;proximity:number};
 export type DailySetup = {configured:boolean;policy:{config:{weights:DailyWeights}}|null;work_window:{start_at:string;end_at:string}|null;custom_work_hours_allowed?:boolean;today?:string;calendar?:{timezone:string}|null};
 export type DailyInput = {rep_id:string;start:{latitude:number;longitude:number};start_at:string;end_at:string;confirmed_external_processing:true;weights:DailyWeights;custom_work_hours?:boolean};
-export type DailyResult = {id:string;current:boolean;status:string;planned:number;shortfall:number;route:{steps:Array<{type:string;customer_name?:string;arrival?:number;waiting_time?:number}>}|null};
+export type DailyResult = {id:string;current:boolean;status:string;planned:number;shortfall:number;target?:number;completed_today?:number;timezone?:string;notice?:string;unassigned?:Array<{customer_id:string;customer_name?:string;reason?:string}>;skipped?:Array<{id:string;name?:string;reason?:string}>;not_shortlisted_count?:number;route:{distance?:number;duration?:number;steps:Array<{type:string;customer_id?:string;customer_name?:string;arrival?:number;waiting_time?:number;score?:number;reasons?:string[];fixed_plan_id?:string|null}>}|null};
 
 export type VisitFix = {
   occurred_at: string; captured_at?: string; latitude_e7: number | null;
