@@ -15,3 +15,6 @@ test('external street view and maps links contain only validated coordinates',as
 test('WorldPop source is HTTPS staging origin with fixed allowlisted path',async()=>{
  const {worldPopArchiveUrl}=await import('../mobile/src/map-data');assert.equal(worldPopArchiveUrl('https://nyales.example/'),'https://nyales.example/demo/worldpop-idn-2026-density.pmtiles');assert.equal(worldPopArchiveUrl('http://nyales.example/'),null);assert.equal(worldPopArchiveUrl('https://u:p@nyales.example/'),null);assert.equal(worldPopArchiveUrl('https://nyales.example/?token=secret'),null);
 });
+
+
+test('WorldPop request matcher targets only the allowed HTTPS archive',async()=>{const {worldPopRequestPattern}=await import('../mobile/src/map-data');const url='https://nyales-staging.azaracourse.workers.dev/demo/worldpop-idn-2026-density.pmtiles';const re=new RegExp(worldPopRequestPattern(url));assert.equal(re.test(url),true);assert.equal(re.test(url+'.other'),false);assert.equal(re.test('https://evil.example/demo/worldpop-idn-2026-density.pmtiles'),false);assert.throws(()=>worldPopRequestPattern('http://example.com/demo/worldpop-idn-2026-density.pmtiles'));});

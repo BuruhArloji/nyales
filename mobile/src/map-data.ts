@@ -24,3 +24,10 @@ export function externalMapUrl(point:Pick<MapPoint,'lat'|'lng'>,streetView:boole
 export function worldPopArchiveUrl(origin:unknown):string|null {
  if(typeof origin!=='string')return null;try {const base=new URL(origin);if(base.protocol!=='https:'||base.username||base.password||base.search||base.hash||base.pathname!=='/')return null;return new URL('/demo/worldpop-idn-2026-density.pmtiles',base).href}catch{return null}
 }
+
+/** Matches only the approved archive, never another host or path. */
+export function worldPopRequestPattern(url:string):string {
+ const parsed=new URL(url);if(parsed.protocol!=='https:'||parsed.pathname!=='/demo/worldpop-idn-2026-density.pmtiles'||parsed.search||parsed.hash||parsed.username||parsed.password)throw Error('INVALID_WORLDPOP_URL');
+ return '^'+url.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$';
+}
+export const worldPopUserAgent='NYALES-Android/1.0';

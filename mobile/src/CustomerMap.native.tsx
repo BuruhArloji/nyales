@@ -1,10 +1,10 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {ActivityIndicator,Linking,Pressable,StyleSheet,Text,TextInput,View} from 'react-native';
-import {Camera,GeoJSONSource,Layer,Map,RasterSource,type CameraRef,type GeoJSONSourceRef} from '@maplibre/maplibre-react-native';
+import {Camera,GeoJSONSource,Layer,Map,RasterSource,TransformRequestManager,type CameraRef,type GeoJSONSourceRef} from '@maplibre/maplibre-react-native';
 import type {NyalesApi} from './api';
 import Constants from 'expo-constants';
 import {salesMapCustomers,type SalesMapLevel} from '../../src/shared/map-sales';
-import {externalMapUrl,worldPopArchiveUrl,pointMapFacts,validMapPeriod,validMapPoints,validSelectedBoundary,visibleMapPoints,type MapPoint} from './map-data';
+import {externalMapUrl,worldPopArchiveUrl,worldPopRequestPattern,worldPopUserAgent,pointMapFacts,validMapPeriod,validMapPoints,validSelectedBoundary,visibleMapPoints,type MapPoint} from './map-data';
 type Point=MapPoint;
 type Boundary={id:string;name:string;bbox:[number,number,number,number];confirmed_customer_count?:number};
 type MapPosition=Point&{last_seen?:string;accuracy_m?:number};
@@ -16,7 +16,8 @@ export default function CustomerMap({api}:{api:NyalesApi}) {
  useEffect(()=>{void load();return()=>{generation.current++}},[channel,mode==='ownership']);
  const showBoundary=async(b:Boundary)=>{if(!dataset)return;const current=++geometryGeneration.current;setBoundaryBusy(true);setBoundaryError('');setGeometry(null);setBoundaryName('');try{const q=new URLSearchParams({dataset_id:dataset,ids:b.id});const result=await api.request<GeoJSON.FeatureCollection>('/api/geo/geometry?'+q);if(current!==geometryGeneration.current)return;if(!validSelectedBoundary(result.data,b.id))throw Error('INVALID_GEOMETRY');setGeometry(result.data);setBoundaryName(b.name);camera.current?.fitBounds(b.bbox,{padding:{top:36,bottom:36,left:36,right:36},duration:400});setBoundaryOpen(false)}catch{if(current===geometryGeneration.current)setBoundaryError('Batas wilayah belum dapat dimuat. Coba lagi.')}finally{if(current===geometryGeneration.current)setBoundaryBusy(false)}};
  const populationUrl=worldPopArchiveUrl(Constants.expoConfig?.extra?.apiOrigin);
- const togglePopulation=async()=>{if(showPopulation){setShowPopulation(false);setPopulationError('');return}if(!populationUrl){setPopulationError('Sumber WorldPop belum dikonfigurasi.');return}setPopulationBusy(true);setPopulationError('');try{const response=await fetch(populationUrl,{headers:{Range:'bytes=0-7'}});if(response.status!==206||!response.headers.get('content-range')?.startsWith('bytes 0-7/'))throw Error('unavailable');const magic=new Uint8Array(await response.arrayBuffer());if(magic.length!==8||String.fromCharCode(...magic.slice(0,7))!=='PMTiles')throw Error('invalid');setShowPopulation(true)}catch{setPopulationError('Raster WorldPop belum dapat diakses. Coba lagi nanti.')}finally{setPopulationBusy(false)}};
+ useEffect(()=>{if(!populationUrl)return;const id=TransformRequestManager.addHeader({name:'User-Agent',value:worldPopUserAgent,match:worldPopRequestPattern(populationUrl)});return()=>TransformRequestManager.removeHeader(id)},[populationUrl]);
+ const togglePopulation=async()=>{if(showPopulation){setShowPopulation(false);setPopulationError('');return}if(!populationUrl){setPopulationError('Sumber WorldPop belum dikonfigurasi.');return}setPopulationBusy(true);setPopulationError('');try{const response=await fetch(populationUrl,{headers:{Range:'bytes=0-7','User-Agent':worldPopUserAgent}});if(response.status!==206||!response.headers.get('content-range')?.startsWith('bytes 0-7/'))throw Error('unavailable');const magic=new Uint8Array(await response.arrayBuffer());if(magic.length!==8||String.fromCharCode(...magic.slice(0,7))!=='PMTiles')throw Error('invalid');setShowPopulation(true)}catch{setPopulationError('Raster WorldPop belum dapat diakses. Coba lagi nanti.')}finally{setPopulationBusy(false)}};
  const openExternal=async(point:Point,street:boolean)=>{setExternalError('');try{await Linking.openURL(externalMapUrl(point,street))}catch{setExternalError('Google Maps belum dapat dibuka di perangkat ini.')}};
  const visibleBoundaries=useMemo(()=>boundaries.filter(b=>b.name.toLocaleLowerCase('id-ID').includes(boundaryQuery.trim().toLocaleLowerCase('id-ID'))).slice(0,20),[boundaries,boundaryQuery]);
  const visible=useMemo(()=>visibleMapPoints(points,onlySales),[points,onlySales]);
