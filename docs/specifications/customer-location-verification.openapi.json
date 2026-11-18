@@ -669,6 +669,19 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "browser_gps",
+                "android_gps"
+              ],
+              "default": "browser_gps"
+            }
           }
         ],
         "responses": {
