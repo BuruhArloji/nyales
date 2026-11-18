@@ -19,3 +19,8 @@ export function externalMapUrl(point:Pick<MapPoint,'lat'|'lng'>,streetView:boole
  const position=`${point.lat},${point.lng}`;
  return streetView?`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${encodeURIComponent(position)}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(position)}`;
 }
+
+/** WorldPop is an allowlisted public staging resource, never an authenticated API URL. */
+export function worldPopArchiveUrl(origin:unknown):string|null {
+ if(typeof origin!=='string')return null;try {const base=new URL(origin);if(base.protocol!=='https:'||base.username||base.password||base.search||base.hash||base.pathname!=='/')return null;return new URL('/demo/worldpop-idn-2026-density.pmtiles',base).href}catch{return null}
+}

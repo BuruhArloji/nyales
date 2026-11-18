@@ -10,3 +10,8 @@ test('boundary response is limited to the selected polygon',()=>{const f={type:'
 test('external street view and maps links contain only validated coordinates',async()=>{
  const {externalMapUrl}=await import('../mobile/src/map-data');const a=new URL(externalMapUrl({lat:-6.2,lng:106.8},true));assert.equal(a.hostname,'www.google.com');assert.equal(a.searchParams.get('viewpoint'),'-6.2,106.8');assert.equal(a.searchParams.get('map_action'),'pano');const b=new URL(externalMapUrl({lat:-6.2,lng:106.8},false));assert.equal(b.searchParams.get('query'),'-6.2,106.8');assert.throws(()=>externalMapUrl({lat:91,lng:106},true));
 });
+
+
+test('WorldPop source is HTTPS staging origin with fixed allowlisted path',async()=>{
+ const {worldPopArchiveUrl}=await import('../mobile/src/map-data');assert.equal(worldPopArchiveUrl('https://nyales.example/'),'https://nyales.example/demo/worldpop-idn-2026-density.pmtiles');assert.equal(worldPopArchiveUrl('http://nyales.example/'),null);assert.equal(worldPopArchiveUrl('https://u:p@nyales.example/'),null);assert.equal(worldPopArchiveUrl('https://nyales.example/?token=secret'),null);
+});

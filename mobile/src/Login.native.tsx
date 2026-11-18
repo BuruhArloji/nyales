@@ -13,6 +13,7 @@ import { readDeviceSession, saveDeviceSession, clearDeviceSession } from './sess
 import ConnectedModules from './ConnectedModules';
 import DailyGenerator from './DailyGenerator';
 import FieldVisits from './FieldVisits';
+import VisitOffDays from './VisitOffDays';
 import Team from './Team';
 import VisitSettings from './VisitSettings';
 import CustomerMap from './CustomerMap';
@@ -116,6 +117,7 @@ export default function Login({ onClose }: { onClose: () => void }) {
     {identity ? <View style={s.topbar}><Text style={s.brand}>NYALES</Text><Pressable accessibilityRole="button" accessibilityLabel="Buka akun" onPress={()=>setNav('Akun')}><Text style={s.avatar}>{(identity.name || 'N').slice(0,1).toUpperCase()}</Text></Pressable></View> : <><Text style={s.brand}>NYALES</Text><Text style={s.title}>Masuk ke NYALES</Text></>}
     <Animated.View style={{opacity:reveal,transform:[{translateY:reveal.interpolate({inputRange:[0,1],outputRange:[12,0]})}]}}>{identity ? <>{nav==='Akun'&&<><Text style={s.title}>Akun</Text><View style={s.customer}><Text style={s.customerName}>{identity.name || 'Pengguna NYALES'}</Text><Text style={s.customerAddress}>{identity.role || 'Peran belum tersedia'}</Text><Text style={s.note}>Terhubung ke staging</Text></View>{session.current && <VisitSettings api={session.current.api} identity={identity}/>} </>}
       {nav==='Aktivitas'&&<Text style={s.title}>Aktivitas lapangan</Text>}
+      {nav==='Aktivitas' && identity.role !== 'SALES_REP' && identity.role !== 'TELESALES' && session.current && <VisitOffDays api={session.current.api} identity={identity}/>}
       {nav==='Aktivitas' && identity.role !== 'SALES_REP' && session.current && <ConnectedModules api={session.current.api} identity={identity} initialSection="Aktivitas" readOnly={identity.portfolio_read_only} />}
       {nav==='Aktivitas' && session.current && ['SALES_REP','SUPERVISOR','AREA_MANAGER','REGIONAL_MANAGER','NSM','MANAGEMENT'].includes(identity.role||'') && identity.channel!=='telesales' && <DailyGenerator api={session.current.api} identity={identity} />}
       {nav==='Aktivitas' && session.current && identity.role === 'SALES_REP' && !identity.portfolio_read_only && <FieldVisits api={session.current.api} identity={identity} />}
