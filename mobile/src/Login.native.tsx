@@ -17,6 +17,7 @@ import VisitOffDays from './VisitOffDays';
 import Team from './Team';
 import VisitSettings from './VisitSettings';
 import CustomerMap from './CustomerMap';
+import TrackingControl,{stopTrackingForAccountChange,stopTrackingForLogout} from './TrackingControl';
 
 function Text(props: React.ComponentProps<typeof NativeText>) {
   const weight = StyleSheet.flatten(props.style)?.fontWeight;
@@ -77,7 +78,9 @@ export default function Login({ onClose }: { onClose: () => void }) {
       if (!account) return;
       const current = new MobileSession(origin, { read: readDeviceSession, save: saveDeviceSession, clear: clearDeviceSession });
       session.current = current;
-      setIdentity(await current.open(account, await deviceId()));
+      const authenticated=await current.open(account, await deviceId());
+      await stopTrackingForAccountChange(authenticated);
+      setIdentity(authenticated);
     } catch (error) {
       if (error instanceof NyalesApiError && (error.code === 'DEVICE_SESSION_INVALID' || error.code === 'REAUTH_REQUIRED')) {
         try { await session.current?.clearLocal(); await signOutGoogle(); } catch { /* A fresh login remains necessary. */ }
@@ -90,7 +93,7 @@ export default function Login({ onClose }: { onClose: () => void }) {
     if (busy) return;
     listGeneration.current++;
     setBusy(true); setMessage('');
-    try { await session.current?.clearLocal(); await signOutGoogle(); setIdentity(null); setPage(null); setCustomer(null); setListOpen(false); session.current = null; }
+    try { if(identity&&session.current)await stopTrackingForLogout(identity,session.current.api);await session.current?.clearLocal(); await signOutGoogle(); setIdentity(null); setPage(null); setCustomer(null); setListOpen(false); session.current = null; }
     catch { setMessage('Belum bisa keluar sepenuhnya. Coba lagi.'); }
     finally { setBusy(false); }
   };
@@ -120,6 +123,7 @@ export default function Login({ onClose }: { onClose: () => void }) {
       {nav==='Aktivitas' && identity.role !== 'SALES_REP' && identity.role !== 'TELESALES' && session.current && <VisitOffDays api={session.current.api} identity={identity}/>}
       {nav==='Aktivitas' && identity.role !== 'SALES_REP' && session.current && <ConnectedModules api={session.current.api} identity={identity} initialSection="Aktivitas" readOnly={identity.portfolio_read_only} />}
       {nav==='Aktivitas' && session.current && ['SALES_REP','SUPERVISOR','AREA_MANAGER','REGIONAL_MANAGER','NSM','MANAGEMENT'].includes(identity.role||'') && identity.channel!=='telesales' && <DailyGenerator api={session.current.api} identity={identity} />}
+      {session.current && identity.role === 'SALES_REP' && !identity.portfolio_read_only && <View style={{display:nav==='Aktivitas'?'flex':'none'}}><TrackingControl api={session.current.api} identity={identity}/></View>}
       {nav==='Aktivitas' && session.current && identity.role === 'SALES_REP' && !identity.portfolio_read_only && <FieldVisits api={session.current.api} identity={identity} />}
       {nav==='Overview' && session.current && <ConnectedModules api={session.current.api} identity={identity} readOnly={identity.portfolio_read_only} />}
       {nav==='Tim' && session.current && <Team api={session.current.api} />}

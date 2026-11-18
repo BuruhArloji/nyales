@@ -35,7 +35,7 @@ function defer(c:any,promise:Promise<unknown>){try{c.executionCtx.waitUntil(prom
 export const telemetry:MiddlewareHandler<any>=async(c,next)=>{
  const raw=c.env.DB as D1Database,stats=counters(),started=performance.now(),requestId=crypto.randomUUID();
  // Clone bindings per invocation; never replace the shared env.DB across concurrent requests.
- if(raw&&typeof raw.prepare==='function')c.env={...c.env,DB:measuredDB(raw,stats),IMPORT_FILES:measuredR2(c.env.IMPORT_FILES,stats)};
+ if(raw&&typeof raw.prepare==='function')c.env={...c.env,DB:measuredDB(raw,stats),IMPORT_FILES:measuredR2(c.env.IMPORT_FILES,stats),TRACKING_POINTS:measuredR2(c.env.TRACKING_POINTS,stats)};
  c.header('X-Request-ID',requestId);
  try{await next()}finally{
   const wall=Math.max(0,performance.now()-started),status=c.res?.status||500;

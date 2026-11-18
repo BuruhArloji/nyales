@@ -15,17 +15,19 @@ export function stagingConfig(env){
  const portfolio=env.PORTFOLIO_ENABLED==='true';
  if(env.PORTFOLIO_ENABLED&&!['true','false'].includes(env.PORTFOLIO_ENABLED))throw Error('PORTFOLIO_ENABLED_INVALID');
  if(portfolio&&!/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(env.PORTFOLIO_ORGANIZATION_ID||''))throw Error('PORTFOLIO_ORGANIZATION_REQUIRED');
+ const trackingBucket=env.CF_TRACKING_R2_BUCKET?.trim();
+ if(trackingBucket&&(!/^nyales-staging(?:-[a-z0-9]+)*-tracking$/.test(trackingBucket)||trackingBucket===env.CF_R2_BUCKET))throw Error('TRACKING_BUCKET_NAME_INVALID');
  return {$schema:'node_modules/wrangler/config-schema.json',name:'nyales-staging',account_id:env.CF_ACCOUNT_ID,
   main:'dist/nyales/index.js',no_bundle:true,compatibility_date:'2026-10-17',compatibility_flags:['nodejs_compat'],
-  // Scheduled writes/retention stay disabled deliberately; see docs/LEGACY_CLEANUP.md before enabling.
-  triggers:{crons:[]},observability:{enabled:true,head_sampling_rate:0.1},
+  // Tracking uses its own cron; legacy maintenance stays disabled in staging.
+  triggers:{crons:trackingBucket?['*/5 * * * *']:[]},observability:{enabled:true,head_sampling_rate:0.1},
   assets:{directory:'./dist/client',not_found_handling:'single-page-application',run_worker_first:['/api/*','/demo/*']},
   vars:{APP_ENV:'staging',LOCAL_AUTH:portfolio?'false':'true',PORTFOLIO_ENABLED:portfolio?'true':'false',...(portfolio?{PORTFOLIO_ORGANIZATION_ID:env.PORTFOLIO_ORGANIZATION_ID}:{}),FIREBASE_PROJECT_ID:env.FIREBASE_PROJECT_ID,...(firstAdmin?{FIRST_ADMIN_EMAIL:firstAdmin,FIRST_ADMIN_ORGANIZATION_NAME:organization}:{})},
-  r2_buckets:[{binding:'IMPORT_FILES',bucket_name:env.CF_R2_BUCKET}],
+  r2_buckets:[{binding:'IMPORT_FILES',bucket_name:env.CF_R2_BUCKET},...(trackingBucket?[{binding:'TRACKING_POINTS',bucket_name:trackingBucket}]:[])],
   d1_databases:[{binding:'DB',database_name:'nyales-staging',database_id:env.CF_D1_DATABASE_ID,migrations_dir:'migrations'}]};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
  const config=stagingConfig(process.env),root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
  await writeFile(join(root,'wrangler.staging.generated.json'),JSON.stringify(config,null,2)+'\n',{flag:'w'});
- console.log(JSON.stringify({worker:config.name,local_auth:config.vars.LOCAL_AUTH==='true',portfolio_enabled:config.vars.PORTFOLIO_ENABLED==='true',cron_enabled:false,config:'wrangler.staging.generated.json'}));
+ console.log(JSON.stringify({worker:config.name,local_auth:config.vars.LOCAL_AUTH==='true',portfolio_enabled:config.vars.PORTFOLIO_ENABLED==='true',cron_enabled:config.triggers.crons.length>0,config:'wrangler.staging.generated.json'}));
 }

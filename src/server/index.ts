@@ -1,4 +1,5 @@
 import {customerProposals} from './customer-proposals';
+import {salesTracking,salesTrackingRetention} from './sales-tracking';
 import {visitLocation} from './visit-location';
 import {readCustomerRows} from './customer-read-rows';
 import {ownerSalesMode,ownerSalesScope} from './owner-sales-mode';
@@ -68,7 +69,7 @@ import {resolveScope,customerPredicate,invoicePredicate,type Scope} from './scop
 
 import {localAuthEnabled,verifyFirebaseClaims,mappedIdentity,type Identity} from './auth';
 
-type Bindings={PORTFOLIO_ENABLED?:string;PORTFOLIO_ORGANIZATION_ID?:string;DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string;IMPORT_FILES?:R2Bucket;MAP_TILE_URL?:string;MAP_ATTRIBUTION?:string;GOOGLE_MAPS_EMBED_API_KEY?:string;ORS_API_KEY?:string;OBS_OWNER_ORGANIZATION_ID?:string};
+type Bindings={PORTFOLIO_ENABLED?:string;PORTFOLIO_ORGANIZATION_ID?:string;DB:D1Database;APP_ENV:string;LOCAL_AUTH:string;FIREBASE_PROJECT_ID:string;FIRST_ADMIN_EMAIL?:string;FIRST_ADMIN_ORGANIZATION_NAME?:string;IMPORT_FILES?:R2Bucket;TRACKING_POINTS?:R2Bucket;MAP_TILE_URL?:string;MAP_ATTRIBUTION?:string;GOOGLE_MAPS_EMBED_API_KEY?:string;ORS_API_KEY?:string;OBS_OWNER_ORGANIZATION_ID?:string};
 
 const app=new Hono<{Bindings:Bindings;Variables:{identity:Identity;portfolioOwner:boolean;scope:Scope;auth:SessionAuth;deviceSession:SessionEnv['Variables']['deviceSession']}}>();
 
@@ -142,6 +143,7 @@ scopedRoutes.use('/api/*',async(c,next)=>{
  if(c.req.path.startsWith('/api/visit-generator/daily/')){await next();return}
  if(/^\/api\/visit-generator\/(agents|queue-jobs|policies|graphs|preflights|rep-profiles|customer-profiles)(\/|$)/.test(c.req.path)){if(!c.get('scope').orgWide)return c.json({code:'SCOPE_DENIED'},403);await next();return}
  if(/^\/api\/(visit-off-days|visit-attendance)(\/|$)/.test(c.req.path)){await next();return}
+ if(/^\/api\/sales-tracking(\/|$)/.test(c.req.path)){await next();return}
  if(c.req.path.startsWith('/api/workload/')){await next();return}
  if(c.req.path.startsWith('/api/risks/')){await next();return}
  if((c.req.path==='/api/dashboard/summary'||c.req.path==='/api/dashboard/sources')||/^\/api\/(coaching|notifications|notification-policy|audit-events|report-exports)(\/|$)/.test(c.req.path)){await next();return}
@@ -398,6 +400,7 @@ scopedRoutes.get('/api/sales/last-positions',async c=>{const result=await mapPay
 scopedRoutes.route('/',visitLocation);
 scopedRoutes.route('/',customerProposals);
 scopedRoutes.route('/',dailyVisit);
+scopedRoutes.route('/',salesTracking);
 scopedRoutes.route('/',visitAttendance);
 scopedRoutes.route('/',customerWallet);
 scopedRoutes.route('/',invoices);
@@ -448,4 +451,7 @@ export async function runScheduled(env:Bindings){
  for(const[name,work]of jobs){try{await measuredJob(name,env,work)}catch{failed=true}}
  if(failed)throw new Error('NYALES_SCHEDULED_CHECKPOINT_FAILED');
 }
-export default Object.assign(app,{scheduled:async(_event:ScheduledController,env:Bindings,ctx:ExecutionContext)=>{ctx.waitUntil(runScheduled(env))}});
+export default Object.assign(app,{scheduled:async(event:ScheduledController,env:Bindings,ctx:ExecutionContext)=>{
+ if(event.cron==='*/5 * * * *') {if(!env.TRACKING_POINTS)throw new Error('TRACKING_STORAGE_UNAVAILABLE');ctx.waitUntil(salesTrackingRetention(env.DB,env.TRACKING_POINTS,new Date().toISOString(),40));return}
+ ctx.waitUntil(runScheduled(env));
+}});

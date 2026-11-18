@@ -18,6 +18,8 @@ export type Overview = { period: string; actual_net_minor: number; target_net_mi
 export type WorkKind = 'work-plans' | 'work-sessions' | 'activities' | 'tasks' | 'invoices';
 export type WorkPage = { rows: Record<string, unknown>[]; offset: number; hasMore: boolean };
 export type PerformanceKind = 'targets' | 'incentive-statements';
+export type TrackingFix = {latitude:number;longitude:number;accuracy_m:number;captured_at:string};
+export type TrackingSession = {id:string;started_at:string;state:'active'};
 
 export class NyalesApi {
   private readonly origin: string;
@@ -48,6 +50,10 @@ export class NyalesApi {
     return this.request<DeviceSession>('/api/device-sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_id: deviceId }) });
   }
   me() { return this.request<Identity>('/api/me'); }
+  trackingSession() { return this.request<TrackingSession|null>('/api/sales-tracking/session'); }
+  startTracking(eventId:string) { return this.request<TrackingSession>('/api/sales-tracking/session',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify({consent:true})}); }
+  stopTracking(id:string,stoppedAt:string,eventId:string) { return this.request<{id:string;state:'stopped';stopped_at:string}>(`/api/sales-tracking/session/${encodeURIComponent(id)}/stop`,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify({stopped_at:stoppedAt})}); }
+  uploadTrackingBatch(id:string,batchId:string,points:TrackingFix[]) { return this.request<{batch_id:string;accepted:number}>(`/api/sales-tracking/session/${encodeURIComponent(id)}/batches`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({batch_id:batchId,points})}); }
   startWorkSession(eventId: string) { return this.request<{id:string;version:number}>('/api/work-sessions',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify({kind:'work',reason:'Mulai kerja melalui Android'})}); }
   endWorkSession(id:string,version:number,eventId:string) { if(!id||id.length>128||!Number.isInteger(version)||version<1)throw new Error('Invalid session');return this.request<{id:string;version:number;ended_at:string}>(`/api/work-sessions/${encodeURIComponent(id)}/end`,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId,'If-Match':`"${version}"`},body:'{}'}); }
   startVisit(customerId:string,planId:string,eventId:string) { return this.request<{id:string;version:number;status:string}>('/api/activities',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':eventId},body:JSON.stringify({customer_id:customerId,kind:'visit',notes:'',plan_id:planId})}); }

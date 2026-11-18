@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const load=()=>import('../scripts/prepare-staging-wrangler.mjs' as string);
 const values={CF_D1_DATABASE_ID:'12345678-1234-1234-1234-123456789abc',CF_ACCOUNT_ID:'a'.repeat(32),CF_R2_BUCKET:'nyales-staging-files',FIREBASE_PROJECT_ID:'nyales-test',VITE_FIREBASE_PROJECT_ID:'nyales-test',VITE_FIREBASE_API_KEY:'authored-config-fixture',VITE_FIREBASE_AUTH_DOMAIN:'nyales-test.firebaseapp.com'};
+test('tracking retention opts in only with a dedicated staging bucket',async()=>{
+ const {stagingConfig}=await load(),config=stagingConfig({...values,CF_TRACKING_R2_BUCKET:'nyales-staging-tracking'});
+ assert.deepEqual(config.triggers.crons,['*/5 * * * *']);
+ assert.ok(config.r2_buckets.some((b:any)=>b.binding==='TRACKING_POINTS'&&b.bucket_name==='nyales-staging-tracking'));
+ assert.throws(()=>stagingConfig({...values,CF_TRACKING_R2_BUCKET:'nyales-staging-files'}),/TRACKING_BUCKET_NAME_INVALID/);
+});
 test('Staging deploy binds built Worker, root paths, matching Firebase and isolated resources without demo or cron',async()=>{
  const {stagingConfig}=await load(),config=stagingConfig(values);
  assert.equal(config.main,'dist/nyales/index.js');assert.equal(config.no_bundle,true);assert.equal(config.assets.directory,'./dist/client');assert.equal(config.vars.APP_ENV,'staging');assert.equal(config.vars.LOCAL_AUTH,'true');assert.equal(config.d1_databases[0].migrations_dir,'migrations');assert.equal(config.d1_databases[0].database_name,'nyales-staging');assert.deepEqual(config.triggers.crons,[]);
